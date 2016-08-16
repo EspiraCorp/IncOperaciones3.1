@@ -1,0 +1,133 @@
+{% extends app.request.isXmlHttpRequest ? "MDWDemoBundle::layout_ajax.html.twig" : "::base.html.twig" %}
+{% block title %}Planilla{% endblock %}
+{% block cuerpo %}
+
+{% set pendientes = 0 %}
+{% if(planilla.planillatipo.id != 2) %}
+	{% for inventario in redencionesPlanilla %}
+			    		{% set diasMax = inventario.redencion.participante.programa.diasentrega - 3 %}
+			    		{% set diferencia = date(inventario.redencion.fecha).diff(date("now")) %}
+						{% set dias = diferencia.days %}
+						{% if dias > diasMax %}{% set pendientes = pendientes + 1 %}{% endif %}		    		
+	{% endfor %}
+{% endif %}
+
+<div class="row-fluid sortable ui-sortable">
+<div class="box span12">
+    <div class="box-header well" data-original-title="">
+        Planilla
+        <div class="box-icon">
+				<div class="box-icon">
+                    <a href="{{ path('planillas_lista') }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+                </div>
+    	</div>
+    </div>
+</div>
+    <div class="box span6">
+	    <div class="box-content">
+	    	<div class="box-header well">
+				<h2>
+				
+				</i>Datos Planilla</h2>
+			</div>
+
+				<table class="table table-bordered table-striped">
+					<tbody>
+						<tr><td>Id</td><td>{{ planilla.id }}</td></tr>
+						<tr><td>Fecha</td><td>{{ planilla.fecha | date}}</td></tr>
+						<tr><td>Archivo</td><td>
+							{% if pendientes == 0 %}
+							<a href="{{ path('inventario_planilla_actualizar') }}/{{ planilla.id }}/1" target="_blank" onClick=confirmar("{{ url("inventario_listado_planilla_estado", {"id": planilla.id}) }}")>{{ planilla.ruta }}</a>
+							{% endif %}
+						</td></tr>
+						<tr><td>Pais</td><td>{{ planilla.pais.nombre }}</td></tr>
+						<tr><td>Categoria</td><td>{{ planilla.categoria.nombre }}</td></tr>
+						<tr><td>Requisiciones</td><td>{% if planilla.planillaestado.id != 2 %}<a class="btn btn-success" href="{{ path('planilla_requisicion') }}/{{ planilla.id }}">Agregar</a>{% endif %}</td></tr>
+					</tbody>
+				</table>
+		</div>
+	    
+	    {% if costoslogistica is defined %}
+	    <div class="box span8	">
+	    	<div class="box-content">
+		    	<div class="box-header well">
+					<h2>
+					<a href="{{ path('inventario_planilla_costos') }}/{{ planilla.id }}">
+						<button class="btn btn-primary">
+							<i class="icon-edit icon-white"></i>
+						</button>
+					</a>
+					</i>Costos Logistica</h2>
+				</div>
+		    	<table class="table table-bordered table-striped">
+		    		<tr><th>Descripción</th>
+		    			<th>Cantidad</th>
+		    			<th>Valor Unitario</th>
+		    			<th>Valor Total</th>
+		    		</tr>
+		    	{% for costo in costoslogistica %}
+		    		<tr>
+		    			<td>{{ costo.descripcion }}</td>
+		    			<td>{{ costo.cantidad }}</td>
+		    			<td>{{ costo.valorUnitario }}</td>
+		    			<td>{{ costo.valorTotal }}</td>
+		    		</tr>
+		    	{% endfor %}
+		    	</table>
+	    	</div>
+	    </div>
+	    {% endif %}
+	</div>
+
+	{% if(planilla.planillatipo.id != 2) %}
+		{% if redencionesPlanilla is defined %}
+		    <div class="box span12">
+		    	<div class="box-content">
+			    	<div class="box-header well">
+						<h2>Justificacion Envios</h2>
+					</div>
+			    	<table class="table table-bordered table-striped">
+			    		<tr><th>Redencion</th>
+			    			<th>Producto</th>
+			    			<th>Referencia</th>
+			    			<th>Programa</th>
+			    			<th>Fecha Redencion</th>
+			    			<th>Días</th>
+			    			<th></th>
+			    		</tr>
+			    	{% for inventario in redencionesPlanilla %}
+	
+			    		{% set diasMax = inventario.redencion.participante.programa.diasentrega - 3 %}
+			    		{% set diferencia = date(inventario.redencion.fecha).diff(date("now")) %}
+						{% set dias = diferencia.days %}
+						{% if dias > diasMax %}
+						 	<tr>
+				    			<td>{{ inventario.redencion.codigoredencion }}</td>
+				    			<td>{{ inventario.producto.nombre }}</td>
+				    			<td>{{ inventario.producto.referencia }}</td>
+				    			<td>{{ inventario.redencion.participante.programa.nombre }}</td>
+				    			<td>{{ inventario.redencion.fecha | date("Y-m-d") }}</td>
+				    			<td>{{ dias }}</td>
+				    			<td><a class="btn btn-success" href="{{ path('redenciones_justificacion') }}/{{ inventario.redencion.id }}/{{ planilla.id }}">Justificar</a></td>
+			    			</tr>
+						{% endif %}
+			    		
+			    	{% endfor %}
+			    	</table>
+		    	</div>
+		    </div>
+		    {% endif %}
+		{% endif %}
+
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	 <script type="text/javascript">
+      function confirmar(ruta)
+      { 
+            self.location=ruta;
+      }
+  </script>
+
+{% endblock %}

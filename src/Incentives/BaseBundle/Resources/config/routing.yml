@@ -1,0 +1,48 @@
+incentives_autenticacion_login:
+    path:  /autenticacion/
+    defaults: { _controller: IncentivesBaseBundle:Autenticacion:login }
+
+logout:
+    path:   /logout
+
+usuarios:
+   path:  /usuarios
+   defaults: { _controller: IncentivesBaseBundle:Usuarios:listado }
+
+recordar_password:
+   path:  /recordar
+   defaults: { _controller: IncentivesBaseBundle:Usuarios:recordar }
+
+usuarios_nuevo:
+   path:  /usuarios/nuevo
+   defaults: { _controller: IncentivesBaseBundle:Usuarios:nuevo }
+
+usuarios_editar:
+   path:  /usuarios/editar/{id}
+   defaults: { _controller: IncentivesBaseBundle:Usuarios:editar, id: null }
+
+usuario_nombre:
+   path:  /usuario/nombre/
+   defaults: { _controller: IncentivesBaseBundle:Usuarios:nombre }
+
+campos_ciudad:
+   path:  /campos/ciudad/{id}
+   defaults: { _controller: IncentivesBaseBundle:Campos:ciudad, id: null }
+   requirements:
+        id:  \d+
+
+campos_capitales:
+   path:  /campos/capitales/{id}
+   defaults: { _controller: IncentivesBaseBundle:Campos:capitales, id: null }
+   requirements:
+        id:  \d+
+
+campos_departamento:
+   path:  /campos/departamento/{id}
+   defaults: { _controller: IncentivesBaseBundle:Campos:departamento, id: null }
+   requirements:
+        id:  \d+
+
+menu:
+   path:  /menu
+   defaults: { _controller: IncentivesBaseBundle:Menu:menuPrincipal }

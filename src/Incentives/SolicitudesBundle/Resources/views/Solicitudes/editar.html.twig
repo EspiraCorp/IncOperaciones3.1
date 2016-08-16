@@ -1,0 +1,63 @@
+{% extends '::base.html.twig' %}
+{% block title %}Editar Solicitud{% endblock %}
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+<div class="box span12">
+<div class="box-header well" data-original-title>
+    <h2><i class="icon-edit"></i>Editar Solicitud</h2>
+     <div class="box-icon">
+        <a href="{{ path('solicitudes') }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+    </div>
+</div>
+<div class="box-content">
+<form action="{{ path('solicitudes_editar') }}/{{ solicitud.id }}" method="POST" {{ form_enctype(form) }} class="form-horizontal">
+    {{ form_errors(form) }}
+    <fieldset>
+        <div class="control-group">
+            {{ form_label(form.tipo, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.tipo, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            {{ form_label(form.titulo, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.titulo, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            {{ form_label(form.descripcion, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.descripcion, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        {% if (is_granted('ROLE_ADMIN') or is_granted('ROLE_DIR')) %}
+        <div class="control-group">
+            {{ form_label(form.estado, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.estado, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            {{ form_label(form.solicitante, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.solicitante, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        {% endif %}
+    </fieldset>
+<div class="form-actions">
+    {{ form_widget(form.Enviar, { 'attr': {'class': 'btn btn-primary'} }) }}
+</div>
+{{ form_widget(form._token) }}
+</form>
+</div>
+</div>
+ </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+   
+{% endblock %}

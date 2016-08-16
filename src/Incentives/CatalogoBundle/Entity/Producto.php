@@ -1,0 +1,1179 @@
+<?php
+
+namespace Incentives\CatalogoBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+
+/**
+ * Producto
+ *
+ * @ORM\Table()
+ * @ORM\Entity(repositoryClass="Incentives\CatalogoBundle\Entity\ProductoRepository")
+ */
+class Producto
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="nombre", type="string", length=255, nullable=true)
+     */
+    private $nombre;
+
+    /**
+     * @var string
+     * @ORM\ManyToOne(targetEntity="Incentives\OperacionesBundle\Entity\Categoria", inversedBy="producto")
+     * @ORM\JoinColumn(name="categoria_id", referencedColumnName="id", nullable=true)
+     */
+    protected $categoria;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="referencia", type="string", length=255, nullable=true)
+     */
+    private $referencia;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="marca", type="string", length=255, nullable=true)
+     */
+    private $marca;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="descripcion", type="text", nullable=true)
+     */
+    private $descripcion;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="codEAN", type="string", length=255, nullable=true)
+     */
+    private $codEAN;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="eanTemp", type="boolean", nullable=true)
+     */
+    private $eanTemp;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="codInc", type="string", length=255, nullable=true)
+     */
+    private $codInc;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="alto", type="float", nullable=true)
+     */
+    private $alto;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="largo", type="float", nullable=true)
+     */
+    private $largo;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="ancho", type="float", nullable=true)
+     */
+    private $ancho;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="peso", type="float", nullable=true)
+     */
+    private $peso;
+
+    /**
+     * @var string
+     * @ORM\ManyToOne(targetEntity="Estados", inversedBy="producto", cascade={"persist"})
+     * @ORM\JoinColumn(name="estado_id", referencedColumnName="id", nullable=true)
+     */
+    protected $estado;
+    
+    
+     /**
+     * @var string
+     * @ORM\ManyToOne(targetEntity="ProductoTipo", inversedBy="producto", cascade={"persist"})
+     * @ORM\JoinColumn(name="tipo_id", referencedColumnName="id", nullable=true)
+     */
+    protected $tipo;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="iva", type="float", nullable=true)
+     */
+    private $iva;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="estadoIva", type="boolean", nullable=true)
+     */
+    private $estadoIva;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="logistica", type="float", nullable=true)
+     */
+    private $logistica;
+
+     /**
+     * @var float
+     *
+     * @ORM\Column(name="incremento", type="float", nullable=true)
+     */
+    private $incremento;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="fechacreacion", type="date", nullable=true)
+     */
+    private $fechacreacion;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="fechaactualizacion", type="date", nullable=true)
+     */
+    private $fechaactualizacion;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Imagenproducto", mappedBy="producto", cascade={"persist"})
+     * 
+     */
+    protected $imagenproducto;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Productoprecio", mappedBy="producto", cascade={"persist"})
+     * 
+     */
+    protected $productoprecio;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Productocatalogo", mappedBy="producto", cascade={"persist"})
+     * 
+     */
+    protected $productocatalogo;
+
+
+    /**
+     * @ORM\OneToMany(targetEntity="\Incentives\FacturacionBundle\Entity\FacturaProductos", mappedBy="producto", cascade={"persist"})
+     * 
+     */
+    protected $facturaproductos;
+
+
+    /**
+     * @ORM\OneToMany(targetEntity="Incentives\OrdenesBundle\Entity\OrdenesProducto", mappedBy="producto", cascade={"persist"})
+     * 
+     */
+    protected $ordenesproducto;
+    
+    /**
+     * @ORM\OneToMany(targetEntity="Incentives\SolicitudesBundle\Entity\CotizacionProducto", mappedBy="producto", cascade={"persist"})
+     * 
+     */
+    protected $cotizacionproducto;
+
+    /**
+     * 
+     * @ORM\ManyToOne(targetEntity="Productoclasificacion", inversedBy="producto", cascade={"persist"})
+     * @ORM\JoinColumn(name="clasificacion_id", referencedColumnName="id", nullable=true)
+     * 
+     */
+    protected $productoclasificacion;
+    
+    /**
+     * @ORM\OneToMany(targetEntity="Incentives\InventarioBundle\Entity\Inventario", mappedBy="producto", cascade={"persist"})
+     * 
+     */
+    protected $inventario;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Atributosproducto", mappedBy="producto", cascade={"persist"})
+     * 
+     */
+    protected $atributos;
+
+    /**
+     * @ORM\OneToMany(targetEntity="ProductoCalificacion", mappedBy="producto", cascade={"persist"})
+     * 
+     */
+    protected $calificacion;
+
+    /**
+     * @ORM\OneToMany(targetEntity="ProductoIdiomas", mappedBy="producto", cascade={"persist"})
+     * 
+     */
+    protected $productoidioma;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="codImg", type="string", length=255, nullable=true)
+     */
+    private $codImg;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="fechaModificacion", type="datetime", nullable=true)
+     */
+    private $fechaModificacion;
+    
+    /**
+     * 
+     * @ORM\ManyToOne(targetEntity="Incentives\BaseBundle\Entity\Usuario")
+     * @ORM\JoinColumn(name="usuario_id", referencedColumnName="id", nullable=true)
+     * 
+     */
+    protected $usuario;
+
+    public function __construct()
+    { 
+        $this->fechacreacion = new \DateTime("now");
+        $this->fechaactualizacion = new \DateTime("now");
+        $this->imagenproducto = new ArrayCollection();
+        $this->productoprecio = new ArrayCollection();    
+        $this->productocatalogo = new ArrayCollection();
+        $this->ordenesproducto = new ArrayCollection();
+        $this->inventario = new ArrayCollection();   
+    }
+
+
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set nombre
+     *
+     * @param string $nombre
+     * @return Producto
+     */
+    public function setNombre($nombre)
+    {
+        $this->nombre = $nombre;
+    
+        return $this;
+    }
+
+    /**
+     * Get nombre
+     *
+     * @return string 
+     */
+    public function getNombre()
+    {
+        return $this->nombre;
+    }
+
+    /**
+     * Set referencia
+     *
+     * @param string $referencia
+     * @return Producto
+     */
+    public function setReferencia($referencia)
+    {
+        $this->referencia = $referencia;
+    
+        return $this;
+    }
+
+    /**
+     * Get referencia
+     *
+     * @return string 
+     */
+    public function getReferencia()
+    {
+        return $this->referencia;
+    }
+
+    /**
+     * Set marca
+     *
+     * @param string $marca
+     * @return Producto
+     */
+    public function setMarca($marca)
+    {
+        $this->marca = $marca;
+    
+        return $this;
+    }
+
+    /**
+     * Get marca
+     *
+     * @return string 
+     */
+    public function getMarca()
+    {
+        return $this->marca;
+    }
+
+    /**
+     * Set descripcion
+     *
+     * @param string $descripcion
+     * @return Producto
+     */
+    public function setDescripcion($descripcion)
+    {
+        $this->descripcion = $descripcion;
+    
+        return $this;
+    }
+
+    /**
+     * Get descripcion
+     *
+     * @return string 
+     */
+    public function getDescripcion()
+    {
+        return $this->descripcion;
+    }
+
+    /**
+     * Set codEAN
+     *
+     * @param string $codEAN
+     * @return Producto
+     */
+    public function setCodEAN($codEAN)
+    {
+        $this->codEAN = $codEAN;
+    
+        return $this;
+    }
+
+    /**
+     * Get codEAN
+     *
+     * @return string 
+     */
+    public function getCodEAN()
+    {
+        return $this->codEAN;
+    }
+
+    /**
+     * Set codInc
+     *
+     * @param string $codInc
+     * @return Producto
+     */
+    public function setCodInc($codInc)
+    {
+        $this->codInc = $codInc;
+    
+        return $this;
+    }
+
+    /**
+     * Get codInc
+     *
+     * @return string 
+     */
+    public function getCodInc()
+    {
+        return $this->codInc;
+    }
+
+    /**
+     * Set alto
+     *
+     * @param string $alto
+     * @return Producto
+     */
+    public function setAlto($alto)
+    {
+        $this->alto = $alto;
+    
+        return $this;
+    }
+
+    /**
+     * Get alto
+     *
+     * @return string 
+     */
+    public function getAlto()
+    {
+        return $this->alto;
+    }
+
+    /**
+     * Set largo
+     *
+     * @param string $largo
+     * @return Producto
+     */
+    public function setLargo($largo)
+    {
+        $this->largo = $largo;
+    
+        return $this;
+    }
+
+    /**
+     * Get largo
+     *
+     * @return string 
+     */
+    public function getLargo()
+    {
+        return $this->largo;
+    }
+
+    /**
+     * Set ancho
+     *
+     * @param string $ancho
+     * @return Producto
+     */
+    public function setAncho($ancho)
+    {
+        $this->ancho = $ancho;
+    
+        return $this;
+    }
+
+    /**
+     * Get ancho
+     *
+     * @return string 
+     */
+    public function getAncho()
+    {
+        return $this->ancho;
+    }
+
+    /**
+     * Set peso
+     *
+     * @param string $peso
+     * @return Producto
+     */
+    public function setPeso($peso)
+    {
+        $this->peso = $peso;
+    
+        return $this;
+    }
+
+    /**
+     * Get peso
+     *
+     * @return string 
+     */
+    public function getPeso()
+    {
+        return $this->peso;
+    }
+
+    /**
+     * Set categoria
+     *
+     * @param \Incentives\OperacionesBundle\Entity\Categoria $categoria
+     * @return Producto
+     */
+    public function setCategoria(\Incentives\OperacionesBundle\Entity\Categoria $categoria = null)
+    {
+        $this->categoria = $categoria;
+    
+        return $this;
+    }
+
+    /**
+     * Get categoria
+     *
+     * @return \Incentives\OperacionesBundle\Entity\Categoria 
+     */
+    public function getCategoria()
+    {
+        return $this->categoria;
+    }
+
+    /**
+     * Add imagenproducto
+     *
+     * @param \Incentives\CatalogoBundle\Entity\Imagenproducto $imagenproducto
+     * @return Producto
+     */
+    public function addImagenproducto(\Incentives\CatalogoBundle\Entity\Imagenproducto $imagenproducto)
+    {
+        $this->imagenproducto[] = $imagenproducto;
+    
+        return $this;
+    }
+
+    /**
+     * Remove imagenproducto
+     *
+     * @param \Incentives\CatalogoBundle\Entity\Imagenproducto $imagenproducto
+     */
+    public function removeImagenproducto(\Incentives\CatalogoBundle\Entity\Imagenproducto $imagenproducto)
+    {
+        $this->imagenproducto->removeElement($imagenproducto);
+    }
+
+    /**
+     * Get imagenproducto
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getImagenproducto()
+    {
+        return $this->imagenproducto;
+    }
+
+    /**
+     * Set iva
+     *
+     * @param integer $iva
+     * @return Producto
+     */
+    public function setIva($iva)
+    {
+        $this->iva = $iva;
+    
+        return $this;
+    }
+
+    /**
+     * Get iva
+     *
+     * @return integer 
+     */
+    public function getIva()
+    {
+        return $this->iva;
+    }
+
+    /**
+     * Set fechacreacion
+     *
+     * @param \DateTime $fechacreacion
+     * @return Producto
+     */
+    public function setFechacreacion($fechacreacion)
+    {
+        $this->fechacreacion = $fechacreacion;
+    
+        return $this;
+    }
+
+    /**
+     * Get fechacreacion
+     *
+     * @return \DateTime 
+     */
+    public function getFechacreacion()
+    {
+        return $this->fechacreacion;
+    }
+
+    /**
+     * Set fechaactualizacion
+     *
+     * @param \DateTime $fechaactualizacion
+     * @return Producto
+     */
+    public function setFechaactualizacion($fechaactualizacion)
+    {
+        $this->fechaactualizacion = $fechaactualizacion;
+    
+        return $this;
+    }
+
+    /**
+     * Get fechaactualizacion
+     *
+     * @return \DateTime 
+     */
+    public function getFechaactualizacion()
+    {
+        return $this->fechaactualizacion;
+    }
+
+    /**
+     * Add productoprecio
+     *
+     * @param \Incentives\CatalogoBundle\Entity\Productoprecio $productoprecio
+     * @return Producto
+     */
+    public function addProductoprecio(\Incentives\CatalogoBundle\Entity\Productoprecio $productoprecio)
+    {
+        $this->productoprecio[] = $productoprecio;
+    
+        return $this;
+    }
+
+    /**
+     * Remove productoprecio
+     *
+     * @param \Incentives\CatalogoBundle\Entity\Productoprecio $productoprecio
+     */
+    public function removeProductoprecio(\Incentives\CatalogoBundle\Entity\Productoprecio $productoprecio)
+    {
+        $this->productoprecio->removeElement($productoprecio);
+    }
+
+    /**
+     * Get productoprecio
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getProductoprecio()
+    {
+        return $this->productoprecio;
+    }
+
+
+
+    /**
+     * Add productocatalogo
+     *
+     * @param \Incentives\CatalogoBundle\Entity\Productocatalogo $productocatalogo
+     * @return Producto
+     */
+    public function addProductocatalogo(\Incentives\CatalogoBundle\Entity\Productocatalogo $productocatalogo)
+    {
+        $this->productocatalogo[] = $productocatalogo;
+    
+        return $this;
+    }
+
+    /**
+     * Remove productocatalogo
+     *
+     * @param \Incentives\CatalogoBundle\Entity\Productocatalogo $productocatalogo
+     */
+    public function removeProductocatalogo(\Incentives\CatalogoBundle\Entity\Productocatalogo $productocatalogo)
+    {
+        $this->productocatalogo->removeElement($productocatalogo);
+    }
+
+    /**
+     * Get productocatalogo
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getProductocatalogo()
+    {
+        return $this->productocatalogo;
+    }
+
+    /**
+     * Add ordenesproducto
+     *
+     * @param \Incentives\OrdenesBundle\Entity\OrdenesProducto $ordenesproducto
+     * @return Producto
+     */
+    public function addOrdenesproducto(\Incentives\OrdenesBundle\Entity\OrdenesProducto $ordenesproducto)
+    {
+        $this->ordenesproducto[] = $ordenesproducto;
+    
+        return $this;
+    }
+
+    /**
+     * Remove ordenesproducto
+     *
+     * @param \Incentives\OrdenesBundle\Entity\OrdenesProducto $ordenesproducto
+     */
+    public function removeOrdenesproducto(\Incentives\OrdenesBundle\Entity\OrdenesProducto $ordenesproducto)
+    {
+        $this->ordenesproducto->removeElement($ordenesproducto);
+    }
+
+    /**
+     * Get ordenesproducto
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getOrdenesproducto()
+    {
+        return $this->ordenesproducto;
+    }
+
+    /**
+     * Set estadoIva
+     *
+     * @param boolean $estadoIva
+     * @return Producto
+     */
+    public function setEstadoIva($estadoIva)
+    {
+        $this->estadoIva = $estadoIva;
+    
+        return $this;
+    }
+
+    /**
+     * Get estadoIva
+     *
+     * @return boolean 
+     */
+    public function getEstadoIva()
+    {
+        return $this->estadoIva;
+    }
+
+    /**
+     * Set logistica
+     *
+     * @param integer $logistica
+     * @return Producto
+     */
+    public function setLogistica($logistica)
+    {
+        $this->logistica = $logistica;
+    
+        return $this;
+    }
+
+    /**
+     * Get logistica
+     *
+     * @return integer 
+     */
+    public function getLogistica()
+    {
+        return $this->logistica;
+    }
+
+    /**
+     * Set incremento
+     *
+     * @param integer $incremento
+     * @return Producto
+     */
+    public function setIncremento($incremento)
+    {
+        $this->incremento = $incremento;
+    
+        return $this;
+    }
+
+    /**
+     * Get incremento
+     *
+     * @return integer 
+     */
+    public function getIncremento()
+    {
+        return $this->incremento;
+    }
+
+
+    /**
+     * Set productoclasificacion
+     *
+     * @param \Incentives\CatalogoBundle\Entity\Productoclasificacion $productoclasificacion
+     * @return Producto
+     */
+    public function setProductoclasificacion(\Incentives\CatalogoBundle\Entity\Productoclasificacion $productoclasificacion = null)
+    {
+        $this->productoclasificacion = $productoclasificacion;
+    
+        return $this;
+    }
+
+    /**
+     * Get productoclasificacion
+     *
+     * @return \Incentives\CatalogoBundle\Entity\Productoclasificacion 
+     */
+    public function getProductoclasificacion()
+    {
+        return $this->productoclasificacion;
+    }
+
+   
+
+    /**
+     * Add inventario
+     *
+     * @param \Incentives\InventarioBundle\Entity\Inventario $inventario
+     * @return Producto
+     */
+    public function addInventario(\Incentives\InventarioBundle\Entity\Inventario $inventario)
+    {
+        $this->inventario[] = $inventario;
+    
+        return $this;
+    }
+
+    /**
+     * Remove inventario
+     *
+     * @param \Incentives\InventarioBundle\Entity\Inventario $inventario
+     */
+    public function removeInventario(\Incentives\InventarioBundle\Entity\Inventario $inventario)
+    {
+        $this->inventario->removeElement($inventario);
+    }
+
+    /**
+     * Get inventario
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getInventario()
+    {
+        return $this->inventario;
+    }
+
+    /**
+     * Add atributos
+     *
+     * @param \Incentives\CatalogoBundle\Entity\Atributosproducto $atributos
+     * @return Producto
+     */
+    public function addAtributo(\Incentives\CatalogoBundle\Entity\Atributosproducto $atributos)
+    {
+        $this->atributos[] = $atributos;
+    
+        return $this;
+    }
+
+    /**
+     * Remove atributos
+     *
+     * @param \Incentives\CatalogoBundle\Entity\Atributosproducto $atributos
+     */
+    public function removeAtributo(\Incentives\CatalogoBundle\Entity\Atributosproducto $atributos)
+    {
+        $this->atributos->removeElement($atributos);
+    }
+
+    /**
+     * Get atributos
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getAtributos()
+    {
+        return $this->atributos;
+    }
+
+    /**
+     * Add calificacion
+     *
+     * @param \Incentives\CatalogoBundle\Entity\Productocalificacion $calificacion
+     * @return Producto
+     */
+    public function addCalificacion(\Incentives\CatalogoBundle\Entity\ProductoCalificacion $calificacion)
+    {
+        $this->calificacion[] = $calificacion;
+    
+        return $this;
+    }
+
+    /**
+     * Remove calificacion
+     *
+     * @param \Incentives\CatalogoBundle\Entity\Productocalificacion $calificacion
+     */
+    public function removeCalificacion(\Incentives\CatalogoBundle\Entity\ProductoCalificacion $calificacion)
+    {
+        $this->calificacion->removeElement($calificacion);
+    }
+
+    /**
+     * Get calificacion
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getCalificacion()
+    {
+        return $this->calificacion;
+    }
+
+
+    /**
+     * Add productoidioma
+     *
+     * @param \Incentives\CatalogoBundle\Entity\ProductoIdiomas $productoidioma
+     * @return Producto
+     */
+    public function addProductoidioma(\Incentives\CatalogoBundle\Entity\ProductoIdiomas $productoidioma)
+    {
+        $this->productoidioma[] = $productoidioma;
+    
+        return $this;
+    }
+
+    /**
+     * Remove productoidioma
+     *
+     * @param \Incentives\CatalogoBundle\Entity\ProductoIdiomas $productoidioma
+     */
+    public function removeProductoidioma(\Incentives\CatalogoBundle\Entity\ProductoIdiomas $productoidioma)
+    {
+        $this->productoidioma->removeElement($productoidioma);
+    }
+
+    /**
+     * Get productoidioma
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getProductoidioma()
+    {
+        return $this->productoidioma;
+    }
+
+    /**
+     * Set estado
+     *
+     * @param \Incentives\CatalogoBundle\Entity\Estados $estado
+     * @return Producto
+     */
+    public function setEstado(\Incentives\CatalogoBundle\Entity\Estados $estado = null)
+    {
+        $this->estado = $estado;
+    
+        return $this;
+    }
+
+    /**
+     * Get estado
+     *
+     * @return \Incentives\CatalogoBundle\Entity\Estados 
+     */
+    public function getEstado()
+    {
+        return $this->estado;
+    }
+
+    /**
+     * Set eanTemp
+     *
+     * @param boolean $eanTemp
+     * @return Producto
+     */
+    public function setEanTemp($eanTemp)
+    {
+        $this->eanTemp = $eanTemp;
+    
+        return $this;
+    }
+
+    /**
+     * Get eanTemp
+     *
+     * @return boolean 
+     */
+    public function getEanTemp()
+    {
+        return $this->eanTemp;
+    }
+
+    /**
+     * Set codImg
+     *
+     * @param string $codImg
+     * @return Producto
+     */
+    public function setCodImg($codImg)
+    {
+        $this->codImg = $codImg;
+    
+        return $this;
+    }
+
+    /**
+     * Get codImg
+     *
+     * @return string 
+     */
+    public function getCodImg()
+    {
+        return $this->codImg;
+    }
+
+    public function getLabel()
+    {
+	return $this->nombre .' - '. $this->referencia;
+    }
+
+    public function getNombreId()
+    {
+        return $this->codInc .' - '. $this->nombre;
+    }	
+
+
+    /**
+     * Add cotizacionproducto
+     *
+     * @param \Incentives\SolicitudesBundle\Entity\CotizacionProducto $cotizacionproducto
+     * @return Producto
+     */
+    public function addCotizacionproducto(\Incentives\SolicitudesBundle\Entity\CotizacionProducto $cotizacionproducto)
+    {
+        $this->cotizacionproducto[] = $cotizacionproducto;
+    
+        return $this;
+    }
+
+    /**
+     * Remove cotizacionproducto
+     *
+     * @param \Incentives\SolicitudesBundle\Entity\CotizacionProducto $cotizacionproducto
+     */
+    public function removeCotizacionproducto(\Incentives\SolicitudesBundle\Entity\CotizacionProducto $cotizacionproducto)
+    {
+        $this->cotizacionproducto->removeElement($cotizacionproducto);
+    }
+
+    /**
+     * Get cotizacionproducto
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getCotizacionproducto()
+    {
+        return $this->cotizacionproducto;
+    }
+
+    /**
+     * Set tipo
+     *
+     * @param \Incentives\CatalogoBundle\Entity\ProductoTipo $tipo
+     * @return Producto
+     */
+    public function setTipo(\Incentives\CatalogoBundle\Entity\ProductoTipo $tipo = null)
+    {
+        $this->tipo = $tipo;
+    
+        return $this;
+    }
+
+    /**
+     * Get tipo
+     *
+     * @return \Incentives\CatalogoBundle\Entity\ProductoTipo 
+     */
+    public function getTipo()
+    {
+        return $this->tipo;
+    }
+
+    /**
+     * Add facturaproductos
+     *
+     * @param \Incentives\FacturacionBundle\Entity\FacturaProductos $facturaproductos
+     * @return Producto
+     */
+    public function addFacturaproducto(\Incentives\FacturacionBundle\Entity\FacturaProductos $facturaproductos)
+    {
+        $this->facturaproductos[] = $facturaproductos;
+    
+        return $this;
+    }
+
+    /**
+     * Remove facturaproductos
+     *
+     * @param \Incentives\FacturacionBundle\Entity\FacturaProductos $facturaproductos
+     */
+    public function removeFacturaproducto(\Incentives\FacturacionBundle\Entity\FacturaProductos $facturaproductos)
+    {
+        $this->facturaproductos->removeElement($facturaproductos);
+    }
+
+    /**
+     * Get facturaproductos
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getFacturaproductos()
+    {
+        return $this->facturaproductos;
+    }
+
+    /**
+     * Set fechaModificacion
+     *
+     * @param \DateTime $fechaModificacion
+     * @return Producto
+     */
+    public function setFechaModificacion($fechaModificacion)
+    {
+        $this->fechaModificacion = $fechaModificacion;
+    
+        return $this;
+    }
+
+    /**
+     * Get fechaModificacion
+     *
+     * @return \DateTime 
+     */
+    public function getFechaModificacion()
+    {
+        return $this->fechaModificacion;
+    }
+
+    /**
+     * Set usuario
+     *
+     * @param \Incentives\BaseBundle\Entity\Usuario $usuario
+     * @return Producto
+     */
+    public function setUsuario(\Incentives\BaseBundle\Entity\Usuario $usuario = null)
+    {
+        $this->usuario = $usuario;
+    
+        return $this;
+    }
+
+    /**
+     * Get usuario
+     *
+     * @return \Incentives\BaseBundle\Entity\Usuario 
+     */
+    public function getUsuario()
+    {
+        return $this->usuario;
+    }
+}

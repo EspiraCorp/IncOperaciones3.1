@@ -1,0 +1,114 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Rentabilidad{% endblock %}
+{% block sidebar %}
+{{ parent() }}
+{% endblock %}
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+	<div class="box span12">
+		<div class="box-header well">
+			<h2><i class="icon-th-list"></i>Rentabilidad</h2>
+		</div>
+		<div class="box-content">
+			<div id="dashboard">
+          <div id="tabla" class="" cellspacing="0" width="100%">
+                      <table id="programas" class="display">
+                        <thead style="display:table-row-group;" >
+                          <tr>
+                            <th>Programa</th>
+                            <th>Cliente</th>
+                            <th>Fecha Inicio</th>
+                            <th>Fecha Fin</th>
+                            <th>Estado</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                              {% for programa in listado %}
+                              <tr>
+                                <td><a href="{{ path("rentabilidad_programa", {"id": programa.id}) }}">{{ programa.nombre }}</a></td>
+                                <td>{{ programa.cliente.nombre }}</td>
+                                <td>{{ programa.fechainicio | date("Y-m-d")  }}</td>
+                                <td>{{ programa.fechafin | date("Y-m-d") }} </td>
+                                <td>{% if (programa.estado=='0') %}Inactivo{% else %}Activo{% endif %}</td>
+                              </tr>
+                              {% endfor %}
+                            </tbody>
+                         <tfoot style="display: table-header-group;">
+                          <tr>
+                            <th>Programa</th>
+                            <th>Cliente</th>
+                            <th>Fecha Inicio</th>
+                            <th>Fecha Fin</th>
+                            <th>Estado</th>
+                          </tr>
+                        </tfoot>
+                      </table>
+                    </div>
+      </div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+
+{{ parent() }}
+
+	<script type="text/javascript">
+ $(document).ready(function() {
+//    inifuntion
+ var table = $('#programas').dataTable({
+
+            "sDom": 'T<"clear">lfrtip',
+             "bPaginate": true,
+             "bLengthChange": true,
+             "bFilter": true,
+             "bSort": true,
+             "bInfo": false,
+             "bAutoWidth": true,
+             "bJQueryUI": false,
+             "sPaginationType": "full_numbers",
+             "iDisplayLength": 20,
+             "aLengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "Todo"] ],
+              initComplete: function () {
+                    this.api().columns().every( function () {
+                        var column = this;
+                        var select = $('<select style="width: 100%"><option value=""></option></select>')
+                            .appendTo( $(column.footer()).empty() )
+                            .on( 'change', function () {
+                                var val = $.fn.dataTable.util.escapeRegex(
+                                    $(this).val()
+                                );
+         
+                                column
+                                    .search( val ? '^'+val+'$' : '', true, false )
+                                    .draw();
+                            } );
+         
+                        column.data().unique().sort().each( function ( d, j ) {
+                            //limpiar
+                            //d
+                            select.append( '<option value="'+d+'">'+d+'</option>' )
+                        } );
+                    } );
+                }
+    });
+
+})
+  </script>
+
+  <script type="text/javascript">
+      function confirmar(ruta)
+      {
+        if (confirm("Desea cambiar el estado")==true){
+            self.location=ruta;
+        }else{
+            alert("OK");
+        }
+        
+      }
+  </script>
+
+{% endblock %}
+

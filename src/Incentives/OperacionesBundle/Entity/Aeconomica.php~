@@ -1,0 +1,155 @@
+<?php
+
+namespace Incentives\OperacionesBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Aeconomica
+ *
+ * @ORM\Table()
+ * @ORM\Entity
+ */
+class Aeconomica
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="codigo", type="integer", nullable=true)
+     */
+    private $codigo;
+
+     /**
+     * 
+     * @ORM\ManyToOne(targetEntity="Proveedores", inversedBy="aeconomica", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="proveedor_id", referencedColumnName="id")
+     * 
+     */
+    protected $proveedor;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="fechaModificacion", type="datetime", nullable=true)
+     */
+    private $fechaModificacion;
+    
+    /**
+     * 
+     * @ORM\ManyToOne(targetEntity="Incentives\BaseBundle\Entity\Usuario")
+     * @ORM\JoinColumn(name="usuario_id", referencedColumnName="id", nullable=true)
+     * 
+     */
+    protected $usuario;
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set codigo
+     *
+     * @param integer $codigo
+     * @return Aeconomica
+     */
+    public function setCodigo($codigo)
+    {
+        $this->codigo = $codigo;
+    
+        return $this;
+    }
+
+    /**
+     * Get codigo
+     *
+     * @return integer 
+     */
+    public function getCodigo()
+    {
+        return $this->codigo;
+    }
+
+    /**
+     * Set proveedor
+     *
+     * @param \Incentives\OperacionesBundle\Entity\Proveedores $proveedor
+     * @return Aeconomica
+     */
+    public function setProveedor(\Incentives\OperacionesBundle\Entity\Proveedores $proveedor = null)
+    {
+        $this->proveedor = $proveedor;
+    
+        return $this;
+    }
+
+    /**
+     * Get proveedor
+     *
+     * @return \Incentives\OperacionesBundle\Entity\Proveedores 
+     */
+    public function getProveedor()
+    {
+        return $this->proveedor;
+    }
+
+    /**
+     * Set fechaModificacion
+     *
+     * @param \DateTime $fechaModificacion
+     * @return Aeconomica
+     */
+    public function setFechaModificacion($fechaModificacion)
+    {
+        $this->fechaModificacion = $fechaModificacion;
+    
+        return $this;
+    }
+
+    /**
+     * Get fechaModificacion
+     *
+     * @return \DateTime 
+     */
+    public function getFechaModificacion()
+    {
+        return $this->fechaModificacion;
+    }
+
+    /**
+     * Set usuario
+     *
+     * @param \Incentives\BaseBundle\Entity\Usuario $usuario
+     * @return Aeconomica
+     */
+    public function setUsuario(\Incentives\BaseBundle\Entity\Usuario $usuario = null)
+    {
+        $this->usuario = $usuario;
+    
+        return $this;
+    }
+
+    /**
+     * Get usuario
+     *
+     * @return \Incentives\BaseBundle\Entity\Usuario 
+     */
+    public function getUsuario()
+    {
+        return $this->usuario;
+    }
+}

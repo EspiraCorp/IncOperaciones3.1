@@ -1,0 +1,125 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Planillas{% endblock %}
+{% block sidebar %}
+{{ parent() }}
+{% endblock %}
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+	<div class="box span12">
+		<div class="box-header well">
+			<h2><i class="icon-th-list"></i>Planillas</h2>
+        <div class="box-icon">
+        {% if is_granted('ROLE_ADMIN') or  is_granted('ROLE_DIR') or is_granted('ROLE_LOGIS') or is_granted('ROLE_BOD') %}
+          <a href="{{ path('planillas_nueva') }}" title="Requisiciones" class="btn btn-primary btn-sm">
+              <i class="icon-plus icon-white"></i>
+          </a>
+          <a href="{{ path('planillas_generarsegmentado') }}" title="Generar" class="btn btn-primary btn-info">
+              <i class="icon-cog icon-white"></i>
+          </a>
+        {% endif %}
+        </div>
+		</div>
+		<div class="box-content">
+			<div id="dashboard">
+          <div id="tabla" class="" cellspacing="0" width="100%">
+                      <table id="planillas" class="display">
+                        <thead style="display:table-row-group;"  >
+                          <tr>
+                            <th>Consecutivo</th>
+                            <th>Tipo</th>
+                            <th>Pais</th>
+                            <th>Categoria</th>
+                            <th>Fecha</th>
+                            <th>Descargar</th>
+                            <th>Estado</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for planilla in planillas %}
+                          <tr>
+                            <td><a href="{{ path('planillas_datos') }}/{{ planilla.id }}" onClick=confirmar("{{ url("inventario_listado_planilla_estado", {"id": planilla.id}) }}")>{{ planilla.id }}</a></td>
+                            <td>{{ planilla.planillatipo.nombre }}</td>
+                            <td>{{ planilla.pais.nombre }}</td>
+                            <td>{{ planilla.categoria.nombre }}</td>
+                            <td>{{ planilla.fecha | date("Y-m-d") }}</td>
+                            <td><a href="{{ path('inventario_planilla_actualizar') }}/{{ planilla.id }}/1" target="_blank" onClick=confirmar("{{ url("inventario_listado_planilla_estado", {"id": planilla.id}) }}")>Descargar</a></td>
+                            <td>{{ planilla.planillaestado.nombre }}</td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                         <tfoot style="display: table-header-group;">
+                          <tr>
+                            <th>Consecutivo</th>
+                            <th>Tipo</th>
+                            <th>Pais</th>
+                            <th>Categoria</th>
+                            <th>Fecha</th>
+                            <th>Descargar</th>
+                            <th>Estado</th>
+                          </tr>
+                        </tfoot>
+                      </table>
+                    </div>   
+      </div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+
+{{ parent() }}
+
+<script type="text/javascript">
+ $(document).ready(function() {
+//    inifuntion
+ var table = $('#planillas').dataTable({
+
+            "sDom": 'T<"clear">lfrtip',
+             "bPaginate": true,
+             "bLengthChange": true,
+             "bFilter": true,
+             "bSort": true,
+             "bInfo": false,
+             "bAutoWidth": true,
+             "bJQueryUI": false,
+             "sPaginationType": "full_numbers",
+             "iDisplayLength": 50,
+             "aLengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "Todo"] ],
+              initComplete: function () {
+                    this.api().columns().every( function () {
+                        var column = this;
+                        var select = $('<select style="width: 100%"><option value=""></option></select>')
+                            .appendTo( $(column.footer()).empty() )
+                            .on( 'change', function () {
+                                var val = $.fn.dataTable.util.escapeRegex(
+                                    $(this).val()
+                                );
+         
+                                column
+                                    .search( val ? '^'+val+'$' : '', true, false )
+                                    .draw();
+                            } );
+         
+                        column.data().unique().sort().each( function ( d, j ) {
+                            //limpiar
+                            //d
+                            select.append( '<option value="'+d+'">'+d+'</option>' )
+                        } );
+                    } );
+                }
+    });
+
+})
+  </script>
+
+
+  <script type="text/javascript">
+      function confirmar(ruta)
+      { 
+            self.location=ruta;
+      }
+  </script>
+
+{% endblock %}

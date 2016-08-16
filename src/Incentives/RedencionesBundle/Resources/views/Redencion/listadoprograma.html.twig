@@ -1,0 +1,108 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Redenciones por programa{% endblock %}
+{% block sidebar %}
+{{ parent() }}
+{% endblock %}
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+	<div class="box span12">
+		<div class="box-header well">
+			<h2><i class="icon-th-list"></i>Redenciones por programa</h2>
+      <div class="box-icon">
+        <div class="box-icon">
+                    <a href="{{ path('redenciones') }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+                </div>
+      </div>
+      <a href="{{ path('redenciones_exportar', {"programa": programa}) }}" title="Descargar">
+            <button class="btn btn-small">
+              <i class="icon-download"></i>
+            </button>
+          </a>
+		</div>
+		<div class="box-content">
+      {% if redenciones!=null %}
+			<div id="dashboard">                  
+         <div id="tabla" class="" cellspacing="0" width="100%">
+                      <table id="redenciones" class="table table-bordered table-striped">
+                           <form action="{{ path('redenciones_programa') }}/{{ programa }}"  enctype="multipart/form-data" method="POST" class="form-horizontal">
+                            <div class="box-icon">
+                              <input type="submit" value="Buscar" class='btn btn-primary'>
+                            </div>
+                        <thead style="display:table-row-group;">
+                          <tr>
+                            <th>{{ knp_pagination_sortable(redenciones, 'Codigo', 'r.codigoredencion') }}</th>
+                            <th>{{ knp_pagination_sortable(redenciones, 'Participante', 'pt.nombre') }}</th>
+                            <th>{{ knp_pagination_sortable(redenciones, 'Documento', 'pt.documento') }}</th>
+                            <th>{{ knp_pagination_sortable(redenciones, 'Producto', 'p.nombre') }}</th>
+                            <th>{{ knp_pagination_sortable(redenciones, 'Puntos', 'r.puntos') }}</th>
+                            <th>{{ knp_pagination_sortable(redenciones, 'Estado', 'e.id') }}</th>
+                            <th>{{ knp_pagination_sortable(redenciones, 'Guia', 'g.guia') }}</th>
+                            <th>{{ knp_pagination_sortable(redenciones, 'Fecha', 'r.fecha') }}</th>
+                          </tr>
+                          <tr>
+                            <th><input type="text" id="redenciones_codigo" name="redenciones[codigoredencion]"  style="width: 100px"></th>
+                              <th><input type="text" id="redenciones_participante" name="redenciones[nombre]" style="width: 150px"></th>
+                              <th><input type="text" id="redenciones_documento" name="redenciones[documento]"  style="width: 100px"></th>
+                              <th><input type="text" id="redenciones_producto" name="redenciones[producto]"  style="width: 200px"></th>
+                              <th><input type="text" id="redenciones_puntos" name="redenciones[puntos]"  style="width: 100px"></th>
+                              <th>{{ form_widget(form.redencionestado, { 'attr': { 'style' : 'width:100px' }} ) }}</th>
+                              <th><input type="text" id="redenciones_guia" name="redenciones[guia]" style="width: 100px"></th>
+                              <th><input type="text" id="redenciones_fecha" name="redenciones[fecha]"  style="width: 100px"></th>
+                          </tr>
+                        </thead>
+                        </form>
+                        <tbody>
+                          {% for redencion in redenciones %}
+                          <tr>
+                            <td><a href="{{ path("redenciones_datosredencion") }}/{{redencion.id }}">{{ redencion.codigoredencion }}</a></td>
+                            <td>{{ redencion.participante.nombre }}</a></td>
+                            <td>{{ redencion.participante.documento }}</a></td>
+                            <td>{{ redencion.productocatalogo.producto.nombre }}</td>
+                            <td>{{ redencion.puntos }}</a></td>
+                            <td>{{ redencion.redencionestado.nombre }}</td>
+                            <td>
+                                  {% for despacho in redencion.despacho %}
+                                      {% for despachoguia in despacho.despachoguia %}
+                                        {% for guia in despacho.despachoguia %}
+                                          {{ guia.guia.guia }} - 
+                                        {% endfor %}
+                                      {% endfor %}
+                                  {% endfor %}
+                              </td>
+                            <td>{{ redencion.fecha | date("Y-m-d") }}</td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+            </div>
+            {% else %}
+            <div class="alert alert-info">
+                      No existen redenciones asociadas al programa
+                    </div>
+            {% endif %}
+		</div>
+		<div class="box span11">
+        <div class="box-content">
+                <div class="dataTables_info">Mostrando {{ redenciones.getItemNumberPerPage*(redenciones.getCurrentPageNumber-1)+1  }} a {{ redenciones.getItemNumberPerPage*redenciones.getCurrentPageNumber }} de {{ redenciones.getTotalItemCount }} Redenciones
+                </div>
+                <div class="pagination pagination-centered">
+                        {{ knp_pagination_render(redenciones) }}                    
+                </div>
+        </div>
+    </div>
+	</div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+
+{{ parent() }}
+
+  
+  </script>
+
+{% endblock %}
+
+

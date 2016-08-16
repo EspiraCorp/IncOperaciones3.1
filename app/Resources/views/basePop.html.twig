@@ -1,0 +1,100 @@
+{# app/Resources/views/base.html.twig #}
+<!DOCTYPE html>
+    <html>
+        <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Plataforma Operaciones IncGroup">
+        <meta name="author" content="Sinaptica">
+        <title>{% block title %}Operaciones{% endblock %}</title>
+        {% block stylesheets %}
+
+            <!-- The styles -->
+            <style type="text/css">
+              body {
+                padding-bottom: 40px;
+              }
+              .sidebar-nav {
+                padding: 9px 0;
+              }
+            </style>
+    
+            <link href="{{ asset('css/bootstrap-cerulean.css') }}" type="text/css" rel="stylesheet" />
+           
+        {% endblock %}
+        </head>
+        <body>
+
+        <!-- topbar starts -->
+        
+
+        <div class="container-fluid">
+        <div class="row-fluid">
+            
+            <div id="contenido" style="margin-left:20px;">
+
+            <div id="content" class="span10">
+                {# <div>
+                    <ul class="breadcrumb">
+                        <li>
+                            <a href="#">Home</a> <span class="divider">/</span>
+                        </li>
+                        <li>
+                            <a href="#">Dashboard</a>
+                        </li>
+                    </ul>
+                </div> #}
+                
+                <noscript>
+                    <div class="alert alert-block span10">
+                        <h4 class="alert-heading">Warning!</h4>
+                        <p>You need to have <a href="http://en.wikipedia.org/wiki/JavaScript" target="_blank">JavaScript</a> enabled to use this site.</p>
+                    </div>
+                </noscript>
+
+                {% for flashMessage in app.session.flashbag.get('notice') %}
+                     <div class="alert alert-success">
+                            <button type="button" class="close" data-dismiss="alert">×</button>
+                            {{ flashMessage }}
+                    </div>       
+                {% endfor %}
+
+                {% for flashMessage in app.session.flashbag.get('notice') %}
+                     <div class="alert alert-error">
+                            <button type="button" class="close" data-dismiss="alert">×</button>
+                            {{ flashMessage }}
+                    </div>       
+                {% endfor %}
+                
+                {% for flashMessage in app.session.flashbag.get('warning') %}
+                     <div class="alert alert-error">
+                            <button type="button" class="close" data-dismiss="alert">×</button>
+                            {{ flashMessage }}
+                    </div>       
+                {% endfor %}
+
+                
+                {% block cuerpo %}
+
+
+            
+                {% endblock %}
+            </div>
+        </div>
+        </div>
+
+
+
+        {% block javascripts %}
+            <script src="{{ asset('js/jquery-1.7.2.min.js') }}" type="text/javascript"></script>
+            <script src="{{ asset('js/charisma.js') }}"></script>
+            <script>
+			$(document).ready(function(){
+				//Examples of how to assign the Colorbox event to elements
+				$(".ajax-lightbox").colorbox();
+			});
+		</script>
+
+        {% endblock %}
+    </body>
+</html>

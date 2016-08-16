@@ -1,0 +1,315 @@
+producto:
+    path:  /producto
+    defaults: { _controller: IncentivesCatalogoBundle:Producto:listado}
+
+producto_listadouniversal:
+    path:  /producto/listadouniversal
+    defaults: { _controller: IncentivesCatalogoBundle:Producto:listadouniversal }
+
+producto_nuevo:
+    path:  /producto/nuevo
+    defaults: { _controller: IncentivesCatalogoBundle:Producto:nuevo}
+
+producto_editar:
+    path:  /producto/editar/{id}
+    defaults: { _controller: IncentivesCatalogoBundle:Producto:editar, id: null }
+    requirements:
+        id:  \d+
+
+producto_datos:
+    path:  /producto/datos/{id}
+    defaults: { _controller: IncentivesCatalogoBundle:Producto:datos, id: null }
+    requirements:
+        id:  \d+
+
+producto_estado:
+    path:  /producto/estado/{id}
+    defaults: { _controller: IncentivesCatalogoBundle:Producto:estado, id: null }
+    requirements:
+        id:  \d+
+
+producto_agregarimagen:
+    path:  /producto/imagen/agregar/{id}
+    defaults: { _controller: IncentivesCatalogoBundle:Producto:cargaImagen, id: null }
+    requirements:
+        id:  \d+
+
+producto_estadoimagen:
+    path:  /producto/imagen/estado/{id}
+    defaults: { _controller: IncentivesCatalogoBundle:Producto:estadoImagen, id: null }
+    requirements:
+        id:  \d+
+
+producto_imagenmasivo:
+    path:  /producto/imagen/masivo
+    defaults: { _controller: IncentivesCatalogoBundle:Producto:masivoImagen }
+
+producto_agregarprecio:
+    path:  /producto/precio/agregar/{id}
+    defaults: { _controller: IncentivesCatalogoBundle:Producto:agregarPrecio, id: null }
+    requirements:
+        id:  \d+
+
+producto_estadoprecio:
+    path:  /producto/precio/estado/{id}
+    defaults: { _controller: IncentivesCatalogoBundle:Producto:estadoPrecio, id: null }
+    requirements:
+        id:  \d+
+
+producto_estadopremio:
+    path:  /producto/premio/estado/{id}
+    defaults: { _controller: IncentivesCatalogoBundle:Maestro:estadoPremio, id: null }
+    requirements:
+        id:  \d+        
+
+producto_editarprecio:
+    path:  /producto/precio/editar/{id}
+    defaults: { _controller: IncentivesCatalogoBundle:Producto:editarPrecio, id: null }
+    requirements:
+        id:  \d+
+
+producto_catalogoproductoo:
+    path:  /producto/catalogoproducto/{id}
+    defaults: { _controller: IncentivesCatalogoBundle:Producto:catalogoproducto, id: null }
+    
+producto_buscar:
+    path:  /producto/buscar
+    defaults: { _controller: IncentivesCatalogoBundle:Producto:buscar}
+
+cliente:
+    path:  /cliente
+    defaults: { _controller: IncentivesCatalogoBundle:Cliente:listado}
+
+cliente_nuevo:
+    path:  /cliente/nuevo
+    defaults: { _controller: IncentivesCatalogoBundle:Cliente:nuevo}
+
+cliente_editar:
+    path:  /cliente/editar/{id}
+    defaults: { _controller: IncentivesCatalogoBundle:Cliente:editar, id: null }
+    requirements:
+        id:  \d+
+
+cliente_datos:
+    path:  /cliente/datos/{id}
+    defaults: { _controller: IncentivesCatalogoBundle:Cliente:datos, id: null }
+    requirements:
+        id:  \d+
+
+cliente_estado:
+    path:  /ciente/estado/{id}
+    defaults: { _controller: IncentivesCatalogoBundle:Cliente:estado, id: null }
+    requirements:
+        id:  \d+
+
+programa:
+    path:  /programa
+    defaults: { _controller: IncentivesCatalogoBundle:Programa:listado}
+
+programa_nuevo:
+    path:  /programa/nuevo/{id}
+    defaults: { _controller: IncentivesCatalogoBundle:Programa:nuevo, id: null}
+
+programa_editar:
+    path:  /programa/editar/{id}
+    defaults: { _controller: IncentivesCatalogoBundle:Programa:editar, id: null }
+    requirements:
+        id:  \d+
+
+programa_datos:
+    path:  /programa/datos/{id}
+    defaults: { _controller: IncentivesCatalogoBundle:Programa:datos, id: null }
+    requirements:
+        id:  \d+
+
+programa_estado:
+    path:  /programa/estado/{id}
+    defaults: { _controller: IncentivesCatalogoBundle:Programa:estado, id: null }
+    requirements:
+        id:  \d+
+
+catalogo:
+    path:  /catalogo
+    defaults: { _controller: IncentivesCatalogoBundle:Catalogos:listado}
+
+catalogo_nuevo:
+    path:  /catalogo/nuevo/{id}
+    defaults: { _controller: IncentivesCatalogoBundle:Catalogos:nuevo, id: null}
+
+catalogo_editar:
+    path:  /catalogo/editar/{id}
+    defaults: { _controller: IncentivesCatalogoBundle:Catalogos:editar, id: null }
+    requirements:
+        id:  \d+
+
+catalogo_datos:
+    path:  /catalogo/datos/{id}
+    defaults: { _controller: IncentivesCatalogoBundle:Catalogos:datos, id: null }
+    requirements:
+        id:  \d+
+
+catalogo_estado:
+    path:  /catalogo/estado/{id}
+    defaults: { _controller: IncentivesCatalogoBundle:Catalogos:estado, id: null }
+    requirements:
+        id:  \d+
+
+catalogo_aprobar:
+    path:  /catalogo/aprobar/{id}/{resumido}
+    defaults: { _controller: IncentivesCatalogoBundle:Catalogos:aprobar, id: null, resumido: null }
+    requirements:
+        id:  \d+
+
+catalogo_aprobar_resumido:
+    path:  /catalogo/aprobarresumido/{id}
+    defaults: { _controller: IncentivesCatalogoBundle:Catalogos:aprobarresumido, id: null }
+    requirements:
+        id:  \d+
+
+catalogo_galeria:
+    path:  /catalogo/galeria/{id}/{vista}
+    defaults: { _controller: IncentivesCatalogoBundle:Catalogos:galeria, id: null, vista: null }
+    requirements:
+        id:  \d+
+
+catalogo_imagenes:
+    path:  /catalogo/imagenes/{id}/{productos}
+    defaults: { _controller: IncentivesCatalogoBundle:Catalogos:imagenes, id: null, productos: null }
+    requirements:
+        id:  \d+
+
+productocatalogo_imagenes:
+    path:  /productocatalogo/imagenes/{catalogo}
+    defaults: { _controller: IncentivesCatalogoBundle:Catalogos:imagenesCatalogo, catalogo: null}
+    requirements:
+        catalogo:  \d+
+
+catalogo_estadoaprobar:
+    path:  /catalogo/aprobarcatalogo/{accion}/{id}/{catalogo}/{resumido}
+    defaults: { _controller: IncentivesCatalogoBundle:Catalogos:aprobarcatalogo, accion: null, id: null, catalogo: null, resumido: null}
+
+catalogo_indicadores:
+    path:  /catalogo/indicadores/{id}
+    defaults: { _controller: IncentivesCatalogoBundle:Catalogos:indicadores, id: null }
+    requirements:
+        id:  \d+
+
+catalogo_navegar:
+    path:  /catalogo/navegar
+    defaults: { _controller: IncentivesCatalogoBundle:Catalogos:navegar}
+
+productocatalogo_nuevo:
+    path:  /productocatalogo/nuevo/{producto}/{catalogo}
+    defaults: { _controller: IncentivesCatalogoBundle:Maestro:nuevo, producto: null, catalogo: null}
+
+productocatalogo_listado:
+    path:  /productocatalogo/listado
+    defaults: { _controller: IncentivesCatalogoBundle:Maestro:listado}
+
+producto_importar:
+    path:  /producto/importar/
+    defaults: { _controller: IncentivesCatalogoBundle:Producto:importar }
+
+producto_exportar:
+    path:  /producto/exportar/
+    defaults: { _controller: IncentivesCatalogoBundle:Producto:exportar }
+
+producto_formato:
+    path:  /producto/formato/
+    defaults: { _controller: IncentivesCatalogoBundle:Producto:formato }
+
+productocatalogo_maestro:
+    path:  /productocatalogo/maestro
+    defaults: { _controller: IncentivesCatalogoBundle:Maestro:maestro}
+
+productocatalogo_grupo:
+    path:  /productocatalogo/grupo/{id}/{pagina}/{str_filtro}/{parametros}
+    defaults: { _controller: IncentivesCatalogoBundle:Maestro:grupo, id: null, pagina: null, str_filtro: null, parametros: null}
+    requirements:
+        id:  \d+
+
+productocatalogo_procesar:
+    path:  /productocatalogo/procesar
+    defaults: { _controller: IncentivesCatalogoBundle:Maestro:procesarItem}
+
+productocatalogo_calcular:
+    path:  /productocatalogo/calcular
+    defaults: { _controller: IncentivesCatalogoBundle:Maestro:calcularPuntos}
+
+productocatalogo_importar:
+    path:  /productocatalogo/importar/{id}
+    defaults: { _controller: IncentivesCatalogoBundle:Maestro:importar}
+    requirements:
+        id:  \d+
+
+productocatalogo_formato:
+    path:  /productocatalogo/formato
+    defaults: { _controller: IncentivesCatalogoBundle:Maestro:formato}
+
+productocatalogo_catalogoim:
+    path:  /productocatalogo/catalogoim/{id}
+    defaults: { _controller: IncentivesCatalogoBundle:Maestro:formatoimagen}
+
+producto_editar_mas:
+    path:  /producto/editarmas/
+    defaults: { _controller: IncentivesCatalogoBundle:Producto:editarmas }
+
+producto_formato_edicion:
+    path:  /producto/formatoeditar/
+    defaults: { _controller: IncentivesCatalogoBundle:Producto:formatoeditarmas }
+
+producto_formato_proveedor:
+    path:  /producto/formatoproveedor/{id}
+    defaults: { _controller: IncentivesCatalogoBundle:Producto:formatoporproveedor }
+
+productocatalogo_nuevocatalogo:
+    path:  /productocatalogo/nuevocatalogo/{producto}
+    defaults: { _controller: IncentivesCatalogoBundle:Maestro:nuevocatalogo, producto: null }
+
+productocatalogo_nuevopremio:
+    path:  /productocatalogo/nuevopremio/{producto}/{catalogo}
+    defaults: { _controller: IncentivesCatalogoBundle:Maestro:nuevoPremio, producto: null, catalogo: null }
+
+productocatalogo_editarpremio:
+    path:  /productocatalogo/editarpremio/{id}
+    defaults: { _controller: IncentivesCatalogoBundle:Maestro:editarPremio, id: null }
+
+productocatalogo_estadopremio:
+    path:  /productocatalogo/estadopremio/{id}
+    defaults: { _controller: IncentivesCatalogoBundle:Maestro:estadoPremioMaestro, id: null }
+    requirements:
+        id:  \d+ 
+
+productomaestro_estado:
+    path:  /productomaestro/estado/{id}
+    defaults: { _controller: IncentivesCatalogoBundle:Producto:estadoMaestro, id: null }
+    requirements:
+        id:  \d+
+
+productocatalogo_editarcatalogo:
+    path:  /productocatalogo/editarcatalogo/{productocatalogo}
+    defaults: { _controller: IncentivesCatalogoBundle:Maestro:editarcatalogo, productocatalogo: null }
+
+catalogo_intervalos:
+    path:  /catalogo/intervalos/{id}
+    defaults: { _controller: IncentivesCatalogoBundle:Catalogos:intervalos, id: null}
+    
+catalogo_intervaloseditar:
+    path:  /catalogo/intervaloseditar/{id}
+    defaults: { _controller: IncentivesCatalogoBundle:Catalogos:editarntervalos, id: null}
+
+catalogo_realcular:
+    path:  /catalogo/recalcular/{id}
+    defaults: { _controller: IncentivesCatalogoBundle:Maestro:recalcularCatalogo, id: null}
+
+producto_referencia:
+    path:  /producto/referencia/{id}
+    defaults: { _controller: IncentivesCatalogoBundle:Producto:productoreferencia, id: null }
+
+productocatalogo_formatocambios:
+    path:  /productocatalogo/formatocambios/{id}
+    defaults: { _controller: IncentivesCatalogoBundle:Maestro:formatoCambios, id: null }
+    
+productos_proveedor:
+    path:  /proveedores/productos/{id}
+    defaults: { _controller: IncentivesCatalogoBundle:Catalogos:productosproveedor, id: null }

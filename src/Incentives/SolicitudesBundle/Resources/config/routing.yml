@@ -1,0 +1,132 @@
+incentives_cotizaciones_homepage:
+    path:     /hello/{name}
+    defaults: { _controller: IncentivesSolicitudesBundle:Cotizaciones:index }
+
+solicitudes:
+    path:     /solicitudes
+    defaults: { _controller: IncentivesSolicitudesBundle:Solicitudes:listado }
+
+solicitudes_nueva:
+    path:     /solicitudes/nueva
+    defaults: { _controller: IncentivesSolicitudesBundle:Solicitudes:nueva }
+
+solicitudes_datos:
+    path:     /solicitudes/datos/{id}
+    defaults: { _controller: IncentivesSolicitudesBundle:Solicitudes:datos, id: null }
+    
+solicitudes_editar:
+    path:     /solicitudes/editar/{id}
+    defaults: { _controller: IncentivesSolicitudesBundle:Solicitudes:editar, id: null }
+    
+solicitudes_asignar:
+    path:     /solicitudes/asignar/{solicitud}
+    defaults: { _controller: IncentivesSolicitudesBundle:Solicitudes:asignarSolicitud, solicitud: null }
+
+solicitudes_archivos:
+    path:     /solicitudes/archivos/{solicitud}
+    defaults: { _controller: IncentivesSolicitudesBundle:Solicitudes:agregarArchivo, solicitud: null }
+    
+solicitudes_ordenesDespacho:
+    path:     /solicitudes/ordenesDespacho/{solicitud}
+    defaults: { _controller: IncentivesSolicitudesBundle:Solicitudes:agregarOrdenesDespacho, solicitud: null }
+    
+solicitudes_cargardespachos:
+    path:  /solicitudes/cargardespachos/{solicitud}
+    defaults: { _controller: IncentivesSolicitudesBundle:Solicitudes:cargardespachos, solicitud: null}
+
+solicitudes_precotizacion:
+    path:     /solicitudes/precotizacion/{solicitud}
+    defaults: { _controller: IncentivesSolicitudesBundle:Solicitudes:agregarPrecotizacion, solicitud: null }
+
+solicitud_archivo_estado:
+    path:  /solicitud/archivo/estado/{id}
+    defaults: { _controller: IncentivesSolicitudesBundle:Solicitudes:archivoEstado, id: null }
+    requirements:
+        id:  \d+
+        
+solicitud_cerrar:
+    path:  /solicitud/cerrar/{id}
+    defaults: { _controller: IncentivesSolicitudesBundle:Solicitudes:cerrar, id: null}
+
+solicitud_cancelar:
+    path:  /solicitud/cancelar/{id}
+    defaults: { _controller: IncentivesSolicitudesBundle:Solicitudes:cancelar, id: null}
+    
+solicitud_aceptar:
+    path:  /solicitud/aceptar/{id}
+    defaults: { _controller: IncentivesSolicitudesBundle:Solicitudes:aceptar, id: null}
+    
+solicitud_observaciones:
+    path:  /solicitud/observaciones/{id}
+    defaults: { _controller: IncentivesSolicitudesBundle:Solicitudes:observaciones, id: null}
+
+cotizaciones:
+    path:     /cotizaciones
+    defaults: { _controller: IncentivesSolicitudesBundle:Cotizaciones:listado }
+
+cotizaciones_nueva:
+    path:     /cotizaciones/nueva/{solicitud}
+    defaults: { _controller: IncentivesSolicitudesBundle:Cotizaciones:nueva, solicitud: null }
+
+cotizaciones_datos:
+    path:     /cotizaciones/datos/{id}
+    defaults: { _controller: IncentivesSolicitudesBundle:Cotizaciones:datos, id: null }
+    
+cotizaciones_editarvalores:
+    path:  /cotizaciones/editarvalores/{id}
+    defaults: { _controller: IncentivesSolicitudesBundle:Cotizaciones:editarvalores , id: null  }
+    
+cotizaciones_agregarproducto:
+    path:  /cotizaciones/agregarproducto/{id}
+    defaults: { _controller: IncentivesSolicitudesBundle:Cotizaciones:agregarproducto , id: null}
+    
+cotizaciones_valores:
+    path:  /cotizaciones/valores/{id}
+    defaults: { _controller: IncentivesSolicitudesBundle:Cotizaciones:valores , id: null  }
+
+cotizaciones_aprobar_producto:
+    path:     /cotizaciones/aprobar/{id}
+    defaults: { _controller: IncentivesSolicitudesBundle:Cotizaciones:aprobarProducto, id: null }
+    
+cotizaciones_rechazar_producto:
+    path:     /cotizaciones/rechazar/{id}
+    defaults: { _controller: IncentivesSolicitudesBundle:Cotizaciones:rechazarProducto, id: null }
+    
+cotizaciones_eliminar_producto:
+    path:     /cotizaciones/eliminarproducto/{id}
+    defaults: { _controller: IncentivesSolicitudesBundle:Cotizaciones:eliminarProducto, id: null }
+    
+cotizaciones_editar:
+    path:     /cotizaciones/editar/{id}
+    defaults: { _controller: IncentivesSolicitudesBundle:Cotizaciones:editar, id: null  }
+    
+cotizaciones_cancelar:
+    path:  /cotizaciones/cancelar/{id}
+    defaults: { _controller: IncentivesSolicitudesBundle:Cotizaciones:cancelar, id: null}
+    
+cotizaciones_finalizar:
+    path:  /cotizaciones/finalizar/{id}
+    defaults: { _controller: IncentivesSolicitudesBundle:Cotizaciones:finalizar, id: null}
+
+cotizaciones_pdf:
+    path:     /cotizaciones/pdf/{id}
+    defaults: { _controller: IncentivesSolicitudesBundle:Cotizaciones:pdf, id: null  }
+    
+    
+requisiciones:
+    path:     /requisiciones
+    defaults: { _controller: IncentivesSolicitudesBundle:Requisiciones:listado }
+
+requisiciones_nueva:
+    path:     /requisiciones/nueva/{solicitud}
+    defaults: { _controller: IncentivesSolicitudesBundle:Requisiciones:nueva, solicitud: null }
+    
+requisiciones_datos:
+    path:     /requisiciones/datos/{id}
+    defaults: { _controller: IncentivesSolicitudesBundle:Requisiciones:datos, id: null }
+
+requisiciones_agregarproducto:
+    path:  /requisiciones/agregarproducto/{id}
+    defaults: { _controller: IncentivesSolicitudesBundle:Requisiciones:agregarproducto , id: null}
+    
+    

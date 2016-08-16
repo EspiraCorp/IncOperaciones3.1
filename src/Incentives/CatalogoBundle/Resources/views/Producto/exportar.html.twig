@@ -1,0 +1,30 @@
+
+{# src/Sinaptica/ProveedoresBundle/Resources/views/Default/new.html.twig #}
+{% extends '::base.html.twig' %}
+{% block title %}Generar Reporte{% endblock %}
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+<div class="box span12">
+<div class="box-header well" data-original-title>
+                        <h2><i class="icon-edit"></i>Generar Reporte</h2>
+                        <div class="box-icon">
+                            <a href="{{ path('producto') }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+                        </div>
+                    </div>
+<div class="box-content">
+<form action="{{ path('producto_exportar') }}" method="POST" class="form-horizontal">
+    <fieldset>
+            <div class="controls">
+               <input name='producto' type='submit' value='Exportar' />
+            </div>
+        </div>
+    </fieldset>
+    
+
+</form>
+</div>
+</div>
+ </div>
+{% endblock %}
+
+

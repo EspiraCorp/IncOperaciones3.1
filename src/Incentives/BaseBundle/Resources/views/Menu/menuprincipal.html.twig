@@ -1,0 +1,35 @@
+<div class="span2 main-menu-span">
+    <div class="well nav-collapse sidebar-nav">
+        <ul class="nav nav-tabs nav-stacked main-menu">
+            {% for opcion in menu %}
+                    <li style="margin-left: -2px;">
+                        <a href="#" class="ajax-link btn-menu" id="{{ opcion.nombre }}" onClick="acordeon('{{ opcion.id }}')">
+                            <i class="{{ opcion.icono }}"></i>
+                            <span class="hidden-tablet">{{ opcion.nombre }}</span>
+                        </a>
+                    </li>
+                        {% for item in opcion.opciones %}
+                            {% if item.tipo == 1 %}
+                                <li class="menu_{{ opcion.id }} hide sub-menu" style="margin-left: -2px;">
+                                    <a href="{{ item.link }}" class="ajax-link">
+                                    <i class="{{ item.icono }}"></i>
+                                    <span class="hidden-tablet">{{ item.nombre }}</span></a>
+                                </li>
+                            {% elseif item.tipo == 2 %}
+                                <li class="menu_{{ opcion.id }} hide sub-menu" style="margin-left: -2px;">
+                                    <a href="{{ path( item.link ) }}" class="ajax-link">
+                                    <i class="{{ item.icono }}"></i>
+                                    <span class="hidden-tablet">{{ item.nombre }}</span></a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<script>
+	 function acordeon(id){
+        $('.menu_'+id).toggle();
+    }
+</script>

@@ -1,0 +1,58 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Nueva Orden{% endblock %}
+
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+<div class="box span12">
+<div class="box-header well" data-original-title>
+                        <h2><i class="icon-edit"></i>Nueva Orden</h2>
+                        <div class="box-icon">
+                            <a href="{{ path('ordenes') }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+                        </div>
+                    </div>
+<div class="box-content">
+<form action="{{ path('ordenes_nueva') }}" method="POST" {{ form_enctype(form) }} class="form-horizontal" novalidate>
+    {{ form_errors(form) }}
+    <fieldset>
+        <div class="control-group">
+            {{ form_label(form.courier, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.courier, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            {{ form_label(form.ordenProducto, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.ordenProducto, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+            {% for redenciones in redencion %}
+            	{% if redenciones.ordenesProducto==form.ordenProducto %}
+					{{ redenciones.id }}
+            	{% endif %}
+            {% endfor %}
+        </div>
+        <div class="control-group">
+            {{ form_label(form.guia, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.guia, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            {{ form_label(form.valor, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.valor, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+
+    </fieldset>
+<div class="form-actions">
+    {{ form_widget(form.Enviar, { 'attr': {'class': 'btn btn-primary'} }) }}
+</div>
+{{ form_widget(form._token) }}
+</form>
+</div>
+</div>
+ </div>
+{% endblock %}
+

@@ -1,0 +1,7 @@
+parameters:
+#    incentives_garantias.example.class: Incentives\GarantiasBundle\Example
+
+services:
+#    incentives_garantias.example:
+#        class: %incentives_garantias.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

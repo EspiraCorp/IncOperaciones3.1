@@ -1,0 +1,179 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Datos Redencion{% endblock %}
+{% block sidebar %}
+{{ parent() }}
+{% endblock %}
+{% block cuerpo %}
+
+<div class="row-fluid sortable ui-sortable">
+<div class="box">
+    <div class="box-header well" data-original-title="">
+        Datos Redencion 
+        <a href="{{ path('redenciones_editarenvio') }}/{{ redencion.id }}" title="Editar Envio">
+            <button class="btn btn-primary">
+              <i class="icon-edit icon-white"></i>
+            </button>
+          </a>
+
+      {% if(redencion.redencionestado.id < 4) %}
+       <a href="{{ path('redenciones_editarproducto') }}/{{ redencion.id }}" title="Editar Envio">
+            <button class="btn btn-primary btn-info">
+              <i class="icon-barcode icon-white"></i>
+            </button>
+          </a>
+      {% endif %}
+        <div class="box-icon">
+                    <a href="{{ path('redenciones_programa') }}/{{ redencion.participante.programa.id }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+                </div>
+      </div>
+    </div>
+</div>
+<div class="box span12">
+    <div class="box span6">
+      <div class="box-content">
+        
+        <div class="box-header well">
+        <h2>
+        
+        </i>Datos Redencion</h2>
+        </h2>
+      </div>
+      
+
+        <table class="table table-bordered table-striped">
+          <tbody>
+            <tr><td>Programa</td><td>{{ redencion.productocatalogo.catalogos.programa.nombre }}</td></tr>
+            <tr><td>Participante</td><td>{{ redencion.participante.nombre }}</td></tr>
+            <tr><td>Documento</td><td>{{ redencion.participante.documento }}</td></tr>
+            <tr><td>Fecha de solicitud</td><td>{{ redencion.fecha | date("Y-m-d") }}</td></tr>
+            <tr><td>Valor</td><td>{{ redencion.valor }}</td></tr>
+            <tr><td>Codigo</td><td>{{ redencion.codigoredencion }}</td></tr>
+            <tr><td>Estado</td><td>{{ redencion.redencionestado.nombre }}</td></tr>
+            
+          </tbody>
+        </table>
+    </div>
+  </div>
+  
+  <div class="box span6">
+      <div class="box-content">
+        <div class="box-header well">
+          <h2></i>Datos Producto</h2>
+        </div>
+        <table class="table table-bordered table-striped">
+          <tbody>
+            <tr><td colspan="2">
+              {% if imagen|length > 0 %}
+              <a href="../../../{{ imagen[0].path| slice (0) }}" target='_blank'><img src="../../../{{( imagen[0].path| slice (0))[:-4]}}_min.jpg"><a>
+              {% endif %}
+              </td></tr>
+            <tr><td>Sku</td><td>{{ redencion.productocatalogo.producto.codInc }}</td></tr>
+            <tr><td>Nombre</td><td>{{ redencion.productocatalogo.producto.nombre }}</td></tr>
+            <tr><td>Descripcion</td><td>{{ redencion.productocatalogo.producto.descripcion }}</td></tr>
+            <tr><td>Categoria</td><td>{{ redencion.productocatalogo.categoria.nombre }}</td></tr>
+          </tbody>
+        </table>
+    </div>
+  </div>
+</div>
+
+<div class="box span12">
+  <div class="box span6">
+      <div class="box-content">
+        
+        <div class="box-header well">
+        <h2>
+        
+        </i>Datos Envio</h2>
+        </h2>
+      </div>
+      
+
+        <table class="table table-bordered table-striped">
+          <tbody>
+            <tr><td>Dirección</td><td>{{ datosenvio.direccion }}</td></tr>
+            <tr><td>Barrio</td><td>{{ datosenvio.barrio }}</td></tr>
+            <tr><td>Ciudad</td><td>{{ datosenvio.ciudadNombre }}</td></tr>
+            <tr><td>Departamento</td><td>{{ datosenvio.departamentoNombre }}</td></tr>
+            <tr><td>Teléfono</td><td>{{ datosenvio.telefono }}</td></tr>
+            <tr><td>Celular</td><td>{{ datosenvio.celular }}</td></tr> 
+          </tbody>
+        </table>
+    </div>
+  </div>
+
+  <div class="box span6">
+      <div class="box-content">
+        
+        <div class="box-header well">
+        <h2>
+        
+        </i>Datos Contacto</h2>
+        </h2>
+      </div>
+      
+
+        <table class="table table-bordered table-striped">
+          <tbody>
+	    <tr><td>Nombre</td><td>{{ datosenvio.nombrecontacto }}</td></tr>
+            <tr><td>Cédula</td><td>{{ datosenvio.documentocontacto }}</td></tr>
+            <tr><td>Dirección</td><td>{{ datosenvio.direccioncontacto }}</td></tr>
+            <tr><td>Teléfono</td><td>{{ datosenvio.telefonocontacto  }}</td></tr>
+            <tr><td>Barrio</td><td>{{ datosenvio.barriocontacto  }}</td></tr>
+            <tr><td>Ciudad</td><td>{{ datosenvio.ciudadcontacto  }}</td></tr>
+            <tr><td>Departamento</td><td>{{ datosenvio.departamentocontacto  }}</td></tr>
+            <tr><td>Celular</td><td>{{ datosenvio.celularcontacto  }}</td></tr> 
+          </tbody>
+        </table>
+    </div>
+  </div>
+</div>
+
+  <div class="box span12">
+    <div class="box-content">
+      
+        <div class="box-header well">
+        <h2>
+            <a href="">
+              <button class="btn btn-small btn-success" style="display: none;">
+                <i class="icon-plus icon-white"></i>
+              </button>
+            </a>
+          Historico
+        </h2>
+      </div>
+      <table class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th>Estado</th>
+            <th>Fecha</th>
+            <th>Orden Compra</th>
+            <th>Observacion</th>
+            <th>Guia</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for datos in historico %} 
+          <tr>
+              <td>{{ datos.redencionestado.nombre }}</td>
+              <td>{{ datos.fecha | date("Y-m-d") }}</td>
+              <td>{% if datos.ordenesproducto is null %}{% else %}{{ datos.ordenesproducto.ordenescompra.consecutivo }}{% endif %}</td>
+              <td>{{ datos.observacion }}</td>
+              <td></td>
+          </tr>         
+          {% endfor %}
+
+    </div>
+  </div>
+
+
+{% endblock %}
+
+{% block javascripts %}
+
+{{ parent() }}
+
+
+{% endblock %}
+

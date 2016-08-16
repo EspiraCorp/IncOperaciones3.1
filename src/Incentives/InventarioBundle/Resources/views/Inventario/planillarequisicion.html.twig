@@ -1,0 +1,133 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Agregar Productos{% endblock %}
+{% block sidebar %}
+{{ parent() }}
+{% endblock %}
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+	<div class="box span12">
+		<div class="box-header well">
+			<h2><i class="icon-th-list"></i>Agregar Productos</h2>
+			<div class="box-icon">
+                            <a href="{{ path('planillas_lista') }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+                        </div>
+        
+		</div>
+		<div class="box-content">
+		     <div class="box-header well">
+        <h2>
+        
+        </i>Datos Planilla</h2>
+        </h2>
+      </div>
+      
+
+        <table class="table table-bordered table-striped">
+          <tbody>
+            <tr><td>Número</td><td>{{ planilla.id }}</td></tr>
+            <tr><td>Tipo</td><td>{{ planilla.planillatipo.nombre }}</td></tr>
+            <tr><td>Pais</td><td>{{ planilla.pais.nombre }}</td></tr>
+            <tr><td>Categoria</td><td>{{ planilla.categoria.nombre }}<td></td></tr>
+            
+          </tbody>
+        </table>
+			<div id="dashboard">
+          <div id="tabla" class="" cellspacing="0" width="100%">
+                      <table id="planillas" class="display">
+                        <thead style="display:table-row-group;"  >
+                          <tr>
+                            <th>Producto</th>
+                            <th>Fecha Entrada</th>
+                            <th>OC</th>
+                            <th>Cantidad</th>
+                            <th></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for registro in inventario %}
+                          <tr>
+                            <td>{{ registro['inventario']['producto']['nombre'] }} / {{ registro['inventario']['producto']['marca'] }} / {{ registro['inventario']['producto']['referencia'] }}</td>
+                            <td>{{ registro['inventario']['fechaEntrada'] | date("Y-m-d") }}</td>
+                            <td>{% if registro['inventario']['orden'] is null %} {% else %} {{ registro['inventario']['orden']['consecutivo'] }} {% endif %}</td>
+                            <td>{{ registro['total'] }}</td>
+                            <td>
+                             <a class="btn btn-success" href="{{ path("planilla_agregar")}}/{{ id }}/{{registro['inventario']['producto']['id']}}">Agregar</a></td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                         <tfoot style="display: table-header-group;">
+                          <tr>
+                            <th>Producto</th>
+                            <th>Fecha Entrada</th>
+                            <th>OC</th>
+                            <th>Cantidad</th>
+                            <th></th>
+                          </tr>
+                        </tfoot>
+                      </table>
+                    </div>   
+      </div>
+		</div>
+    
+	</div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+
+{{ parent() }}
+
+<script type="text/javascript">
+ $(document).ready(function() {
+//    inifuntion
+ var table = $('#planillas').dataTable({
+
+            "sDom": 'T<"clear">lfrtip',
+             "bPaginate": true,
+             "bLengthChange": true,
+             "bFilter": true,
+             "bSort": true,
+             "bInfo": false,
+             "bAutoWidth": true,
+             "bJQueryUI": false,
+             "sPaginationType": "full_numbers",
+             "iDisplayLength": 50,
+             "aLengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "Todo"] ],
+              initComplete: function () {
+                    this.api().columns().every( function () {
+                        var column = this;
+                        var select = $('<select style="width: 100%"><option value=""></option></select>')
+                            .appendTo( $(column.footer()).empty() )
+                            .on( 'change', function () {
+                                var val = $.fn.dataTable.util.escapeRegex(
+                                    $(this).val()
+                                );
+         
+                                column
+                                    .search( val ? '^'+val+'$' : '', true, false )
+                                    .draw();
+                            } );
+         
+                        column.data().unique().sort().each( function ( d, j ) {
+                            //limpiar
+                            //d
+                            select.append( '<option value="'+d+'">'+d+'</option>' )
+                        } );
+                    } );
+                }
+    });
+
+})
+  </script>
+
+
+  <script type="text/javascript">
+      function confirmar(ruta)
+      { 
+            self.location=ruta;
+      }
+  </script>
+
+{% endblock %}
+

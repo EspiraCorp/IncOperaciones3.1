@@ -1,0 +1,67 @@
+<html>
+<div style="position: relative; float: left; z-index: 1;"> <img src="../web/Calificacion/plantilla_calificacion.jpg" width="700px"/>
+<div style="position: absolute; left: 30px; top: 130px; float: left; z-index: -1; width: 600px">
+	<p>
+
+		Bogotá, 26 de febrero  de 2015
+		<br>
+		Señor(es) 
+		<br>
+		<b>{{ datos[0].proveedor.nombre }}</b>
+		<br><br><br>
+		ASUNTO: Resultados de evaluación de desempeño proveedores INC Group 
+		<br><br>
+		Respetados señores:
+		<br><br>
+		Dentro de nuestro sistema de evaluación de proveedores hemos ejecutado la evaluación 
+
+		correspondiente al <b>{{ datos[0].fecha | date("Y") }}</b>,  haciendo un  detenido análisis del desempeño de su compañía en la 
+		
+		prestación de servicios, medido a través de las  variables contenidas en el reporte adjunto.  
+		<br><br>
+		
+		{% if datos[0].calificacion < 50 %}
+		
+			La calificación del periodo evaluado año es de porcentaje {{ datos[0].calificacion }}% logrando un  nivel por debajo de lo aceptado,  es por esto  que no es posible mantener una relación comercial con ustedes. 
+			<br><br>
+			Agradecemos la atención prestada.
+		{% elseif  datos[0].calificacion >=50 %}
+		
+			La calificación del periodo evaluado <b>{{ datos[0].fecha | date("Y") }}</b> es de <b>{{ datos[0].calificacion }}%</b> logrando el nivel <b>{% if datos[0].calificacion >=90 %}Excelente{% elseif datos[0].calificacion >=70 %}Bueno{% elseif datos[0].calificacion >=50 %}Regular{% endif %}</b>.
+			<br><br>
+			{% if datos[0].calificacion >=70 %}
+			Reconocemos y valoramos el desempeño de su Compañía por el resultado obtenido en este 
+			
+			periodo, y los invitamos a revisar el reporte adjunto que contiene el detalle de los criterios 
+			
+			evaluados por nuestros ejecutivos. De igual forma los invitamos a mantener esta calificación en la 
+			
+			prestación de sus servicios, lo cual nos beneficia mutuamente. 
+			{% elseif datos[0].calificacion >=50 %}
+			Lo invitamos a revisar el reporte adjunto que contiene el detalle de los criterios evaluados por 
+	
+			nuestros ejecutivos. De igual forma los invitamos a mejorar  esta calificación en la prestación de 
+	
+			sus servicios, lo cual nos beneficiaria mutuamente.
+			<br><br>
+			De igual forma solicitamos de manera cordial que a través de su enlace en nuestra plataforma nos 
+	
+			indique cual es el plan de acción de su compañía con nosotros  para poder seguir trabajando  de la 
+	
+			mano.
+			{% endif %}
+			
+			<br><br>
+			Esperamos seguir contando  con su compromiso. Para nosotros es muy importante continuar con 
+			
+			<b>{{ datos[0].proveedor.nombre }}</b> como nuestro aliado estratégico. 
+			<br><br>
+			Agradecemos nos confirmen  la recepción de la presente comunicación.
+		{% endif %}
+		<br><br>
+		Cordialmente,
+
+	</p>
+</div>
+</body>
+</html>

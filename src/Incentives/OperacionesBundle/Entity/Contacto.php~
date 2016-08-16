@@ -1,0 +1,313 @@
+<?php
+
+namespace Incentives\OperacionesBundle\Entity;
+
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
+/**
+ * Contacto
+ *
+ * @ORM\Table()
+ * @ORM\Entity
+ */
+class Contacto
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="nombres", type="string", length=255, nullable=true)
+     */
+    private $nombres;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="correo", type="string", length=255, nullable=true)
+     */
+    private $correo;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="telefono", type="string", length=255, nullable=true)
+     */
+    private $telefono;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="movil", type="string", length=255, nullable=true)
+     */
+    private $movil;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="cargo", type="string", length=255, nullable=true)
+     */
+    private $cargo;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="estado", type="integer", nullable=true)
+     */
+    private $estado;
+
+     /**
+     * 
+     * @ORM\ManyToOne(targetEntity="Proveedores", inversedBy="contactos", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="proveedor_id", referencedColumnName="id", nullable=true)
+     * 
+     */
+    protected $proveedor;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="fechaModificacion", type="datetime", nullable=true)
+     */
+    private $fechaModificacion;
+    
+    /**
+     * 
+     * @ORM\ManyToOne(targetEntity="Incentives\BaseBundle\Entity\Usuario")
+     * @ORM\JoinColumn(name="usuario_id", referencedColumnName="id", nullable=true)
+     * 
+     */
+    protected $usuario;
+
+    public function __construct()
+    {
+        $this->estado = '1';
+    }
+
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set nombres
+     *
+     * @param string $nombres
+     * @return Contacto
+     */
+    public function setNombres($nombres)
+    {
+        $this->nombres = $nombres;
+    
+        return $this;
+    }
+
+    /**
+     * Get nombres
+     *
+     * @return string 
+     */
+    public function getNombres()
+    {
+        return $this->nombres;
+    }
+
+    /**
+     * Set correo
+     *
+     * @param string $correo
+     * @return Contacto
+     */
+    public function setCorreo($correo)
+    {
+        $this->correo = $correo;
+    
+        return $this;
+    }
+
+    /**
+     * Get correo
+     *
+     * @return string 
+     */
+    public function getCorreo()
+    {
+        return $this->correo;
+    }
+
+    /**
+     * Set telefono
+     *
+     * @param string $telefono
+     * @return Contacto
+     */
+    public function setTelefono($telefono)
+    {
+        $this->telefono = $telefono;
+    
+        return $this;
+    }
+
+    /**
+     * Get telefono
+     *
+     * @return string 
+     */
+    public function getTelefono()
+    {
+        return $this->telefono;
+    }
+
+    /**
+     * Set movil
+     *
+     * @param string $movil
+     * @return Contacto
+     */
+    public function setMovil($movil)
+    {
+        $this->movil = $movil;
+    
+        return $this;
+    }
+
+    /**
+     * Get movil
+     *
+     * @return string 
+     */
+    public function getMovil()
+    {
+        return $this->movil;
+    }
+
+    /**
+     * Set cargo
+     *
+     * @param string $cargo
+     * @return Contacto
+     */
+    public function setCargo($cargo)
+    {
+        $this->cargo = $cargo;
+    
+        return $this;
+    }
+
+    /**
+     * Get cargo
+     *
+     * @return string 
+     */
+    public function getCargo()
+    {
+        return $this->cargo;
+    }
+
+    /**
+     * Set estado
+     *
+     * @param integer $estado
+     * @return Contacto
+     */
+    public function setEstado($estado)
+    {
+        $this->estado = $estado;
+    
+        return $this;
+    }
+
+    /**
+     * Get estado
+     *
+     * @return integer 
+     */
+    public function getEstado()
+    {
+        return $this->estado;
+    }
+
+    /**
+     * Set proveedor
+     *
+     * @param \Incentives\OperacionesBundle\Entity\Proveedores $proveedor
+     * @return Contacto
+     */
+    public function setProveedor(\Incentives\OperacionesBundle\Entity\Proveedores $proveedor = null)
+    {
+        $this->proveedor = $proveedor;
+    
+        return $this;
+    }
+
+    /**
+     * Get proveedor
+     *
+     * @return \Incentives\OperacionesBundle\Entity\Proveedores 
+     */
+    public function getProveedor()
+    {
+        return $this->proveedor;
+    }
+
+    /**
+     * Set fechaModificacion
+     *
+     * @param \DateTime $fechaModificacion
+     * @return Contacto
+     */
+    public function setFechaModificacion($fechaModificacion)
+    {
+        $this->fechaModificacion = $fechaModificacion;
+    
+        return $this;
+    }
+
+    /**
+     * Get fechaModificacion
+     *
+     * @return \DateTime 
+     */
+    public function getFechaModificacion()
+    {
+        return $this->fechaModificacion;
+    }
+
+    /**
+     * Set usuario
+     *
+     * @param \Incentives\BaseBundle\Entity\Usuario $usuario
+     * @return Contacto
+     */
+    public function setUsuario(\Incentives\BaseBundle\Entity\Usuario $usuario = null)
+    {
+        $this->usuario = $usuario;
+    
+        return $this;
+    }
+
+    /**
+     * Get usuario
+     *
+     * @return \Incentives\BaseBundle\Entity\Usuario 
+     */
+    public function getUsuario()
+    {
+        return $this->usuario;
+    }
+}

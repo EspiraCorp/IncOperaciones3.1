@@ -1,0 +1,145 @@
+{# src/Sinaptica/ProveedoresBundle/Resources/views/Default/new.html.twig #}
+{% extends '::base.html.twig' %}
+{% block title %}Proveedores{% endblock %}
+{% block sidebar %}
+{{ parent() }}
+{% endblock %}
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+	<div class="box span12" style="width: 1300px !important">
+		<div class="box-header well">
+			<h2><i class="icon-th-list"></i>Proveedores</h2>
+			<div class="box-icon"> 
+              <a href="{{ path('proveedores_importar') }}" title="Carga Masiva" class="btn btn-round"><i class="icon-upload"></i></a>
+              <a href="{{ path('proveedores_exportar') }}" title="Descargar" class="btn btn-round"><i class="icon-download"></i></a>
+              <a href="{{ path('proveedores_nuevo') }}" class="btn btn-round" title="Agregar"><i class="icon-plus"></i></a>
+			</div>
+		</div>
+		<div class="box-content">
+			<div id="dashboard">
+                    <div class="row-fluid">
+                        <div id="control1" class="span3"></div>
+                        <div id="control2" class="span3"></div>
+                        <div id="control3" class="span3"></div>
+                        <div id="control4" class="span3"></div>
+                    </div>
+                    <div id="tabla" class="" cellspacing="0" width="100%">
+                      <table id="proveedores" class="display">
+                        <thead  style="display:table-row-group;">
+                          <tr>
+                            <th>Nombre</th>
+                            <th>Identificacion</th>
+                            <th>Pais</th>
+                            <th>Ciudad</th>
+                            <th>Clasificacion</th>
+                            <th>Area</th>
+                            <th>Tipo</th>
+                            <th>Correo</th>
+                            <th>Calificación</th>
+                            <th>Documentos</th>
+                            <th>Catalogos</th>
+                            <th>Estado</th>
+                          </tr>
+                          
+                        </thead>
+                        <tbody>
+                          {% for proveedor in listado %}
+                          <tr>
+                            <td><a href="{{ path("proveedores_datos", {"id": proveedor.id}) }}">{{ proveedor.nombre }}</a></td>
+                            <td>{{ proveedor.numerodocumento }}</td>
+                            <td>{% if proveedor.pais is null %}{% else %}{{ proveedor.pais.nombre }}{% endif %}</td>
+                            <td>{% if proveedor.ciudad is null %}{% else %}{{ proveedor.ciudad.nombre }}{% endif %}</td>
+                            <td>{% if proveedor.pais is null %}{% else %}{{ proveedor.pais.nombre }}{% endif %}</td>
+                            <td>{% if proveedor.proveedorarea is null %}{% else %}{{ proveedor.proveedorarea.nombre }}{% endif %}</td>
+                            <td>{% if proveedor.proveedortipo is null %}{% else %}{{ proveedor.proveedortipo.nombre }}{% endif %}</td>
+                            <td>{% if proveedor.proveedorclasificacion is null %}{% else %}{{ proveedor.proveedorclasificacion.nombre }}{% endif %}</td>
+                            <td>{{ proveedor.correo }}</td>
+                            <td>{{ detalle.calificacion[proveedor.id] }}</td>
+                            <td><div class="progress {{ detalle.clasedoc[proveedor.id] }} progress-striped"><div class="bar" style="width: {{ detalle.documentos[proveedor.id] }}%"></div></div></td>
+                            <td>{%if detalle.catalogo[proveedor.id].fecha is defined %}{{ detalle.catalogo[proveedor.id].fecha | date("Y-m-d") }}{% endif %} {%if detalle.clasecat[proveedor.id] is defined %}<a class="btn {{ detalle.clasecat[proveedor.id] }}" href="#"><i class="icon-warning-sign"></i></a>{% endif %}</td>
+                            <td>{% if (proveedor.estado.id!=1) %}<a class="btn btn-danger" id="enlaceajax{{ proveedor.id }}" href="{{ path("proveedores_estado", {"id": proveedor.id}) }}">Inactivo</a>{% else %}<a class="btn btn-success" id="enlaceajax{{ proveedor.id }}" href="{{ path("proveedores_estado", {"id": proveedor.id}) }}">Activo</a>{% endif %}<div id="destino{{ proveedor.id }}"></div></td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                        <tfoot style="display: table-header-group;">
+                          <tr>
+                           <th>Nombre</th>
+                            <th>Identificacion</th>
+                            <th>Pais</th>
+                            <th>Ciudad</th>
+                            <th>Clasificacion</th>
+                            <th>Area</th>
+                            <th>Tipo</th>
+                            <th>Correo</th>
+                            <th>Calificación</th>
+                            <th>Documentos</th>
+                            <th>Catalogos</th>
+                            <th>Estado</th>
+                          </tr>
+                          
+                        </tfoot>
+                      </table>
+                    </div>  
+            </div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+
+{{ parent() }}
+
+  <script type="text/javascript"> 
+  $(document).ready(function() {
+//    inifuntion
+ var table = $('#proveedores').dataTable({
+
+            "sDom": 'T<"clear">lfrtip',
+             "bPaginate": true,
+             "bLengthChange": true,
+             "bFilter": true,
+             "bSort": true,
+             "bInfo": false,
+             "bAutoWidth": true,
+             "bJQueryUI": false,
+             "sPaginationType": "full_numbers",
+             "iDisplayLength": 50,
+             "aLengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "Todo"] ],
+              initComplete: function () {
+                    this.api().columns().every( function () {
+                        var column = this;
+                        var select = $('<select style="width: 100%"><option value=""></option></select>')
+                            .appendTo( $(column.footer()).empty() )
+                            .on( 'change', function () {
+                                var val = $.fn.dataTable.util.escapeRegex(
+                                    $(this).val()
+                                );
+         
+                                column
+                                    .search( val ? '^'+val+'$' : '', true, false )
+                                    .draw();
+                            } );
+         
+                        column.data().unique().sort().each( function ( d, j ) {
+                            //limpiar
+                            //d
+                            select.append( '<option value="'+d+'">'+d+'</option>' )
+                        } );
+                    } );
+                }
+    });
+
+})
+  function confirmar(ruta)
+      {
+        if (confirm("Desea cambiar el estado del proveedor")==true){
+            self.location=ruta;
+        }else{
+            alert("OK");
+        }
+        
+      }
+  </script>
+
+{% endblock %}

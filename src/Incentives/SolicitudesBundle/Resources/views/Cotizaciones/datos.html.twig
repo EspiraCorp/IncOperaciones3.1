@@ -1,0 +1,222 @@
+{% extends app.request.isXmlHttpRequest ? "MDWDemoBundle::layout_ajax.html.twig" : "::base.html.twig" %}
+{% block title %}Datos Cotización{% endblock %}
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+<div class="box">
+    <div class="box-header well" data-original-title="">
+        Cotización	
+        <div class="box-icon">
+				<div class="box-icon">
+                    <a href="{{ path('solicitudes_datos') }}/{{ cotizacion.solicitud.id }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+                </div>
+    	</div>
+    </div>
+</div>
+    <div class="box span12">
+	    <div class="box-content">
+	    	
+	    	<div class="box-header well">
+				<h2>
+
+				</i>Datos Cotización</h2>
+				
+				{% if (is_granted('ROLE_ADMIN') or is_granted('ROLE_DIR') or is_granted('ROLE_ASIS') or is_granted('ROLE_ASISCOMP') or is_granted('ROLE_LOGIS') or is_granted('ROLE_CAT')) %}
+					<a href="{{ path('cotizaciones_editar',  {"id": cotizacion.id}) }}" class="btn btn-primary">
+						<i class="icon-edit icon-white"></i>
+					</a>
+					{% endif %}
+				
+					<div class="box-icon">
+						<a href="{{asset(cotizacion.rutapdf | slice (5))}}"  class="btn btn-info" target="_blank">
+							<i class="icon-download-alt icon-white"></i>
+						</a>
+					{% if not is_granted('ROLE_PROV') %}
+	
+						{% if (cotizacion.estado.id != 1) %}
+							<a href="{{ path('ordenes_correo',  {"id": cotizacion.id}) }}"  class="btn btn-info">
+								<i class="icon-envelope icon-white"></i>
+							</a>
+						{% endif %}
+					{% endif %}
+					</div>
+			</div>
+			
+
+				<table class="table table-bordered table-striped">
+					<tbody>
+						<tr><td>Consecutivo</td><td>{{ cotizacion.consecutivo }}</td></tr>
+						<tr><td>Fecha de solicitud</td><td>{{ cotizacion.fechaCreacion | date("Y-m-d") }}</td></tr>
+						<tr><td>Vigente Hasta</td><td>{{ cotizacion.fechaCreacion | date("Y-m-d") }}</td></tr>
+						<tr><td>Logistica Consolidada</td><td>{{ cotizacion.logistica }}</td></tr>
+						<tr><td>Solicitud</td><td>{{ cotizacion.solicitud.id }} - {{ cotizacion.solicitud.titulo }}</td>
+						<tr><td>Programa</td><td>{{ cotizacion.solicitud.programa.nombre }}</td>							
+						<tr><td>Cliente</td><td>{{ cotizacion.solicitud.programa.cliente.nombre }}</td>							
+						<tr><td>Estado</td><td>{{ cotizacion.estado.nombre }}</td></tr>
+						<tr><td>Accion</td>
+							<td>
+								<div class="estado" >
+										{% if (cotizacion.estado.id == 1) %}
+										
+											<a class="btn btn-success" onClick='confirmar("{{ url('cotizaciones_finalizar', {'id': cotizacion.id}) }}")'>
+												<i class="icon-ok icon-white" align='rigth'></i>	
+												Enviar										
+											</a>
+											
+										{% endif %}
+										
+										{% if (cotizacion.estado.id == 1 or cotizacion.estado.id == 2) %}	
+											<a class="btn btn-danger" onClick='confirmar("{{ url('cotizaciones_cancelar', {'id': cotizacion.id}) }}")'>
+												<i class="icon-trash icon-white" align='rigth'></i>	
+												Cancelar										
+											</a>
+										{% endif %}
+								</div>
+						</td></tr>
+					</tbody>
+				</table>
+		</div>
+	</div>
+
+	
+
+	<div class="box span12">
+		<div class="box-content">
+			
+		    <div class="box-header well">
+				<h2>
+					{% if not is_granted('ROLE_PROV') %}
+							{% if cotizacion.estado.id==1 %}
+							<a href="{{ path('cotizaciones_agregarproducto',  {"id": cotizacion.id}) }}">
+								<button class="btn btn-primary">
+									<i class="icon-plus icon-white"></i>
+								</button>
+							</a>
+						{% endif %}
+					{% endif %}
+					Productos
+				</h2>
+			</div>
+
+			{% if productos | length!=0 %}
+			<table class="table table-bordered table-striped">
+				<thead>
+					<tr>
+						<th>Imagen</th>
+						<th>Referencia</th>
+						<th>Nombre</th>
+						<th>Descripcion</th>
+						<th>Cantidad</th>
+						<th>Valor Unitario</th>
+						<th>Valor Venta</th>
+						<th>Logistica Individual</th>
+						<th>Valor Total</th>
+						<th></th>
+					</tr>
+				</thead>
+				{% set total=0 %}
+				<tbody>
+					{% set subtotal=0 %}
+	 				{% set totaliva = 0 %}
+					{% for producto in productos %}	
+					<tr>
+						{% set rutaImagen = "" %}
+						{% for imagen in producto.producto.imagenproducto %}
+							{% if imagen.estado==1 %}
+								{% set rutaImagen = imagen.path %}
+							{% endif %}
+						{% endfor %}
+						
+						
+							<td><a href="../../../{{ rutaImagen | slice (0)}}" target='_blank'><img src="../../../{{( rutaImagen| slice (0))[:-4]}}_min.jpg" width="100" height="100"><a></td>
+							<td>{{ producto.producto.referencia }}</td>
+							<td>{{ producto.producto.nombre }}</td>
+							<td>{{ producto.producto.descripcion }}</td>
+							<td>{{ producto.cantidad }}</td>
+							<td>$ {{ producto.valorunidad|number_format(2, ',', '.') }}</td>
+							<td>$ {{ (producto.valorunidad/(1 - (producto.incremento/100)))|number_format(2, ',', '.') }}</td>
+							<td>$ {{ producto.logistica|number_format(2, ',', '.') }}</td>
+							<td>$ {{ (producto.valortotal + (producto.logistica*producto.cantidad))|number_format(2, ',', '.') }}</td>
+							<td> {{ producto.estado.nombre }}<br>
+								{% if( producto.estado.id == 1 and cotizacion.estado.id == 1 and (is_granted('ROLE_DIR') or is_granted('ROLE_ASIS') or is_granted('ROLE_ASISCOMP'))) %}	
+								<a class="btn btn-primary" id="productoeditar_{{ producto.id }}">
+									<i class="icon-edit icon-white" align='rigth'></i>			
+									Editar										
+								</a>
+								{% endif %}
+								{% if( producto.estado.id == 1 and cotizacion.estado.id == 1 and (is_granted('ROLE_DIR') or is_granted('ROLE_ASIS') or is_granted('ROLE_ASISCOMP'))) %}	
+								<a class="btn btn-danger" id="productoeliminar_{{ producto.id }}" href="{{ path("cotizaciones_eliminar_producto", {"id": producto.id}) }}">
+									<i class="icon-trash icon-white" align='rigth'></i>			
+									Eliminar										
+								</a><br><br>
+								{% endif %}
+								{% if( producto.estado.id == 1 and (cotizacion.estado.id == 2 or cotizacion.estado.id == 3) and (is_granted('ROLE_DIR') or is_granted('ROLE_EJEC'))) %}	
+								<a class="btn btn-success" id="productoaprobar_{{ producto.id }}" href="{{ path("cotizaciones_aprobar_producto", {"id": producto.id}) }}">
+									<i class="icon-ok icon-white" align='rigth'></i>			
+									Aprobar										
+								</a>
+								{% endif %}
+								{% if( producto.estado.id == 1 and (cotizacion.estado.id == 2 or cotizacion.estado.id == 3) and (is_granted('ROLE_DIR') or is_granted('ROLE_EJEC') )) %}	
+								<a class="btn btn-danger" id="productorechazar_{{ producto.id }}" href="{{ path("cotizaciones_rechazar_producto", {"id": producto.id}) }}">
+									<i class="icon-trash icon-white" align='rigth'></i>			
+									Rechazar										
+								</a>
+								{% endif %}
+							</td>
+							{% if producto.producto.estadoIva == true %}
+									{% set totaliva = totaliva + (producto.valortotal*(producto.producto.iva/100)) %}
+								{% endif %}	
+							{% set subtotal = subtotal+producto.valortotal + (producto.logistica*producto.cantidad)  %}
+
+					</tr>
+					{% endfor %}
+					<tr>
+						<th colspan='8'>Subtotal</th>
+						<td>$ {{ subtotal|number_format(2, ',', '.') }}</td>
+					</tr>
+					
+					<tr>
+						<th colspan='8'>Logistica Consolidada</th>
+						<td>$ {{ cotizacion.logistica|number_format(2, ',', '.') }}</td>
+					</tr>
+					
+					<tr>
+						<th colspan='8'>IVA</th>
+						<td>$ {{ totaliva|number_format(2, ',', '.') }}</td>
+					</tr>
+					<tr>
+						<th colspan='8'>Valor total</th>
+						{% set total = subtotal + totaliva + cotizacion.logistica %}
+						<td>$ {{ total|number_format(2, ',', '.') }}</td>
+					</tr>
+				</tbody>
+			</table>
+			{% endif %}
+		</div>
+	</div>
+
+
+
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script>
+
+	function confirmar(ruta)
+	{
+	  if (confirm("Cambiar estado")==true){
+	  	self.location=ruta;
+	  }else{
+	  	alert("OK");
+	  }
+	  
+	}
+	
+	{% for producto in productos %}	
+		$("#productoeditar_{{ producto.id }}").colorbox({href:"{{ path('cotizaciones_valores',  {"id": producto.id})}}"});	
+		$("#productoaprobar_{{ producto.id }}").colorbox({href:"{{ path('cotizaciones_aprobar_producto',  {"id": producto.id})}}"});	
+	{% endfor %}
+	
+
+	</script>
+{% endblock %}

@@ -1,0 +1,146 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Inventario por salir{% endblock %}
+{% block sidebar %}
+{{ parent() }}
+{% endblock %}
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+	<div class="box span12">
+		<div class="box-header well">
+			<h2><i class="icon-th-list"></i>Inventario por salir</h2>
+
+      <div class="box-icon">
+        <div class="box-icon">
+                    <a href="" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+                </div>
+      </div>
+		</div>
+		<div class="box-content">
+			<div id="dashboard">
+          <div id="tabla" class="table table-bordered table-striped" cellspacing="0" width="100%">
+            <table id="inventario" class="display">
+              <form action="" method="POST" class="form-horizontal">
+              <thead style="display:table-row-group;"  >
+                <tr>
+                  <th>Id</th>
+                  <th>Codigo</th>
+                  <th>Producto</th>
+                  <th>Marca</th>
+                  <th>Referencia</th>
+                  <th>Sku</th>
+                  <th>Fecha Entrada</th>
+                  <th>OC</th>
+                  <th>Observación</th>
+                  <th>Salida</th>
+                </tr>
+                <tr>
+                  <th></th>
+                  <th><input type="text" id="inventario_codigo" name="inventario[codigo]" style="width: 60px"></th>
+                  <th><input type="text" id="inventario_producto" name="inventario[nombre]" style="width: 120px"></th>
+                  <th><input type="text" id="inventario_marca" name="inventario[marca]" style="width: 60px"></th>
+                  <th><input type="text" id="inventario_referencia" name="inventario[referencia]" style="width: 80px"></th>
+                  <th><input type="text" id="inventario_codInc" name="inventario[codInc]" style="width: 60px"></th>
+                  <th><input type="text" id="inventario_fechaEntrada" name="inventario[fechaEntrada]" style="width: 100px"></th>
+                  <th><input type="text" id="inventario_ordenCompra" name="inventario[ordenCompra]" style="width: 80px"></th>
+                  <th><input type="text" id="inventario_observacion" name="inventario[observacion]" style="width: 120px"></th>
+                  <th><button type="submit" id="inventario_Enviar" name="inventario[Enviar]" class="btn btn-primary">Enviar</button></th>
+                </tr>
+              </thead>
+              </form>
+              <tbody>
+                          {% for registro in listado %}
+                          <tr>
+                            <td>{{ registro['inventario']['id'] }}</td>
+                            <td><a href="{{ path("inventario_salida", {"id": registro['inventario']['id'] }) }}">{{ registro['inventario']['codigo'] }}</a></td>
+                            <td>{% if registro['inventario']['producto'] is not null %}{{ registro['inventario']['producto']['nombre'] }} {% endif %}</td>
+                            <td>{% if registro['inventario']['producto'] is not null %}{{ registro['inventario']['producto']['marca'] }} {% endif %}</td>
+                            <td>{% if registro['inventario']['producto'] is not null %}{{ registro['inventario']['producto']['referencia'] }} {% endif %}</td>
+                            <td>{% if registro['inventario']['producto'] is not null %}{{ registro['inventario']['producto']['codInc'] }} {% endif %}</td>
+                            <td>{{ registro['inventario']['fechaEntrada'] | date("Y-m-d") }}</td>
+                            <td>{% if registro['inventario']['orden'] is not null %} {{ registro['inventario']['orden']['consecutivo'] }} {% endif %}</td>
+                            <td>{{ registro['inventario']['observacion'] }}</td>
+                            <td><input type="checkbox" name="id" value="{{ registro['inventario']['id'] }}"></td>
+                          </tr>
+                          {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <div>
+            <div align="rigth">Todos<input id="checktodos" name="checktodos" type="checkbox" /></div>
+              <input type="submit" value="Salida" onclick='check_value("{{ path("inventario_listadosalida") }}")'>
+            </div>
+          </div>
+          
+              <div class="box span11">
+                <div class="box-content">
+                        <div class="dataTables_info">Mostrando {{ listado.getItemNumberPerPage*(listado.getCurrentPageNumber-1)+1  }} a {{ listado.getItemNumberPerPage*listado.getCurrentPageNumber }} de {{ listado.getTotalItemCount }}   Productos
+                        </div>
+                        <div class="pagination pagination-centered">
+                                {{ knp_pagination_render(listado) }}                    
+                        </div>
+                </div>
+            </div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+
+{{ parent() }}
+
+    <script type="text/javascript">
+  
+      $(document).ready(function(){
+       
+        //Checkbox
+        $("#checktodos").change(function(){
+          $(':checkbox').each( function(indice, elemento) {
+            if($("#checktodos").is(":checked")){
+              $(this).attr("checked",true);
+      	$(this).parent().addClass("checked");
+            } else {
+              $(this).attr("checked",false);
+      	$(this).parent().removeClass("checked");
+            }
+          });
+        });
+       
+      });
+        
+      function check_value(ruta)
+      { 
+        var arreglo="";
+      	var chk=document.getElementsByName('id');
+          for (var i = 0; i < chk.length; i++) {
+              if(chk[i].checked){
+                arreglo=arreglo+chk[i].value+",";
+              	//self.location=ruta+"/"+chk[i].value;
+              }
+          }
+          self.location=ruta+"/"+arreglo;
+      }
+  
+    </script>
+  
+    <script type="text/javascript">
+      
+      function confirmar(ruta)
+      {
+          if (confirm("Desea cambiar el estado")==true){
+              self.location=ruta;
+          }else{
+              alert("OK");
+          }
+      }
+    </script>
+
+    <script>
+        $( "#inventario_fechaEntrada" ).datepicker({ dateFormat: 'yy-mm-dd' });
+    </script>
+    
+    {{ parent() }}
+
+{% endblock %}
+

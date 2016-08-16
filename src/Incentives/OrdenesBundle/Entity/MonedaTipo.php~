@@ -1,0 +1,169 @@
+<?php
+
+namespace Incentives\OrdenesBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+
+/**
+ * MonedaTipo
+ *
+ * @ORM\Table()
+ * @ORM\Entity
+ */
+class MonedaTipo
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="nombre", type="string", length=255, nullable=true)
+     */
+    private $nombre;
+    
+    /**
+     * @ORM\OneToMany(targetEntity="OrdenesCompra", mappedBy="monedaTipo")
+     */
+    protected $ordenesCompra;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="fechaModificacion", type="datetime", nullable=true)
+     */
+    private $fechaModificacion;
+    
+    /**
+     * 
+     * @ORM\ManyToOne(targetEntity="Incentives\BaseBundle\Entity\Usuario")
+     * @ORM\JoinColumn(name="usuario_id", referencedColumnName="id", nullable=true)
+     * 
+     */
+    protected $usuario;
+
+    public function __construct()
+    {
+        $this->ordenesCompra = new ArrayCollection();
+    }
+
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set nombre
+     *
+     * @param string $nombre
+     * @return OrdenesTipo
+     */
+    public function setNombre($nombre)
+    {
+        $this->nombre = $nombre;
+    
+        return $this;
+    }
+
+    /**
+     * Get nombre
+     *
+     * @return string 
+     */
+    public function getNombre()
+    {
+        return $this->nombre;
+    }
+
+    /**
+     * Add ordenesCompra
+     *
+     * @param \Incentives\OrdenessBundle\Entity\OrdenesCompra $ordenesCompra
+     * @return OrdenesTipo
+     */
+    public function addOrdenesCompra(\Incentives\OrdenesBundle\Entity\OrdenesCompra $ordenesCompra)
+    {
+        $this->ordenesCompra[] = $ordenesCompra;
+    
+        return $this;
+    }
+
+    /**
+     * Remove ordenesCompra
+     *
+     * @param \Incentives\OrdenesBundle\Entity\OrdenesCompra $ordenesCompra
+     */
+    public function removeOrdenesCompra(\Incentives\OrdenesBundle\Entity\OrdenesCompra $ordenesCompra)
+    {
+        $this->ordenesCompra->removeElement($ordenesCompra);
+    }
+
+    /**
+     * Get ordenesCompra
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getOrdenesCompra()
+    {
+        return $this->ordenesCompra;
+    }
+
+    /**
+     * Set fechaModificacion
+     *
+     * @param \DateTime $fechaModificacion
+     * @return MonedaTipo
+     */
+    public function setFechaModificacion($fechaModificacion)
+    {
+        $this->fechaModificacion = $fechaModificacion;
+    
+        return $this;
+    }
+
+    /**
+     * Get fechaModificacion
+     *
+     * @return \DateTime 
+     */
+    public function getFechaModificacion()
+    {
+        return $this->fechaModificacion;
+    }
+
+    /**
+     * Set usuario
+     *
+     * @param \Incentives\BaseBundle\Entity\Usuario $usuario
+     * @return MonedaTipo
+     */
+    public function setUsuario(\Incentives\BaseBundle\Entity\Usuario $usuario = null)
+    {
+        $this->usuario = $usuario;
+    
+        return $this;
+    }
+
+    /**
+     * Get usuario
+     *
+     * @return \Incentives\BaseBundle\Entity\Usuario 
+     */
+    public function getUsuario()
+    {
+        return $this->usuario;
+    }
+}

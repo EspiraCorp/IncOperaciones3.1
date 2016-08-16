@@ -1,0 +1,215 @@
+<?php
+
+namespace Incentives\CatalogoBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Intervalos
+ *
+ * @ORM\Table()
+ * @ORM\Entity
+ */
+class Intervalos
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="minimo", type="float", nullable=true)
+     */
+    private $minimo;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="maximo", type="float", nullable=true)
+     */
+    private $maximo;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="puntos", type="float", nullable=true)
+     */
+    private $puntos;
+    
+    /**
+     * 
+     * @ORM\ManyToOne(targetEntity="Catalogos", inversedBy="intervalos", cascade={"persist"})
+     * @ORM\JoinColumn(name="catalogos_id", referencedColumnName="id", nullable=true)
+     * 
+     */
+    protected $catalogos;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="fechaModificacion", type="datetime", nullable=true)
+     */
+    private $fechaModificacion;
+    
+    /**
+     * 
+     * @ORM\ManyToOne(targetEntity="Incentives\BaseBundle\Entity\Usuario")
+     * @ORM\JoinColumn(name="usuario_id", referencedColumnName="id", nullable=true)
+     * 
+     */
+    protected $usuario;
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set minimo
+     *
+     * @param float $minimo
+     * @return Intervalos
+     */
+    public function setMinimo($minimo)
+    {
+        $this->minimo = $minimo;
+    
+        return $this;
+    }
+
+    /**
+     * Get minimo
+     *
+     * @return float 
+     */
+    public function getMinimo()
+    {
+        return $this->minimo;
+    }
+
+    /**
+     * Set maximo
+     *
+     * @param float $maximo
+     * @return Intervalos
+     */
+    public function setMaximo($maximo)
+    {
+        $this->maximo = $maximo;
+    
+        return $this;
+    }
+
+    /**
+     * Get maximo
+     *
+     * @return float 
+     */
+    public function getMaximo()
+    {
+        return $this->maximo;
+    }
+
+    /**
+     * Set puntos
+     *
+     * @param float $puntos
+     * @return Intervalos
+     */
+    public function setPuntos($puntos)
+    {
+        $this->puntos = $puntos;
+    
+        return $this;
+    }
+
+    /**
+     * Get puntos
+     *
+     * @return float 
+     */
+    public function getPuntos()
+    {
+        return $this->puntos;
+    }
+
+    /**
+     * Set catalogos
+     *
+     * @param \Incentives\CatalogoBundle\Entity\Catalogos $catalogos
+     * @return Intervalos
+     */
+    public function setCatalogos(\Incentives\CatalogoBundle\Entity\Catalogos $catalogos = null)
+    {
+        $this->catalogos = $catalogos;
+    
+        return $this;
+    }
+
+    /**
+     * Get catalogos
+     *
+     * @return \Incentives\CatalogoBundle\Entity\Catalogos 
+     */
+    public function getCatalogos()
+    {
+        return $this->catalogos;
+    }
+
+    /**
+     * Set fechaModificacion
+     *
+     * @param \DateTime $fechaModificacion
+     * @return Intervalos
+     */
+    public function setFechaModificacion($fechaModificacion)
+    {
+        $this->fechaModificacion = $fechaModificacion;
+    
+        return $this;
+    }
+
+    /**
+     * Get fechaModificacion
+     *
+     * @return \DateTime 
+     */
+    public function getFechaModificacion()
+    {
+        return $this->fechaModificacion;
+    }
+
+    /**
+     * Set usuario
+     *
+     * @param \Incentives\BaseBundle\Entity\Usuario $usuario
+     * @return Intervalos
+     */
+    public function setUsuario(\Incentives\BaseBundle\Entity\Usuario $usuario = null)
+    {
+        $this->usuario = $usuario;
+    
+        return $this;
+    }
+
+    /**
+     * Get usuario
+     *
+     * @return \Incentives\BaseBundle\Entity\Usuario 
+     */
+    public function getUsuario()
+    {
+        return $this->usuario;
+    }
+}

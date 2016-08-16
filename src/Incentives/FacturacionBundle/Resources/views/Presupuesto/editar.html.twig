@@ -1,0 +1,56 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Editar Presupuesto{% endblock %}
+
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+<div class="box span12">
+<div class="box-header well" data-original-title>
+                        <h2><i class="icon-edit"></i>Editar Presupuesto</h2>
+                        <div class="box-icon">
+                            <a href="{{ path("presupuesto_detalle", {"id": 30}) }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+                        </div>
+                    </div>
+<div class="box-content">
+<form action="" method="POST" class="form-horizontal">
+    {{ form_errors(form) }}
+    <fieldset>
+        <div class="control-group">
+            * {{ form_label(form.valor, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.valor   , { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+         <div class="control-group">
+            * {{ form_label(form.mensual, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.mensual , { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            * {{ form_label(form.descripcion, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.descripcion, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        
+
+    </fieldset>
+    <div class="row-fluid sortable ui-sortable">
+
+    </div>  
+<div class="form-actions">
+    {{ form_widget(form.Enviar, { 'attr': {'class': 'btn btn-primary'} }) }}
+</div>
+{{ form_widget(form._token) }}
+</form>
+</div>
+</div>
+ </div>
+{% endblock %}
+
+{% block javascripts %}
+    
+    {{ parent() }}
+
+{% endblock %}

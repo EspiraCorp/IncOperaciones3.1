@@ -1,0 +1,82 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Usuarios{% endblock %}
+{% block sidebar %}
+{{ parent() }}
+{% endblock %}
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+  <div class="box span12">
+    <div class="box-header well">
+      <h2><i class="icon-th-list"></i>Usuarios</h2>
+      <div class="box-icon"> 
+              <a href="{{ path('usuarios_nuevo') }}" class="btn btn-round" title="Agregar"><i class="icon-plus"></i></a>
+      </div>
+    </div>
+    <div class="box-content">
+      <div id="dashboard">
+                   
+                    <div id="tabla" class="table table-bordered table-striped" cellspacing="0" width="100%">
+                      <table id="productos" class="display" width="100%">
+                        {{ form_start(form, { attr: {novalidate: 'novalidate'} }) }}
+                          <form action="{{ path('usuarios') }}" method="POST" {{ form_enctype(form) }} class="form-horizontal">
+                            <div class="box-icon">{{ form_widget(form.Enviar, { 'attr': {'class': 'btn btn-primary'} }) }}</div>
+                        <thead style="display:table-row-group;">
+                          <tr>
+                            <th>{{ knp_pagination_sortable(listado, 'Id', 'u.id') }}</th>
+                            <th>{{ knp_pagination_sortable(listado, 'Nombre', 'u.nombre') }}</th>
+                            <th>{{ knp_pagination_sortable(listado, 'Usuario', 'u.username') }}</th>
+                            <th>{{ knp_pagination_sortable(listado, 'Perfil', 'g.nombre') }}</th>
+                            <th>{{ knp_pagination_sortable(listado, 'Proveedor', 'p.nombre') }}</th>
+                            <th>{{ knp_pagination_sortable(listado, 'Cliente', 'c.nombre') }}</th>
+                            <th>{{ knp_pagination_sortable(listado, 'Estado', 'u.isActive') }}</th>
+                          </tr>
+                          <tr>
+                            <th><input type="text" id="usuario_id" name="usuario[id]" style="width: 40px"></th>
+                            <th>{{ form_widget(form.nombre, { 'attr': { 'style' : 'width:150px' }} ) }}</th>
+                            <th>{{ form_widget(form.username, { 'attr': { 'style' : 'width:250px' }} ) }}</th>
+                            <th>{{ form_widget(form.grupos, { 'attr': { 'style' : 'width:150px' }} ) }}</th>
+                            <th>{{ form_widget(form.proveedor, { 'attr': { 'style' : 'width:100px' }} ) }}</th>
+                            <th>{{ form_widget(form.cliente, { 'attr': { 'style' : 'width:100px' }} ) }}</th>
+                            <th></th>
+                          </tr>
+                        </thead>
+                        </form>
+                        <tbody>
+                          {% for usuario in listado %}
+                          <tr>
+                            <td>{{ usuario.id }}</td>
+                            <td><a href="{{ path("usuarios_editar", {"id": usuario.id}) }}">{{ usuario.nombre }}</a></td>
+                            <td>{{ usuario.username }}</td>
+                            <td>{% if usuario.grupos is null %}{% else %}{% for grupo in usuario.grupos %}{{ grupo.nombre }}{% endfor %}{% endif %}</td>
+                            <td>{% if usuario.proveedor is null %}{% else %}{{ usuario.proveedor.nombre }}{% endif %}</td>
+                            <td>{% if usuario.cliente is null %}{% else %}{{ usuario.cliente.nombre }}{% endif %}</td>
+                            <td>{% if usuario.isActive==1 %}Activo{% else %} Inactivo {% endif %}</td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>   
+            </div>
+    </div>
+    
+    <div class="box span11">
+        <div class="box-content">
+                <div class="dataTables_info">Mostrando {{ listado.getItemNumberPerPage*(listado.getCurrentPageNumber-1)+1  }} a {{ listado.getItemNumberPerPage*listado.getCurrentPageNumber }} de {{ listado.getTotalItemCount }}   Usuarios
+                </div>
+                <div class="pagination pagination-centered">
+                        {{ knp_pagination_render(listado) }}                    
+                </div>
+        </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+
+{{ parent() }}
+
+{% endblock %}
+
+

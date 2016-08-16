@@ -1,0 +1,222 @@
+<html>
+<style>
+body {
+	font: 10pt Verdana;
+}
+.marco {
+  border-width:1px;
+  border-style:solid;
+  border-color:#000000;
+  padding:10px 50px;
+}
+.marcoinverso {
+	background-color:#000;
+	padding:10px 50px;
+	color:#fff;
+}
+pre {
+	font: 9pt Verdana;
+  text-align:center;
+}
+.derecha {
+  text-align:right;
+}
+.tabla1{
+	margin: 10px;
+	width:100%;
+	padding: .5em;
+}
+.tabla2{
+	border-collapse: collapse;
+	width:100%;
+	border: 1px solid #000;
+}
+.tabla2 td{
+	font: 8pt Verdana;
+  text-align:center;
+  border: 1px solid #000;
+}
+.total{
+	font: bold 11pt Verdana;
+	background-color:#ccc;
+}
+.invisible{
+	border: 0px;
+	background-color:#fff;
+}
+th{
+	font: bold 11pt Verdana;
+  text-align:center;
+  background-color:#ffcc00;
+  border: 1px solid #000;
+}
+#columna1 {
+  width:200px;
+}
+#columna2 { 
+  margin-left:220px;
+  margin-right:20px;
+  margin-top:10px;  
+  background-color:#ffffbb;
+}
+</style>
+<body>
+<pre class="marco">
+<b>ORDEN DE COMPRA</b>
+CÓDIGO: TOD-FOR-008
+DOCUMENTO VIGENTE A PARTIR DEL 04/08/2015
+VERSIÓN 3
+</pre>
+<div class="marco">
+	 <div class="derecha">Consecutivo No.: {{ orden.consecutivo }}</div>
+	 	<table class="tabla1">
+	 		<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+	 		<tr>
+	 			<td colspan="2">Proveedor:</td>
+	 			<td colspan="3">{{ orden.proveedor.nombre }}</td>
+	 			<td></td>
+	 			<td colspan="2">Fecha de solicitud:</td>
+	 			<td colspan="3">{{ orden.fechaCreacion | date("d-M-Y") }}</td>
+	 		</tr>
+	 		<tr>
+	 			<td colspan="2">Contacto:</td>
+	 			<td colspan="3">{% if contacto is null %}{% else %}{{ contacto.nombres }}{% endif %}</td>
+	 			<td></td>
+	 			<td colspan="2">Fecha de entrega:</td>
+	 			<td colspan="3"></td>
+	 		</tr>
+	 		<tr>
+	 			<td colspan="2">Ciudad:</td>
+	 			<td colspan="3">{{ orden.proveedor.sedeprincipal }}</td>
+	 			<td></td>
+	 			<td colspan="2">Forma de pago:</td>
+	 			<td colspan="3">{{ orden.proveedor.condicionescomerciales }}</td>
+	 		</tr>
+	 		<tr>
+	 			<td colspan="2">Centro de Costo:</td>
+	 			<td colspan="3"></td>
+	 			<td></td>
+	 			<td colspan="2">Cancelado SI/NO:</td>
+	 			<td colspan="3">{% if (orden.cancelado==0) %}NO{% else %}SI{% endif %}</td>
+	 		</tr>
+	 	</table>
+	 	<table class="tabla2">
+	 		<tr>
+	 			<th>REFERENCIA</th>
+	 			<th>ID</th>
+	 			<th>OC</th>
+	 			<th>CC</th>
+	 			<th>DESCRIPCION</th>
+	 			<th>CANTIDAD</th>
+	 			<th>VALOR UNITARIO</th>
+	 			<th>VALOR TOTAL</th>
+	 		</tr>
+	 		{% set linea = 0 %}
+	 		{% set totalunidades = 0 %}
+	 		{% set subtotal = 0 %}
+	 		{% set totaliva = 0 %}
+	 		{% set totalPago = 0 %}
+	 		{% set descuento = 0 %}
+	 		{% for producto in productos %}
+	 		<tr>
+	 			<td rowspan="2">{{ producto.producto.referencia }}</td>
+	 			<td rowspan="2">{{ producto.producto.codInc }}</td>
+	 			<td rowspan="2">{{ producto.producto.codEAN }}</td>
+	 			<td rowspan="2">{{ cc[producto.id]  }}</td>
+	 			<td>{{ producto.producto.nombre }}</td>
+	 			<td>{{ producto.cantidad }}</td>
+	 			<td>{{ producto.valorunidad }}</td>
+	 			<td>{{ producto.valortotal }}</td>
+	 			{% set totalunidades = totalunidades + producto.cantidad %}
+	 			{% set subtotal = subtotal + producto.valortotal %}
+	 			{% if(producto.producto.estadoIva==1) %}
+		 			{% set totaliva = totaliva + (producto.producto.iva/100)*(producto.valorunidad*producto.cantidad - producto.descuento) %}
+	 			{% endif %}
+	 			{% set descuento = descuento + producto.descuento %}
+	 		</tr>
+	 		<tr>
+	 			<td colspan="3">{{ codes[producto.id] | raw }}</td>
+	 		</tr>
+	 			{% set linea = linea + 1 %}
+	 		{% endfor %}
+
+	 		{% set restantes = 15 - linea %}
+	 		{% for i in range(1, restantes) %}
+	 		<tr>
+	 			<td>-</td>
+	 			<td></td>
+	 			<td></td>
+	 			<td></td>
+	 			<td></td>
+	 			<td></td>
+	 			<td></td>
+	 			<td> </td>
+	 		</tr>
+	 		{% endfor %}
+	 		
+	 		{% if orden.aplicaIva==1 %} {% set totaliva = totaliva + (orden.domicilio * 0.16) %} {% endif %}
+	 		{% if orden.aplicaIva==1 %} {% set totaliva = totaliva + (orden.comisionBancaria * 0.16) %} {% endif %}
+	 		{% set totalPago = totaliva + subtotal - descuento + orden.domicilio + orden.comisionBancaria + orden.servicioLogistico %}
+	 		
+	 		<tr class="total">
+	 			<td colspan="4">TOTAL UNIDADES</td>
+	 			<td>{{ totalunidades }}</td>
+	 			<td></td>
+	 			<td>SUBTOTAL</td>
+	 			<td>{{ subtotal }}</td>
+	 		</tr>
+	 		<tr class="total">
+	 			<td class="invisible" colspan="6" ></td>
+	 			<td>DESCUENTOS (RETE 2%)</td>
+	 			<td>{{ descuento }}</td>
+	 		</tr>
+	 		<tr class="total">
+	 			<td class="invisible" colspan="6" ></td>
+	 			<td>DOMICILIO</td>
+	 			<td>{{ orden.domicilio }}</td>
+	 		</tr>
+	 		<tr class="total">
+	 			<td colspan="6" class="invisible"></td>
+	 			<td>IVA</td>
+	 			<td>{{ totaliva }}</td>
+	 		</tr>
+	 		<tr class="total">
+	 			<td colspan="6" class="invisible"></td>
+	 			<td>TOTAL A PAGAR</td>
+	 			<td>{{ totalPago }}</td>
+	 		</tr>
+	 	</table>
+	 	<br>
+	 	<div class="marco">
+ 			{{ orden.observaciones }}
+ 		</div>
+	 	<br>
+ 		<div class="marcoinverso">
+ 			I M P O R T A N T E :       Para radicar factura es INDISPENSABLE traer Factura Original con 2 copias para Incentives y Copia de la Orden de Compra
+ 		</div>
+ 		<div class="marco">
+ 			OBSERVACIONES: ENTREGAR EN INCLOGISTIC EN LA CARRERA 69 #75-63, TELEFONO 6054071 CONTACTO COMPRADORA RESPONSABLE DE LA ORDEN DE COMPRA,  RADICACION DE FACTURA ORIGINAL CON DOS COPIAS Y ADJUNTAR ORDEN DE COMPRA EN LA DIRECCION CARRERA 69 #75-63 - PERSONA CONTACTO RECEPCIONISTA. HORARIO DE RADICACION LUNES A VIERNES 8:00 am - 12:00 pm.
+ 		</div>
+ 		<br>
+ 		<table class="tabla1">
+	 		<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+	 		<tr>
+	 			<td colspan="2">Se pago la suma de:</td>
+	 			<td colspan="3">____________</td>
+	 			<td></td>
+	 			<td colspan="2">Firma quien Autoriza la Orden: </td>
+	 			<td colspan="3"> ____________ </td>
+	 		</tr>
+	 	</table>
+	 	<pre>
+<b>ENTREGA Y RADICACION DE FACTURA CON DOS COPIAS Y ADJUNTAR ORDEN DE COMPRA EN LA CARRERA 69 #75-63</b>
+Incentives S.A.S
+Nit. 830.133.132-6
+CARRERA 69 #75-63
+Tel. 6054071  
+Bogotá - Colombia
+	 	</pre>
+
+</div>
+</body>
+</html>

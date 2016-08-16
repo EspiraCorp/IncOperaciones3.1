@@ -1,0 +1,60 @@
+servicios_productos:
+    path:  /servicios/productos
+    defaults: { _controller: IncentivesServiciosBundle:Catalogo:productos }
+
+servicios_categoria:
+    path:  /servicios/categorias
+    defaults: { _controller: IncentivesServiciosBundle:Catalogo:categorias }
+
+servicios_calificacion:
+    path:  /servicios/calificacion
+    defaults: { _controller: IncentivesServiciosBundle:Catalogo:calificacion }
+
+servicios_inventarioentrada:
+    path:  /servicios/inventarioentrada
+    defaults: { _controller: IncentivesServiciosBundle:Inventarios:entrada }
+
+servicios_datoscompra:
+    path:  /servicios/datoscompra
+    defaults: { _controller: IncentivesServiciosBundle:Inventarios:datoscompra }
+
+servicios_inventariodespac:
+    path:  /servicios/inventariodespacho
+    defaults: { _controller: IncentivesServiciosBundle:Inventarios:salida }
+
+servicios_inventariodevolucion:
+    path:  /servicios/inventariodevolucion
+    defaults: { _controller: IncentivesServiciosBundle:Inventarios:devolucion }
+
+servicios_redencionnueva:
+    path:  /servicios/redencionnueva
+    defaults: { _controller: IncentivesServiciosBundle:Redenciones:nueva }
+
+servicios_redencionautorizada:
+    path:  /servicios/redencionautorizada
+    defaults: { _controller: IncentivesServiciosBundle:Redenciones:autorizada }
+
+servicios_puntosredimidos:
+    path:  /servicios/puntosredimidos
+    defaults: { _controller: IncentivesServiciosBundle:Redenciones:puntosredimidos }
+
+servicios_puntosrechazados:
+    path:  /servicios/puntosrechazados
+    defaults: { _controller: IncentivesServiciosBundle:Redenciones:puntosrechazados }
+
+servicios_listadopuntosredimidos:
+    path:  /servicios/puntosprograma
+    defaults: { _controller: IncentivesServiciosBundle:Redenciones:listadoPuntosRedimidos }
+
+servicios_redencionesparticipante:
+    path:  /servicios/redencionesparticipante
+    defaults: { _controller: IncentivesServiciosBundle:Redenciones:redencionesparticipante }
+
+servicios_redencioneslistado:
+    path:  /servicios/redencioneslistado
+    defaults: { _controller: IncentivesServiciosBundle:Redenciones:redencioneslistado }
+
+servicios_entregado:
+    path:  /servicios/entregado
+    defaults: { _controller: IncentivesServiciosBundle:Redenciones:entregado }
+

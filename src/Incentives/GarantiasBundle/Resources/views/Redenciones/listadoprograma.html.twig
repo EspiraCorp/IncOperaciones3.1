@@ -1,0 +1,152 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Redenciones por programa{% endblock %}
+{% block sidebar %}
+{{ parent() }}
+{% endblock %}
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+	<div class="box span12">
+		<div class="box-header well">
+			<h2><i class="icon-th-list"></i>Redenciones por programa</h2>
+      <div class="box-icon">
+        <div class="box-icon">
+                    <a href="{{ path('garantias_redenciones') }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+                </div>
+      </div>
+      <a href="{{ path('redenciones_exportar', {"programa": programa.id}) }}" title="Descargar">
+            <button class="btn btn-small">
+              <i class="icon-download"></i>
+            </button>
+          </a>
+      {# <a href="{{ path('proveedores_importar') }}" title="Carga Masiva">
+            <button class="btn btn-small">
+              <i class="icon-upload"></i>
+            </button>
+          </a>
+      <a href="{{ path('proveedores_exportar') }}" title="Descargar">
+            <button class="btn btn-small">
+              <i class="icon-download"></i>
+            </button>
+          </a>
+			<div class="box-icon">  
+        <a href="{{ path('participante_nuevo') }}" title="Agregar">
+            <button class="btn btn-small btn-success">
+              <i class="icon-plus icon-white"></i>
+            </button>
+          </a>
+			</div> #}
+		</div>
+		<div class="box-content">
+      {% if redencion!=null %}
+			    <div id="dashboard">                  
+                    <div id="tabla" class="" cellspacing="0" width="100%">
+                      <table id="redenciones" class="display">
+                        <thead style="display:table-row-group;">
+                          <tr>
+			                <th>Participante</th>
+                            <th>Documento</th>
+                            <th>Producto</th>
+                            <th>Codigo</th>
+                            <th>Estado</th>
+                            <th>Guia</th>
+                            <th>Fecha</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for redenciones in redencion %}
+                          <tr>
+			                      <td><a href="{{ path("garantiasredenciones_datos", {"redencion": redenciones.id }) }}">{{ redenciones.participante.nombre }}</a></td>
+                            <td>{{ redenciones.participante.documento }}</td>
+                            <td>{{ redenciones.productocatalogo.producto.nombre }}</td>
+                            <td>{{ redenciones.codigoredencion }}</td>
+                            <td>{{ redenciones.redencionestado.nombre }}</td>
+                            <td>{% if redenciones.inventario|length >0 %}{% if redenciones.inventario[0].guia|length >0 %}{{ redenciones.inventario[0].guia[0].guia }}{% endif %}{% endif %}</td>
+                            <td>{{ redenciones.fecha | date("d-M-Y") }}</td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                        <tfoot style="display: table-header-group;">
+                          <tr>
+			                      <th>Participante</th>
+                            <th>Documento</th>
+                            <th>Producto</th>
+                            <th>Codigo</th>
+                            <th>Estado</th>
+                            <th>Guia</th>
+                            <th>Fecha</th>
+                          </tr>
+                        </tfoot>
+                      </table>
+                    </div>  
+            </div>
+            {% else %}
+            <div class="alert alert-info">
+                      No existen redenciones asociadas al programa
+                    </div>
+            {% endif %}
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+
+{{ parent() }}
+<script type="text/javascript">
+      $(document).ready(function() {
+//    inifuntion
+       var table = $('#redenciones').dataTable({
+
+            "sDom": 'T<"clear">lfrtip',
+             "bPaginate": true,
+             "bLengthChange": true,
+             "bFilter": true,
+             "bSort": true,
+             "bInfo": false,
+             "bAutoWidth": true,
+             "bJQueryUI": false,
+             "sPaginationType": "full_numbers",
+             "iDisplayLength": 50,
+             "aLengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "Todo"] ],
+              initComplete: function () {
+                    this.api().columns().every( function () {
+                        var column = this;
+                        var select = $('<select style="width: 100%"><option value=""></option></select>')
+                            .appendTo( $(column.footer()).empty() )
+                            .on( 'change', function () {
+                                var val = $.fn.dataTable.util.escapeRegex(
+                                    $(this).val()
+                                );
+         
+                                column
+                                    .search( val ? '^'+val+'$' : '', true, false )
+                                    .draw();
+                            } );
+         
+                        column.data().unique().sort().each( function ( d, j ) {
+                            //limpiar
+                            //d
+                            select.append( '<option value="'+d+'">'+d+'</option>' )
+                        } );
+                    } );
+                }
+    });
+
+})
+    </script>
+
+  <script type="text/javascript">
+      function confirmar(ruta)
+      {
+        if (confirm("Desea cambiar el estado")==true){
+            self.location=ruta;
+        }else{
+            alert("OK");
+        }
+        
+      }
+  </script>
+
+{% endblock %}
+

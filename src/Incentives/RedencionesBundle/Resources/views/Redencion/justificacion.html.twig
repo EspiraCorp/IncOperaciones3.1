@@ -1,0 +1,40 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Justificación Envio{% endblock %}
+
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+<div class="box span12">
+<div class="box-header well" data-original-title>
+                        <h2><i class="icon-edit"></i>Justificación Envio</h2>
+                        <div class="box-icon">
+                            <a href="" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+                        </div>
+                    </div>
+<div class="box-content">
+<form action="{{ path('redenciones_justificacion') }}/{{ redencion.id }}/{{ planilla }}" method="POST" {{ form_enctype(form) }} class="form-horizontal">
+    {{ form_errors(form) }}
+    <input type='hidden' name='id' value={{ redencion.id }}>
+    <fieldset>
+        <div class="control-group">
+            {{ form_label(form.justificacion, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.justificacion, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            {{ form_label(form.observacionJustificacion, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.observacionJustificacion, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        
+<div class="form-actions">
+    {{ form_widget(form.Enviar, { 'attr': {'class': 'btn btn-primary'} }) }}
+</div>
+{{ form_widget(form._token) }}
+</form>
+</div>
+</div>
+ </div>
+{% endblock %}

@@ -1,0 +1,110 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Productos General{% endblock %}
+{% block sidebar %}
+{{ parent() }}
+{% endblock %}
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+	<div class="box span12">
+		<div class="box-header well">
+			<h2><i class="icon-th-list"></i>Productos General</h2>
+      <div class="box-icon"> 
+              <a href="{{ path('producto_editar_mas') }}" title="Edicion Masiva" class="btn btn-round"><i class="icon-edit"></i></a>
+              <a href="{{ path('producto_importar') }}" title="Carga Masiva" class="btn btn-round"><i class="icon-upload"></i></a>
+              <a href="{{ path('producto_exportar') }}" title="Descargar" class="btn btn-round"><i class="icon-download"></i></a>
+              <a href="{{ path('producto_nuevo') }}" class="btn btn-round" title="Agregar"><i class="icon-plus"></i></a>
+      </div>
+		</div>
+		<div class="box-content">
+			<div id="dashboard">
+                   
+                    <div id="tabla" class="table table-bordered table-striped" cellspacing="0" width="100%">
+                      <table id="productos" class="display">
+                        {{ form_start(form, { attr: {novalidate: 'novalidate'} }) }}
+                          <form action="{{ path('producto_listadouniversal') }}" method="POST" {{ form_enctype(form) }} class="form-horizontal">
+                            <div class="box-icon">{{ form_widget(form.Enviar, { 'attr': {'class': 'btn btn-primary'} }) }}</div>
+                        <thead style="display:table-row-group;">
+                          <tr>
+			                      <th>{{ knp_pagination_sortable(productos, 'Id', 'p.id') }}</th>
+                            <th>{{ knp_pagination_sortable(productos, 'Nombre', 'p.nombre') }}</th>
+                            <th>{{ knp_pagination_sortable(productos, 'Categoria', 'c.nombre') }}</th>
+                            <th>{{ knp_pagination_sortable(productos, 'Referencia', 'p.referencia') }}</th>
+                            <th>{{ knp_pagination_sortable(productos, 'Marca', 'p.marca') }}</th>
+                            <th>{{ knp_pagination_sortable(productos, 'EAN', 'p.codEAN') }}</th>
+                            <th>{{ knp_pagination_sortable(productos, 'SKU', 'p.codInc') }}</th>
+                            <th>{{ knp_pagination_sortable(productos, 'Estado', 'e.nombre') }}</th>
+                          </tr>
+                          <tr>
+                            <th><input type="text" id="producto_id" name="producto[id]" style="width: 40px"></th>
+			                      <th>{{ form_widget(form.nombre, { 'attr': { 'style' : 'width:150px' }} ) }}</th>
+                            <th>{{ form_widget(form.categoria, { 'attr': { 'style' : 'width:150px' }} ) }}</th>
+                            <th>{{ form_widget(form.referencia, { 'attr': { 'style' : 'width:150px' }} ) }}</th>
+                            <th>{{ form_widget(form.marca, { 'attr': { 'style' : 'width:100px' }} ) }}</th>
+                            <th>{{ form_widget(form.codEAN, { 'attr': { 'style' : 'width:100px' }} ) }}</th>
+                            <th>{{ form_widget(form.codInc, { 'attr': { 'style' : 'width:100px' }} ) }}</th>
+                            <th>{{ form_widget(form.estado, { 'attr': { 'style' : 'width:80px' }} ) }}</th>
+                          </tr>
+                        </thead>
+                        </form>
+                        <tbody>
+                          {% for producto in productos %}
+                          <tr>
+			                <td>{{ producto.producto.id }}</td>
+                            <td><a href="{{ path("producto_datos", {"id": producto.producto.id}) }}">{{ producto.producto.nombre }}</a></td>
+                            <td>{% if (producto.producto.categoria) %}{{ producto.producto.categoria.nombre }}{% endif %}</td>
+                            <td>{{ producto.producto.referencia }}</td>
+                            <td>{{ producto.producto.marca }}</td>
+                            <td>{{ producto.producto.codEAN }}</td>
+                            <td>{{ producto.producto.codInc }}</td>
+                            <td>
+                              {% if (producto.producto.estado) %}
+                                {% if (producto.producto.estado.id!=1) %}<a class="btn btn-danger 1" onClick="confirmar('{{ url("producto_estado", {"id": producto.producto.id}) }}')" href="#">Inactivo</a>
+                                {% else %}<a class="btn btn-success 1" onClick="confirmar('{{ url("producto_estado", {"id": producto.producto.id}) }}')" href="#">Activo</a>
+                                {% endif %}
+                              {% endif %}
+                            </td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>   
+            </div>
+		</div>
+		
+		<div class="box span11">
+        <div class="box-content">
+                <div class="dataTables_info">Mostrando {{ productos.getItemNumberPerPage*(productos.getCurrentPageNumber-1)+1  }} a {{ productos.getItemNumberPerPage*productos.getCurrentPageNumber }} de {{ productos.getTotalItemCount }}   Productos
+                </div>
+                <div class="pagination pagination-centered">
+                        {{ knp_pagination_render(productos) }}                    
+                </div>
+        </div>
+    </div>
+	</div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+
+{{ parent() }}
+
+  <script type="text/javascript">
+  
+      function confirmar(ruta)
+      {
+        if (confirm("Desea cambiar el estado del producto")==true){
+            self.location=ruta;
+        }else{
+            alert("OK");
+        }
+        
+      }
+ 
+    $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip();   
+    });
+</script>
+
+{% endblock %}
+

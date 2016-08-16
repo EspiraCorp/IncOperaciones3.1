@@ -1,0 +1,185 @@
+{# src/Sinaptica/ProveedoresBundle/Resources/views/Default/new.html.twig #}
+{% extends '::base.html.twig' %}
+{% block title %}Calificar proveedor{% endblock %}
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+<div class="box span12">
+<div class="box-header well" data-original-title>
+                        <h2><i class="icon-edit"></i>Calificar Proveedor</h2>
+                        <div class="box-icon">
+                            <a href="{{ path('proveedores_datos',  {"id": id}) }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+                        </div>
+                    </div>
+<div class="box-content">
+<form action="{{ path('proveedores_calificacion',  {"id": id}) }}" method="POST" {{ form_enctype(form) }} class="form-horizontal">
+    {{ form_errors(form) }}
+    <fieldset>
+    <table class="table table-bordered table-striped">
+        <tbody>
+            <tr><th colspan="6">INFORMACIÓN GENERAL DEL PROVEEDOR</th></tr>
+            <tr><td>Razon Social Proveedor</td><td colspan="5">{{ proveedor.nombre }}</td></tr>
+            <tr><td>Direccion</td><td colspan="5">{{ proveedor.direccion }}</td></tr>
+            <tr><td>Telefono</td><td>{{ proveedor.telefono }}</td>
+                <td>E-mail</td><td>{{ proveedor.correo }}</td>
+                <td>Fax</td><td>{{ proveedor.fax }}</td></tr>
+            <tr><td>Documento</td><td colspan="5">{{ proveedor.tipodocumento.nombre }} {{ proveedor.numerodocumento }}</td></tr>
+            <tr><td>Periodo</td><td colspan="5">{{ form_widget(form.periodo, { 'id': 'periodo' })}}</td></tr>
+            <tr><td>Fecha</td><td colspan="5">{{ form_widget(form.fecha, { 'id': 'fecha' })}}</td></tr>
+        </tbody>
+    </table>
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr><th colspan="7">EVALUACIÓN DEL PROVEEDOR (BIENES Y/O SERVICIOS) - Calificación de 1 a 5 (5 max)</th></tr>
+            <tr><td colspan="4">A. ELEGIBILIDAD TÉCNICA (ETC) (corresponde al 40%)</td>
+                <td>PUNTAJE</td>
+                <td>RESULTADO</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><th>1. CE =</th>
+                <td colspan="3">Cumplimiento en las Entregas  (oportunidad en los tiempos de respuesta, documentación y/o bienes requeridos)</td>
+                <td><div class="ind">{{ form_widget(form.ce, { 'id': 'ind-1' }) }}</div></td>
+                <td>
+                    <div id="resultado-1"></div>
+                </td>
+            </tr>
+            <tr><th>2. CPI =</th>
+                <td colspan="3">Calidad del Producto, insumos, materiales o Servicio</td>
+                <td><div class="ind">{{ form_widget(form.cpi, { 'id': 'ind-2' }) }}</div></td>
+                <td>
+                    <div id="resultado-2"></div>
+                </td>
+            </tr>
+            <tr><th>3. BEP =</th>
+                <td colspan="3">Bienes y servicios ejecutados conforme a lo pactado (cumplimiento de criterios especificados en orden de compra de bienes y servicios)</td>
+                <td><div class="ind">{{ form_widget(form.bep, { 'id': 'ind-3' }) }}</div></td>
+                <td>
+                    <div id="resultado-3"></div>
+                </td>
+            </tr>
+            <tr><th>4. PD =</th>
+                <td colspan="3">"Productos con Devoluciones o defectos, servicios no conformes. El proveedor ha presentado productos/servicios no conformes"</td>
+                <td><div class="ind">{{ form_widget(form.pd, { 'id': 'ind-4' }) }}</div></td>
+                <td>
+                    <div id="resultado-4"></div>
+                </td>
+            </tr>
+            <tr><th colspan="5">ETC = 15(CE+CPI+DPI+BEP+EX+PD)</th>
+                <td>
+                    <b><div id="resultado-7"></div></b>
+                </td>
+            </tr>
+        </tbody>
+        <thead> 
+            <tr><td colspan="4">B. ELEGIBILIDAD COMERCIAL Y FINANCIERA (ECF) corresponde al 60%</td>
+                <td>PUNTAJE</td>
+                <td>RESULTADO</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><th>1. AOC =</th>
+                <td colspan="3">Atención Oportuna al Cliente </td>
+                <td><div class="ind">{{ form_widget(form.aoc, { 'id': 'ind-5' }) }}</div></td>
+                <td>
+                    <div id="resultado-5"></div>
+                </td>
+            </tr>
+            <tr><th>2. CFP =</th>
+                <td colspan="3">Condiciones de Pago  ≤ 60 días y ≥ 90 días</td>
+                <td><div class="ind">{{ form_widget(form.cfp, { 'id': 'ind-6' }) }}</div></td>
+                <td>
+                    <div id="resultado-6"></div>
+                </td>
+            </tr>
+            <tr><th colspan="5">ECF =10 (RC+CP+AOC+AFH+SGC+CFP) =</th>
+                <td>
+                    <b><div id="resultado-8"></div></b>
+                </td>
+            </tr>
+            <tr><th colspan="5">C. CALIFICACIÓN TOTAL  REP=(ETC+ECF) EVALUACIÓN TOTAL DEL PROVEEDOR </th>
+                <td>
+                    <b>{{ form_widget(form.calificacion, { 'id': 'resultado-9', 'attr': {'read_only': 'true'} }) }}</b>
+                </td>
+            </tr>
+            <tr><th colspan="4">OBSERVACIONES GENERALES</th>
+                <th colspan="2">RANGO DE RESULTADOS</th>
+            </tr>
+            <tr><td rowspan="3" colspan="4">{{ form_widget(form.observacion) }}</td>
+                <td>> 0 a 50 </td>
+                <td>NO CONTINUA</td>
+            </tr>
+            <tr><td>> 50,1 a 70 </td>
+                <td>CONTINUA CON OBSERVACIONES </td>
+            </tr>
+            <tr><td>> 70,1 a 100</td>
+                <td>CONTINUA</td>
+            </tr>
+
+        </tbody>
+    </table>
+    </fieldset>
+            
+<div class="form-actions">
+    <input type="hidden" name="id" value="{{ id }}">
+    {{ form_widget(form.Enviar, { 'attr': {'class': 'btn btn-primary'} }) }}
+</div>
+{{ form_widget(form._token) }}
+</form>
+</div>
+</div>
+ </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    
+    <script>
+        $( "#fecha" ).datepicker({ dateFormat: 'yy-mm-dd' });
+    </script>
+    
+    <script>
+        
+        $(document).ready(inicializarEventos);
+        
+        function inicializarEventos()
+        {
+            {% for i in 1..6 %}
+                $("#ind-{{ i }}").change(function() {
+                    var x=$("#ind-{{i}}");
+                    var valor = parseInt(x.val(), 10);
+                    if(valor<0 || valor>5 || !$.isNumeric(valor)){
+                        alert("el valor no es valido");
+                        $(  this ).focusout();
+                        $( this ).val('');
+                        return false;
+                    }else{
+                        x.focusout(procesar);    
+                    }
+                });
+
+            {% endfor %}
+        }
+
+        function procesar()
+        {
+            {% for i in 1..4 %}
+                var x=$("#ind-{{i}}");
+                var y=$("#resultado-{{i}}");
+                y.text(x.val()/(4/0.4));
+            {% endfor %}
+            {% for i in 5..6 %}
+                var x=$("#ind-{{i}}");
+                var y=$("#resultado-{{i}}");
+                y.text(x.val()/(2/0.6));
+            {% endfor %}
+            var y=$("#resultado-7");
+            y.text((eval($("#ind-1").val())+eval($("#ind-2").val())+eval($("#ind-3").val())+eval($("#ind-4").val()))*2);
+            var y=$("#resultado-8");
+            y.text((eval($("#ind-5").val())+eval($("#ind-6").val()))*6);
+            var y=$("#resultado-9");
+            y.val((eval($("#resultado-7").text())+eval($("#resultado-8").text())));
+            
+            
+        }
+    </script>
+{% endblock %}

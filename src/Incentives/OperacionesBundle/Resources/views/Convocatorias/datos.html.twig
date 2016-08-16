@@ -1,0 +1,162 @@
+{#% extends '::base.html.twig' %#}
+{% extends app.request.isXmlHttpRequest ? "MDWDemoBundle::layout_ajax.html.twig" : "::base.html.twig" %}
+{% block title %}Datos Convocatoria{% endblock %}
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+<div class="box">
+    <div class="box-header well" data-original-title="">
+        Convocatorias
+        <div class="box-icon">
+				<div class="box-icon">
+                    <a href="{{ path('convocatorias') }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+                </div>
+    	</div>
+    </div>
+</div>
+    <div class="box span6">
+	    <div class="box-content">
+	    	<div class="box-header well">
+				<h2>
+				{% if not is_granted('ROLE_PROV') %}
+				<a href="{{ path('convocatorias_editar', {"id": convocatoria.id} ) }}" title="Editar Convocatoria">
+					<button class="btn btn-primary">
+						<i class="icon-edit icon-white"></i>
+					</button>
+				</a>
+				{% endif %}
+				Datos Convocatoria</h2>
+			</div>
+
+				<table class="table table-bordered table-striped">
+					<tbody>
+						<tr><td>Titulo</td><td>{{ convocatoria.titulo }}</td></tr>
+						<tr><td>Descripción</td><td>{{ convocatoria.descripcion }}</td></tr>
+						<tr><td>Fecha Inicio</td><td>{{ convocatoria.fechaInicio | date("Y-m-d") }}</td></tr>
+						<tr><td>Fecha Fin</td><td>{{ convocatoria.fechaFin | date("Y-m-d") }}</td></tr>
+						{% if not is_granted('ROLE_PROV') %}
+						<tr><td>Solicitud</td><td><a href="{{ path('solicitudes_datos', {"id": convocatoria.solicitud.id} ) }}">{{ convocatoria.solicitud.id }} - {{ convocatoria.solicitud.titulo }}</a></td>
+						<tr><td>Programa</td><td>{{ convocatoria.solicitud.programa.nombre }}</td>							
+						<tr><td>Cliente</td><td>{{ convocatoria.solicitud.programa.cliente.nombre }}</td>	
+						{% endif %}
+						<tr><td>Estado</td><td>{{ convocatoria.estado.nombre }}</td></tr>
+					</tbody>
+				</table>
+		</div>
+	</div>
+	
+	<div class="box span4">
+	   	<div class="box-content">
+	    	<div class="box-header well">
+				<h2>
+				{% if not is_granted('ROLE_PROV') %}
+					<a id="agregar_archivos" href="{{ path('convocatorias_archivos') }}/{{ convocatoria.id }}">
+						<button class="btn btn-primary">
+							<i class="icon-plus icon-white"></i>
+						</button>
+					</a>
+				{% endif %}
+				</i>Archivos</h2>
+			</div>
+			{% if archivos is defined %}
+		    	<table class="table table-bordered table-striped">
+		    		<tr>
+		    			<th>Archivo</th>
+		    			<th>Estado</th>
+		    		</tr>
+		    	{% for archivo in archivos %}
+		    		<tr>
+		    			<td><a href="{{asset(archivo.archivo | slice (5))}}" target="_blank">{{ archivo.archivo  }}</a></td>
+		    			<td>{% if (archivo.estado.id!=1) %}<a class="btn btn-danger 1" onClick="confirmar('{{ url("convocatorias_archivo_estado", {"id": archivo.id}) }}')" href="#">Inactivo</a>{% else %}<a class="btn btn-success 1" onClick="confirmar('{{ url("convocatorias_archivo_estado", {"id": archivo.id}) }}')" href="#">Activo</a>{% endif %}</td>
+		    		</tr>
+		    	{% endfor %}
+		    	</table>
+		    {% endif %}
+	  	</div>
+	</div>
+
+	<div class="box span12">
+		<div class="box-content">
+		    <div class="box-header well">
+				<h2>
+					Proveedores
+				</h2>
+				<div class="box-icon">
+					{% if not is_granted('ROLE_PROV') %}
+					<a href="{{ path('convocatorias_proveedor',  {"id": convocatoria.id}) }}" title="Adicionar Proveedor">
+						<button class="btn btn-small btn-success">
+							<i class="icon-plus icon-white"></i>
+						</button>
+					</a>
+					
+					{% endif %}
+				</div>
+			</div>
+			<table class="table table-bordered table-striped">
+					<thead>
+						<tr>
+							<th>Nombre</th>
+							<th>Archivo</th>
+							<th>Fecha de Carga</th>
+							<th>Observación</th>
+							{% if not is_granted('ROLE_PROV') %}
+							<th></th>
+							{% endif %}
+						</tr>
+					</thead>
+					<tbody>
+						{% for proveedor in proveedores %}
+						<tr>
+							<td>{{ proveedor.proveedor.nombre }}</td>
+							<td><a href="{{ asset(proveedor.ruta | slice(5))}}{{proveedor.archivo}}" target="_blank">{{proveedor.archivo}}</a></td>
+							<td>{{ proveedor.fechaCarga | date("Y-m-d") }}</td>
+							<td>{{ proveedor.observacion }}</td>
+							{% if is_granted('ROLE_PROV') %}
+							<td>{% if convocatoria.estado.id == 1 %}
+								<a href="{{ path('convocatorias_cargaproveedor') }}/{{ convocatoria.id }}" class="btn btn-small btn-info">Cargar</a>
+								{% endif %}</td>
+							{% else %}
+							<td><a href="{{ path('convocatorias_correoa',  {"id": convocatoria.id, "id_prov": proveedor.proveedor.id}) }}"  class="btn btn-info" title="Enviar notificación">
+								<i class="icon-envelope icon-white"></i>
+							</a></td>
+							{% endif %}
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+		</div>
+	</div>
+
+
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script>
+
+	function confirmar(ruta)
+	{
+	  if (confirm("Deseo eliminar el documento")==true){
+	  	self.location=ruta;
+	  }else{
+	  	alert("OK");
+	  }
+	  
+	}
+
+        var x;
+		x=$(document);
+		x.ready(inicializarEventos);
+
+		function inicializarEventos()
+		{
+		 var x;
+		 x=$("div.estado a");
+		 x.each(resaltarParrafos);
+		}
+		
+	$("#agregar_archivos").colorbox({href:"{{ path('convocatorias_archivos',  {"id": convocatoria.id}) }}"});
+
+	</script>
+{% endblock %}

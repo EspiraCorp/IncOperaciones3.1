@@ -1,0 +1,269 @@
+{% extends '::base.html.twig' %}
+{% block title %}Editar proveedor{% endblock %}
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+<div class="box span12">
+<div class="box-header well" data-original-title>
+                        <h2><i class="icon-edit"></i>Editar Proveedor</h2>
+                        <div class="box-icon">
+                            <a href="{{ path('proveedores_datos' ,  {"id": id}) }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+                        </div>
+                    </div>
+<div class="box-content">
+<form action="{{ path('proveedores_editar') }}" method="POST" {{ form_enctype(form) }} class="form-horizontal">
+    {{ form_errors(form) }}
+    <fieldset>
+        <div class="control-group">
+            * {{ form_label(form.nombre, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.nombre, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            * {{ form_label(form.tipodocumento, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.tipodocumento, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            * {{ form_label(form.numero_documento, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.numero_documento, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            * {{ form_label(form.correo, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.correo, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+
+        {% if not is_granted('ROLE_PROV') %}
+        <div class="control-group">
+            * {{ form_label(form.categoria, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.categoria, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div> 
+
+        <div class="control-group">
+            * {{ form_label(form.proveedorclasificacion, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.proveedorclasificacion, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        
+        <div class="control-group">
+            *{{ form_label(form.proveedorarea, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.proveedorarea, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+
+        <div class="control-group">
+            * {{ form_label(form.directo, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.directo, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>        
+        {% endif %}
+        
+        <div class="control-group">
+            {{ form_label(form.registro_camara, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.registro_camara, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            * {{ form_label(form.regimen, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.regimen, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            * {{ form_label(form.sede_principal, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.sede_principal, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            * {{ form_label(form.pais, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.pais, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            * {{ form_label(form.ciudad, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div id="select_ciudad" class="controls">
+                {{ form_widget(form.ciudad, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            * {{ form_label(form.direccion, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.direccion, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            * {{ form_label(form.telefono, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.telefono, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            {{ form_label(form.lineaAtencion, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.lineaAtencion, { 'attr': {'class': 'input-xlarge focused'} }) }} días
+            </div>
+        </div>
+        <div class="control-group">
+            {{ form_label(form.pagina, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.pagina, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            {{ form_label(form.sedes, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.sedes, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            {{ form_label(form.datos_sedes, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.datos_sedes, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+         <div class="control-group">
+            {{ form_label(form.codigo_postal, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.codigo_postal, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+         <div class="control-group">
+            {{ form_label(form.cobertura, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.cobertura, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+         <div class="control-group">
+            {{ form_label(form.condiciones_comerciales, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.condiciones_comerciales, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+         <div class="control-group">
+            {{ form_label(form.tiempo_entrega, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.tiempo_entrega, { 'attr': {'class': 'input-xlarge focused'} }) }} días
+            </div>
+        </div>
+         <div class="control-group">
+            {{ form_label(form.cupo_asignado, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.cupo_asignado, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+    <div class="row-fluid sortable ui-sortable">
+        <div class="aeconomica" data-prototype="{{ form_widget(form.aeconomica.vars.prototype)|e }}">    
+             <div class="box-header well" data-original-title>
+                <h2><i class="icon-list"></i>Actividad Ecónomica</h2>
+            </div>
+            {{ form_row(form.aeconomica) }}    
+        </div>
+    </div>  
+<div class="form-actions">
+    {{ form_widget(form.Enviar, { 'attr': {'class': 'btn btn-primary'} }) }}
+</div>
+<input type="hidden" id="id" name="id" value="{{ id }}">
+{{ form_widget(form._token) }}
+</form>
+</div>
+</div>
+ </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        $( "#proveedores_pais" ).change(function() {
+            var pais = $(this).val();
+            $("#select_ciudad").load("{{ path('campos_capitales') }}/"+pais);
+        });
+
+        $( "#proveedores_numero_documento" ).keyup(function() {
+            var documento = $(this).val();
+            $("#resultado_doc").load("{{ path('proveedores_comprobar_identificacion') }}/"+documento);
+        });
+
+        $( "#proveedores_correo" ).keyup(function() {
+            var email = $(this).val();
+            $("#resultado_correo").load("{{ path('proveedores_comprobar_correo') }}/"+email);
+        });
+    </script>
+
+    <script>
+        // Get the div that holds the collection of addresses
+        var collectionHolder = $('div.aeconomica');
+
+		var Holder = $('button.btn-primary');
+		
+        // setup an "add a address" link
+        var $newLinkLi = $('<button class="btn"><a href="#" >Agregar una actividad economica.</a></button>');
+
+        $(function(){
+
+            // add the "add a address" anchor and li to the addresses div
+            Holder.parent().append($newLinkLi);
+
+            // count the current form inputs we have (e.g. 2), use that as the new
+            // index when inserting a new item (e.g. 2)
+            collectionHolder.data('index', collectionHolder.find(':input').length);
+
+            $newLinkLi.on('click', function(e) {
+                // prevent the link from creating a "#" on the URL
+                e.preventDefault();
+
+                // add a new address form (see next code block)
+                addTagForm(collectionHolder);
+            });
+        });
+
+
+        function addTagForm(collectionHolder) {
+            // Get the data-prototype explained earlier
+            var titulo=$('<div class="box-header well" data-original-title="">Agregar Actividad Economica</div>;');
+            var prototype = collectionHolder.data('prototype');
+
+            // get the new index
+            var index = collectionHolder.data('index');
+
+            // Replace '__name__' in the prototype's HTML to
+            // instead be a number based on how many items we have
+            var newForm = prototype.replace(/__name__/g, index);
+
+            // increase the index with one for the next item
+            if (collectionHolder.data('index')<4){
+                collectionHolder.data('index', index + 1);
+            // Display the form in the page in an li, before the "Add a address" link li
+            var $newFormLi = $('<div class="box span4" id="actividad'+ index +'"><div class="box-header well" data-original-title="">Agregar Actividad<div class="box-icon"><a class="btn btn-minimize btn-round" href="#"><i class="icon-chevron-up"></i></a><a class="btn btn-close btn-round" id="closeactividad'+ index +'" href="#"><i class="icon-remove"></i></a></div></div></div>').append(newForm);
+            collectionHolder.append($newFormLi);
+            }else{
+                alert("Solo pueden agregar 4 codigos de actividad economica");
+            }
+            
+            var $Closer = $('#closeactividad'+ index);
+
+            $Closer.on('click', function(e) {
+                // prevent the link from creating a "#" on the URL
+                e.preventDefault();
+
+                $( "div" ).remove( "#actividad"+ index );
+            });
+        }
+    </script>
+{% endblock %}
+
+
+

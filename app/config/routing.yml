@@ -1,0 +1,58 @@
+_index:
+    path:   /
+    defaults:  { _controller: IncentivesBaseBundle:Default:index }
+
+incentives_solicitudes:
+    resource: "@IncentivesSolicitudesBundle/Resources/config/routing.yml"
+    prefix:   /
+
+incentives_ordenes:
+    resource: "@IncentivesOrdenesBundle/Resources/config/routing.yml"
+    prefix:   /
+    
+incentives_facturacion:
+    resource: "@IncentivesFacturacionBundle/Resources/config/routing.yml"
+    prefix:   /
+
+incentives_garantias:
+    resource: "@IncentivesGarantiasBundle/Resources/config/routing.yml"
+    prefix:   /
+
+incentives_inventario:
+    resource: "@IncentivesInventarioBundle/Resources/config/routing.yml"
+    prefix:   /
+
+incentives_redenciones:
+    resource: "@IncentivesRedencionesBundle/Resources/config/routing.yml"
+    prefix:   /
+
+incentives_base:
+    resource: "@IncentivesBaseBundle/Resources/config/routing.yml"
+    prefix:   /
+
+incentives_operaciones:
+    resource: "@IncentivesOperacionesBundle/Resources/config/routing.yml"
+    prefix:   /
+
+incentives_servicios:
+    resource: "@IncentivesServiciosBundle/Resources/config/routing.yml"
+    prefix:   /
+
+login:
+    path:   /login
+    defaults:  { _controller: IncentivesBaseBundle:Autenticacion:login }
+login_check:
+    path:   /login_check
+
+_inicio:
+    path:  /
+    defaults: { _controller: IncentivesBaseBundle:Default:index }
+
+incentives_catalogo:
+    resource: "@IncentivesCatalogoBundle/Resources/config/routing.yml"
+    prefix:   /
+
+
+redireccion:
+    path:  /red
+    defaults: { _controller: IncentivesBaseBundle:Autenticacion:redireccion }

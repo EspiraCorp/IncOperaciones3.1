@@ -1,0 +1,1062 @@
+<?php
+
+namespace Incentives\OrdenesBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
+
+/**
+ * OrdenesCompra
+ *
+ * @ORM\Table()
+ * @ORM\Entity
+ */
+class OrdenesCompra
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="consecutivo", type="string", length=255, nullable=true)
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $consecutivo;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="rutapdf", type="string", length=255, nullable=true)
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $rutapdf;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="rutapdfcodes", type="string", length=255, nullable=true)
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $rutapdfcodes;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="fechaCreacion", type="date", nullable=true)
+     */
+    private $fechaCreacion;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="fechaVencimiento", type="date", nullable=true)
+     */
+    private $fechaVencimiento;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="fechaRecepcion", type="date", nullable=true)
+     */
+    private $fechaRecepcion;
+
+    /**
+     * @var text
+     *
+     * @ORM\Column(name="observaciones", type="text", nullable=true)
+     */
+    private $observaciones;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="cancelado", type="boolean", nullable=true)
+     */
+    private $cancelado;
+    
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="aplicaIva", type="boolean", nullable=true)
+     */
+    private $aplicaIva;
+    
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="facturarCostos", type="boolean", nullable=true)
+     */
+    private $facturarCostos;
+
+    /**
+     * @ORM\OneToMany(targetEntity="OrdenesProducto", mappedBy="ordenesCompra")
+     * 
+     */
+    protected $ordenesProducto;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Incentives\InventarioBundle\Entity\Inventario", mappedBy="orden", cascade={"persist"})
+     * 
+     */
+    protected $inventario;
+
+    /**
+     * 
+     * @ORM\ManyToOne(targetEntity="Incentives\OperacionesBundle\Entity\Proveedores", inversedBy="ordenescompra", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="proveedor_id", referencedColumnName="id", nullable=true)
+     * 
+     */
+    protected $proveedor;
+    
+    /**
+     * 
+     * @ORM\ManyToOne(targetEntity="Incentives\CatalogoBundle\Entity\Programa")
+     * @ORM\JoinColumn(name="programa_id", referencedColumnName="id", nullable=true)
+     * 
+     */
+    protected $programa;
+    
+    /**
+     * 
+     * @ORM\ManyToOne(targetEntity="Incentives\SolicitudesBundle\Entity\Solicitud", inversedBy="ordencompra", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="solicitud_id", referencedColumnName="id", nullable=true)
+     * 
+     */
+    protected $solicitud;
+
+    /**
+     * 
+     * @ORM\ManyToOne(targetEntity="OrdenesTipo", inversedBy="ordenesCompra", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="ordenesTipo_id", referencedColumnName="id", nullable=true)
+     * 
+     */
+    protected $ordenesTipo;
+
+    /**
+     * 
+     * @ORM\ManyToOne(targetEntity="MonedaTipo", inversedBy="ordenesCompra", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="monedaTipo_id", referencedColumnName="id", nullable=true)
+     * 
+     */
+    protected $monedaTipo;
+
+    /**
+     * @var string
+     * @ORM\ManyToOne(targetEntity="OrdenesEstado", inversedBy="ordenesCompra")
+     * @ORM\JoinColumn(name="ordenesEstado_id", referencedColumnName="id", nullable=true)
+     */
+    protected $ordenesEstado;
+
+	/**
+     * @ORM\OneToMany(targetEntity="Incentives\OrdenesBundle\Entity\OrdenesCompraHistorico", mappedBy="ordencompra")
+     * 
+     */
+    protected $ordeneshistorico;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="descuento", type="float", nullable=true)
+     */
+    private $descuento;
+    
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="trm", type="float", nullable=true)
+     */
+    private $trm;
+    
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="comisionBancaria", type="float", nullable=true)
+     */
+    private $comisionBancaria;
+    
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="servicioLogistico", type="float", nullable=true)
+     */
+    private $servicioLogistico;
+    
+     /**
+     * @var float
+     *
+     * @ORM\Column(name="total", type="float", nullable=true)
+     */
+    private $total;
+
+    /**
+     * @var string
+     * @ORM\ManyToOne(targetEntity="Incentives\OperacionesBundle\Entity\Pais", inversedBy="ordencompra")
+     * @ORM\JoinColumn(name="pais_id", referencedColumnName="id", nullable=true)
+     */
+    protected $pais;
+
+    /**
+     * @var string
+     * @ORM\ManyToOne(targetEntity="Incentives\OperacionesBundle\Entity\Categoria", inversedBy="ordencompra")
+     * @ORM\JoinColumn(name="categoria_id", referencedColumnName="id", nullable=true)
+     */
+    protected $categoria;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="domicilio", type="float", nullable=true)
+     */
+    private $domicilio;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="fechaModificacion", type="datetime", nullable=true)
+     */
+    private $fechaModificacion;
+   
+     /**
+     * 
+     * @ORM\ManyToOne(targetEntity="Incentives\BaseBundle\Entity\Usuario")
+     * @ORM\JoinColumn(name="aprobo_id", referencedColumnName="id", nullable=true)
+     * 
+     */
+    protected $aprobo;
+
+     /**
+     * 
+     * @ORM\ManyToOne(targetEntity="Incentives\BaseBundle\Entity\Usuario")
+     * @ORM\JoinColumn(name="creador_id", referencedColumnName="id", nullable=true)
+     * 
+     */
+    protected $creador;
+
+    /**
+     * 
+     * @ORM\ManyToOne(targetEntity="Incentives\BaseBundle\Entity\Usuario")
+     * @ORM\JoinColumn(name="usuario_id", referencedColumnName="id", nullable=true)
+     * 
+     */
+    protected $usuario;
+
+
+    public function __construct()
+    {
+        $this->fechaCreacion = new \DateTime("now");
+        $this->cancelado = false;
+        $this->ordenesEstado = 1;
+        $this->ordenesProducto = new ArrayCollection();
+        $this->ordeneshistorico = new ArrayCollection();
+    }
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set fechaCreacion
+     *
+     * @param \DateTime $fechaCreacion
+     * @return OrdenesCompra
+     */
+    public function setFechaCreacion($fechaCreacion)
+    {
+        $this->fechaCreacion = $fechaCreacion;
+    
+        return $this;
+    }
+
+    /**
+     * Get fechaCreacion
+     *
+     * @return \DateTime 
+     */
+    public function getFechaCreacion()
+    {
+        return $this->fechaCreacion;
+    }
+
+    /**
+     * Set estado
+     *
+     * @param integer $estado
+     * @return OrdenesCompra
+     */
+    public function setEstado($estado)
+    {
+        $this->estado = $estado;
+    
+        return $this;
+    }
+
+    /**
+     * Get estado
+     *
+     * @return integer 
+     */
+    public function getEstado()
+    {
+        return $this->estado;
+    }
+
+    /**
+     * Set observaciones
+     *
+     * @param string $observaciones
+     * @return OrdenesCompra
+     */
+    public function setObservaciones($observaciones)
+    {
+        $this->observaciones = $observaciones;
+    
+        return $this;
+    }
+
+    /**
+     * Get observaciones
+     *
+     * @return string 
+     */
+    public function getObservaciones()
+    {
+        return $this->observaciones;
+    }
+
+    /**
+     * Set numeroOrden
+     *
+     * @param integer $numeroOrden
+     * @return OrdenesCompra
+     */
+    public function setNumeroOrden($numeroOrden)
+    {
+        $this->numeroOrden = $numeroOrden;
+    
+        return $this;
+    }
+
+    /**
+     * Get numeroOrden
+     *
+     * @return integer 
+     */
+    public function getNumeroOrden()
+    {
+        return $this->numeroOrden;
+    }
+
+    /**
+     * Set fechaVencimiento
+     *
+     * @param \DateTime $fechaVencimiento
+     * @return OrdenesCompra
+     */
+    public function setFechaVencimiento($fechaVencimiento)
+    {
+        $this->fechaVencimiento = $fechaVencimiento;
+    
+        return $this;
+    }
+
+    /**
+     * Get fechaVencimiento
+     *
+     * @return \DateTime 
+     */
+    public function getFechaVencimiento()
+    {
+        return $this->fechaVencimiento;
+    }
+
+    /**
+     * Set fechaRecepcion
+     *
+     * @param \DateTime $fechaRecepcion
+     * @return OrdenesCompra
+     */
+    public function setFechaRecepcion($fechaRecepcion)
+    {
+        $this->fechaRecepcion = $fechaRecepcion;
+    
+        return $this;
+    }
+
+    /**
+     * Get fechaRecepcion
+     *
+     * @return \DateTime 
+     */
+    public function getFechaRecepcion()
+    {
+        return $this->fechaRecepcion;
+    }
+
+    /**
+     * Set cancelado
+     *
+     * @param boolean $cancelado
+     * @return OrdenesCompra
+     */
+    public function setCancelado($cancelado)
+    {
+        $this->cancelado = $cancelado;
+    
+        return $this;
+    }
+
+    /**
+     * Get cancelado
+     *
+     * @return boolean 
+     */
+    public function getCancelado()
+    {
+        return $this->cancelado;
+    }
+
+    /**
+     * Set ordenesEstado
+     *
+     * @param \Incentives\OrdenesBundle\Entity\OrdenesEstado $ordenesEstado
+     * @return OrdenesCompra
+     */
+    public function setOrdenesEstado(\Incentives\OrdenesBundle\Entity\OrdenesEstado $ordenesEstado = null)
+    {
+        $this->ordenesEstado = $ordenesEstado;
+    
+        return $this;
+    }
+
+    /**
+     * Get ordenesEstado
+     *
+     * @return \Incentives\OrdenesBundle\Entity\OrdenesEstado 
+     */
+    public function getOrdenesEstado()
+    {
+        return $this->ordenesEstado;
+    }
+
+    /**
+     * Set consecutivo
+     *
+     * @param integer $consecutivo
+     * @return OrdenesCompra
+     */
+    public function setConsecutivo($consecutivo)
+    {
+        $this->consecutivo = $consecutivo;
+    
+        return $this;
+    }
+
+    /**
+     * Get consecutivo
+     *
+     * @return integer 
+     */
+    public function getConsecutivo()
+    {
+        return $this->consecutivo;
+    }
+
+
+    /**
+     * Add ordenesProducto
+     *
+     * @param \Incentives\OrdenesBundle\Entity\OrdenesProducto $ordenesProducto
+     * @return OrdenesCompra
+     */
+    public function addOrdenesProducto(\Incentives\OrdenesBundle\Entity\OrdenesProducto $ordenesProducto)
+    {
+        $this->ordenesProducto[] = $ordenesProducto;
+    
+        return $this;
+    }
+
+    /**
+     * Remove ordenesProducto
+     *
+     * @param \Incentives\OrdenesBundle\Entity\OrdenesProducto $ordenesProducto
+     */
+    public function removeOrdenesProducto(\Incentives\OrdenesBundle\Entity\OrdenesProducto $ordenesProducto)
+    {
+        $this->ordenesProducto->removeElement($ordenesProducto);
+    }
+
+    /**
+     * Get ordenesProducto
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getOrdenesProducto()
+    {
+        return $this->ordenesProducto;
+    }
+
+    /**
+     * Set ordenesTipo
+     *
+     * @param \Incentives\OrdenesBundle\Entity\OrdenesTipo $ordenesTipo
+     * @return OrdenesCompra
+     */
+    public function setOrdenesTipo(\Incentives\OrdenesBundle\Entity\OrdenesTipo $ordenesTipo = null)
+    {
+        $this->ordenesTipo = $ordenesTipo;
+    
+        return $this;
+    }
+
+    /**
+     * Get ordenesTipo
+     *
+     * @return \Incentives\OrdenesBundle\Entity\OrdenesTipo 
+     */
+    public function getOrdenesTipo()
+    {
+        return $this->ordenesTipo;
+    }
+
+    /**
+     * Set rutapdf
+     *
+     * @param string $rutapdf
+     * @return OrdenesCompra
+     */
+    public function setRutapdf($rutapdf)
+    {
+        $this->rutapdf = $rutapdf;
+    
+        return $this;
+    }
+
+    /**
+     * Get rutapdf
+     *
+     * @return string 
+     */
+    public function getRutapdf()
+    {
+        return $this->rutapdf;
+    }
+
+    /**
+     * Add inventario
+     *
+     * @param \Incentives\InventarioBundle\Entity\Inventario $inventario
+     * @return OrdenesCompra
+     */
+    public function addInventario(\Incentives\InventarioBundle\Entity\Inventario $inventario)
+    {
+        $this->inventario[] = $inventario;
+    
+        return $this;
+    }
+
+    /**
+     * Remove inventario
+     *
+     * @param \Incentives\InventarioBundle\Entity\Inventario $inventario
+     */
+    public function removeInventario(\Incentives\InventarioBundle\Entity\Inventario $inventario)
+    {
+        $this->inventario->removeElement($inventario);
+    }
+
+    /**
+     * Get inventario
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getInventario()
+    {
+        return $this->inventario;
+    }
+
+    /**
+     * Add ordeneshistorico
+     *
+     * @param \Incentives\OrdenesBundle\Entity\OrdenesCompraHistorico $ordeneshistorico
+     * @return OrdenesCompra
+     */
+    public function addOrdeneshistorico(\Incentives\OrdenesBundle\Entity\OrdenesCompraHistorico $ordeneshistorico)
+    {
+        $this->ordeneshistorico[] = $ordeneshistorico;
+    
+        return $this;
+    }
+
+    /**
+     * Remove ordeneshistorico
+     *
+     * @param \Incentives\OrdenesBundle\Entity\OrdenesCompraHistorico $ordeneshistorico
+     */
+    public function removeOrdeneshistorico(\Incentives\OrdenesBundle\Entity\OrdenesCompraHistorico $ordeneshistorico)
+    {
+        $this->ordeneshistorico->removeElement($ordeneshistorico);
+    }
+
+    /**
+     * Get ordeneshistorico
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getOrdeneshistorico()
+    {
+        return $this->ordeneshistorico;
+    }
+
+    /**
+     * Set proveedor
+     *
+     * @param \Incentives\OperacionesBundle\Entity\Proveedores $proveedor
+     * @return OrdenesCompra
+     */
+    public function setProveedor(\Incentives\OperacionesBundle\Entity\Proveedores $proveedor = null)
+    {
+        $this->proveedor = $proveedor;
+    
+        return $this;
+    }
+
+    /**
+     * Get proveedor
+     *
+     * @return \Incentives\OperacionesBundle\Entity\Proveedores 
+     */
+    public function getProveedor()
+    {
+        return $this->proveedor;
+    }
+
+    /**
+     * Set descuento
+     *
+     * @param integer $descuento
+     * @return OrdenesCompra
+     */
+    public function setDescuento($descuento)
+    {
+        $this->descuento = $descuento;
+    
+        return $this;
+    }
+
+    /**
+     * Get descuento
+     *
+     * @return integer 
+     */
+    public function getDescuento()
+    {
+        return $this->descuento;
+    }
+
+
+     /**
+     * Set total
+     *
+     * @param integer $total
+     * @return OrdenesCompra
+     */
+    public function setTotal($total)
+    {
+        $this->total = $total;
+    
+        return $this;
+    }
+
+    /**
+     * Get total
+     *
+     * @return integer 
+     */
+    public function getTotal()
+    {
+        return $this->total;
+    }
+
+
+    /**
+     * Set domicilio
+     *
+     * @param integer $domicilio
+     * @return OrdenesCompra
+     */
+    public function setDomicilio($domicilio)
+    {
+        $this->domicilio = $domicilio;
+    
+        return $this;
+    }
+
+    /**
+     * Get domicilio
+     *
+     * @return integer 
+     */
+    public function getDomicilio()
+    {
+        return $this->domicilio;
+    }
+
+    /**
+     * Set rutapdfcodes
+     *
+     * @param string $rutapdfcodes
+     * @return OrdenesCompra
+     */
+    public function setRutapdfcodes($rutapdfcodes)
+    {
+        $this->rutapdfcodes = $rutapdfcodes;
+    
+        return $this;
+    }
+
+    /**
+     * Get rutapdfcodes
+     *
+     * @return string 
+     */
+    public function getRutapdfcodes()
+    {
+        return $this->rutapdfcodes;
+    }
+
+    /**
+     * Set pais
+     *
+     * @param \Incentives\OperacionesBundle\Entity\Pais $pais
+     * @return OrdenesCompra
+     */
+    public function setPais(\Incentives\OperacionesBundle\Entity\Pais $pais = null)
+    {
+        $this->pais = $pais;
+    
+        return $this;
+    }
+
+    /**
+     * Get pais
+     *
+     * @return \Incentives\OperacionesBundle\Entity\Pais 
+     */
+    public function getPais()
+    {
+        return $this->pais;
+    }
+
+    /**
+     * Set categoria
+     *
+     * @param \Incentives\OperacionesBundle\Entity\Categoria $categoria
+     * @return OrdenesCompra
+     */
+    public function setCategoria(\Incentives\OperacionesBundle\Entity\Categoria $categoria = null)
+    {
+        $this->categoria = $categoria;
+    
+        return $this;
+    }
+
+    /**
+     * Get categoria
+     *
+     * @return \Incentives\OperacionesBundle\Entity\Categoria 
+     */
+    public function getCategoria()
+    {
+        return $this->categoria;
+    }
+
+    /**
+     * Set solicitud
+     *
+     * @param \Incentives\SolicitudesBundle\Entity\Solicitud $solicitud
+     * @return OrdenesCompra
+     */
+    public function setSolicitud(\Incentives\SolicitudesBundle\Entity\Solicitud $solicitud = null)
+    {
+        $this->solicitud = $solicitud;
+    
+        return $this;
+    }
+
+    /**
+     * Get solicitud
+     *
+     * @return \Incentives\SolicitudesBundle\Entity\Solicitud 
+     */
+    public function getSolicitud()
+    {
+        return $this->solicitud;
+    }
+
+    /**
+     * Set programa
+     *
+     * @param \Incentives\CatalogoBundle\Entity\Programa $programa
+     * @return OrdenesCompra
+     */
+    public function setPrograma(\Incentives\CatalogoBundle\Entity\Programa $programa = null)
+    {
+        $this->programa = $programa;
+    
+        return $this;
+    }
+
+    /**
+     * Get programa
+     *
+     * @return \Incentives\CatalogoBundle\Entity\Programa 
+     */
+    public function getPrograma()
+    {
+        return $this->programa;
+    }
+
+    /**
+     * Set monedaTipo
+     *
+     * @param \Incentives\OrdenesBundle\Entity\MonedaTipo $monedaTipo
+     * @return OrdenesCompra
+     */
+    public function setMonedaTipo(\Incentives\OrdenesBundle\Entity\MonedaTipo $monedaTipo = null)
+    {
+        $this->monedaTipo = $monedaTipo;
+    
+        return $this;
+    }
+
+    /**
+     * Get monedaTipo
+     *
+     * @return \Incentives\OrdenesBundle\Entity\MonedaTipo 
+     */
+    public function getMonedaTipo()
+    {
+        return $this->monedaTipo;
+    }
+
+    /**
+     * Set comisionBancaria
+     *
+     * @param integer $comisionBancaria
+     * @return OrdenesCompra
+     */
+    public function setComisionBancaria($comisionBancaria)
+    {
+        $this->comisionBancaria = $comisionBancaria;
+    
+        return $this;
+    }
+
+    /**
+     * Get comisionBancaria
+     *
+     * @return integer 
+     */
+    public function getComisionBancaria()
+    {
+        return $this->comisionBancaria;
+    }
+
+    /**
+     * Set servicioLogistico
+     *
+     * @param integer $servicioLogistico
+     * @return OrdenesCompra
+     */
+    public function setServicioLogistico($servicioLogistico)
+    {
+        $this->servicioLogistico = $servicioLogistico;
+    
+        return $this;
+    }
+
+    /**
+     * Get servicioLogistico
+     *
+     * @return integer 
+     */
+    public function getServicioLogistico()
+    {
+        return $this->servicioLogistico;
+    }
+
+    /**
+     * Set trm
+     *
+     * @param float $trm
+     * @return OrdenesCompra
+     */
+    public function setTrm($trm)
+    {
+        $this->trm = $trm;
+    
+        return $this;
+    }
+
+    /**
+     * Get trm
+     *
+     * @return float 
+     */
+    public function getTrm()
+    {
+        return $this->trm;
+    }
+
+    /**
+     * Set fechaModificacion
+     *
+     * @param \DateTime $fechaModificacion
+     * @return OrdenesCompra
+     */
+    public function setFechaModificacion($fechaModificacion)
+    {
+        $this->fechaModificacion = $fechaModificacion;
+    
+        return $this;
+    }
+
+    /**
+     * Get fechaModificacion
+     *
+     * @return \DateTime 
+     */
+    public function getFechaModificacion()
+    {
+        return $this->fechaModificacion;
+    }
+
+    /**
+     * Set usuario
+     *
+     * @param \Incentives\BaseBundle\Entity\Usuario $usuario
+     * @return OrdenesCompra
+     */
+    public function setUsuario(\Incentives\BaseBundle\Entity\Usuario $usuario = null)
+    {
+        $this->usuario = $usuario;
+    
+        return $this;
+    }
+
+    /**
+     * Get usuario
+     *
+     * @return \Incentives\BaseBundle\Entity\Usuario 
+     */
+    public function getUsuario()
+    {
+        return $this->usuario;
+    }
+
+    /**
+     * Set aprobo
+     *
+     * @param \Incentives\BaseBundle\Entity\Usuario $aprobo
+     * @return OrdenesCompra
+     */
+    public function setAprobo(\Incentives\BaseBundle\Entity\Usuario $aprobo = null)
+    {
+        $this->aprobo = $aprobo;
+    
+        return $this;
+    }
+
+    /**
+     * Get aprobo
+     *
+     * @return \Incentives\BaseBundle\Entity\Usuario 
+     */
+    public function getAprobo()
+    {
+        return $this->aprobo;
+    }
+
+    /**
+     * Set creador
+     *
+     * @param \Incentives\BaseBundle\Entity\Usuario $creador
+     * @return OrdenesCompra
+     */
+    public function setCreador(\Incentives\BaseBundle\Entity\Usuario $creador = null)
+    {
+        $this->creador = $creador;
+    
+        return $this;
+    }
+
+    /**
+     * Get creador
+     *
+     * @return \Incentives\BaseBundle\Entity\Usuario 
+     */
+    public function getCreador()
+    {
+        return $this->creador;
+    }
+
+    /**
+     * Set aplicaIva
+     *
+     * @param boolean $aplicaIva
+     * @return OrdenesCompra
+     */
+    public function setAplicaIva($aplicaIva)
+    {
+        $this->aplicaIva = $aplicaIva;
+    
+        return $this;
+    }
+
+    /**
+     * Get aplicaIva
+     *
+     * @return boolean 
+     */
+    public function getAplicaIva()
+    {
+        return $this->aplicaIva;
+    }
+
+    /**
+     * Set facturarCostos
+     *
+     * @param boolean $facturarCostos
+     * @return OrdenesCompra
+     */
+    public function setFacturarCostos($facturarCostos)
+    {
+        $this->facturarCostos = $facturarCostos;
+    
+        return $this;
+    }
+
+    /**
+     * Get facturarCostos
+     *
+     * @return boolean 
+     */
+    public function getFacturarCostos()
+    {
+        return $this->facturarCostos;
+    }
+}

@@ -1,0 +1,72 @@
+@charset "UTF-8";´
+/* CSS Document */´
+
+*{
+	margin:0;
+	padding:0;}
+	
+body{
+	background-image:url(../img/img_login.png);
+	background-repeat: repeat-y, repeat-x;
+}
+	
+section{
+	width:400px;
+	height:250px;
+	background-color:#F00;
+	margin:500px 0px 100px 200px;
+	background-color:#F5CF00;
+	position:relative;}
+	
+#login{
+	width:50px;
+	height:20px;
+	margin:30px;
+	padding-top:30px;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:20px;
+	box-sizing:border-box;
+	color:#000;}
+
+.cuadro{
+	height:30px;
+	width: 340px;
+	}
+.botoningresar{
+	width:100px;
+	height:35px;
+	background-color:#000;
+	color:#F5CF00;
+	font-size:16px;
+	margin-left:244px;
+	margin-top:10px;
+	border:none;
+	transform:scale(1)}	
+
+.botoningresar:hover{
+	transform:scale(1.1);
+	cursor:pointer;
+	}
+.olvidemicontrasena{
+	width:200px;
+	text-decoration:none;
+	color:#000;
+	float:left;
+	position:absolute;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:14px;
+	top:180px;
+	left:240px;}
+
+footer{
+	width:980px;
+	height:70px;
+	margin:0 auto;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:16px;
+	text-align:center;
+	padding-top:30px;
+	color:#FFF;
+	}
+
+

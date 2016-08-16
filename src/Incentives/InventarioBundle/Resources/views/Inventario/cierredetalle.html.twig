@@ -1,0 +1,50 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Planilla {{ planilla.id }}{% endblock %}
+
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+    <div class="box span12">
+        <div class="box-header well" data-original-title>
+            <h2><i class="icon-edit"></i>Planilla {{ planilla.id }}</h2>
+            	<div class="box-icon">
+            	    <a href="{{ asset("") }}Planillas/{{ planilla.ruta }}"  class="btn btn-info" target="_blank">
+    					<i class="icon-download-alt icon-white"></i>
+    				</a>
+                    <a href="{{ path('inventario_planilla_cierre') }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+                </div>
+        </div>
+        <div class="box-content">
+            <table class="table table-bordered table-striped">
+                <tr>
+                    <th>ID</th>
+                    <th>Redención</th>
+                    <th>Programa</th>
+                    <th>Participante</th>
+                    <th>Producto</th>
+                    <th>Guia</th>
+                    <th>Operador</th>
+                    <th>Valor</th>
+                    <th>Fecha</th>
+                    <th>N° Dias</th>
+                </tr>
+                {% for guia in guias %}
+                    <tr><td>{{ guia.id }}</td>
+                        <td><a href="{{ path("inventario_planilla_cierre_entrega") }}/{{ guia.id }}/{{ planilla.id }}">{{ guia.inventario.redencion.codigoredencion }}</a></td>
+                        <td>{{ guia.inventario.redencion.participante.nombre }}</td>
+                        <td>{{ guia.inventario.redencion.participante.programa.nombre }}</td>
+                        <td>{{ guia.inventario.producto.nombre }}</td>
+                        <td>{{ guia.guia.guia }}</td>
+                        <td>{{ guia.guia.operador }}</td>
+                        <td>{{ guia.guia.valor }}</td>
+                        <td>{{ guia.guia.fecha | date("Y-m-d") }}</td>
+                        <td>{% set difference = date(guia.guia.fecha).diff(date()) %}
+                        {{ difference | date("%a días") }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,91 @@
+{% block cuerpo %}
+    <div class="span8">
+        <div class="well">
+            <h4>Valor punto: {{ catalogo.valorpunto}}</h4>
+        </div>
+    </div>
+            {% for productos in producto %}
+                <div class="row-fluid">
+                    <div class="span8 well" style="height: 240px; background-color: #EDEDED;">
+                    {% set form = matrizv[productos.id][id] %}
+                        <form action="{{ path('productocatalogo_procesar') }}" method="POST" {{ form_enctype(form) }} id="item{{ productos.id }}_{{ id }}" class="form-horizontal">
+                        {{ form_errors(form) }}
+                        <fieldset>
+                            <div class="control-group">
+                                {{ form_label(form.activo, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+                                <div class="controls">
+                                    {{ form_widget(form.activo, { 'id': 'activo'~productos.id~'_'~id }) }}
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                {{ form_label(form.puntos, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+                                <div class="controls">
+                                    {{ form_widget(form.puntos, { 'id': 'puntos'~productos.id~'_'~id }) }}
+                                </div>
+                            </div>
+                             <div class="control-group">
+                                {{ form_label(form.actualizacion, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+                                <div class="controls">
+                                    Automatica{{ form_widget(form.actualizacion[0], { 'id': 'automatica'~productos.id~'_'~id }) }}
+                                    Manual{{ form_widget(form.actualizacion[1], { 'id': 'manual'~productos.id~'_'~id }) }}
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <div class="controls">
+                                    <input type="hidden" name="producto" value="{{ productos.id }}"/>
+                                    <input type="hidden" name="catalogo" value="{{ id }}"/>
+                                    {{ form_widget(form.Enviar, { 'attr': {'class': 'btn btn-primary'} }) }}
+                                </div>
+                            </div>
+                        </fieldset>
+                    {{ form_widget(form._token) }}
+                    </form>
+                    </div>
+                    <div id="resultado{{ productos.id }}_{{ id }}"></div>
+                </div>
+        {% endfor %}
+{% endblock %}
+
+{% block javascripts %}
+    {% for productos in producto %}
+        <script>
+            // Attach a submit handler to the form
+            $("#item{{ productos.id }}_{{ id }}").submit(function( event ) {
+                // Stop form from submitting normally
+                event.preventDefault();
+                // Send the data using post
+                var form=$(this); 
+                var posting = $.post( '{{ path("productocatalogo_procesar") }}',form.serialize() );
+                // Put the results in a div
+                posting.done(function( data ) {
+                    var content = data;
+                    $( "#resultado{{ productos.id }}_{{ id }}" ).html( content );
+                });
+            });
+
+
+            $(document).ready(function(){
+                $("#activo{{ productos.id }}_{{ id }}").click(function(evento){
+                    if($("#activo{{ productos.id }}_{{ id }}").is(':checked')){
+                        $("#puntos{{ productos.id }}_{{ id }}").removeAttr('disabled');
+                        $("#automatica{{ productos.id }}_{{ id }}").removeAttr('disabled');
+                        $("#manual{{ productos.id }}_{{ id }}").removeAttr('disabled');
+                    }else{
+                        $("#puntos{{ productos.id }}_{{ id }}").attr('disabled','disabled');
+                        $("#automatica{{ productos.id }}_{{ id }}").attr('disabled','disabled');
+                        $("#manual{{ productos.id }}_{{ id }}").attr('disabled','disabled');
+                    }
+                });
+
+                $("#automatica{{ productos.id }}_{{ id }}").click(function(evento){
+
+                    $.post( "{{ path('productocatalogo_calcular') }}", { producto: {{ productos.id }}, catalogo: {{ id }} })
+                        .done(function( data ) {
+                       
+                        $("#puntos{{ productos.id }}_{{ id }}").val(data);
+                    });
+                });   
+            })
+        </script>
+    {% endfor %}
+{% endblock %}

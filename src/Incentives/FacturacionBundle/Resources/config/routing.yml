@@ -1,0 +1,129 @@
+presupuesto_listado:
+    path:  /facturacion/presupuesto/listado
+    defaults: { _controller: IncentivesFacturacionBundle:Presupuesto:listado}
+
+presupuesto_detalle:
+    path:  /facturacion/presupuesto/detalle/{id}
+    defaults: { _controller: IncentivesFacturacionBundle:Presupuesto:detalle, id: null}
+    requirements:
+        id:  \d+
+
+presupuesto_editar:
+    path:  /facturacion/presupuesto/editar/{programa}/{area}
+    defaults: { _controller: IncentivesFacturacionBundle:Presupuesto:editar, programa: null, area: null}
+    requirements:
+        programa:  \d+
+        area:  \d+
+
+presupuesto_reportes:
+    path:  /facturacion/reportes/listado
+    defaults: { _controller: IncentivesFacturacionBundle:Reportes:listado}
+
+facturacion_listado:
+    path:  /facturacion/listado
+    defaults: { _controller: IncentivesFacturacionBundle:Facturas:listado}
+
+facturas_listado:
+    path:  /facturacion/factura/listado/{programa}
+    defaults: { _controller: IncentivesFacturacionBundle:Facturas:facturasprograma, programa: null}
+    requirements:
+        programa:  \d+
+
+factura_nueva:
+    path:  /facturacion/factura/nueva/{programa}
+    defaults: { _controller: IncentivesFacturacionBundle:Facturas:nueva, programa: null}
+    requirements:
+        programa:  \d+
+
+factura_generarnueva:
+    path:  /facturacion/factura/generar/{programa}
+    defaults: { _controller: IncentivesFacturacionBundle:Facturas:generarNueva, programa: null}
+    requirements:
+        programa:  \d+
+
+factura_datos:
+    path:  /facturacion/factura/datos/{id}
+    defaults: { _controller: IncentivesFacturacionBundle:Facturas:datos, id: null}
+    requirements:
+        id:  \d+
+
+generarfactura_premios:
+    path:  /facturacion/generar/premios/{id}
+    defaults: { _controller: IncentivesFacturacionBundle:Facturas:generarpremios, id: null}
+    requirements:
+        id:  \d+
+
+factura_generar:
+    path:  /facturacion/generar/{id}/{periodo}
+    defaults: { _controller: IncentivesFacturacionBundle:Facturas:generar, id: null, periodo: null}
+    requirements:
+        id:  \d+
+        periodo:  \d+
+
+factura_pdf:
+    path:  /facturacion/pdf/{id}
+    defaults: { _controller: IncentivesFacturacionBundle:Facturas:pdf, id: null}
+    requirements:
+        id:  \d+
+
+factura_detallepremios:
+    path:  /facturacion/detallepremios/{id}
+    defaults: { _controller: IncentivesFacturacionBundle:Facturas:detallePremios, id: null}
+    requirements:
+        id:  \d+
+        
+factura_agregarlogistica:
+    path:  /facturacion/agregarlogistica/{id}
+    defaults: { _controller: IncentivesFacturacionBundle:Facturas:agregarLogistica, id: null}
+    requirements:
+        id:  \d+
+        
+factura_generarsegmentado:
+    path:  /facturacion/generarsegmentado
+    defaults: { _controller: IncentivesFacturacionBundle:Facturas:generarSegmentado }
+    
+factura_redencionesgenerar:
+    path:  /facturacion/redencionesgenerar
+    defaults: { _controller: IncentivesFacturacionBundle:Facturas:redencionesGenerar }
+    
+factura_requisicionesgenerar:
+    path:  /facturacion/requisicionesgenerar
+    defaults: { _controller: IncentivesFacturacionBundle:Facturas:requisicionesGenerar }
+
+factura_detallesolicitudes:
+    path:  /facturacion/detallesolicitudes/{id}
+    defaults: { _controller: IncentivesFacturacionBundle:Facturas:detalleSolicitudes, id: null}
+    requirements:
+        id:  \d+
+    
+factura_logisticagenerar:
+    path:  /facturacion/logisticagenerar
+    defaults: { _controller: IncentivesFacturacionBundle:Facturas:logisticaGenerar }
+
+rentabilidad:
+    path:  /rentabilidad
+    defaults: { _controller: IncentivesFacturacionBundle:Rentabilidad:listado }
+
+rentabilidad_general:
+    path:  /rentabilidad/general
+    defaults: { _controller: IncentivesFacturacionBundle:Rentabilidad:rentabilidadGeneral }
+
+rentabilidad_listaprogramas:
+    path:  /rentabilidad/programas
+    defaults: { _controller: IncentivesFacturacionBundle:Rentabilidad:listaprogramas }
+
+rentabilidad_programa:
+    path:  /rentabilidad/programa/{id}
+    defaults: { _controller: IncentivesFacturacionBundle:Rentabilidad:rentabilidadPrograma, id: null }
+
+rentabilidad_premios:
+    path:  /rentabilidad/premios/{programa}/{categoria}
+    defaults: { _controller: IncentivesFacturacionBundle:Rentabilidad:rentabilidadPremios, programa: null, categoria: null }
+
+rentabilidad_categoria:
+    path:  /rentabilidad/categoria/{id}
+    defaults: { _controller: IncentivesFacturacionBundle:Rentabilidad:categoria, id: null }
+
+rentabilidad_exportar:
+    path:  /rentabilidad/exportar/{id}
+    defaults: { _controller: IncentivesFacturacionBundle:Rentabilidad:exportar, id: null }

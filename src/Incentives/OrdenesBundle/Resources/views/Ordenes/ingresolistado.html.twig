@@ -1,0 +1,74 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Ordenes de compra - Ingresos{% endblock %}
+{% block sidebar %}
+{{ parent() }}
+{% endblock %}
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+	<div class="box span12">
+		<div class="box-header well">
+			<h2><i class="icon-th-list"></i>Ordenes de compra</h2>
+		</div>
+		<div class="box-content">
+			<div id="dashboard">
+                   <div id="tabla" class="" cellspacing="0" width="100%">
+                      <table id="ordenes" class="display">
+                        <thead>
+                          <tr>
+                            <td>Numero</td>
+                            <td>Proveedor</td>
+                            <td>Pais</td>
+                            <td>Fecha solicitud</td>
+                            <td>Fecha entrega</td>
+                            <td>Cancelado</td>
+                            <td>Valor total</td>
+                            <td>Tipo</td>
+                            <td>Estado</td>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for orden in listado %}
+                          <tr>
+                            <td><a href="{{ path("ordenes_ingreso", {"id": orden.id}) }}">{{ orden.consecutivo }}</a></td>
+                            <td>{{ orden.proveedor.nombre }}</td>
+                            <td>{{ orden.pais.nombre }}</td>
+                            <td>{{ orden.fechaCreacion | date("Y-m-d") }}</td>
+                            <td>{{ orden.fechaVencimiento | date("Y-m-d") }}</td>
+                            <td>{% if orden.cancelado %}Si{% else %}No{% endif %}</td>
+                            <td>{{ orden.total|number_format(2, ',', '.')  }}</td>
+                            <td>{{ orden.ordenesTipo.nombre }}</td>
+                            <td>{{ orden.ordenesEstado.nombre }}</td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>      
+            </div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+
+{{ parent() }}
+
+  <script type="text/javascript">
+   $(document).ready(function() {
+          $('#ordenes').DataTable();
+      } );
+      
+      function confirmar(ruta)
+      {
+        if (confirm("Desea cambiar el estado del producto")==true){
+            self.location=ruta;
+        }else{
+            alert("OK");
+        }
+        
+      }
+  </script>
+
+{% endblock %}
+

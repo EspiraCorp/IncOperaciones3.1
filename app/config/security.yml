@@ -1,0 +1,108 @@
+# app/config/security.yml
+security:
+    firewalls:
+        login_firewall:
+            pattern:    ^/login$
+            anonymous:  ~
+        secured_area:
+            pattern:    ^/
+            anonymous: ~
+            #http_basic:
+            #    realm: "Secured Demo Area"
+            form_login:
+                # login_path: login
+                # check_path: login_check 
+                always_use_default_target_path: true
+                default_target_path: /red
+                #login_path:  ~
+                #check_path:  ~
+            logout:
+                path:   logout
+                target: /
+
+    # access_control:
+    #     - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+    access_control:
+        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/recordar, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/proveedores/pass, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/_wdt, roles: 'IS_AUTHENTICATED_ANONYMOUSLY' }
+        - { path: ^/servicios, roles: 'IS_AUTHENTICATED_ANONYMOUSLY' }
+        #- { path: ^/redenciones, roles: ROLE_DIR }
+        #- { path: ^/red, roles: [ROLE_PROV, ROLE_DIR, ROLE_ADMIN] }
+        #- { path: ^/producto, roles: ROLE_DIR }
+        #- { path: ^/catalogo, roles: ROLE_DIR }
+        #- { path: ^/programa, roles: ROLE_DIR }
+        #- { path: ^/cliente, roles: ROLE_DIR }
+        #- { path: ^/productocatalogo, roles: ROLE_DIR }
+        #- { path: ^/proveedores/datos, roles: [ROLE_PROV, ROLE_DIR, ROLE_ADMIN] }
+        #- { path: ^/proveedores/editar, roles: [ROLE_PROV, ROLE_DIR, ROLE_ADMIN] }
+        #- { path: ^/proveedores/importarporproveedor, roles: [ROLE_PROV, ROLE_DIR, ROLE_ADMIN] }
+        #- { path: ^/proveedores/correoingreso, roles: [ROLE_PROV, ROLE_DIR, ROLE_ADMIN] }
+        #- { path: ^/proveedores/documentos, roles: [ROLE_PROV, ROLE_DIR, ROLE_ADMIN] }
+        #- { path: ^/proveedores/catalogo, roles: [ROLE_PROV, ROLE_DIR, ROLE_ADMIN] }
+        #- { path: ^/proveedores/calificacion, roles: [ROLE_PROV, ROLE_DIR, ROLE_ADMIN] }
+        #- { path: ^/proveedores, roles: [ROLE_DIR, ROLE_ADMIN] }
+        #- { path: ^/convocatorias, roles: [ROLE_PROV, ROLE_DIR, ROLE_ADMIN] }
+        #- { path: ^/ordenes, roles: [ROLE_PROV, ROLE_DIR, ROLE_ADMIN] }
+        - { path: ^/.*, roles: [ ROLE_DIR, ROLE_ADMIN, ROLE_ADMIN, ROLE_ASIS, ROLE_ASISCOMP, ROLE_EJEC, ROLE_CALL, ROLE_SERV, ROLE_CALD, ROLE_LOGIS, ROLE_CAT, ROLE_PROV, ROLE_COM, ROLE_CLI, ROLE_BOD, ROLE_DIS, ROLE_CLIDEMO] }
+
+
+    # providers:
+    #     in_memory:
+    #         memory:
+    #             users:
+    #                 ryan:  { password: ryanpass, roles: 'ROLE_USER' }
+    #                 admin: { password: adminpass, roles: 'ROLE_ADMIN' }
+    # providers:
+    #     main:
+    #         entity:
+    #             class: Acme\TareaBundle\Entity\User
+    #             property: username
+
+    # encoders:
+    #     Symfony\Component\Security\Core\User\User: plaintext
+
+    providers:
+        chain_provider:
+            chain:
+                providers: [in_memory, user_db]
+        in_memory:
+            memory:
+                users:
+                    ryan:  { password: bb87a29949f3a1ee0559f8a57357487151281386, roles: 'ROLE_USER' }
+                    admin: { password: 74913f5cd5f61ec0bcfdb775414c2fb3d161b620, roles: 'ROLE_ADMIN' }
+        user_db:
+            entity: { class: Incentives\BaseBundle\Entity\Usuario, property: username }
+
+
+    encoders:
+        Symfony\Component\Security\Core\User\User:
+            algorithm: sha1
+            iterations: 1
+            encode_as_base64: false
+        Incentives\BaseBundle\Entity\Usuario: 
+            algorithm: sha1
+            iterations: 1
+            encode_as_base64: false
+
+
+
+    role_hierarchy:
+        ROLE_CAT:           ROLE_USER0
+        ROLE_LOGIS:         ROLE_USER0
+        ROLE_CALD:          ROLE_USER0
+        ROLE_SERV:          ROLE_USER0
+        ROLE_CALL:          ROLE_USER0
+        ROLE_EJEC:          ROLE_USER0
+        ROLE_ASISCOMP:      ROLE_USER0
+        ROLE_ASIS:          ROLE_USER0
+        ROLE_BOD:          ROLE_USER0
+        ROLE_PROV:          ROLE_USER0
+        ROLE_DIR:           ROLE_USER0
+        ROLE_COM:           ROLE_USER0
+        ROLE_CLI:           ROLE_USER0
+        ROLE_CLIDEMO:           ROLE_USER0
+        ROLE_USER:          ROLE_USER0
+        ROLE_ADMIN:         ROLE_DIR
+        ROLE_SUPER_ADMIN:   ROLE_ADMIN

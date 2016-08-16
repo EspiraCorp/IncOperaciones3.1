@@ -1,0 +1,50 @@
+{% extends "::basePop.html.twig" %}
+
+{% block title %}Agregar Logistica{% endblock %}
+
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+<div class="box span12">
+<div class="box-header well" data-original-title>
+                        <h2><i class="icon-edit"></i>Agregar Logistica</h2>
+                        <div class="box-icon">
+                            <a href="{{ path('factura_datos', {'id': id} ) }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+                        </div>
+                    </div>
+<div class="box-content">
+<form action="{{ path('factura_agregarlogistica') }}/{{ id }}" method="POST" {{ form_enctype(form) }} class="form-horizontal">
+    {{ form_errors(form) }}
+    <input type='hidden' name='id' value={{ id }}>
+    <fieldset>
+        <div class="control-group">
+            {{ form_label(form.descripcion, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.descripcion, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            {{ form_label(form.cantidad, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.cantidad, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            {{ form_label(form.valorUnitario, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.valorUnitario, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+    </fieldset>
+    <div class="row-fluid sortable ui-sortable">
+
+    </div>  
+<div class="form-actions">
+    {{ form_widget(form.Enviar, { 'attr': {'class': 'btn btn-primary'} }) }}
+</div>
+{{ form_widget(form._token) }}
+</form>
+</div>
+</div>
+ </div>
+{% endblock %}
+

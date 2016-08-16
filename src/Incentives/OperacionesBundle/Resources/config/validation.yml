@@ -1,0 +1,36 @@
+# src/Acme/BlogBundle/Resources/config/validation.yml
+Incentives\OperacionesBundle\Entity\Proveedores:
+    properties:
+        nombre:
+            - NotBlank: { groups: [registro] }
+        tipodocumento:
+            - NotBlank: { groups: [registro] }
+        numero_documento:
+            - NotBlank: { groups: [registro] }
+        correo:
+            - NotBlank: { groups: [registro] }
+        registro_camara:
+            - NotBlank: ~
+        regimen:
+            - NotBlank: ~
+        sede_principal:
+            - NotBlank: ~
+        pais:
+            - NotBlank: ~
+        ciudad:
+            - NotBlank: ~
+        direccion:
+            - NotBlank: ~
+        telefono:
+            - NotBlank: ~
+        aeconomica:
+            - NotBlank: ~
+            
+Incentives\OperacionesBundle\Entity\ProveedoresCalificacion:
+    properties:
+        ce:
+             - Range:
+                min: 0
+                max: 5
+                minMessage: You must be at least 120cm tall to enter
+                maxMessage: You cannot be taller than 180cm to enter

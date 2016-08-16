@@ -1,0 +1,39 @@
+<table>
+    <tr>
+        <th>Redencion</th>
+        <th>Participante</th>
+        <th>Documento</th>
+        <th>Fecha</th>
+        <th>Producto</th>
+        <th>Sku</th>
+        <th>Precio Compra</th>
+        <th>Incremento</th>
+        <th>Precio Venta</th>
+        <th>Rentabilidad</th> 
+        <th>Logistica Compra</th>
+        <th>Logistica Venta</th>
+        <th>Rentabilidad</th> 
+        <th>Días Entrega</th> 
+    </tr>
+    {% for redencion in redenciones %}
+    <tr>
+        <td>{{ redencion.codigoredencion }}</td>
+        <td>{{ redencion.participante.nombre }}</td>
+        <td>{{ redencion.participante.documento }}</td>
+        <td>{{ redencion.fecha | date("Y-m-d") }}</td>
+        <td>{{ redencion.productocatalogo.producto.nombre }}</td>
+        <td>{{ redencion.productocatalogo.producto.codInc }}</td>
+        <td>$ {{ redencion.valorOrden | number_format(0, ',', '.') }}</td>
+        <td>{{ redencion.incremento | number_format(0, ',', '.') }} %</td>
+        {% set valorVenta = redencion.valorCompra/(1-(redencion.incremento/100)) %}
+        <td>$ {{ valorVenta | number_format(0, ',', '.') }}</td>
+        <td>{{ ((1-(redencion.valorOrden/valorVenta))*100) | number_format(2, ',', '.') }} %</td>
+        <td>$ {{ redencion.valorLogistica | number_format(0, ',', '.') }}</td>
+        <td>$ {{ redencion.logistica | number_format(0, ',', '.') }}</td>
+        <td>{{ ((1-(redencion.valorLogistica/redencion.logistica))*100) | number_format(2, ',', '.') }} %</td>
+        <td>{{ redencion.diasEntrega }}</td>
+    </tr>
+
+{% endfor %}
+
+</table>

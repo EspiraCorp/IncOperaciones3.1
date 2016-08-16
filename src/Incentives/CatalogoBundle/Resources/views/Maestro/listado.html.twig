@@ -1,0 +1,47 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}IncentivesCatalogoBundle:Catalogo:nuevo{% endblock %}
+
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+<div class="box span12">
+<div class="box-header well" data-original-title>
+                        <h2><i class="icon-edit"></i>Nuevo Catalogo</h2>
+                        <div class="box-icon">
+                            <a href="{{ path('catalogo') }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+                        </div>
+                    </div>
+<div class="box-content">
+<form action="{{ path('productocatalogo_listado') }}" method="POST" {{ form_enctype(form) }} class="form-horizontal">
+    {{ form_errors(form) }}
+    <fieldset>
+        <table>
+            <tr>
+                <th>Productos</th>
+                {% for catalogos in catalogo %}
+                    <th>{{ catalogos.nombre }}</th>
+                {% endfor %}
+            </tr>
+            {% for productos in producto %}
+                <tr>
+                    <th>{{ productos.nombre }}</th>
+                    {% for catalogos in catalogo %}
+                        <td>
+                            <div>
+                                {{ render(controller('IncentivesCatalogoBundle:Maestro:nuevo', { "producto": productos.id, "catalogo": catalogos.id})) }}
+                                {{ path('productocatalogo_nuevo',  {"producto": productos.id, "catalogo": catalogos.id}) }}
+                            </div>
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+    </fieldset>        
+<div class="form-actions">
+</div>
+{{ form_widget(form._token) }}
+</form>
+</div>
+</div>
+ </div>
+{% endblock %}

@@ -1,0 +1,196 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Datos Envio - Redenciones por programa{% endblock %}
+{% block sidebar %}
+{{ parent() }}
+{% endblock %}
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+	<div class="box span12">
+		<div class="box-header well">
+			<h2><i class="icon-th-list"></i>Datos Envio - Redenciones por programa</h2>
+      <div class="box-icon">
+        <div class="box-icon">
+                    <a href="{{ path('inventario_programas') }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+                </div>
+      </div>
+      <a href="{{ path('redenciones_exportar', {"programa": programa.id}) }}" title="Descargar">
+            <button class="btn btn-small">
+              <i class="icon-download"></i>
+            </button>
+          </a>
+      {# <a href="{{ path('proveedores_importar') }}" title="Carga Masiva">
+            <button class="btn btn-small">
+              <i class="icon-upload"></i>
+            </button>
+          </a>
+      <a href="{{ path('proveedores_exportar') }}" title="Descargar">
+            <button class="btn btn-small">
+              <i class="icon-download"></i>
+            </button>
+          </a>
+			<div class="box-icon">  
+        <a href="{{ path('participante_nuevo') }}" title="Agregar">
+            <button class="btn btn-small btn-success">
+              <i class="icon-plus icon-white"></i>
+            </button>
+          </a>
+			</div> #}
+		</div>
+		<div class="box-content">
+      {% if redencion!=null %}
+			<div id="dashboard">                  
+                    <div class="row-fluid">
+                        <div id="control1" class="span3"></div>
+                        <div id="control6" class="span3"></div>
+                        <div id="control2" class="span3"></div>
+                        
+                    </div>    
+                    <div class="row-fluid">
+                        <div id="control3" class="span3"></div>         
+                        <div id="control4" class="span3"></div>
+                        <div id="control5" class="span3"></div>
+                    </div>    
+                    <div id="tabla" class="row-fluid"></div>           
+            </div>
+            {% else %}
+            <div class="alert alert-info">
+                      No existen redenciones asociadas al programa
+                    </div>
+            {% endif %}
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+
+{{ parent() }}
+
+	<script type="text/javascript" src="//www.google.com/jsapi"></script>
+    <script type="text/javascript">
+      google.load('visualization', '1.1', {packages: ['controls']});
+    </script>
+    <script type="text/javascript">
+      function drawVisualization() {
+        // Prepare the data.
+        var data = google.visualization.arrayToDataTable([
+          ['Participante','Documento', 'Producto','Codigo','Estado','Fecha'],
+          {% for redenciones in redencion %}
+                [ '<a href="{{ path("garantias_editarenvio", {"redencion": redenciones.id }) }}">{{ redenciones.participante.nombre }}</a>',
+                '{{ redenciones.participante.documento }}',
+                 '{{ redenciones.productocatalogo.producto.nombre }}',
+                 '{{ redenciones.codigoredencion }}',
+                 '{{ redenciones.redencionestado.nombre }}',
+                 '{{ redenciones.fecha | date("d-M-Y") }}',],
+            {% endfor %}
+        ]);
+      
+        // Define a StringFilter control for the 'Name' column
+        var stringFilter = new google.visualization.ControlWrapper({
+          'controlType': 'StringFilter',
+          'containerId': 'control1',
+          'options': {
+            'filterColumnLabel': 'Participante',
+            'matchType': 'any'
+          }
+        });
+
+        var stringFilter2 = new google.visualization.ControlWrapper({
+          'controlType': 'StringFilter',
+          'containerId': 'control2',
+          'options': {
+            'filterColumnLabel': 'Producto',
+            'matchType': 'any'
+          }
+        });
+
+        var stringFilter3 = new google.visualization.ControlWrapper({
+          'controlType': 'CategoryFilter',
+          'containerId': 'control3',
+          'options': {
+            'filterColumnLabel': 'Estado',
+            'ui': {
+              'allowTyping': true,
+              'allowMultiple': true
+            }
+          }
+        });
+
+        var stringFilter4 = new google.visualization.ControlWrapper({
+          'controlType': 'CategoryFilter',
+          'containerId': 'control4',
+          'options': {
+            'filterColumnLabel': 'Fecha',
+            'ui': {
+              'allowTyping': true,
+              'allowMultiple': true
+            }
+          }
+        });
+
+        var stringFilter5 = new google.visualization.ControlWrapper({
+          'controlType': 'StringFilter',
+          'containerId': 'control5',
+          'options': {
+            'filterColumnLabel': 'Codigo',
+            'matchType': 'any'
+          }
+        });
+        var stringFilter6 = new google.visualization.ControlWrapper({
+          'controlType': 'StringFilter',
+          'containerId': 'control6',
+          'options': {
+            'filterColumnLabel': 'Documento',
+            'matchType': 'any'
+          }
+        });
+      
+        // Define a table visualization
+        var table = new google.visualization.ChartWrapper({
+                'chartType': 'Table',
+                'containerId': 'tabla',
+            options: {
+              showRowNumber: true,
+              page: 'enable',
+              pageSize: 25,
+              pagingSymbols: {
+                  prev: '<<',
+                  next: '>>'
+              },
+              pagingButtonsConfiguration: 'auto',
+              'allowHtml': true,
+          }
+        });
+
+        // Create the dashboard.
+        var dashboard = new google.visualization.Dashboard(document.getElementById('dashboard')).
+          // Configure the string filter to affect the table contents
+          bind(stringFilter, table).
+          bind(stringFilter2, table).
+          bind(stringFilter3, table).
+          bind(stringFilter4, table).
+          bind(stringFilter5, table).
+          bind(stringFilter6, table).
+          // Draw the dashboard
+          draw(data);
+      }
+      
+
+      google.setOnLoadCallback(drawVisualization);
+    </script>
+
+  <script type="text/javascript">
+      function confirmar(ruta)
+      {
+        if (confirm("Desea cambiar el estado")==true){
+            self.location=ruta;
+        }else{
+            alert("OK");
+        }
+        
+      }
+  </script>
+
+{% endblock %}
+
