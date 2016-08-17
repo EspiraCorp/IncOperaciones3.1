@@ -18,6 +18,7 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use PUGX\AutocompleterBundle\Form\Type\AutocompleteType;
 
 class ProveedoresType extends AbstractType
 {
@@ -26,7 +27,7 @@ class ProveedoresType extends AbstractType
         $builder->add('nombre');
         $builder->add('tipodocumento', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:Tipodocumento',
-            //'property' => 'nombre',
+            'choice_label' => 'nombre',
             //'empty_value' => 'Seleccione una opcion',
             'label' => 'Tipo de Documento',
         ));
@@ -34,7 +35,7 @@ class ProveedoresType extends AbstractType
         $builder->add('registro_camara', TextType::class, array('required' => false)); 
         $builder->add('regimen', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:Regimen',
-            //'property' => 'nombre',
+            'choice_label' => 'nombre',
             //'empty_value' => 'Seleccione una opcion',
             'required' => false
         ));
@@ -42,39 +43,39 @@ class ProveedoresType extends AbstractType
 
         $builder->add('pais', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:Pais',
-            //'property' => 'nombre',
+            'choice_label' => 'nombre',
             //'empty_value' => 'Seleccione una opcion',
             'required' => false
         ));
-        $builder->add('ciudad', EntityType::class, array(
+        $builder->add('ciudad', 'PUGX\AutocompleterBundle\Form\Type\AutocompleteType', array(
 			'class' => 'IncentivesOperacionesBundle:Ciudad',
-			//'property' => 'nombre',
+			//'choice_label' => 'nombre',
             //'empty_value' => 'Seleccione una opcion',
             'required' => false
 		));
         $builder->add('categoria', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:Categoria',
-            //'property' => 'nombre',
+            'choice_label' => 'nombre',
             //'empty_value' => 'Seleccione una opcion',
             'required' => false
         ));
 
         $builder->add('proveedortipo', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:ProveedoresTipo',
-            //'property' => 'nombre',
+            'choice_label' => 'nombre',
             //'empty_value' => 'Seleccione una opcion',
             'label' => 'Tipo'
         ));
 
         $builder->add('proveedorclasificacion', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:ProveedoresClasificacion',
-            //'property' => 'nombre',
+            'choice_label' => 'nombre',
             //'empty_value' => 'Seleccione una opcion',
             'label' => 'Clasificacion'
         ));
 		$builder->add('proveedorarea', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:ProveedoresArea',
-            //'property' => 'nombre',
+            'choice_label' => 'nombre',
             //'empty_value' => 'Seleccione una opcion',
             'label' => 'Area'
         ));

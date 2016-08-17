@@ -10,6 +10,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  *
  * @ORM\Table()
  * @ORM\Entity(repositoryClass="Incentives\CatalogoBundle\Entity\CatalogosRepository")
+ * @ORM\Table(name="Catalogos")
  */
 class Catalogos
 {

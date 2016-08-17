@@ -139,7 +139,7 @@ class CatalogosController extends Controller
         $intervalos = $repositoryInt->findByCatalogos($id);
 
 		$galeria = 0;
-        if ($this->get('security.context')->isGranted('ROLE_CLI')) {
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_CLI')) {
             $cliente =  $this->getUser()->getCliente()->getId();      
             if($cliente==28) $galeria = 1;
         }
@@ -168,7 +168,7 @@ class CatalogosController extends Controller
                 ->leftJoin('p.cliente','cl')
                 ->orderBy("c.id");
 
-        if ($this->get('security.context')->isGranted('ROLE_CLI')) {
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_CLI')) {
             $cliente =  $this->getUser()->getCliente()->getId();
             $condicion = " cl.id=".$cliente;
             $query->where($condicion);

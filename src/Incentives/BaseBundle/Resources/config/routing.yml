@@ -43,6 +43,14 @@ campos_departamento:
    requirements:
         id:  \d+
 
+ciudad_buscar:
+   path:  /ciudad/buscar
+   defaults: { _controller: IncentivesBaseBundle:Campos:CiudadBuscar}
+   
+ciudad_campos:
+   path:  /ciudad/campos
+   defaults: { _controller: IncentivesBaseBundle:Campos:CiudadCampos}
+
 menu:
    path:  /menu
    defaults: { _controller: IncentivesBaseBundle:Menu:menuPrincipal }

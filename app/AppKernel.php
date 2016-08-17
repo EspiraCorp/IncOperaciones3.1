@@ -27,6 +27,8 @@ class AppKernel extends Kernel
             new Incentives\OrdenesBundle\IncentivesOrdenesBundle(),
             new Incentives\SolicitudesBundle\IncentivesSolicitudesBundle(),
             new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
+            new PUGX\AutocompleterBundle\PUGXAutocompleterBundle(),
+            new SimpleThings\EntityAudit\SimpleThingsEntityAuditBundle(),
         ];
 
         if (in_array($this->getEnvironment(), ['dev', 'test'], true)) {

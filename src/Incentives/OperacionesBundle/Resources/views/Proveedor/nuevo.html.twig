@@ -11,7 +11,8 @@
                         </div>
                     </div>
 <div class="box-content">
-<form action="{{ path('proveedores_nuevo') }}" method="POST" {{ form_enctype(form) }} class="form-horizontal">
+{{ form_start(form) }}
+<form action="{{ path('proveedores_nuevo') }}" method="POST" class="form-horizontal">
     {{ form_errors(form) }}
     <fieldset>
         <div class="control-group">
@@ -148,13 +149,6 @@
             </div>
         </div>
     </fieldset>
-    <div class="row-fluid sortable ui-sortable">
-        <div class="contactos box span10" data-prototype="{{ form_widget(form.contactos.vars.prototype)|e }}">
-            <div class="box-header well" data-original-title>
-                <h2><i class="icon-user"></i>Contactos</h2>
-            </div>
-         </div> 
-    </div>  
     <div id="destino"></div>  
 <div class="form-actions">
     {{ form_widget(form.Enviar, { 'attr': {'class': 'btn btn-primary'} }) }}
@@ -168,8 +162,16 @@
 
 {% block javascripts %}
     {{ parent() }}
+    
+    <script src="{{ asset('js/autocompleter-jqueryui.js') }}"></script>
+    <script src="{{ asset('js/app.js') }}"></script>
 
     <script>
+    $('#proveedores_ciudad').autocompleter({
+        url_list: "{{ path('ciudad_buscar') }}",
+        url_get: "{{ path('ciudad_campos') }}"
+    });
+
         $( "#proveedores_pais" ).change(function() {
             var pais = $(this).val();
             $("#select_ciudad").load("{{ path('campos_capitales') }}/"+pais);
