@@ -6,10 +6,11 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * EstadoCatalogo
+ * CatalogoTipo
  *
  * @ORM\Table()
  * @ORM\Entity
+ * @ORM\Table(name="CatalogoTipo")
  */
 class CatalogoTipo
 {

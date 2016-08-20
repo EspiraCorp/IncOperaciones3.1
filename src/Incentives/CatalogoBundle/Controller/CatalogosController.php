@@ -377,7 +377,7 @@ class CatalogosController extends Controller
         }
         
         $precioVenta=0;
-        if ($this->get('security.context')->isGranted('ROLE_CLI')) {
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_CLI')) {
            $condiciones .= " AND (pc.aproboCliente=1 AND pc.aproboOperaciones=1 AND pc.aproboComercial=1 AND pc.aproboDirector=1)";
 		   $cliente =  $this->getUser()->getCliente()->getId();      
            if($cliente==28) $precioVenta = 1;
@@ -455,19 +455,19 @@ class CatalogosController extends Controller
                 ->leftJoin('p.imagenproducto','i','WITH','i.estado=1')
                 ->orderBy("pc.puntos");
 
-        if ($this->get('security.context')->isGranted('ROLE_EJEC')) {
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_EJEC')) {
             $condiciones = "pc.catalogos=".$id." AND pc.estadoAprobacion=1 ";
         }
 
-        if ($this->get('security.context')->isGranted('ROLE_COM')) {
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_COM')) {
             $condiciones = "pc.catalogos=".$id." AND pc.estadoAprobacion=2 ";
         }
 
-        if ($this->get('security.context')->isGranted('ROLE_CLI')) {
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_CLI')) {
             $condiciones = "pc.catalogos=".$id." AND pc.estadoAprobacion=3 ";
         }
 
-        if ($this->get('security.context')->isGranted('ROLE_DIR') || $this->get('security.context')->isGranted('ROLE_ADMIN') || $this->get('security.context')->isGranted('ROLE_CAT')) {
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_DIR') || $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN') || $this->get('security.authorization_checker')->isGranted('ROLE_CAT')) {
             $condiciones = "pc.catalogos=".$id." AND (pc.estadoAprobacion=0 OR pc.estadoAprobacion IS NULL)";
         }
 
@@ -519,19 +519,19 @@ class CatalogosController extends Controller
                 ->leftJoin('p.imagenproducto','i','WITH','i.estado=1')
                 ->orderBy("pc.puntos");
 
-        if ($this->get('security.context')->isGranted('ROLE_EJEC')) {
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_EJEC')) {
             $condiciones = "pc.catalogos=".$id." AND pc.estadoAprobacion=1 ";
         }
 
-        if ($this->get('security.context')->isGranted('ROLE_COM')) {
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_COM')) {
             $condiciones = "pc.catalogos=".$id." AND pc.estadoAprobacion=2 ";
         }
 
-        if ($this->get('security.context')->isGranted('ROLE_CLI')) {
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_CLI')) {
             $condiciones = "pc.catalogos=".$id." AND pc.estadoAprobacion=3 ";
         }
 
-        if ($this->get('security.context')->isGranted('ROLE_DIR') || $this->get('security.context')->isGranted('ROLE_ADMIN') || $this->get('security.context')->isGranted('ROLE_CAT')) {
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_DIR') || $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN') || $this->get('security.authorization_checker')->isGranted('ROLE_CAT')) {
             $condiciones = "pc.catalogos=".$id." AND (pc.estadoAprobacion=0 OR pc.estadoAprobacion IS NULL)";
         }
        
@@ -568,9 +568,9 @@ class CatalogosController extends Controller
 		    $productos->setActivo(0);
                 }     
 
-                $usuario = $this->get('security.context')->getToken()->getUser();
+                $usuario = $this->get('security.token_storage')->getToken()->getUser();
 
-                if ($this->get('security.context')->isGranted('ROLE_DIR') || $this->get('security.context')->isGranted('ROLE_ADMIN')) {
+                if ($this->get('security.authorization_checker')->isGranted('ROLE_DIR') || $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
                    $productos->setAproboOperaciones($estado);
                    $productos->setOperacionesUsuario($usuario);
                    
@@ -578,7 +578,7 @@ class CatalogosController extends Controller
                    $productos->setEstadoAprobacion($estadoAprob);
                 }  
 
-                if ($this->get('security.context')->isGranted('ROLE_EJEC')) {
+                if ($this->get('security.authorization_checker')->isGranted('ROLE_EJEC')) {
                     $productos->setAproboComercial($estado);
                     $productos->setComercialUsuario($usuario);
                     
@@ -586,7 +586,7 @@ class CatalogosController extends Controller
                     $productos->setEstadoAprobacion($estadoAprob);
                 }
 
-                if ($this->get('security.context')->isGranted('ROLE_COM')) {
+                if ($this->get('security.authorization_checker')->isGranted('ROLE_COM')) {
                     $productos->setAproboDirector($estado);
                     $productos->setDirectorUsuario($usuario);
                     
@@ -594,7 +594,7 @@ class CatalogosController extends Controller
                     $productos->setEstadoAprobacion($estadoAprob);
                 }
 
-                if ($this->get('security.context')->isGranted('ROLE_CLI')) {
+                if ($this->get('security.authorization_checker')->isGranted('ROLE_CLI')) {
                     $productos->setAproboCliente($estado);
                     $productos->setClienteUsuario($usuario);
                     

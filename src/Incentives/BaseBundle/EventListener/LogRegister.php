@@ -16,7 +16,7 @@ class LogRegister
 
     public function prePersist(LifeCycleEventArgs $args)
     {
-     	if($this->container->get('security.context')->getToken()) $user = $this->container->get('security.context')->getToken()->getUser();
+     	if($this->container->get('security.token_storage')->getToken()) $user = $this->container->get('security.token_storage')->getToken()->getUser();
 
         $entity = $args->getEntity();
         $entityManager = $args->getEntityManager();
@@ -144,7 +144,7 @@ class LogRegister
 
     public function preUpdate(LifeCycleEventArgs $args)
     {
-     	if($this->container->get('security.context')->getToken()) $user = $this->container->get('security.context')->getToken()->getUser();
+     	if($this->container->get('security.token_storage')->getToken()) $user = $this->container->get('security.token_storage')->getToken()->getUser();
 
         $entity = $args->getEntity();
         $entityManager = $args->getEntityManager();

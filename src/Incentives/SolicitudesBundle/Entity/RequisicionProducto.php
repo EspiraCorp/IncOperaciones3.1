@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * RequisicionProducto
  *
- * @ORM\Table()
+ * @ORM\Table(name="RequisicionProducto")
  * @ORM\Entity
  */
 class  RequisicionProducto

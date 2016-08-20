@@ -1337,7 +1337,7 @@ class InventarioController extends Controller
                 $str_filtro = ' d.redencion IS NOT NULL AND d.planilla is NULL';
                 
                 //no mostrar premios de otros paisses a el operador logistico
-                if($this->get('security.context')->isGranted('ROLE_BOD')){
+                if($this->get('security.authorization_checker')->isGranted('ROLE_BOD')){
                     $str_filtro .= ' AND c.pais=1';
                 }
                 

@@ -36,11 +36,11 @@ class SolicitudesController extends Controller
     {      
         $em = $this->getDoctrine()->getManager();
 
-        if ($this->get('security.context')->isGranted('ROLE_DIR') || $this->get('security.context')->isGranted('ROLE_ADMIN')) {
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_DIR') || $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
             $qb = $em->createQueryBuilder();
             $qb->select('s');
             $qb->from('IncentivesSolicitudesBundle:Solicitud','s');
-        }elseif($this->get('security.context')->isGranted('ROLE_EJEC') || $this->get('security.context')->isGranted('ROLE_COM')){
+        }elseif($this->get('security.authorization_checker')->isGranted('ROLE_EJEC') || $this->get('security.authorization_checker')->isGranted('ROLE_COM')){
 			
 			$usuario = $this->getUser()->getId();    
             $qb = $em->createQueryBuilder();
@@ -94,7 +94,7 @@ class SolicitudesController extends Controller
                 $solicitud->setEstado($estado);
                 $solicitud->setFechaSolicitud(new \DateTime());
 
-                $usuario = $this->container->get('security.context')->getToken()->getUser();
+                $usuario = $this->container->get('security.token_storage')->getToken()->getUser();
                 $solicitud->setSolicitante($usuario);
 
                 $em->persist($solicitud);

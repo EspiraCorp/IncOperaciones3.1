@@ -5,10 +5,11 @@ namespace Incentives\FacturacionBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Presupuestos
+ * Presupuestoshistorico
  *
  * @ORM\Table()
  * @ORM\Entity
+ * @ORM\Table(name="Presupuestoshistorico")
  */
 class Presupuestoshistorico
 {

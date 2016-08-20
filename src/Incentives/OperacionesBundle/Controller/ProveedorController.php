@@ -183,7 +183,7 @@ class ProveedorController extends Controller
 				$regimen = $em->getRepository('IncentivesOperacionesBundle:Regimen')->find($pro["regimen"]);
 				$proveedor->setRegimen($regimen);
 				
-				$user = $this->get('security.context')->getToken()->getUser()->getRoles();
+				$user = $this->get('security.token_storage')->getToken()->getUser()->getRoles();
 				$rol = $user[0]->getRole();
 				if ($rol == 'ROLE_PROV') {
 					$categoria = $em->getRepository('IncentivesOperacionesBundle:Categoria')->find($pro["categoria"]);
@@ -419,7 +419,7 @@ class ProveedorController extends Controller
     {
 		$em = $this->getDoctrine()->getManager();
 		
-	 	$user = $this->get('security.context')->getToken()->getUser()->getRoles();
+	 	$user = $this->get('security.token_storage')->getToken()->getUser()->getRoles();
 		$rol = $user[0]->getRole();
 		if ($rol == 'ROLE_PROV') {
             $proveedor =  $this->getUser()->getProveedor();
@@ -494,7 +494,7 @@ class ProveedorController extends Controller
     {
 		$em = $this->getDoctrine()->getManager();
 		
-	 	$user = $this->get('security.context')->getToken()->getUser()->getRoles();
+	 	$user = $this->get('security.token_storage')->getToken()->getUser()->getRoles();
 		$rol = $user[0]->getRole();
 		if ($rol == 'ROLE_PROV') {
             $proveedor =  $this->getUser()->getProveedor();
@@ -1349,7 +1349,7 @@ public function exportarAction()
 
     public function calificacionAction(Request $request, $id)
     {
-    	if ($this->get('security.context')->isGranted('ROLE_USER')) {
+    	if ($this->get('security.authorization_checker')->isGranted('ROLE_USER')) {
             $user =  $this->getUser();
       	}
     	$em = $this->getDoctrine()->getManager();

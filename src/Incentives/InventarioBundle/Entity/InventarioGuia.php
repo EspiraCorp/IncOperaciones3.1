@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * InventarioGuia
  *
- * @ORM\Table()
+ * @ORM\Table(name="InventarioGuia")
  * @ORM\Entity
  */
 class InventarioGuia

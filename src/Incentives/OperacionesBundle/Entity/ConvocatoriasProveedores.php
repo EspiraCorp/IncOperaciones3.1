@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * ConvocatoriasProveedores
  *
- * @ORM\Table()
+ * @ORM\Table(name="ConvocatoriasProveedores")
  * @ORM\Entity
  */
 class ConvocatoriasProveedores

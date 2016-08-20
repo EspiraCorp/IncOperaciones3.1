@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * PlanillaTipo
  *
- * @ORM\Table()
+ * @ORM\Table(name="PlanillaTipo")
  * @ORM\Entity
  */
 class PlanillaTipo

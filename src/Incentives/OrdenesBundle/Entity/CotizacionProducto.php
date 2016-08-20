@@ -6,6 +6,9 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * CotizacionProducto
+ * 
+ * @ORM\Entity
+ * @ORM\Table(name="CotizacionProducto")
  */
 class CotizacionProducto
 {

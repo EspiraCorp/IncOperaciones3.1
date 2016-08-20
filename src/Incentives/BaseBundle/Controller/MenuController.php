@@ -15,7 +15,7 @@ class MenuController extends Controller
 	
 	public function menuPrincipalAction()
     {
-        /*if($this->get('security.context')->isGranted('IS_AUTHENTICATED_REMEMBERED')){
+        /*if($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_REMEMBERED')){
         	$rol=array();
     		$userRoles =  $this->getUser()->getGrupos();
     		foreach ($userRoles as $clave => $valor) {

@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Tracking
  *
- * @ORM\Table()
+ * @ORM\Table(name="Tracking")
  * @ORM\Entity
  */
 class Tracking

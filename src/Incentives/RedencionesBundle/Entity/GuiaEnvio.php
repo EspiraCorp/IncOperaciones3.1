@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * GuiaEnvio
  *
- * @ORM\Table()
+ * @ORM\Table(name="GuiaEnvio")
  * @ORM\Entity
  */
 class GuiaEnvio

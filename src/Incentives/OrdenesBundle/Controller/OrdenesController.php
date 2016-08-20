@@ -305,7 +305,7 @@ class OrdenesController extends Controller
      */
     public function listadoAction()
     {
-        /*if ($this->get('security.context')->isGranted('ROLE_PROV')) {
+        /*if ($this->get('security.authorization_checker')->isGranted('ROLE_PROV')) {
             $proveedor =  $this->getUser()->getProveedor();
             $id = $proveedor->getId();
             $listado = $repository->findByProveedor($id);

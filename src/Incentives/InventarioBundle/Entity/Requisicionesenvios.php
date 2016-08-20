@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Requisicionesenvios
  *
- * @ORM\Table()
+ * @ORM\Table(name="Requisicionesenvios")
  * @ORM\Entity
  */
 class Requisicionesenvios

@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * MonedaTipo
  *
- * @ORM\Table()
+ * @ORM\Table(name="MonedaTipo")
  * @ORM\Entity
  */
 class MonedaTipo

@@ -6,6 +6,9 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Idiomas
+ * 
+ * @ORM\Entity
+ * @ORM\Table(name="Idiomas")
  */
 class Idiomas
 {

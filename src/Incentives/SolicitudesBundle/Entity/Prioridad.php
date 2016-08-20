@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * Prioridad
  *
- * @ORM\Table()
+ * @ORM\Table(name="Prioridad")
  * @ORM\Entity
  */
 class Prioridad

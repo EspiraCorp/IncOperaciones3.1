@@ -10,6 +10,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  *
  * @ORM\Table()
  * @ORM\Entity
+ * @ORM\Table(name="ProductoTipo")
  */
 class ProductoTipo
 {

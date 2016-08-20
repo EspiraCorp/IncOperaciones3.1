@@ -6,9 +6,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Proveedores
+ * ProveedoresHistorico
  *
- * @ORM\Table()
+ * @ORM\Table(name="ProveedoresHistorico")
  * @ORM\Entity
  * 
  */

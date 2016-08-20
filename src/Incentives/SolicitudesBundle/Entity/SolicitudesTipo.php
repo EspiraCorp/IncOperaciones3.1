@@ -6,6 +6,9 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * SolicitudesTipo
+ * 
+ * @ORM\Table(name="SolicitudesTipo")
+ * 
  */
 class SolicitudesTipo
 {

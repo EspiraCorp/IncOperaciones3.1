@@ -7,8 +7,8 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * CostosLogistica
  *
- * @ORM\Table()
  * @ORM\Entity(repositoryClass="Incentives\InventarioBundle\Entity\CostosLogisticaRepository")
+ * @ORM\Table(name="CostosLogistica")
  */
 class CostosLogistica
 {

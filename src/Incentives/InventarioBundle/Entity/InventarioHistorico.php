@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * InventarioHistorico
  *
- * @ORM\Table()
+ * @ORM\Table(name="InventarioHistorico")
  * @ORM\Entity
  */
 class InventarioHistorico

@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  *
  * @ORM\Table()
  * @ORM\Entity
+ * @ORM\Table(name="Imagenproducto")
  */
 class Imagenproducto
 {

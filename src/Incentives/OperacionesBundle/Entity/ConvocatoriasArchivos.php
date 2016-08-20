@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 /**
  * ConvocatoriasArchivos
  *
- * @ORM\Table()
+ * @ORM\Table(name="ConvocatoriasArchivos")
  * @ORM\Entity
  */
 class ConvocatoriasArchivos

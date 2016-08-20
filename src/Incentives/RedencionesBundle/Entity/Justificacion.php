@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * Justificacion
  *
- * @ORM\Table()
+ * @ORM\Table(name="Justificacion")
  * @ORM\Entity
  */
 class Justificacion

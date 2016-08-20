@@ -224,7 +224,7 @@ class ConvocatoriasController extends Controller
     {      
         $hoy = date("Y-m-d");
         
-        if ($this->get('security.context')->isGranted('ROLE_PROV')) {
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_PROV')) {
 
             $proveedor =  $this->getUser()->getProveedor();
             $id = $proveedor->getId();
@@ -282,7 +282,7 @@ class ConvocatoriasController extends Controller
         $proveedores = $repositoryp->findByConvocatorias($id);
         $archivos = $repositorya->findBy(array('convocatoria' => $id, 'estado' => 1));
 
-         if ($this->get('security.context')->isGranted('ROLE_PROV')) {
+         if ($this->get('security.authorization_checker')->isGranted('ROLE_PROV')) {
             $proveedor =  $this->getUser()->getProveedor();
             $id_prov = $proveedor->getId();
 

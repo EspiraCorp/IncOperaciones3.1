@@ -8,8 +8,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * CierreEstado
  *
- * @ORM\Table()
  * @ORM\Entity
+ * @ORM\Table(name="CierreEstado")
  */
 class CierreEstado
 {

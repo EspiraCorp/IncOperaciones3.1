@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * Participantesestado
  *
- * @ORM\Table()
+ * @ORM\Table(name="Participantesestado")
  * @ORM\Entity
  */
 class Participantesestado

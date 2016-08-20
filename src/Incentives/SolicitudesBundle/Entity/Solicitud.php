@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Solicitud
  *
- * @ORM\Table()
+ * @ORM\Table(name="Solicitud")
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks()
  */

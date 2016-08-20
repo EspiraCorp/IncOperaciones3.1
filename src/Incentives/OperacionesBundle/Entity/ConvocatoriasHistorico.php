@@ -9,7 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * Convocatorias
  *
- * @ORM\Table()
+ * @ORM\Table(name="ConvocatoriasHistorico")
  * @ORM\Entity
  */
 class ConvocatoriasHistorico
