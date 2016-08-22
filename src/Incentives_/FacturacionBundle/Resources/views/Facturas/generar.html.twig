@@ -1,0 +1,52 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Nueva Factura{% endblock %}
+
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+<div class="box span12">
+    <div class="box-header well" data-original-title>
+        <h2><i class="icon-edit"></i>Nueva Factura</h2>
+            <div class="box-icon">
+                <a href="{{ path('facturas_listado', {"programa": programa}) }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+            </div>
+    </div>
+<div class="box-content">
+<form action="{{ path('factura_generar', {"id": programa}) }}" method="POST" {{ form_enctype(form) }} class="form-horizontal" novalidate>
+    {{ form_errors(form) }}
+    <fieldset>
+        <input type='hidden' name='programa' value={{ programa }}>
+
+        <div class="control-group">
+            {{ form_label(form.fecha, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.fecha, { 'id': 'fecha' }) }}
+            </div>
+        </div>
+         <div class="control-group">
+            {{ form_label(form.periodo, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.periodo, { 'id': 'periodo' }) }}
+            </div>
+        </div>
+    </fieldset>
+
+    
+<div class="form-actions">
+    {{ form_widget(form.Enviar, { 'attr': {'class': 'btn btn-primary'} }) }}
+</div>
+{{ form_widget(form._token) }}
+</form>
+</div>
+</div>
+ </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        $( "#fecha" ).datepicker({ dateFormat: 'yy-mm-dd' });
+    </script>
+
+{% endblock %}

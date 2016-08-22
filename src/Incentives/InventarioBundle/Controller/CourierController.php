@@ -20,10 +20,10 @@ class CourierController extends Controller
     {
         $courier = new Courier();
 
-        $form = $this->createForm(new CourierType(), $courier);
+        $form = $this->createForm(CourierType::class, $courier);
                     
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
 
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();

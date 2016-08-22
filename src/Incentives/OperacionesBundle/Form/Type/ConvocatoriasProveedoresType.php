@@ -6,6 +6,9 @@ namespace Incentives\OperacionesBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class ConvocatoriasProveedoresType extends AbstractType
 {
@@ -16,9 +19,9 @@ class ConvocatoriasProveedoresType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('archivo', 'file')
-            ->add('observacion','textarea');
-        $builder->add('Enviar', 'submit');
+            ->add('archivo', FileType::class)
+            ->add('observacion',TextareaType::class);
+        $builder->add('Enviar', SubmitType::class);
     }
     
     /**

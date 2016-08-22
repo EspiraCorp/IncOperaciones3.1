@@ -6,6 +6,11 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Incentives\OperacionesBundle\Entity\ProveedoresRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class CotizacionType extends AbstractType
 {
@@ -16,34 +21,34 @@ class CotizacionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('fechaCreacion', 'date', array(
+            ->add('fechaCreacion', DateType::class, array(
             'input'  => 'datetime',
             'widget' => 'single_text',
         ));
 
         $builder
-            ->add('fechaVencimiento', 'date', array(
+            ->add('fechaVencimiento', DateType::class, array(
             'input'  => 'datetime',
             'widget' => 'single_text',
         ));
 
         $builder
-            ->add('logistica','number', array('label' => 'Logistica Consolidada'));
+            ->add('logistica', NumberType::class, array('label' => 'Logistica Consolidada'));
 
         $builder
-            ->add('condiciones','text', array('label' => 'Condiciones Comerciales'));
+            ->add('condiciones',TextType::class, array('label' => 'Condiciones Comerciales'));
 
         $builder
             ->add('observaciones');
 
-         $builder->add('estado', 'entity', array(
+         $builder->add('estado', EntityType::class, array(
             'class' => 'IncentivesSolicitudesBundle:CotizacionesEstado',
-            'property' => 'nombre',
-            'empty_value' => 'Seleccione una opcion',
+            'choice_label' => 'nombre',
+            //'empty_value' => 'Seleccione una opcion',
             'label' => 'Estado'
         ));
 
-        $builder->add('Enviar', 'submit');
+        $builder->add('Enviar', SubmitType::class);
     }
     
     /**

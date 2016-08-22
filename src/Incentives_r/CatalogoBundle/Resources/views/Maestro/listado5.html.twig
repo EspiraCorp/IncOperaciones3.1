@@ -1,0 +1,200 @@
+{% extends "::base.html.twig" %}
+
+{% block stylesheets %}
+{{ parent() }}
+<link rel="stylesheet" type="text/css" href="{{ asset('css/ui-lightness/jquery-ui.css') }}">
+    <style type='text/css'>
+    #tabs {
+        font-size: .8em !important;
+        width:auto;
+        margin:5px;
+        padding:0;
+        border:0 !important;
+        overflow:hidden;
+    }
+
+    /*scrollable tabs css*/
+    .ui-scrollable-tabs { overflow:hidden; position:relative; width:800px; }
+
+    .ui-scrollable-tabs .ui-tabs-nav {
+        width:1000000px;
+        padding:1px 0 0 1px;
+        border-left:none;
+        border-right:none;
+        padding-top:1px;
+        position:relative;
+    }
+
+    .ui-scrollable-tabs .ui-tabs .ui-tabs-closable li a {
+        padding-right:5px;
+    }
+
+    .ui-scrollable-tabs .ui-tabs-nav-arrows {
+        left: 0;
+        margin: 0;
+        margin:0 5px;
+        padding: 0;
+        position: absolute;
+        right: 0;
+        top: 5px;
+    }
+
+    /*IE7 fix*/
+    *:first-child+html .ui-scrollable-tabs .ui-tabs-nav-arrows {
+        z-index:1;
+    }
+
+    .ui-scrollable-tabs .ui-tabs .ui-tabs-nav li {
+        margin:0 1px 0;
+    }
+
+    .ui-tabs-nav li .ui-tabs-close {
+        float:left;
+        margin-top:8px;
+        margin-right:4px;
+        border:none;
+        cursor:pointer;
+    }
+
+    .ui-scrollable-tabs .ui-tabs-nav-arrows .ui-tabs-arrow-next { float:right; }
+
+    .ui-scrollable-tabs .ui-tabs-nav-arrows .ui-tabs-arrow-previous { float:left; }
+
+    .ui-scrollable-tabs .ui-tabs-nav-arrows li {
+        list-style:none;
+        position:relative;
+        cursor:pointer;
+        margin:0;
+        padding:0;
+        display:none;
+        z-index:1;
+    }
+
+    .ui-scrollable-tabs .ui-tabs-nav-arrows li a {
+        display: block;
+        padding:8px 0 9px;
+    }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('js/jquery.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/jquery-ui.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/jquery.scrollabletab.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/jquery.init.js') }}"></script>
+    <script>
+        $(document).ready(function(){
+            {% for catalogos in catalogo %}
+            $("#cat{{ catalogos.id }}").click(function(evento){
+                evento.preventDefault();
+                $("#catalogo{{ catalogos.id }}").load("{{ path('productocatalogo_grupo', { 'id': catalogos.id , 'pagina': pagina, 'str_filtro': str_filtro, 'parametros': parametros }) }}");
+            });
+            {% endfor %}
+        })
+    </script>
+{% endblock %}
+
+{% block cuerpo %}
+<div class="box span12">
+    <div data-original-title="" class="box-header well">
+        <h2><i class="icon-th"></i> Manager de Productos</h2>
+    </div>
+    <div class="box-content">
+        <form action="" method="POST" {{ form_enctype(filtros) }} class="form-horizontal">
+        {{ form_errors(filtros) }}
+        <div class="row-fluid">
+            <div class="span3"><h5>Nombre</h5></div>
+            <div class="span3"><h5>Categoria</h5></div>
+            <div class="span3"><h5>Referencia</h5></div>
+            <div class="span3"><h5>Marca</h5></div>
+        </div>
+        <div class="row-fluid">
+            <div class="span3">{{ form_widget(filtros.nombre) }}</div>
+            <div class="span3">{{ form_widget(filtros.categoria) }}</div>
+            <div class="span3">{{ form_widget(filtros.referencia) }}</div>
+            <div class="span3">{{ form_widget(filtros.marca) }}</div>
+        </div>
+        <div class="row-fluid">
+            <div class="span3"><h5>EAN</h5></div>
+            <div class="span3"><h5>SKU</h5></div>
+            <div class="span3"><h5>Clasificacion</h5></div>
+        </div>
+        <div class="row-fluid">
+            <div class="span3">{{ form_widget(filtros.codEAN) }}</div>
+            <div class="span3">{{ form_widget(filtros.codInc) }}</div>
+            <div class="span3">{{ form_widget(filtros.productoclasificacion) }}</div>
+            <div class="span3">{{ form_widget(filtros.Enviar, { 'attr': {'class': 'btn btn-primary'} }) }}</div>
+        </div>
+        {{ form_widget(filtros._token) }}
+        </form>                   
+    </div>
+</div>
+
+<div class="box span12">
+    <div class="box-content">
+        <div style="background: white; width: 200px; float: left;" class="box">
+            <div class="box-header well"><h2>PRODUCTOS</h2></div>
+             <div class="well">
+            <h4></h4>
+            </div>
+            {% for productos in pagination %}
+                 <div style="height: 240px; width: 180px;" class="box span3">
+                    <div data-original-title="" class="box-header well">
+                        {{ productos.nombre }}
+                    </div>
+                     <div class="box-content">
+                        <div style="height: 100px; width: 100px;">
+                            {% set i=0 %}
+                           {% for imagen in imagenes %}
+                            {% if (imagen.producto.id==productos.id and i<1) %}                  
+                              
+                                  <a class="cboxElement" href="../../../{{ imagen.path | slice (0)}}" title="{{ productos.nombre }}" style="background:url(../../../{{(imagen.path| slice (0))[:-4]}}_min.jpg)">
+                                    <img class="grayscale" src="../../../{{ imagen.path | slice(0)[:-4]}}_min.jpg" style="display: block;">
+                                  </a>
+                                
+                              {% set i=i+1 %}
+                            {% endif %}
+                          {% endfor %} 
+                        </div>
+                        <div>
+                            <strong>Referencia:</strong> {{ productos.referencia }}<br>
+                            <strong>Marca:</strong> {{ productos.marca }}<br>
+                            <strong>Categoria:</strong> {{ productos.categoria.nombre }}<br>
+                            <a id="enlaceajax15" class="btn btn-success">Activo</a>
+                        </div>      
+                    </div>       
+                </div>
+            {% endfor %}
+        </div>
+
+        <div id="tabs">
+        <ul>
+            {% for catalogos in catalogo %}
+                <li ><a id="cat{{ catalogos.id }}" href="#catalogo{{ catalogos.id }}"><span>{{ catalogos.nombre }}</span></a></li>
+            {% endfor %}
+        </ul>
+
+        {% set i=0 %}
+        {% for catalogos in catalogo %}
+            <div id="catalogo{{ catalogos.id }}" class="box" style="background: white;">
+                {% if (i==0) %}
+                 {{ render(controller('IncentivesCatalogoBundle:Maestro:grupo', { 'id': catalogos.id , 'pagina': pagina, 'str_filtro': str_filtro, 'parametros': parametros })) }}
+                {% endif %}
+            </div>
+            {% set i = i+1 %}
+        {% endfor %}
+    </div>
+
+    </div>
+    <div class="box span11">
+        <div class="box-content">
+                <div class="dataTables_info">Mostrando {{ pagination.getItemNumberPerPage*(pagination.getCurrentPageNumber-1)+1  }} a {{ pagination.getItemNumberPerPage*pagination.getCurrentPageNumber }} de {{ pagination.getTotalItemCount }}   Productos
+                </div>
+                <div class="pagination pagination-centered">
+                        {{ knp_pagination_render(pagination) }}                    
+                </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

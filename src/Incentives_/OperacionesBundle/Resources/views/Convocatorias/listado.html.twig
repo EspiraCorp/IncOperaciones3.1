@@ -1,0 +1,120 @@
+{# src/Sinaptica/ProveedoresBundle/Resources/views/Default/new.html.twig #}
+{% extends '::base.html.twig' %}
+{% block title %}Convocatorias{% endblock %}
+{% block sidebar %}
+{{ parent() }}
+{% endblock %}
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+	<div class="box span12">
+		<div class="box-header well">
+			<h2><i class="icon-th-list"></i>Convocatorias</h2>
+		</div>
+		<div class="box-content">
+			<div id="dashboard">
+                    <div id="tabla" class="" cellspacing="0" width="100%">
+                      <table id="convocatorias" class="display">
+                        <thead  style="display:table-row-group;">
+                          <tr>
+                            <th>Titulo</th>
+                            <th>Descripcion</th>
+                            <th>Solicitud</th>
+                            <th>Fecha Inicio</th>
+                            <th>Fecha Fin</th>
+                            {% if not is_granted('ROLE_PROV') %}<th>Estado</th>{% endif %}
+                          </tr>
+                          
+                        </thead>
+                        <tbody>
+                          {% for convocatoria in listado %}
+                          <tr>
+                            <td><a href="{{ path("convocatorias_datos", {"id": convocatoria.id}) }}">{{ convocatoria.titulo }}</a></td>
+                            <td>{{ convocatoria.descripcion }}</td>
+                            <td>{{ convocatoria.solicitud.id }}</td>
+                            <td>{{ convocatoria.fechaInicio | date("Y-m-d") }}</td>
+                            <td>{{ convocatoria.fechaFin | date("Y-m-d") }}</td>
+                            {% if not is_granted('ROLE_PROV') %}<td>{% if (convocatoria.estado.id!=1) %}<a class="btn btn-danger" id="enlaceajax{{ convocatoria.id }}" href="{{ path("proveedores_estado", {"id": convocatoria.id}) }}">Inactivo</a>{% else %}<a class="btn btn-success" id="enlaceajax{{ convocatoria.id }}" href="{{ path("proveedores_estado", {"id": convocatoria.id}) }}">Activo</a><div id="destino{{ convocatoria.id }}"></div>{% endif %}
+                            {% endif %}</td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                        <tfoot style="display: table-header-group;">
+                          <tr>
+                            <th>Titulo</th>
+                            <th>Archivo</th>
+                            <th>Solicitud</th>
+                            <th>Fecha Inicio</th>
+                            <th>Fecha Fin</th>
+                            {% if not is_granted('ROLE_PROV') %}<th>Estado</th>{% endif %}
+                          </tr>
+                          
+                        </tfoot>
+                      </table>
+                    </div>    
+            </div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+
+{{ parent() }}
+
+	<script type="text/javascript">
+  $(document).ready(function() {
+  //    inifuntion
+   var table = $('#convocatorias').dataTable({
+  
+              "sDom": 'T<"clear">lfrtip',
+               "bPaginate": true,
+               "bLengthChange": true,
+               "bFilter": true,
+               "bSort": true,
+               "bInfo": false,
+               "bAutoWidth": true,
+               "bJQueryUI": false,
+               "sPaginationType": "full_numbers",
+               "iDisplayLength": 50,
+               "aLengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "Todo"] ],
+                initComplete: function () {
+                      this.api().columns().every( function () {
+                          var column = this;
+                          var select = $('<select style="width: 100%"><option value=""></option></select>')
+                              .appendTo( $(column.footer()).empty() )
+                              .on( 'change', function () {
+                                  var val = $.fn.dataTable.util.escapeRegex(
+                                      $(this).val()
+                                  );
+           
+                                  column
+                                      .search( val ? '^'+val+'$' : '', true, false )
+                                      .draw();
+                              } );
+           
+                          column.data().unique().sort().each( function ( d, j ) {
+                              //limpiar
+                              //d
+                              select.append( '<option value="'+d+'">'+d+'</option>' )
+                          } );
+                      } );
+                  }
+      });
+  
+  })
+  
+  function confirmar(ruta)
+      {
+        if (confirm("Desea cambiar el estado del proveedor")==true){
+            self.location=ruta;
+        }else{
+            alert("OK");
+        }
+        
+      }
+  </script>
+	  
+	  
+	  
+	</script>
+{% endblock %}

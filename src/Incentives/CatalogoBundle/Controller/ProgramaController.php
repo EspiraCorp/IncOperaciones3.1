@@ -30,17 +30,17 @@ class ProgramaController extends Controller
         $catalogo = new Catalogos();
         if (isset($id)){
             $cliente = $em->getRepository('IncentivesCatalogoBundle:Cliente')->find($id);
-            $form = $this->createForm(new ProgramaType(), $programa);
+            $form = $this->createForm(ProgramaType::class, $programa);
         }else{
             $cliente = new Cliente();
-            $form = $this->createForm(new ProgramanuevoType(), $programa);
+            $form = $this->createForm(ProgramanuevoType::class, $programa);
         }   
                     
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
 
             if ($form->isValid()) {
-                $id=($this->get('request')->request->get('id'));
+                $id=($request->request->get('id'));
                 if ($id==0){
                     $id=$programa->getCliente()->getId();
                 }
@@ -83,19 +83,19 @@ class ProgramaController extends Controller
 
         if (isset($id)){
             $programa = $em->getRepository('IncentivesCatalogoBundle:Programa')->find($id);
-            $form = $this->createForm(new ProgramaType(), $programa);
+            $form = $this->createForm(ProgramaType::class, $programa);
         }else{
-            $form = $this->createForm(new ProgramaType());
+            $form = $this->createForm(ProgramaType::class);
             $programa = new Programa();
         }
 
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
 
 
             if ($form->isValid()) {                
-                $pro=($this->get('request')->request->get('programa'));
-                $id=($this->get('request')->request->get('id'));
+                $pro=($request->request->get('programa'));
+                $id=($request->request->get('id'));
                 $programa = $em->getRepository('IncentivesCatalogoBundle:Programa')->find($id);
                 $programa->setNombre($pro["nombre"]);
                 $programa->setDescripcion($pro["descripcion"]);

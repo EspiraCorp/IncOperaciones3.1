@@ -68,13 +68,13 @@ class MaestroController extends Controller
         $productocatalogo = new Productocatalogo();
         foreach ($producto as $key => $value) {
             foreach ($catalogo as $keys => $values) {
-                $matriz[$value->getId()][$values->getId()] = $this->createForm(new ProductocatalogoType(), $productocatalogo);
+                $matriz[$value->getId()][$values->getId()] = $this->createForm(ProductocatalogoType::class, $productocatalogo);
                 $matrizv[$value->getId()][$values->getId()] = $matriz[$value->getId()][$values->getId()] ->createView();
             }
         }
         
 
-        $form = $this->createForm(new ProductocatalogoType(), $productocatalogo);
+        $form = $this->createForm(ProductocatalogoType::class, $productocatalogo);
 
         return $this->render('IncentivesCatalogoBundle:Maestro:listado3.html.twig', array(
                 'form' => $form->createView(), 'matrizv'=>$matrizv,
@@ -83,9 +83,9 @@ class MaestroController extends Controller
         ));
     }
 
-    public function maestroAction()
+    public function maestroAction(Request $request)
     {
-            $form = $this->createForm(new ProductoType());
+            $form = $this->createForm(ProductoType::class);
             
             $em = $this->getDoctrine()->getManager();
 
@@ -93,10 +93,10 @@ class MaestroController extends Controller
             
             $session = $this->get('session');
             
-            $page = $this->get('request')->get('page');
+            $page = $request->get('page');
             if(!$page) $page= 1;
             
-            if($pro=($this->get('request')->request->get('producto'))){
+            if($pro=($request->request->get('producto'))){
                 $page = 1;
                 $session->set('filtros_maestro', $pro);
             }
@@ -151,8 +151,8 @@ class MaestroController extends Controller
                 ->leftJoin('p.estado', 'e')
                 ->where($sqlFiltro);
             
-            if($this->get('request')->get('sort')){
-                $query->orderBy($this->get('request')->get('sort'), $this->get('request')->get('direction'));    
+            if($request->get('sort')){
+                $query->orderBy($request->get('sort'), $request->get('direction'));    
             }
 
             $arrayFiltro['estado'] = 1;
@@ -179,13 +179,13 @@ class MaestroController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        $filtros = $this->createForm(new FiltrosProductoType());
+        $filtros = $this->createForm(FiltrosProductoType::class);
         
         if ($request->isMethod('POST')) {
             $filtros->bind($request);
 
             if ($filtros->isValid()) {
-                $flt = ($this->get('request')->request->get('filtros'));
+                $flt = ($request->request->get('filtros'));
 
                 //Filtros
                 if(isset($flt['nombre']) && $flt['nombre']!=""){
@@ -255,12 +255,12 @@ class MaestroController extends Controller
         $programa = $em->getRepository('IncentivesCatalogoBundle:Programa')->findAll();
 
 
-        $pagina = $this->get('request')->query->get('page', 1);
+        $pagina = $request->query->get('page', 1);
 
         $paginator  = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
             $producto,
-            $this->get('request')->query->get('page', 1)/*page number*/,
+            $request->query->get('page', 1)/*page number*/,
             20 /*limit per page*/
         );
 
@@ -311,11 +311,11 @@ class MaestroController extends Controller
 
             if(!($productocatalogo = $qb->getQuery()->getOneOrNullResult())) $productocatalogo = new Productocatalogo();
 
-            $matriz[$value->getId()][$id] = $this->createForm(new ProductocatalogoType(), $productocatalogo);
+            $matriz[$value->getId()][$id] = $this->createForm(ProductocatalogoType::class, $productocatalogo);
             $matrizv[$value->getId()][$id] = $matriz[$value->getId()][$id] ->createView();
         }
 
-        $pagina=$this->get('request')->query->get('page', 1);
+        $pagina=$request->query->get('page', 1);
 
         return $this->render('IncentivesCatalogoBundle:Maestro:grupo.html.twig', array(
                 'matrizv'=>$matrizv,
@@ -337,8 +337,8 @@ class MaestroController extends Controller
         
         $em = $this->getDoctrine()->getManager();
 
-        $id_prod = ($this->get('request')->request->get('producto'));
-        $id_catal = ($this->get('request')->request->get('catalogo'));
+        $id_prod = ($request->request->get('producto'));
+        $id_catal = ($request->request->get('catalogo'));
 
         $catalogo = $em->getRepository('IncentivesCatalogoBundle:Catalogos')->find($id_catal);
         $producto = $em->getRepository('IncentivesCatalogoBundle:Producto')->find($id_prod);
@@ -352,14 +352,14 @@ class MaestroController extends Controller
 
         if(!($productocatalogo = $qb->getQuery()->getOneOrNullResult())) $productocatalogo = new Productocatalogo();
 
-        $form = $this->createForm(new ProductocatalogoType(), $productocatalogo);
+        $form = $this->createForm(ProductocatalogoType::class, $productocatalogo);
    
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
 
             if ($form->isValid()) {
 
-                $pro=($this->get('request')->request->get('productocatalogo'));
+                $pro=($request->request->get('productocatalogo'));
 
                 if(isset($pro['activo'])){
                     
@@ -407,8 +407,8 @@ class MaestroController extends Controller
         
         $em = $this->getDoctrine()->getManager();
 
-        $id_prod = ($this->get('request')->request->get('producto'));
-        $id_catal = ($this->get('request')->request->get('catalogo'));
+        $id_prod = ($request->request->get('producto'));
+        $id_catal = ($request->request->get('catalogo'));
 
         $catalogo = $em->getRepository('IncentivesCatalogoBundle:Catalogos')->find($id_catal);
 
@@ -459,13 +459,13 @@ class MaestroController extends Controller
             ->setAction($this->generateUrl('proveedores_importar'))
             ->setMethod('POST')
             ->add('excel', 'file')
-            ->add('cargar', 'submit')
+            ->add('cargar', SubmitType::class)
             ->getForm();
 
         $catalogo = $em->getRepository('IncentivesCatalogoBundle:Catalogos')->find($id);
 
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
 
             $excel = $form['excel']->getData();
 
@@ -965,14 +965,14 @@ class MaestroController extends Controller
 
         $datosProducto = $em->getRepository('IncentivesCatalogoBundle:Producto')->find($producto);
 
-        $form = $this->createForm(new ProductocatalogoProdType(), $productocatalogo);
+        $form = $this->createForm(ProductocatalogoProdType::class, $productocatalogo);
         
         if ($request->isMethod('POST')) {
            
-               //$form->bind($request);
+               //$form->handleRequest($request);
                //if ($form->isValid()) {
                 
-                $pro=($this->get('request')->request->get('productocatalogo'));
+                $pro=($request->request->get('productocatalogo'));
                 $catalogo = $em->getRepository('IncentivesCatalogoBundle:Catalogos')->find($pro['catalogos']);
                 $categoria = $em->getRepository('IncentivesOperacionesBundle:Categoria')->find($pro['categoria']);
                 // realiza alguna acción, tal como guardar la tarea en la base de datos
@@ -1017,10 +1017,10 @@ class MaestroController extends Controller
         
         if ($request->isMethod('POST')) {
            
-                //$form->bind($request);
+                //$form->handleRequest($request);
                 //if ($form->isValid()) {
                 
-                    $pro=($this->get('request')->request->get('productocatalogo'));
+                    $pro=($request->request->get('productocatalogo'));
                     $categoria = $em->getRepository('IncentivesOperacionesBundle:Categoria')->find($pro['categoria']);
                     
                     $puntos = $this->calcularPuntos($pro['precioTemporal'], $pro['incrementoTemporal'], $pro['logisticaTemporal'], $pro['puntosTemporal'], $productocatalogoEditar->getCatalogos()->getId());
@@ -1058,14 +1058,14 @@ class MaestroController extends Controller
 
         $datosProducto = $em->getRepository('IncentivesCatalogoBundle:Producto')->find($producto);
 
-        $form = $this->createForm(new ProductocatalogoProdType(), $productocatalogo);
+        $form = $this->createForm(ProductocatalogoProdType::class, $productocatalogo);
         
         if ($request->isMethod('POST')) {
            
-                $form->bind($request);
+                $form->handleRequest($request);
                if ($form->isValid()) {
                 
-                $pro=($this->get('request')->request->get('productocatalogo'));
+                $pro=($request->request->get('productocatalogo'));
                 $catalogoP = $em->getRepository('IncentivesCatalogoBundle:Catalogos')->find($catalogo);
                 $categoria = $em->getRepository('IncentivesOperacionesBundle:Categoria')->find($pro['categoria']);
                 // realiza alguna acción, tal como guardar la tarea en la base de datos
@@ -1109,14 +1109,14 @@ class MaestroController extends Controller
         $em = $this->getDoctrine()->getManager();
         $productocatalogoEditar = $em->getRepository('IncentivesCatalogoBundle:Productocatalogo')->find($id);
         $datosProducto = $em->getRepository('IncentivesCatalogoBundle:Producto')->find($productocatalogoEditar->getProducto()->getId());
-        $form = $this->createForm(new ProductocatalogoProdType(), $productocatalogoEditar);
+        $form = $this->createForm(ProductocatalogoProdType::class, $productocatalogoEditar);
 
 
         if ($request->isMethod('POST')) {
                 
                 $idCatalogo = $productocatalogoEditar->getCatalogos()->getId();
                 
-                    $pro=($this->get('request')->request->get('productocatalogo'));
+                    $pro=($request->request->get('productocatalogo'));
                     $categoria = $em->getRepository('IncentivesOperacionesBundle:Categoria')->find($pro['categoria']);
                     
                     $puntos = $this->calcularPuntos($pro['precioTemporal'], $pro['incrementoTemporal'], $pro['logisticaTemporal'], $pro['puntosTemporal'], $idCatalogo);

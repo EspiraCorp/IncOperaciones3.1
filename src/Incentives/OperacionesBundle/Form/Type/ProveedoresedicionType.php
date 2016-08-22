@@ -9,68 +9,78 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Doctrine\ORM\EntityRepository;
 use Incentives\OperacionesBundle\Form\EventListener\AddContactoFieldSubscriber;
 use Incentives\OperacionesBundle\Form\EventListener\AddAeconomicaFieldSubscriber;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\CollecionType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use PUGX\AutocompleterBundle\Form\Type\AutocompleteType;
 
 class ProveedoresedicionType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('nombre');
-        $builder->add('tipodocumento', 'entity', array(
+        $builder->add('tipodocumento', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:Tipodocumento',
-            'property' => 'nombre',
-            'empty_value' => 'Seleccione una opcion',
+            'choice_label' => 'nombre',
+            //'empty_value' => 'Seleccione una opcion',
         ));
         $builder->add('numero_documento'); 
-        $builder->add('registro_camara', 'text', array('required' => false)); 
-        $builder->add('regimen', 'entity', array(
+        $builder->add('registro_camara', TextType::class, array('required' => false)); 
+        $builder->add('regimen', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:Regimen',
-            'property' => 'nombre',
-            'empty_value' => 'Seleccione una opcion',
+            'choice_label' => 'nombre',
+            //'empty_value' => 'Seleccione una opcion',
         ));
         $builder->add('sede_principal'); 
-        $builder->add('pais', 'entity', array(
+        $builder->add('pais', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:Pais',
-            'property' => 'nombre',
-            'empty_value' => 'Seleccione una opcion',
+            'choice_label' => 'nombre',
+            //'empty_value' => 'Seleccione una opcion',
             'required' => false
         ));
-        $builder->add('ciudad', 'entity', array(
+        $builder->add('ciudad', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:Ciudad',
-            'property' => 'nombre',
-            'empty_value' => 'Seleccione una opcion',
+            'choice_label' => 'nombre',
+            //'empty_value' => 'Seleccione una opcion',
             'required' => false
         ));
-        $builder->add('categoria', 'entity', array(
+        $builder->add('categoria', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:Categoria',
-            'property' => 'nombre',
-            'empty_value' => 'Seleccione una opcion',
+            'choice_label' => 'nombre',
+            //'empty_value' => 'Seleccione una opcion',
         ));
 
-        $builder->add('proveedorclasificacion', 'entity', array(
+        $builder->add('proveedorclasificacion', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:ProveedoresClasificacion',
-            'property' => 'nombre',
-            'empty_value' => 'Seleccione una opcion',
+            'choice_label' => 'nombre',
+            //'empty_value' => 'Seleccione una opcion',
             'label' => 'Clasificacion'
         ));
-        $builder->add('proveedorarea', 'entity', array(
+        $builder->add('proveedorarea', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:ProveedoresArea',
-            'property' => 'nombre',
-            'empty_value' => 'Seleccione una opcion',
+            'choice_label' => 'nombre',
+            //'empty_value' => 'Seleccione una opcion',
             'label' => 'Area'
         ));
 		$builder->add('directo');
         $builder->add('direccion');
         $builder->add('telefono');
-        $builder->add('lineaAtencion', 'text', array('required' => false));
+        $builder->add('lineaAtencion', TextType::class, array('required' => false));
         $builder->add('correo');
         $builder->add('pagina','url', array('required' => false));
-        $builder->add('codigo_postal', 'text', array('required' => false));
-        $builder->add('cobertura', 'text', array('required' => false));
-        $builder->add('condiciones_comerciales', 'text', array('required' => false));
-        $builder->add('tiempo_entrega', 'integer', array('required' => false));
-        $builder->add('cupo_asignado','number', array('required' => false));
+        $builder->add('codigo_postal', TextType::class, array('required' => false));
+        $builder->add('cobertura', TextType::class, array('required' => false));
+        $builder->add('condiciones_comerciales', TextType::class, array('required' => false));
+        $builder->add('tiempo_entrega', IntegerType::class, array('required' => false));
+        $builder->add('cupo_asignado', NumberType::class, array('required' => false));
 
-        $builder->add('aeconomica', 'collection', array(
+        $builder->add('aeconomica', CollectionType::class, array(
                 'type'  => new AeconomicaType(),
                 'label'          => 'Actividad economica',
                 'by_reference'   => false,
@@ -78,9 +88,9 @@ class ProveedoresedicionType extends AbstractType
                 'allow_delete'   => true,
                 'allow_add'      => true
         ));
-        $builder->add('sedes', 'checkbox', array('required' => false));
-        $builder->add('datos_sedes', 'text', array('required' => false));
-        $builder->add('Enviar', 'submit');
+        $builder->add('sedes', CheckboxType::class, array('required' => false));
+        $builder->add('datos_sedes', TextType::class, array('required' => false));
+        $builder->add('Enviar', SubmitType::class);
 			
     }
     

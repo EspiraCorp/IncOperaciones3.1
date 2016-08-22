@@ -1,0 +1,123 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Planillas{% endblock %}
+{% block sidebar %}
+{{ parent() }}
+{% endblock %}
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+	<div class="box span12">
+		<div class="box-header well">
+			<h2><i class="icon-th-list"></i>Planillas</h2>
+		</div>
+		<div class="box-content">
+			<div id="dashboard">
+                    <div class="row-fluid">
+                        <div id="control1" class="span3"></div>
+                        <div id="control2" class="span3"></div>
+                        <div id="control3" class="span3"></div>
+                        <div id="control4" class="span3"></div>
+                    </div>
+                    <div id="tabla" class="row-fluid"></div>  
+                    <hr>
+                    
+            </div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+
+{{ parent() }}
+
+	<script type="text/javascript" src="//www.google.com/jsapi"></script>
+    <script type="text/javascript">
+      google.load('visualization', '1.1', {packages: ['controls']});
+    </script>
+    <script type="text/javascript">
+      function drawVisualization() {
+        // Prepare the data.
+        var data = google.visualization.arrayToDataTable([
+          ['Consecutivo', 'Fecha' ,'Estado'],
+          {% for planilla in planillas %}
+            [ '<a href="{{ planilla.ruta }}" target="_blank" onClick=confirmar("{{ url("inventario_listado_planilla_estado", {"id": planilla.id}) }}")>{{ planilla.id }}</a>',
+             '{{ planilla.fecha | date("Y-m-d") }}',
+             '{{ planilla.planillaestado.nombre }}',],
+    	  {% endfor %}
+        ]);
+      
+        // Define a StringFilter control for the 'Name' column
+        var stringFilter = new google.visualization.ControlWrapper({
+          'controlType': 'StringFilter',
+          'containerId': 'control1',
+          'options': {
+            'filterColumnLabel': 'Consecutivo',
+            'matchType': 'any'
+          }
+        });
+
+        var stringFilter2 = new google.visualization.ControlWrapper({
+          'controlType': 'CategoryFilter',
+          'containerId': 'control2',
+          'options': {
+            'filterColumnLabel': 'Fecha',
+            'ui': {
+              'allowTyping': true,
+              'allowMultiple': true
+            }
+          }
+        });
+
+        var stringFilter3 = new google.visualization.ControlWrapper({
+          'controlType': 'CategoryFilter',
+          'containerId': 'control3',
+          'options': {
+            'filterColumnLabel': 'Estado',
+            'ui': {
+              'allowTyping': true,
+              'allowMultiple': true
+            }
+          }
+        });
+
+        // Define a table visualization
+        var table = new google.visualization.ChartWrapper({
+                'chartType': 'Table',
+                'containerId': 'tabla',
+            options: {
+              showRowNumber: true,
+              page: 'enable',
+              pageSize: 25,
+              pagingSymbols: {
+                  prev: '<<',
+                  next: '>>'
+              },
+              pagingButtonsConfiguration: 'auto',
+              'allowHtml': true,
+          }
+        });
+
+        // Create the dashboard.
+        var dashboard = new google.visualization.Dashboard(document.getElementById('dashboard')).
+          // Configure the string filter to affect the table contents
+          bind(stringFilter, table).
+          bind(stringFilter2, table).
+          bind(stringFilter3, table).
+          // Draw the dashboard
+          draw(data);
+      }
+      
+
+      google.setOnLoadCallback(drawVisualization);
+    </script>
+
+  <script type="text/javascript">
+      function confirmar(ruta)
+      { 
+            self.location=ruta;
+      }
+  </script>
+
+{% endblock %}
+

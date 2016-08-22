@@ -3,6 +3,14 @@
 namespace Incentives\OperacionesBundle\Form\EventListener;
  
 use Symfony\Component\Form\FormEvent;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use PUGX\AutocompleterBundle\Form\Type\AutocompleteType;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -27,10 +35,10 @@ class AddCountryFieldSubscriber implements EventSubscriberInterface
  
     private function addCountryForm($form, $country)
     {
-        $form->add($this->factory->createNamed('country', 'entity', $country, array(
+        $form->add($this->factory->createNamed('country', EntityType::class, $country, array(
             'class'         => 'MainBundle:Country',
             'mapped'        => false,
-            'empty_value'   => 'País',
+            //'empty_value'   => 'País',
             'query_builder' => function (EntityRepository $repository) {
                 $qb = $repository->createQueryBuilder('country');
  

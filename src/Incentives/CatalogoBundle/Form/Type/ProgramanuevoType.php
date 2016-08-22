@@ -5,6 +5,15 @@ namespace Incentives\CatalogoBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use PUGX\AutocompleterBundle\Form\Type\AutocompleteType;
 
 class ProgramanuevoType extends AbstractType
 {
@@ -14,27 +23,27 @@ class ProgramanuevoType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('cliente', 'entity', array(
+        $builder->add('cliente', EntityType::class, array(
             'class' => 'IncentivesCatalogoBundle:Cliente',
-            'property' => 'nombre',
-            'empty_value' => 'Seleccione una opcion',
+            'choice_label' => 'nombre',
+            //'empty_value' => 'Seleccione una opcion',
         ));
         $builder
             ->add('nombre')
             ->add('descripcion')
-            ->add('fechainicio', 'date', array(
+            ->add('fechainicio', DateType::class, array(
             'input'  => 'datetime',
             'widget' => 'single_text',
         ))
-            ->add('fechafin', 'date', array(
+            ->add('fechafin', DateType::class, array(
             'input'  => 'datetime',
             'widget' => 'single_text',
         ))
-            ->add('centrocostos', 'text', array('label' => 'Centro de Costos'))
-            ->add('diasentrega', 'integer', array('label' => 'Días de Entrega'))
+            ->add('centrocostos', TextType::class, array('label' => 'Centro de Costos'))
+            ->add('diasentrega', IntegerType::class, array('label' => 'Días de Entrega'))
         ;
 
-        $builder->add('iva', 'choice', array(
+        $builder->add('iva', ChoiceType::class, array(
             'choices'   => array(
                 1   => 'Si',
                 0 => 'No',
@@ -50,7 +59,7 @@ class ProgramanuevoType extends AbstractType
             'allow_add'      => true
         ));
 
-         $builder->add('Enviar', 'submit');
+         $builder->add('Enviar', SubmitType::class);
     }
     
     /**

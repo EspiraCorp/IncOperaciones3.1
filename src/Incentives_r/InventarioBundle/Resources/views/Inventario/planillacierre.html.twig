@@ -1,0 +1,38 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Cierre de Planillas{% endblock %}
+
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+    <div class="box span12">
+        <div class="box-header well" data-original-title>
+            <h2><i class="icon-edit"></i>Cierre de Planillas</h2>
+        </div>
+        <div class="box-content">
+            <table class="table table-bordered table-striped">
+                <tr>
+                    <th>Planilla</th>
+                    <th>Fecha Generación</th>
+                    <th>Cantidad Pendiente</th>
+                </tr>
+                {% for planilla in planillas %}
+                    <tr><td><a href="{{ path("inventario_planilla_cierre_detalle") }}/{{ planilla[0].id }}">{{ planilla[0].id }}</a></td>
+                        <td>{{ planilla[0].fecha | date("Y-m-d") }}</td>
+                        <td>{{ planilla.total }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div class="box span11">
+        <div class="box-content">
+                <div class="dataTables_info">Mostrando {{ planillas.getItemNumberPerPage*(planillas.getCurrentPageNumber-1)+1  }} a {{ planillas.getItemNumberPerPage*planillas.getCurrentPageNumber }} de {{ planillas.getTotalItemCount }}   Planillas
+                </div>
+                <div class="pagination pagination-centered">
+                        {{ knp_pagination_render(planillas) }}                    
+                </div>
+        </div>
+    </div>
+    </div>
+</div>
+{% endblock %}
+

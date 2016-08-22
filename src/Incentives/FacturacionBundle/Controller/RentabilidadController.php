@@ -38,7 +38,7 @@ class RentabilidadController extends Controller
 
         $session = $this->get('session');
             
-        if($pro=($this->get('request')->request->get('rentabilidad'))){
+        if($pro=($request->request->get('rentabilidad'))){
             $page = 1;
             $session->set('filtros_rentabilidad', $pro);
         }
@@ -85,7 +85,7 @@ class RentabilidadController extends Controller
 
         $session = $this->get('session');
             
-        if($pro=($this->get('request')->request->get('rentabilidad'))){
+        if($pro=($request->request->get('rentabilidad'))){
             $page = 1;
             $session->set('filtros_rentabilidad', $pro);
         }

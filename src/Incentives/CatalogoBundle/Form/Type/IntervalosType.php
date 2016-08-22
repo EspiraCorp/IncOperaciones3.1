@@ -5,6 +5,7 @@ namespace Incentives\CatalogoBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class IntervalosType extends AbstractType
 {
@@ -20,7 +21,7 @@ class IntervalosType extends AbstractType
             ->add('puntos')
         ;
 
-        $builder->add('Enviar', 'submit');
+        $builder->add('Enviar', SubmitType::class);
     }
     
     /**

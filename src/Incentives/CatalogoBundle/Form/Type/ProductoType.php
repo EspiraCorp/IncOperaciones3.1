@@ -1,6 +1,6 @@
 <?php
 
-namespace Incentives\catalogoBundle\Form\Type;
+namespace Incentives\CatalogoBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -11,37 +11,46 @@ use Doctrine\ORM\EntityRepository;
 use Incentives\CatalogoBundle\Form\Type\ImagenproductoType;
 use Incentives\CatalogoBundle\Form\Type\ProductoprecioType;
 use Incentives\CatalogoBundle\Form\EventListener\AddImagenproductoFieldSubscriber;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use PUGX\AutocompleterBundle\Form\Type\AutocompleteType;
 
 class ProductoType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('nombre');
-        $builder->add('categoria', 'entity', array(
+        $builder->add('categoria', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:Categoria',
-            'property' => 'nombre',
-            'empty_value' => 'Seleccionar',
+            'choice_label' => 'nombre',
+            //'empty_value' => 'Seleccionar',
         ));
         $builder->add('referencia');
         $builder->add('marca');
         $builder->add('descripcion');
-        $builder->add('codEAN','text',array('label'  => 'EAN', 'required' => false));
+        $builder->add('codEAN',TextType::class,array('label'  => 'EAN', 'required' => false));
         $builder->add('codInc');
-        $builder->add('alto','integer',array('label'  => 'Alto (cm)',));
-        $builder->add('largo','integer',array('label'  => 'Largo (cm)',));
-        $builder->add('ancho','integer',array('label'  => 'Ancho (cm)',));
-        $builder->add('peso','integer',array('label'  => 'Peso (Kg)',));
-        $builder->add('estadoIva', 'choice', array(
+        $builder->add('alto',IntegerType::class,array('label'  => 'Alto (cm)',));
+        $builder->add('largo',IntegerType::class,array('label'  => 'Largo (cm)',));
+        $builder->add('ancho',IntegerType::class,array('label'  => 'Ancho (cm)',));
+        $builder->add('peso',IntegerType::class,array('label'  => 'Peso (Kg)',));
+        $builder->add('estadoIva', ChoiceType::class, array(
             'choices'   => array(
                 1   => 'Si',
                 0 => 'No',
             ),
             'expanded'  => true,
         ));
-        $builder->add('tipo', 'entity', array(
+        $builder->add('tipo', EntityType::class, array(
             'class' => 'IncentivesCatalogoBundle:ProductoTipo',
-            'property' => 'nombre',
-            'empty_value' => 'Seleccionar',
+            'choice_label' => 'nombre',
+            //'empty_value' => 'Seleccionar',
         ));
         $builder->add('iva');
         $builder->add('incremento');
@@ -54,7 +63,7 @@ class ProductoType extends AbstractType
         //     'allow_delete'   => true,
         //     'allow_add'      => true
         // ));
-        $builder->add('productoprecio', 'collection', array(
+        $builder->add('productoprecio', CollectionType::class, array(
             'type'  => new ProductoprecioType(),
             'label'          => 'Precio producto',
             'by_reference'   => false,
@@ -62,21 +71,21 @@ class ProductoType extends AbstractType
             'allow_add'      => true
         ));
 
-        $builder->add('productoclasificacion', 'entity', array(
+        $builder->add('productoclasificacion', EntityType::class, array(
             'class' => 'IncentivesCatalogoBundle:Productoclasificacion',
-            'property' => 'nombre',
-            'empty_value' => 'Seleccionar',
+            'choice_label' => 'nombre',
+            //'empty_value' => 'Seleccionar',
             'label'  => 'Clasificación',
         ));
         
-        $builder->add('estado', 'entity', array(
+        $builder->add('estado', EntityType::class, array(
             'class' => 'IncentivesCatalogoBundle:Estados',
-            'property' => 'nombre',
-            'empty_value' => 'Seleccionar',
+            'choice_label' => 'nombre',
+            //'empty_value' => 'Seleccionar',
             'label'  => 'Estado',
         ));
 
-        $builder->add('Enviar', 'submit');
+        $builder->add('Enviar', SubmitType::class);
     }
     
     public function setDefaultOptions(OptionsResolverInterface $resolver)

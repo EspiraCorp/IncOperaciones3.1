@@ -44,10 +44,10 @@ class ProductoController extends Controller
         $imagen = new Imagenproducto();
         $precio = new Productoprecio();
 
-        $form = $this->createForm(new ProductoType(), $producto);
+        $form = $this->createForm(ProductoType::class, $producto);
                     
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
 
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
@@ -191,21 +191,21 @@ class ProductoController extends Controller
 
         if (isset($id)){
             $producto = $em->getRepository('IncentivesCatalogoBundle:Producto')->find($id);
-            $form = $this->createForm(new ProductoType(), $producto);
+            $form = $this->createForm(ProductoType::class, $producto);
         }else{
-            $form = $this->createForm(new ProductoType());
+            $form = $this->createForm(ProductoType::class);
             $producto = new Producto();
         }
 
         if ($request->isMethod('POST')) {
-            $pro=($this->get('request')->request->get('producto'));
-            $form->bind($request);
+            $pro=($request->request->get('producto'));
+            $form->handleRequest($request);
 
 
             if ($form->isValid()) {
                 
-                $pro=($this->get('request')->request->get('producto'));
-                $id=($this->get('request')->request->get('id'));
+                $pro=($request->request->get('producto'));
+                $id=($request->request->get('id'));
                 $producto = $em->getRepository('IncentivesCatalogoBundle:Producto')->find($id);
                 $producto->setNombre($pro["nombre"]);
                 $producto->setDescripcion($pro["descripcion"]);
@@ -245,18 +245,18 @@ class ProductoController extends Controller
      * @Route("/producto")
      * @Template()
      */
-    public function listadoAction()
+    public function listadoAction(Request $request)
     {
-            $form = $this->createForm(new ProductoType());
+            $form = $this->createForm(ProductoType::class);
             
             $em = $this->getDoctrine()->getManager();
             
             $session = $this->get('session');
             
-            $page = $this->get('request')->get('page');
+            $page = $request->get('page');
             if(!$page) $page= 1;
             
-            if($pro=($this->get('request')->request->get('producto'))){
+            if($pro=($request->request->get('producto'))){
                 $page = 1;
                 $session->set('filtros_productos', $pro);
             }
@@ -300,8 +300,8 @@ class ProductoController extends Controller
                 ->leftJoin('p.estado', 'e')
                 ->where($sqlFiltro);
             
-            if($this->get('request')->get('sort')){
-                $query->orderBy($this->get('request')->get('sort'), $this->get('request')->get('direction'));    
+            if($request->get('sort')){
+                $query->orderBy($request->get('sort'), $request->get('direction'));    
             }
             
             $productos = $query->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
@@ -323,18 +323,18 @@ class ProductoController extends Controller
      * @Route("/producto")
      * @Template()
      */
-    public function listadouniversalAction()
+    public function listadouniversalAction(Request $request)
     {
-            $form = $this->createForm(new ProductoType());
+            $form = $this->createForm(ProductoType::class);
             
             $em = $this->getDoctrine()->getManager();
             
             $session = $this->get('session');
             
-            $page = $this->get('request')->get('page');
+            $page = $request->get('page');
             if(!$page) $page= 1;
             
-            if($pro=($this->get('request')->request->get('producto'))){
+            if($pro=($request->request->get('producto'))){
                 $page = 1;
                 $session->set('filtros_productos', $pro);
             }
@@ -369,8 +369,8 @@ class ProductoController extends Controller
             ->leftJoin('p.estado', 'e')
             ->where($sqlFiltro);
             
-            if($this->get('request')->get('sort')){
-                $query->orderBy($this->get('request')->get('sort'), $this->get('request')->get('direction'));    
+            if($request->get('sort')){
+                $query->orderBy($request->get('sort'), $request->get('direction'));    
             }
             
             //$productos = $query->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
@@ -408,7 +408,7 @@ class ProductoController extends Controller
         $paginator  = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
             $productos,
-            $this->get('request')->query->get('page', 1),
+            $request->query->get('page', 1),
             50 
         );
 //echo "<pre>"; print_r($productos); echo "</pre>"; exit;
@@ -509,15 +509,15 @@ class ProductoController extends Controller
             $producto = new Producto();
         }
         $imagen = new Imagenproducto();
-        $form = $this->createForm(new ImagenproductoType(), $imagen);
+        $form = $this->createForm(ImagenproductoType::class, $imagen);
            
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
 
             if ($form->isValid()) {
                 $conteo=1;
                 $em = $this->getDoctrine()->getManager(); 
-                $id=($this->get('request')->request->get('id'));
+                $id=($request->request->get('id'));
                 $producto = $em->getRepository('IncentivesCatalogoBundle:Producto')->find($id);
 
                 $imagen->setProducto($producto);
@@ -624,14 +624,14 @@ class ProductoController extends Controller
         $producto = $em->getRepository('IncentivesCatalogoBundle:Producto')->find($id);
         $precio = new Productoprecio();
 
-        $form = $this->createForm(new ProductoprecioType(), $precio);
+        $form = $this->createForm(ProductoprecioType::class, $precio);
                
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
 
             if ($form->isValid()) {
                 
-                $pro=($this->get('request')->request->get('productoprecio'));
+                $pro=($request->request->get('productoprecio'));
                 $proveedor = $em->getRepository('IncentivesOperacionesBundle:Proveedores')->find($pro['proveedor']);
                 $estado = $em->getRepository('IncentivesCatalogoBundle:Estados')->find(1);
                 // realiza alguna acción, tal como guardar la tarea en la base de datos
@@ -698,11 +698,11 @@ class ProductoController extends Controller
             ->setAction($this->generateUrl('producto_importar'))
             ->setMethod('POST')
             ->add('excel', 'file')
-            ->add('cargar', 'submit')
+            ->add('cargar', SubmitType::class)
             ->getForm();
 
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
 
             $excel = $form['excel']->getData();
 
@@ -1219,20 +1219,20 @@ class ProductoController extends Controller
 
         if (isset($id)){
             $precio = $em->getRepository('IncentivesCatalogoBundle:Productoprecio')->find($id);
-            $form = $this->createForm(new ProductoprecioType(), $precio);
+            $form = $this->createForm(ProductoprecioType::class, $precio);
         }else{
-            $form = $this->createForm(new ProductoprecioType());
+            $form = $this->createForm(ProductoprecioType::class);
             $precio = new Productoprecio();
         }
 
         if ($request->isMethod('POST')) {       
-            $form->bind($request);
+            $form->handleRequest($request);
 
 
             //if ($form->isValid()) {
                 
-                $pro=($this->get('request')->request->get('productoprecio'));
-                $id=($this->get('request')->request->get('id'));
+                $pro=($request->request->get('productoprecio'));
+                $id=($request->request->get('id'));
                 $precio = $em->getRepository('IncentivesCatalogoBundle:Productoprecio')->find($id);
                 $proveedor = $em->getRepository('IncentivesOperacionesBundle:Proveedores')->find($pro["proveedor"]);
                 $precio->setPrecio($pro["precio"]);
@@ -1275,7 +1275,7 @@ class ProductoController extends Controller
 
             
     if ($request->isMethod('POST')) {
-        $form->bind($request);
+        $form->handleRequest($request);
 
         $excel = $form['excel']->getData();
         $objPHPExcel = PHPExcel_IOFactory::load($excel);
@@ -1750,9 +1750,9 @@ public function formatoeditarmasAction() {
     }
     
     
-    public function buscarAction()
+    public function buscarAction(Request $request)
     {
-            $form = $this->createForm(new ProductoType());
+            $form = $this->createForm(ProductoType::class);
             
             $em = $this->getDoctrine()->getManager();
             
@@ -1760,10 +1760,10 @@ public function formatoeditarmasAction() {
             
             $productos = array();
             
-            $page = $this->get('request')->get('page');
+            $page = $request->get('page');
             if(!$page) $page= 1;
             
-            if($pro=($this->get('request')->request->get('producto'))){
+            if($pro=($request->request->get('producto'))){
                 $page = 1;
                 $session->set('filtros_productos_busqueda', $pro);
             }
@@ -1804,8 +1804,8 @@ public function formatoeditarmasAction() {
                 ->leftJoin('p.estado', 'e')
                 ->where($sqlFiltro);
             
-            if($this->get('request')->get('sort')){
-                $query->orderBy($this->get('request')->get('sort'), $this->get('request')->get('direction'));    
+            if($request->get('sort')){
+                $query->orderBy($request->get('sort'), $request->get('direction'));    
             }
             
             $productos = $query->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);

@@ -5,6 +5,9 @@ namespace Incentives\InventarioBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use PUGX\AutocompleterBundle\Form\Type\AutocompleteType;
 
 class PlanillasGenerarType extends AbstractType
 {
@@ -14,21 +17,21 @@ class PlanillasGenerarType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('categoria', 'entity', array(
+        $builder->add('categoria', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:Categoria',
-            'property' => 'nombre',
-            'empty_value' => 'Seleccione una opcion',
+            'choice_label' => 'nombre',
+            //'empty_value' => 'Seleccione una opcion',
             'required' => false
         ));
 
-        $builder->add('pais', 'entity', array(
+        $builder->add('pais', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:Pais',
-            'property' => 'nombre',
-            'empty_value' => 'Seleccione una opcion',
+            'choice_label' => 'nombre',
+            //'empty_value' => 'Seleccione una opcion',
             'required' => false
         ));
 
-        $builder->add('Enviar', 'submit');
+        $builder->add('Enviar', SubmitType::class);
     }
     
     /**

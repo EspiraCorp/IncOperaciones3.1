@@ -10,30 +10,38 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Doctrine\ORM\EntityRepository;
 use Incentives\OperacionesBundle\Form\EventListener\AddProveedorFieldSubscriber;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use PUGX\AutocompleterBundle\Form\Type\AutocompleteType;
 
 class ConvocatoriasEdicionType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('titulo');
-        $builder->add('descripcion','textarea');
-        $builder->add('fechaInicio', 'date', array(
+        $builder->add('descripcion',TextareaType::class);
+        $builder->add('fechaInicio', DateType::class, array(
             'input'  => 'datetime',
             'widget' => 'single_text',
         ));
-        $builder->add('fechaFin', 'date', array(
+        $builder->add('fechaFin', DateType::class, array(
             'input'  => 'datetime',
             'widget' => 'single_text',
         ));
-        $builder->add('estado', 'entity', array(
+        $builder->add('estado', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:ConvocatoriasEstado',
-            'property' => 'nombre',
-            'empty_value' => 'Seleccione una opcion',
+            'choice_label' => 'nombre',
+            //'empty_value' => 'Seleccione una opcion',
         ));
 
-        $builder->add('archivo', 'file', array('data_class' => null, 'required' => false));
+        $builder->add('archivo', FileType::class, array('data_class' => null, 'required' => false));
         $builder->addEventSubscriber(new AddProveedorFieldSubscriber());
-        $builder->add('Enviar', 'submit');
+        $builder->add('Enviar', SubmitType::class);
 
     }
  

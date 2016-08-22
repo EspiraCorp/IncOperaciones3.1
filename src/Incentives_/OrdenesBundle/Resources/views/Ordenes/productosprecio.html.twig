@@ -1,0 +1,10 @@
+<select>
+{% for producto in productos %}
+     
+	<option value="{{ producto['producto']['id'] }}">{{ producto['producto']['nombre'] }} - {{ producto['producto']['referencia'] }}</option>
+
+{% endfor %}
+</select>
+
+
+

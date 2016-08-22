@@ -5,6 +5,8 @@ namespace Incentives\FacturacionBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class FacturaLogisticaType extends AbstractType
 {
@@ -15,12 +17,12 @@ class FacturaLogisticaType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('descripcion', 'textarea')
+            ->add('descripcion', TextareaType::class)
             ->add('cantidad')
             ->add('valorUnitario')
         ;
         
-        $builder->add('Enviar', 'submit');
+        $builder->add('Enviar', SubmitType::class);
 
     }
     

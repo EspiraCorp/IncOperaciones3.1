@@ -38,17 +38,17 @@ class CatalogosController extends Controller
         $catalogo = new Catalogos();
         if (isset($id)){
             $programa = $em->getRepository('IncentivesCatalogoBundle:Programa')->find($id);
-            $form = $this->createForm(new CatalogosType(), $catalogo);
+            $form = $this->createForm(CatalogosType::class, $catalogo);
         }else{
             $programa = new Programa();
-            $form = $this->createForm(new CatalogosnuevoType(), $catalogo);
+            $form = $this->createForm(CatalogosnuevoType::class, $catalogo);
         }        
                     
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
 
             if ($form->isValid()) {
-                $id=($this->get('request')->request->get('id'));
+                $id=($request->request->get('id'));
                 if ($id==0){
                     $id=$catalogo->getPrograma()->getId();
                 }
@@ -84,19 +84,19 @@ class CatalogosController extends Controller
 
         if (isset($id)){
             $catalogo = $em->getRepository('IncentivesCatalogoBundle:Catalogos')->find($id);
-            $form = $this->createForm(new CatalogosType(), $catalogo);
+            $form = $this->createForm(CatalogosType::class, $catalogo);
         }else{
-            $form = $this->createForm(new CatalogosType());
+            $form = $this->createForm(CatalogosType::class);
             $catalogo = new Catalogos();
         }
 
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
 
 
             if ($form->isValid()) {                
-                $pro=($this->get('request')->request->get('catalogos'));
-                $id=($this->get('request')->request->get('id'));
+                $pro=($request->request->get('catalogos'));
+                $id=($request->request->get('id'));
                 $catalogo = $em->getRepository('IncentivesCatalogoBundle:Catalogos')->find($id);
                 $catalogo->setNombre($pro["nombre"]);
                 $catalogo->setDescripcion($pro["descripcion"]);
@@ -219,16 +219,17 @@ class CatalogosController extends Controller
 
     public function importarAction(Request $request)
     {
+        
         $excelForm = new Excel();
         $form = $this->createFormBuilder($excelForm)
             ->setAction($this->generateUrl('proveedores_importar'))
             ->setMethod('POST')
             ->add('excel', 'file')
-            ->add('cargar', 'submit')
+            ->add('cargar', SubmitType::class)
             ->getForm();
 
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
 
             $excel = $form['excel']->getData();
 
@@ -294,18 +295,18 @@ class CatalogosController extends Controller
             array('catalogo' => $catalogo, 'categorias' => $categorias));
     }
 
-    public function galeriaAction($id, $vista)
+    public function galeriaAction($id, $vista, Request $request)
     {
-                $form = $this->createForm(new ProductoType());
+        $form = $this->createForm(ProductoType::class);
 
         $em = $this->getDoctrine()->getManager();
      
         $session = $this->get('session');
             
-        $page = $this->get('request')->get('page');
+        $page = $request->get('page');
         if(!$page) $page= 1;
             
-        if($pro=($this->get('request')->request->get('producto'))){
+        if($pro=($request->request->get('producto'))){
             $page = 1;
             $session->set('filtros_galeria', $pro);
         }
@@ -372,8 +373,8 @@ class CatalogosController extends Controller
             }
         }
         
-        if($this->get('request')->get('sort')){
-            $query->orderBy($this->get('request')->get('sort'), $this->get('request')->get('direction'));    
+        if($request->get('sort')){
+            $query->orderBy($request->get('sort'), $request->get('direction'));    
         }
         
         $precioVenta=0;
@@ -390,7 +391,7 @@ class CatalogosController extends Controller
         $paginator  = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
             $productos,
-            $this->get('request')->query->get('page', 1)/*page number*/,
+            $request->query->get('page', 1)/*page number*/,
             20 /*limit per page*/
         );
 
@@ -410,18 +411,18 @@ class CatalogosController extends Controller
             array('imagenes' => $imagenes, 'productos' => $productos));
     }
     
-    public function aprobarAction($id, $resumido = 0)
+    public function aprobarAction($id, $resumido = 0, Request $request)
     {
-        $form = $this->createForm(new ProductoType());
+        $form = $this->createForm(ProductoType::class);
 
         $em = $this->getDoctrine()->getManager();
      
         $session = $this->get('session');
             
-        $page = $this->get('request')->get('page');
+        $page = $request->get('page');
         if(!$page) $page= 1;
             
-        if($pro=($this->get('request')->request->get('producto'))){
+        if($pro=($request->request->get('producto'))){
             $page = 1;
             $session->set('filtros_aprobar', $pro);
         }
@@ -471,8 +472,8 @@ class CatalogosController extends Controller
             $condiciones = "pc.catalogos=".$id." AND (pc.estadoAprobacion=0 OR pc.estadoAprobacion IS NULL)";
         }
 
-        if($this->get('request')->get('sort')){
-            $query->orderBy($this->get('request')->get('sort'), $this->get('request')->get('direction'));    
+        if($request->get('sort')){
+            $query->orderBy($request->get('sort'), $request->get('direction'));    
         }
 
         $condiciones .= " AND pc.activo=1 ";
@@ -492,7 +493,7 @@ class CatalogosController extends Controller
         $paginator  = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
             $productos,
-            $this->get('request')->query->get('page', 1)/*page number*/,
+            $request->query->get('page', 1)/*page number*/,
             20 /*limit per page*/
         );
 
@@ -544,7 +545,7 @@ class CatalogosController extends Controller
         $paginator  = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
             $productos,
-            $this->get('request')->query->get('page', 1)/*page number*/,
+            $request->query->get('page', 1)/*page number*/,
             20 /*limit per page*/
         );
         
@@ -623,13 +624,13 @@ class CatalogosController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $intervalos = new Intervalos();
-        $form = $this->createForm(new IntervalosType(), $intervalos);
+        $form = $this->createForm(IntervalosType::class, $intervalos);
 
         if ($request->isMethod('POST')) {
-            $form->bind($request);
-             $pro=($this->get('request')->request->get('intervalos'));
+            $form->handleRequest($request);
+             $pro=($request->request->get('intervalos'));
             if ($form->isValid()) {
-                $id=($this->get('request')->request->get('id'));
+                $id=($request->request->get('id'));
 
                 //verificar que el maximo y el minimo no esten dentro de otro intervalo
                 $query = $em->createQueryBuilder()
@@ -677,13 +678,13 @@ class CatalogosController extends Controller
         $em = $this->getDoctrine()->getManager();
         $intervalos = $em->getRepository('IncentivesCatalogoBundle:Intervalos')->find($id);
         $catalogoId = $intervalos->getCatalogos()->getId();
-        $form = $this->createForm(new IntervalosType(), $intervalos);
+        $form = $this->createForm(IntervalosType::class, $intervalos);
 
         if ($request->isMethod('POST')) {
-            $form->bind($request);
-             $pro=($this->get('request')->request->get('intervalos'));
+            $form->handleRequest($request);
+             $pro=($request->request->get('intervalos'));
             if ($form->isValid()) {
-                $id=($this->get('request')->request->get('id'));
+                $id=($request->request->get('id'));
 
                 //verificar que el maximo y el minimo no esten dentro de otro intervalo
                 $query = $em->createQueryBuilder()
@@ -717,18 +718,18 @@ class CatalogosController extends Controller
             ));
     }
 
-    public function imagenesCatalogoAction($catalogo)
+    public function imagenesCatalogoAction($catalogo, Request $request)
     {
-         $form = $this->createForm(new ProductoType());
+         $form = $this->createForm(ProductoType::class);
 
         $em = $this->getDoctrine()->getManager();
      
         $session = $this->get('session');
             
-        $page = $this->get('request')->get('page');
+        $page = $request->get('page');
         if(!$page) $page= 1;
             
-        if($pro=($this->get('request')->request->get('producto'))){
+        if($pro=($request->request->get('producto'))){
             $page = 1;
             $session->set('filtros_imagenes', $pro);
         }
@@ -764,8 +765,8 @@ class CatalogosController extends Controller
 
         $condiciones = "pc.catalogos=".$catalogo." AND pc.activo=1 AND pc.aproboCliente=1";
 
-        if($this->get('request')->get('sort')){
-            $query->orderBy($this->get('request')->get('sort'), $this->get('request')->get('direction'));    
+        if($request->get('sort')){
+            $query->orderBy($request->get('sort'), $request->get('direction'));    
         }
 
         $query->where($condiciones.$condicionesFiltro);
@@ -773,7 +774,7 @@ class CatalogosController extends Controller
         $paginator  = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
             $productos,
-            $this->get('request')->query->get('page', 1)/*page number*/,
+            $request->query->get('page', 1)/*page number*/,
             20 /*limit per page*/
         );
 

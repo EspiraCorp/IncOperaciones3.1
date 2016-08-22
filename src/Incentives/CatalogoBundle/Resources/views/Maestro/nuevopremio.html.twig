@@ -8,7 +8,7 @@
         <div class="box-header well" data-original-title>
             <h2><i class="icon-edit"></i>Nuevo Premio</h2>
         </div>
-            <form action="{{ path('productocatalogo_nuevopremio',  {'producto': producto, 'catalogo': catalogo}) }}" method="POST" {{ form_enctype(form) }} class="form-horizontal">
+            <form action="{{ path('productocatalogo_nuevopremio',  {'producto': producto, 'catalogo': catalogo}) }}" method="POST"  class="form-horizontal">
                 {{ form_errors(form) }}
                 <table>
                     <td class="control-group">

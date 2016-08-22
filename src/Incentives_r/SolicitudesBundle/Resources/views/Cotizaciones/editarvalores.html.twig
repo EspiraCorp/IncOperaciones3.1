@@ -1,0 +1,104 @@
+{% extends app.request.isXmlHttpRequest ? "MDWDemoBundle::layout_ajax.html.twig" : "::base.html.twig" %}
+{% block title %}Datos Cotización{% endblock %}
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+<div class="box">
+    <div class="box-header well" data-original-title="">
+        Cotización	
+        <div class="box-icon">
+				<div class="box-icon">
+                    <a href="{{ path('cotizaciones_datos',  {"id": cotizaciones.id}) }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+                </div>
+    	</div>
+    </div>
+</div>
+    <div class="box span12">
+	    <div class="box-content">
+	    	
+	    	<div class="box-header well">
+				<h2>
+				</i>Datos Cotización</h2>
+			</div>
+
+				<table class="table table-bordered table-striped">
+					<tbody>
+						<tr><td>Consecutivo</td><td>{{ cotizaciones.consecutivo }}</td></tr>
+						<tr><td>Fecha de solicitud</td><td>{{ cotizaciones.fechaCreacion | date("Y-m-d") }}</td></tr>
+					</tbody>
+				</table>
+		</div>
+	</div>
+
+	<div class="box span12">
+		<div class="box-content">
+			
+		    <div class="box-header well">
+				<h2>
+					<a href="{{ path('cotizaciones_agregarproducto',  {"id": cotizaciones.id}) }}">
+
+				</a>
+					Productos
+				</h2>
+			</div>			
+
+
+			{% if productos | length!=0 %}
+			<table class="table table-bordered table-striped">
+				<thead>
+					<tr>
+						<th>Referencia</th>
+						<th>Id</th>
+						<th>Codigo de Barras</th>
+						<th>Codigo Incentives</th>
+						<th>Cantidad</th>
+						<th>Valor unitario</th>
+						<th>Valor total</th>
+						<th></th>
+					</tr>
+				</thead>
+				{% set total=0 %}
+				<tbody>
+					{% set j=0 %}
+					{% for producto in productos %}	
+						<tr>
+							{% set j=j+1 %}
+							{% set i=0 %}
+
+									<td>{{ producto.producto.referencia }}</td>
+									<td>{{ producto.producto.id }}</td>
+									<td>{{ producto.producto.codEAN  }}</td>	
+									<td>{{ producto.producto.codInc  }}</td>		
+									<td>{{ producto.cantidad  }}</td>
+									<td>{{ producto.valorunidad  }}</td>
+									<td>{{ producto.valortotal  }}</td>
+									{% set total=total+producto.valortotal  %}
+									
+									<td colspan="2">{{ render(controller('IncentivesSolicitudesBundle:Cotizaciones:valores', { "id": producto.id})) }}</td>
+									{% set i=i+1 %}
+
+						</tr>	
+					{% endfor %}
+				</tbody>
+			</table>
+			{% endif %}
+		</div>
+	</div>
+
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script>
+
+	function confirmar(ruta)
+	{
+	  if (confirm("Cambiar estado")==true){
+	  	self.location=ruta;
+	  }else{
+	  	alert("OK");
+	  }
+	  
+	}
+
+	</script>
+{% endblock %}

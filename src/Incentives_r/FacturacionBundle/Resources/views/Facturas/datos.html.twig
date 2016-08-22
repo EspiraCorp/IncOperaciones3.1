@@ -1,0 +1,150 @@
+{% extends app.request.isXmlHttpRequest ? "MDWDemoBundle::layout_ajax.html.twig" : "::base.html.twig" %}
+{% block title %}Datos Factura{% endblock %}
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+<div class="box">
+    <div class="box-header well" data-original-title="">
+        Facturas	
+        <div class="box-icon">
+				<div class="box-icon">
+                    <a href="{{ path('facturas_listado') }}/{{ factura.programa.id }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+                </div>
+    	</div>
+    </div>
+</div>
+    <div class="box span12">
+	    <div class="box-content">
+	    	
+	    	<div class="box-header well">
+				<h2>
+				
+				</i>Datos Factura</h2>
+
+				<div class="box-icon">
+						<a href="{{asset('Facturas')}}/{{factura.numero}}.pdf" target="_blank" class="btn btn-info">
+							<i class="icon-download-alt icon-white"></i>
+						</a>
+						<a href="{{asset('Facturas')}}/../DetalleFactura_{{factura.numero}}.xlsx" target="_blank" class="btn btn-success">
+							<i class="icon-th icon-white"></i>
+						</a>
+					</div>
+
+			</div>
+			
+
+				<table class="table table-bordered table-striped">
+					<tbody>
+						<tr><td>Numero</td><td>{{ factura.numero }}</td></tr>
+						<tr><td>Cliente</td><td>{{ factura.programa.cliente.nombre }}</td></tr>
+						<tr><td>Programa</td><td>{{ factura.programa.nombre }}</td></tr>
+						<tr><td>Fecha Factura</td><td>{{ factura.fecha | date("Y-m-d")  }}</td></tr>
+						<tr><td>Periodo</td><td>{{ factura.periodo.periodo }}</td></tr>
+						<tr><td>Fecha Inicio</td><td>{{ factura.fechaInicio | date("Y-m-d") }}</td></tr>
+						<tr><td>Fecha Fin</td><td>{{ factura.fechaFin | date("Y-m-d") }}</td></tr>												
+					
+					</tbody>
+				</table>
+		</div>
+	</div>
+
+	<div class="box span12">
+		<div class="box-content">
+			
+		    <div class="box-header well">
+				<h2>
+					PREMIOS
+				</h2>
+			</div>
+
+			{% if productos | length!=0 %}
+			<table class="table table-bordered table-striped">
+				<thead>
+					<tr>
+						<th>Descripcion</th>
+						<th>Cantidad</th>
+						<th>Valor Unitario</th>
+						<th>Valor Total</th>
+					</tr>
+				</thead>
+				{% set total=0 %}
+				<tbody>
+					{% set subtotal=0 %}
+	 				{% set totaliva = 0 %}
+					{% for item in productos %}	
+					<tr>
+						<td>{{ item.descripcion }}</td>
+						<td>{{ item.cantidad }}</td>
+						<td>$ {{ item.valorUnitario|number_format(2, ',', '.') }}</td>
+						<td>$ {{ item.valorTotal|number_format(2, ',', '.') }}</td>
+						{% set totaliva = totaliva + (item.valorTotal*(0.16)) %}
+						{% set subtotal = subtotal+item.valorTotal %}
+					</tr>					
+					{% endfor %}
+					<tr>
+						<th colspan='3'>Subtotal</th>
+						<td>$ {{ subtotal|number_format(2, ',', '.') }}</td>
+					</tr>
+					
+				</tbody>
+			</table>
+			{% endif %}
+		</div>
+	</div>
+	
+	<div class="box span12">
+		<div class="box-content">
+			
+		    <div class="box-header well">
+				<h2>
+					<a href="{{ path('factura_agregarlogistica',  {"id": factura.id}) }}" id="factura_agregarlogistica">
+								<button class="btn btn-primary">
+									<i class="icon-plus icon-white"></i>
+								</button>
+							</a>
+					LOGISTICA
+				</h2>
+			</div>
+
+			{% if logistica | length!=0 %}
+			<table class="table table-bordered table-striped">
+				<thead>
+					<tr>
+						<th>Descripcion</th>
+						<th>Cantidad</th>
+						<th>Valor Unitario</th>
+						<th>Valor Total</th>
+					</tr>
+				</thead>
+				{% set total=0 %}
+				<tbody>
+					{% set subtotal=0 %}
+	 				{% set totaliva = 0 %}
+					{% for item in logistica %}	
+					<tr>
+						<td>{{ item.descripcion }}</td>
+						<td>{{ item.cantidad }}</td>
+						<td>$ {{ item.valorUnitario|number_format(2, ',', '.') }}</td>
+						<td>$ {{ item.valorTotal|number_format(2, ',', '.') }}</td>
+						{% set totaliva = totaliva + (item.valorTotal*(0.16)) %}
+						{% set subtotal = subtotal+item.valorTotal %}
+					</tr>					
+					{% endfor %}
+					<tr>
+						<th colspan='3'>Subtotal</th>
+						<td>$ {{ subtotal|number_format(2, ',', '.') }}</td>
+					</tr>
+					
+				</tbody>
+			</table>
+			{% endif %}
+		</div>
+	</div>
+	
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script>
+		$("#factura_agregarlogistica").colorbox({href:"{{ path('factura_agregarlogistica',  {"id": factura.id}) }}"});
+	</script>
+{% endblock %}

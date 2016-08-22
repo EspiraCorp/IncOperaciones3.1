@@ -1,0 +1,242 @@
+proveedores:
+    path:  /proveedores
+    defaults: { _controller: IncentivesOperacionesBundle:Proveedor:listado}
+
+proveedores_nuevo:
+    path:  /proveedores/nuevo
+    defaults: { _controller: IncentivesOperacionesBundle:Proveedor:nuevo}
+
+proveedores_editar:
+    path:  /proveedores/editar/{id}
+    defaults: { _controller: IncentivesOperacionesBundle:Proveedor:edit, id: null }
+    requirements:
+        id:  \d+
+
+proveedores_datos:
+    path:  /proveedores/datos/{id}
+    defaults: { _controller: IncentivesOperacionesBundle:Proveedor:datos, id: null }
+    requirements:
+        id:  \d+
+
+proveedores_documentos:
+    path:  /proveedores/documentos/{id}
+    defaults: { _controller: IncentivesOperacionesBundle:Proveedor:documentos, id: null }
+    requirements:
+        id:  \d+ 
+
+proveedores_documentos_carga:
+    path:  /proveedores/documentos/carga/{id}
+    defaults: { _controller: IncentivesOperacionesBundle:Proveedor:documentos, id: null }
+    requirements:
+        id:  \d+     
+
+proveedores_comprobar_identificacion:
+    path:  /proveedores/comprobaridentificacion/{id}
+    defaults: { _controller: IncentivesOperacionesBundle:Proveedor:comprobaridentificacion, id: null }
+
+proveedores_comprobar_correo:
+    path:  /proveedores/comprobarcorreo/{id}
+    defaults: { _controller: IncentivesOperacionesBundle:Proveedor:comprobarcorreo, id: null }
+
+proveedores_catalogo:
+    path:  /proveedores/catalogo/{id}
+    defaults: { _controller: IncentivesOperacionesBundle:Proveedor:catalogo, id: null }
+    requirements:
+        id:  \d+
+
+proveedores_catalogo_carga:
+    path:  /proveedores/catalogo/carga/{id}
+    defaults: { _controller: IncentivesOperacionesBundle:Proveedor:catalogo, id: null }
+    requirements:
+        id:  \d+
+
+proveedores_catalogo_removercatalogo:
+    path:  /proveedores/catalogo/remover/{id}
+    defaults: { _controller: IncentivesOperacionesBundle:Proveedor:removercatalogo, id: null }
+    requirements:
+        id:  \d+
+
+proveedores_estado:
+    path:  /proveedores/estado/{id}
+    defaults: { _controller: IncentivesOperacionesBundle:Proveedor:estado, id: null}
+
+proveedores_correo_ingreso:
+    path:  /proveedores/correoingreso/{id}
+    defaults: { _controller: IncentivesOperacionesBundle:Proveedor:correoingreso, id: null }
+    requirements:
+        id:  \d+
+
+proveedores_actualizarpassword:
+    path:  /proveedores/pass/{id}/{pass}
+    defaults: { _controller: IncentivesOperacionesBundle:Proveedor:actualizarpassword, id: null, pass: null }
+    requirements:
+        id:  \d+
+
+proveedores_contactos:
+    path:  /proveedor/contactos/{id}
+    defaults: { _controller: IncentivesOperacionesBundle:Contacto:listado, id: null }
+    requirements:
+        id:  \d+
+
+proveedores_catalogos:
+    path:  /proveedor/contactos/{id}
+    defaults: { _controller: IncentivesOperacionesBundle:Contacto:listado, id: null }
+    requirements:
+        id:  \d+
+        
+proveedores_archivo_estado:
+    path:  /proveedor/archivo/estado/{id}
+    defaults: { _controller: IncentivesOperacionesBundle:Proveedor:archivoProveedorEstado, id: null }
+    requirements:
+        id:  \d+
+        
+proveedores_catalogo_estado:
+    path:  /proveedor/catalogo/estado/{id}
+    defaults: { _controller: IncentivesOperacionesBundle:Proveedor:catalogoProveedorEstado, id: null }
+    requirements:
+        id:  \d+
+
+proveedores_calificacion:
+    path:  /proveedores/calificacion/{id}
+    defaults: { _controller: IncentivesOperacionesBundle:Proveedor:calificacion, id: null }
+    requirements:
+        id:  \d+
+
+proveedores_cargaplan:
+    path:  /proveedores/cargaplan/{id}
+    defaults: { _controller: IncentivesOperacionesBundle:Proveedor:cargaplan, id: null }
+    requirements:
+        id:  \d+
+
+contacto_editar:
+    path:  /contacto/editar/{id}
+    defaults: { _controller: IncentivesOperacionesBundle:Contacto:edit, id: null }
+    requirements:
+        id:  \d+
+
+contacto_estado:
+    path:  /contacto/estado/{id}
+    defaults: { _controller: IncentivesOperacionesBundle:Contacto:estado, id: null}
+
+contacto_nuevo:
+    path:  /proveedores/contacto/{id}
+    defaults: { _controller: IncentivesOperacionesBundle:Contacto:nuevo, id: null }
+    requirements:
+        id:  \d+
+
+proveedores_importar:
+    path:  /proveedores/importar/
+    defaults: { _controller: IncentivesOperacionesBundle:Proveedor:importar }
+
+proveedores_exportar:
+    path:  /proveedores/exportar/
+    defaults: { _controller: IncentivesOperacionesBundle:Proveedor:exportar }
+
+proveedores_formato:
+    path:  /proveedores/formato/
+    defaults: { _controller: IncentivesOperacionesBundle:Proveedor:formato }
+
+ordenes_proveedor:
+    path:  /ordenes/proveedor
+    defaults: { _controller: IncentivesOperacionesBundle:Proveedor:importar }
+
+convocatorias:
+    path:  /convocatorias
+    defaults: { _controller: IncentivesOperacionesBundle:Convocatorias:listado }
+
+convocatorias_nueva:
+    path:  /convocatorias/nueva/{solicitud}
+    defaults: { _controller: IncentivesOperacionesBundle:Convocatorias:nueva, solicitud: null }
+
+convocatorias_editar:
+    path:  /convocatorias/editar/{id}
+    defaults: { _controller: IncentivesOperacionesBundle:Convocatorias:editar, id: null}
+    requirements:
+        id:  \d+
+
+convocatorias_correoa:
+    path:  /convocatorias/correoa/{id}/{id_prov}
+    defaults: { _controller: IncentivesOperacionesBundle:Convocatorias:correoAconvocatoria, id: null,  id_prov: null}
+    requirements:
+        id:  \d+
+        id_prov:  \d+
+
+convocatorias_cargaproveedor:
+    path:  /convocatorias/cargaproveedor/{id}
+    defaults: { _controller: IncentivesOperacionesBundle:Convocatorias:cargaproveedor, id: null }
+    requirements:
+        id:  \d+
+
+convocatorias_editar:
+    path:  /convocatorias/editar/{id}
+    defaults: { _controller: IncentivesOperacionesBundle:Convocatorias:editar, id: null }
+    requirements:
+        id:  \d+
+
+convocatorias_datos:
+    path:  /convocatorias/datos/{id}
+    defaults: { _controller: IncentivesOperacionesBundle:Convocatorias:datos, id: null }
+    requirements:
+        id:  \d+
+        
+convocatorias_datos:
+    path:  /convocatorias/datos/{id}
+    defaults: { _controller: IncentivesOperacionesBundle:Convocatorias:datos, id: null }
+    requirements:
+        id:  \d+
+        
+convocatorias_archivos:
+    path:     /convocatorias/archivos/{id}
+    defaults: { _controller: IncentivesOperacionesBundle:Convocatorias:agregarArchivo, id: null }
+        
+convocatorias_archivo_estado:
+    path:  /convocatorias/archivo/estado/{id}
+    defaults: { _controller: IncentivesOperacionesBundle:Convocatorias:archivoEstado, id: null }
+    requirements:
+        id:  \d+
+
+convocatorias_proveedor:
+    path:  /convocatorias/proveedor/{id}
+    defaults: { _controller: IncentivesOperacionesBundle:Convocatorias:agregarproveedor, id: null }
+    requirements:
+        id:  \d+
+
+proveedores_importar_proveedor:
+    path:  /proveedores/importarporproveedor/{id}
+    defaults: { _controller: IncentivesOperacionesBundle:Proveedor:importarproductoproveedor, id: null }
+
+calificaciones:
+    path:  /calificaciones
+    defaults: { _controller: IncentivesOperacionesBundle:Calificacion:pendientes }
+
+calificacion_datos:
+    path:  /calificaciones/datos/{id}
+    defaults: { _controller: IncentivesOperacionesBundle:Calificacion:datos, id: null }
+
+calificacion_pdf:
+    path:  /calificaciones/pdf/{id}
+    defaults: { _controller: IncentivesOperacionesBundle:Calificacion:pdf, id: null }
+
+calificacion_carta:
+    path:  /calificaciones/carta/{id}
+    defaults: { _controller: IncentivesOperacionesBundle:Calificacion:carta, id: null }
+
+calificacion_correo:
+    path:  /calificaciones/correo/{id}
+    defaults: { _controller: IncentivesOperacionesBundle:Calificacion:correo, id: null }
+
+calificacion_aprobar:
+    path:  /calificaciones/aprobar/{id}/{accion}
+    defaults: { _controller: IncentivesOperacionesBundle:Calificacion:aprobar, id: null, accion: null }
+    
+calificacion_exportar:
+    path:  /calificaciones/exportar
+    defaults: { _controller: IncentivesOperacionesBundle:Calificacion:exportar }
+
+planes:
+    path:  /planes
+    defaults: { _controller: IncentivesOperacionesBundle:Calificacion:planes }
+
+plan_estado:
+    path:  /plan/estado/{id}
+    defaults: { _controller: IncentivesOperacionesBundle:Calificacion:planestado, id: null}

@@ -5,6 +5,8 @@ namespace Incentives\GarantiasBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class NovedadType extends AbstractType
 {
@@ -20,26 +22,26 @@ class NovedadType extends AbstractType
             ->add('fecha')
         ;
 
-        $builder->add('estado', 'entity', array(
+        $builder->add('estado', EntityType::class, array(
             'class' => 'IncentivesGarantiasBundle:Novedadesestado',
-            'property' => 'nombre',
-            'empty_value' => 'Seleccione una opcion',
+            'choice_label' => 'nombre',
+            //'empty_value' => 'Seleccione una opcion',
         ));
 
-        $builder->add('tipo', 'entity', array(
+        $builder->add('tipo', EntityType::class, array(
             'class' => 'IncentivesGarantiasBundle:Novedadestipo',
-            'property' => 'nombre',
-            'empty_value' => 'Seleccione una opcion',
+            'choice_label' => 'nombre',
+            //'empty_value' => 'Seleccione una opcion',
         ));
         
-        $builder->add('devolucionTipo', 'entity', array(
+        $builder->add('devolucionTipo', EntityType::class, array(
             'class' => 'IncentivesGarantiasBundle:NovedadesDevolucionTipo',
-            'property' => 'nombre',
-            'empty_value' => 'Seleccione una opcion',
+            'choice_label' => 'nombre',
+            //'empty_value' => 'Seleccione una opcion',
         ));
 
 
-        $builder->add('Enviar', 'submit');
+        $builder->add('Enviar', SubmitType::class);
     }
     
     /**

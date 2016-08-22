@@ -1,0 +1,96 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Datos Producto Inventario{% endblock %}
+
+{% block cuerpo %}
+<div class="box">
+    <div class="box-header well" data-original-title="">
+        Datos Producto Inventario
+        <div class="box-icon">
+        <div class="box-icon">
+                    <a href="{{ path('inventario_listadosalida') }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+                </div>
+      </div>
+    </div>
+</div>
+
+<div class="box span12">
+    <div class="box-content span6">
+        <div class="box-header well">
+            <h2></i>Datos Producto</h2>
+        </div>
+        <table class="table table-bordered table-striped">
+          <tbody>
+            <tr><td>Nombre</td><td>{{ inventario.producto.nombre }}</td></tr>
+            <tr><td>Referencia</td><td>{{ inventario.producto.referencia }}</td></tr>
+            <tr><td>Marca</td><td>{{ inventario.producto.marca }}</td></tr>
+            {% if inventario.orden is null %}{% else %}
+                <tr><td>Orden Compra</td><td>{{ inventario.orden.consecutivo }}</td></tr>
+                <tr><td>Proveedor</td><td>{{ inventario.orden.proveedor.nombre }}</td></tr>
+            {% endif %}
+            <tr><td>Fecha Ingreso</td><td>{{ inventario.fechaEntrada | date("Y-m-d")}}</td></tr>
+            <tr><td>Planilla</td><td>{{ inventario.planilla.id }}</td></tr>
+            <tr><td>Fecha Salida</td><td>{{ inventario.fechaSalida | date("Y-m-d")  }}</td></tr>
+            <tr><td>Estado</td><td></td></tr>
+            <tr><td>Observacion</td><td>{{ inventario.observacion }}</td></tr>
+          </tbody>
+        </table>
+    </div>
+
+{% if redencion is null %}
+
+{% else %}
+    <div class="box-content span6">
+        
+        <div class="box-header well">
+            <h2></i>Datos Redencion</h2>
+        </div>
+        <table class="table table-bordered table-striped">
+          <tbody>
+            <tr><td>Programa</td><td>{{ redencion.productocatalogo.catalogos.programa.nombre }}</td></tr>
+            <tr><td>Participante</td><td>{{ redencion.participante.nombre }}</td></tr>
+            <tr><td>Documento</td><td>{{ redencion.participante.documento }}</td></tr>
+            <tr><td>Fecha de solicitud</td><td>{{ redencion.fecha | date("Y-m-d") }}</td></tr>
+            <tr><td>Valor</td><td>{{ redencion.valor }}</td></tr>
+            <tr><td>Codigo</td><td>{{ redencion.codigoredencion }}</td></tr>
+            <tr><td>Estado</td><td>{{ redencion.redencionestado.nombre }}</td></tr>
+          </tbody>
+        </table>
+    </div>
+  </div>
+ {% endif %} 
+  
+  
+  
+  
+  <div class="box span12">
+<div class="box-header well" data-original-title>
+                        <h2><i class="icon-edit"></i>Salida de Inventario</h2>
+                        
+                    </div>
+<div class="box-content">
+<form action="" method="POST" {{ form_enctype(form) }} class="form-horizontal">
+    {{ form_errors(form) }}
+    <fieldset>
+        <div class="control-group">
+            {{ form_label(form.salio, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.salio, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            {{ form_label(form.observacion, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.observacion, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+    </fieldset>
+ <div class="form-actions">
+    {{ form_widget(form.Enviar, { 'attr': {'class': 'btn btn-primary'} }) }}
+</div>
+{{ form_widget(form._token) }}
+</form>
+</div>
+</div>
+
+  {% endblock %}

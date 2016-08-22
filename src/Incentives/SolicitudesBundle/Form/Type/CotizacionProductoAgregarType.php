@@ -7,6 +7,11 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Incentives\CatalogoBundle\Entity\ProductoRepository;
 use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use PUGX\AutocompleterBundle\Form\Type\AutocompleteType;
 
 class CotizacionProductoAgregarType extends AbstractType
 {
@@ -17,27 +22,27 @@ class CotizacionProductoAgregarType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('cantidad', 'integer', array('attr' => array('step'=>'1',
+            ->add('cantidad', IntegerType::class, array('attr' => array('step'=>'1',
                 'min'=>'0',
                 'max'=>'100000')))
-        ->add('valorunidad', 'number', array('label' => 'Valor Unidad'))
-        ->add('logistica', 'number', array('label' => 'Logistica Unidad'))
-        ->add('incremento', 'number', array('label' => 'Incremento'))
+        ->add('valorunidad', NumberType::class, array('label' => 'Valor Unidad'))
+        ->add('logistica', NumberType::class, array('label' => 'Logistica Unidad'))
+        ->add('incremento', NumberType::class, array('label' => 'Incremento'))
         ;
 
-        $builder->add('producto', 'entity', array(
+        $builder->add('producto', EntityType::class, array(
             'class' => 'IncentivesCatalogoBundle:Producto',
             'query_builder' => function(EntityRepository $repository) { 
                 return $repository->createQueryBuilder('p')
 					->where('p.estado = 1')
 					->orderBy('p.codInc', 'ASC');
             },
-            'property' => 'nombreId',
-            'empty_value' => 'Seleccione una opcion',
+            'choice_label' => 'nombreId',
+            //'empty_value' => 'Seleccione una opcion',
             'label' => 'Producto'
         ));
 
-        $builder->add('Enviar', 'submit');
+        $builder->add('Enviar', SubmitType::class);
     }
     
     /**

@@ -69,7 +69,7 @@
 				</h2>
 			</div>			
 
-			<form action="{{ path("ordenredencion_valores", {"id": ordenes.id}) }}" method="POST" {{ form_enctype(form) }} class="form-horizontal" novalidate>
+			<form action="{{ path("ordenredencion_valores", {"id": ordenes.id}) }}" method="POST"  class="form-horizontal" novalidate>
 			    <div class="ordenesProducto" data-prototype="{{ form_widget(form.ordenesProducto.vars.prototype)|e }}">
 			    </div>
 			    {{ form_errors(form) }}

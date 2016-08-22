@@ -2,6 +2,14 @@
 namespace Incentives\OperacionesBundle\Form\EventListener;
 
 use Symfony\Component\Form\FormEvent;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use PUGX\AutocompleterBundle\Form\Type\AutocompleteType;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -29,9 +37,9 @@ class AddObligatoriosFieldSubscriber implements EventSubscriberInterface
         // comprueba si el objeto producto es "nuevo"
         if (!$data->getId()) {
             $form->add('nombre');
-            $form->add('tipodocumento', 'entity', array(
+            $form->add('tipodocumento', EntityType::class, array(
                 'class' => 'IncentivesOperacionesBundle:Tipodocumento',
-                'property' => 'nombre',
+                'choice_label' => 'nombre',
             ));
             $form->add('numero_documento');
             $form->add('correo');

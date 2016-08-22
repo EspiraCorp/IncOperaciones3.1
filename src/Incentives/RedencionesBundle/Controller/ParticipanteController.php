@@ -21,10 +21,10 @@ class ParticipanteController extends Controller
     {
         $participante = new Participantes();
 
-        $form = $this->createForm(new ParticipanteType(), $participante);
+        $form = $this->createForm(ParticipanteType::class, $participante);
                     
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
 
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
@@ -55,20 +55,20 @@ class ParticipanteController extends Controller
 
         if (isset($id)){
             $participante = $em->getRepository('IncentivesRedencionesBundle:Participantes')->find($id);
-            $form = $this->createForm(new ParticipanteeditarType(), $participante);
+            $form = $this->createForm(ParticipanteeditarType::class, $participante);
         }else{
-            $form = $this->createForm(new ParticipanteeditarType());
+            $form = $this->createForm(ParticipanteeditarType::class);
             $participante = new Participantes();
         }
 
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
             
             var_dump($form->getErrorsAsString());
 
             if ($form->isValid()) {                
-                $pro=($this->get('request')->request->get('participante'));
-                $id=($this->get('request')->request->get('id'));
+                $pro=($request->request->get('participante'));
+                $id=($request->request->get('id'));
                 $participante = $em->getRepository('IncentivesRedencionesBundle:Participantes')->find($id);
                 $participante->setNombre($pro["nombre"]);
                 $participante->setDocumento($pro["documento"]);

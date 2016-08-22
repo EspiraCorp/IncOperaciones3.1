@@ -5,6 +5,7 @@ namespace Incentives\FacturacionBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 class FacturaDetalleType extends AbstractType
 {
@@ -20,17 +21,17 @@ class FacturaDetalleType extends AbstractType
             ->add('valorUnitario')
         ;
 
-        $builder->add('area', 'entity', array(
+        $builder->add('area', EntityType::class, array(
             'class' => 'IncentivesFacturacionBundle:Areas',
-            'property' => 'nombre',
-            'empty_value' => 'Seleccione una opcion',
+            'choice_label' => 'nombre',
+            //'empty_value' => 'Seleccione una opcion',
             'label' => 'Area'
         ));
 
-        $builder->add('tipo', 'entity', array(
+        $builder->add('tipo', EntityType::class, array(
             'class' => 'IncentivesFacturacionBundle:Tipocostos',
-            'property' => 'nombre',
-            'empty_value' => 'Seleccione una opcion',
+            'choice_label' => 'nombre',
+            //'empty_value' => 'Seleccione una opcion',
             'label' => 'Tipo'
         ));
 

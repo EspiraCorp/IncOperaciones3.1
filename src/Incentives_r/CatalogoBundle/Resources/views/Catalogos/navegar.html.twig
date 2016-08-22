@@ -1,0 +1,29 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Imagenes{% endblock %}
+{% block sidebar %}
+{{ parent() }}
+{% endblock %}
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+	<div class="box span12">
+		<div class="box-header well">
+			<h2><i class="icon-th-list"></i>Imagenes</h2>
+			<div class="box-icon">
+			</div>
+		</div>
+		<div class="box-content">
+			<div class="file-manager ui-helper-reset ui-helper-clearfix ui-widget ui-widget-content ui-corner-all elfinder elfinder-ltr ui-resizable elfinder-disabled" style="width: auto; height: 400px;">
+      </div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+
+{{ parent() }}
+
+
+{% endblock %}
+

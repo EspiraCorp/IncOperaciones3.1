@@ -1,0 +1,83 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Redenciones Total Pass{% endblock %}
+{% block sidebar %}
+{{ parent() }}
+{% endblock %}
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+	<div class="box span12">
+		<div class="box-header well">
+			<h2><i class="icon-th-list"></i>Redenciones Total Pass</h2>
+      <div class="box-icon">
+        <div class="box-icon">
+                    <a href="{{ path('redenciones_programastotalpass') }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+                </div>
+      </div>
+      <a href="{{ path('redenciones_exportartotalpass', {"programa": programa }) }}" title="Descargar">
+            <button class="btn btn-small">
+              <i class="icon-download"></i>
+            </button>
+          </a>
+		</div>
+		<div class="box-content">
+      {% if redenciones!=null %}
+			<div id="dashboard">                  
+         <div id="tabla" class="" cellspacing="0" width="100%">
+                      <table id="redenciones" class="display">
+                        <thead>
+                          <tr>
+                            <td>Id</td>
+			    <td>Codigo</td>
+                            <td>Participante</td>
+                            <td>Documento</td>
+                            <td>Valor</td>
+                            <td>Puntos</td>
+                            <td>Codigo TP</td>
+                            <td>Respuesta TP</td>
+                            <td>Fecha</td>
+                            <td>Estado</td>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for redencion in redenciones %}
+                            <tr>
+                            <td>{{ redencion['redenciones']['id'] }}</td>
+			    <td>{{ redencion['redenciones']['codigoredencion'] }}</td>
+                            <td>{{ redencion['redenciones']['participante']['nombre'] }}</td>
+                            <td>{{ redencion['redenciones']['participante']['documento'] }}</td>
+                            <td>{{ redencion['redenciones']['valor'] }}</td>
+                            <td>{{ redencion['redenciones']['puntos'] }}</td>
+                            <td>{{ redencion['redenciones']['totalPass'] }}</td>
+                            <td>{{ redencion['redenciones']['mensajeTotalPass'] }}</td>
+                            <td>{{ redencion['redenciones']['fecha'] | date("Y-m-d") }}</td>
+                            <td>{{ redencion['redenciones']['redencionestado']['nombre'] }}</td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+            </div>
+            {% else %}
+            <div class="alert alert-info">
+                      No existen redenciones asociadas al programa
+                    </div>
+            {% endif %}
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+
+{{ parent() }}
+
+<script type="text/javascript">
+    $(document).ready(function() {
+          $('#redenciones').DataTable();
+      } );
+      
+  </script>
+
+{% endblock %}
+

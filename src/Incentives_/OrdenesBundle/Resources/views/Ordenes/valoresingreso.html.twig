@@ -1,0 +1,20 @@
+
+<form action="{{ path('ordenes_ingreso', {'id': id}) }}" method="POST" {{ form_enctype(form) }} class="form-horizontal">
+    {{ form_errors(form) }}
+    <input type='hidden' name='id' value={{ id }}>
+    <fieldset>
+		<table>
+			<tr>
+				<td> 
+			        Cantidad Recibida {{ form_widget(form.cantidad, { 'attr': {'class': 'input-xlarge focused'} }) }}
+				</td>
+			</tr>
+			<tr>
+				<td> 
+				    {{ form_widget(form.Enviar, { 'attr': {'class': 'btn btn-primary'} }) }}
+				</td>
+			</tr>
+		</table>
+</fieldset>
+{{ form_widget(form._token) }}
+</form>

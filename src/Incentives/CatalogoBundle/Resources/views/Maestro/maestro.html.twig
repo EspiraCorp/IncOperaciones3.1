@@ -16,7 +16,7 @@
                     <div id="tabla" class="table table-bordered table-striped" cellspacing="0" width="100%">
                       <table id="productos" class="display">
                         {{ form_start(form, { attr: {novalidate: 'novalidate'} }) }}
-                          <form action="{{ path('producto') }}" method="POST" {{ form_enctype(form) }} class="form-horizontal">
+                          <form action="{{ path('producto') }}" method="POST"  class="form-horizontal">
                         <thead style="display:table-row-group;">
                           <tr>
 			                      <th>{{ knp_pagination_sortable(productos, 'Id', 'p.id') }}</th>

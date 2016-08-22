@@ -1,0 +1,139 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Presupuesto{% endblock %}
+{% block sidebar %}
+{{ parent() }}
+{% endblock %}
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+	<div class="box span12">
+    <div class="box-header well">
+      <h2><i class="icon-th-list"></i>Presupuesto</h2>
+    </div>
+		<div class="box-content">
+			<div id="dashboard">
+                    <div class="row-fluid">
+                        <div id="control1" class="span3"></div>
+                        <div id="control2" class="span3"></div>
+                        <div id="control3" class="span3"></div>
+                        <div id="control4" class="span3"></div>
+                    </div>
+                    <div id="tabla" class="row-fluid"></div>  
+            </div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+
+{{ parent() }}
+
+	<script type="text/javascript" src="//www.google.com/jsapi"></script>
+    <script type="text/javascript">
+      google.load('visualization', '1.1', {packages: ['controls']});
+    </script>
+    <script type="text/javascript">
+      function drawVisualization() {
+        // Prepare the data.
+        var data = google.visualization.arrayToDataTable([
+          ['Nombre', 'Cliente' ,'Descripcion', 'Fecha Inicio', 'Fecha Fin', 'Estado'],
+          {% for programa in listado %}
+                [ '<a href="{{ path("presupuesto_detalle", {"id": programa.id}) }}">{{ programa.nombre }}</a>',
+                 '{{ programa.cliente.nombre }}',
+                 '{{ programa.descripcion }}',
+                 '{{ programa.fechainicio | date("Y-m-d")  }}',
+                 '{{ programa.fechafin | date("Y-m-d") }}',
+                 '{% if (programa.estado=='0') %}Inactivo{% else %}Activo{% endif %}',],
+            {% endfor %}
+        ]);
+      
+        // Define a StringFilter control for the 'Name' column
+        var stringFilter = new google.visualization.ControlWrapper({
+          'controlType': 'StringFilter',
+          'containerId': 'control1',
+          'options': {
+            'filterColumnLabel': 'Nombre',
+            'matchType': 'any'
+          }
+        });
+
+        var stringFilter2 = new google.visualization.ControlWrapper({
+          'controlType': 'StringFilter',
+          'containerId': 'control2',
+          'options': {
+            'filterColumnLabel': 'Cliente',
+            'matchType': 'any'
+          }
+        });
+
+        var stringFilter3 = new google.visualization.ControlWrapper({
+          'controlType': 'CategoryFilter',
+          'containerId': 'control3',
+          'options': {
+            'filterColumnLabel': 'Fecha Inicio',
+            'ui': {
+              'allowTyping': true,
+              'allowMultiple': true
+            }
+          }
+        });
+
+        var stringFilter4 = new google.visualization.ControlWrapper({
+          'controlType': 'CategoryFilter',
+          'containerId': 'control4',
+          'options': {
+            'filterColumnLabel': 'Fecha Fin',
+            'ui': {
+              'allowTyping': true,
+              'allowMultiple': true
+            }
+          }
+        });
+      
+        // Define a table visualization
+        var table = new google.visualization.ChartWrapper({
+                'chartType': 'Table',
+                'containerId': 'tabla',
+            options: {
+              showRowNumber: true,
+              page: 'enable',
+              pageSize: 25,
+              pagingSymbols: {
+                  prev: '<<',
+                  next: '>>'
+              },
+              pagingButtonsConfiguration: 'auto',
+              'allowHtml': true,
+          }
+        });
+
+        // Create the dashboard.
+        var dashboard = new google.visualization.Dashboard(document.getElementById('dashboard')).
+          // Configure the string filter to affect the table contents
+          bind(stringFilter, table).
+          bind(stringFilter2, table).
+          bind(stringFilter3, table).
+          bind(stringFilter4, table).
+          // Draw the dashboard
+          draw(data);
+      }
+      
+
+      google.setOnLoadCallback(drawVisualization);
+    </script>
+
+  <script type="text/javascript">
+      function confirmar(ruta)
+      {
+        if (confirm("Desea cambiar el estado")==true){
+            self.location=ruta;
+        }else{
+            alert("OK");
+        }
+        
+      }
+  </script>
+
+{% endblock %}
+

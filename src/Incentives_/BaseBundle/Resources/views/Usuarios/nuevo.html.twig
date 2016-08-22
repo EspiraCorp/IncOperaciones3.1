@@ -1,0 +1,78 @@
+{# src/Incentives/BaseBundle/Resources/views/Cuentas/register.html.twig #}
+
+{% extends "::base.html.twig" %}
+
+{% block title %}Nuevo Usuario{% endblock %}
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+<div class="box span12">
+<div class="box-header well" data-original-title>
+						<h2><i class="icon-edit"></i>Usuario Nuevo</h2>
+						<div class="box-icon">
+							<a href="{{ path('usuarios') }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+						</div>
+					</div>
+<div class="box-content">
+<form action="{{ path('usuarios_nuevo') }}" method="POST" {{ form_enctype(form) }} class="form-horizontal">
+	{{ form_errors(form) }}
+	<fieldset>
+		<div class="control-group">
+			{{ form_label(form.nombre, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+			<div class="controls">
+				{{ form_widget(form.nombre, { 'attr': {'class': 'input-xlarge focused'} }) }}
+			</div>
+		</div>
+		<div class="control-group">
+			{{ form_label(form.username, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+			<div class="controls">
+				{{ form_widget(form.username, { 'attr': {'class': 'input-xlarge focused'} }) }}
+			</div>
+		</div>
+		<div class="control-group">
+			{{ form_label(form.email, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+			<div class="controls">
+				{{ form_widget(form.email, { 'attr': {'class': 'input-xlarge focused'} }) }}
+			</div>
+		</div>
+		<div class="control-group">
+			{{ form_label(form.grupos, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+			<div class="controls">
+				{{ form_widget(form.grupos, { 'attr': {'class': 'input-xlarge focused'} }) }}
+			</div>
+		</div>
+		<div class="control-group">
+			{{ form_label(form.proveedor, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+			<div class="controls">
+				{{ form_widget(form.proveedor, { 'attr': {'class': 'input-xlarge focused'} }) }}
+			</div>
+		</div>
+		<div class="control-group">
+			{{ form_label(form.cliente, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+			<div class="controls">
+				{{ form_widget(form.cliente, { 'attr': {'class': 'input-xlarge focused'} }) }}
+			</div>
+		</div>		<div class="control-group">
+			{{ form_label(form.password, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+			<div class="controls">
+				{{ form_widget(form.password, { 'attr': {'class': 'input-xlarge focused'} }) }}
+			</div>
+		</div>
+		<div class="control-group">
+			{{ form_label(form.isActive, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+			<div class="controls">
+				{{ form_widget(form.isActive, { 'attr': {'class': 'input-xlarge focused'} }) }}
+			</div>
+		</div>
+
+	</fieldset>
+
+	
+<div class="form-actions">
+	{{ form_widget(form.Enviar, { 'attr': {'class': 'btn btn-primary'} }) }}
+</div>
+{{ form_widget(form._token) }}
+</form>
+</div>
+</div>
+ </div>
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Generar Ordenes{% endblock %}
+
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+<div class="box span12">
+<div class="box-header well" data-original-title>
+                        <h2><i class="icon-edit"></i>Generar Ordenes</h2>
+                        <div class="box-icon">
+                            <a href="{{ path('ordenes') }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+                        </div>
+                    </div>
+<div class="box-content">
+
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th>País</th>
+            <th>Categoria</th>
+            <th>Cantidad</th>
+            <th></th>
+        </tr>
+        {% set i=0 %}
+        {% for categoria in redenciones %}
+            {% set i=i+1 %}
+            <tr><td width="200px">{{ categoria[0].productocatalogo.catalogos.pais.nombre }}</td>
+                <td>{{ categoria[0].productocatalogo.producto.categoria.nombre }}</td>
+                <td>{{ categoria.total }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a id="{{ i }}" onClick="detalle('{{ i }}')" class="btn btn-success">+</a></td>
+                <td>
+                    <a class="btn btn-info" onClick="post('{{ path('ordenes_generarsegmentado') }}', {pais:{{ categoria[0].productocatalogo.catalogos.pais.id }}, categoria: {{ categoria[0].productocatalogo.producto.categoria.id }}})">Generar</a>
+                </td>
+            </tr>
+            <tr id="detalle_{{ i }}" class="hide">
+                <td></td>
+				<td colspan="3">
+                    <div>{{ render(controller('IncentivesOrdenesBundle:OrdenRedencion:detalleSegmentado', { 'categoria': categoria[0].productocatalogo.producto.categoria.id , 'pais': categoria[0].productocatalogo.catalogos.pais.id })) }}</div>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+</div>
+</div>
+ </div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+  <script>
+    function post(path, parameters) {
+        var form = $('<form></form>');
+    
+        form.attr("method", "post");
+        form.attr("action", path);
+    
+        $.each(parameters, function(key, value) {
+            var field = $('<input></input>');
+    
+            field.attr("type", "hidden");
+            field.attr("name", key);
+            field.attr("value", value);
+            form.append(field);
+        });
+    
+        // The form needs to be a part of the document in
+        // order for us to be able to submit it.
+        $(document.body).append(form);
+        form.submit();
+    }
+
+    function detalle(id){
+        $('#detalle_'+id).toggle();
+    }
+  </script>
+{% endblock %}

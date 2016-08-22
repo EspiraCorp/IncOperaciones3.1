@@ -15,6 +15,8 @@ use Incentives\RedencionesBundle\Form\Type\JustificacionEnvioType;
 use Incentives\GarantiasBundle\Form\Type\EnvioType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 use PHPExcel;
 use PHPExcel_IOFactory;
@@ -146,16 +148,16 @@ class RedencionController extends Controller
             .$redencion->getProductocatalogo()->getCatalogos()->getPrograma()->getId());
     }
 
-     public function datosAction($id)
+     public function datosAction($id, Request $request)
     {
         $em = $this->getDoctrine()->getManager();
         
         $session = $this->get('session');
          
-        $page = $this->get('request')->get('page');
+        $page = $request->get('page');
         if(!$page) $page= 1;
             
-        if($pro=($this->get('request')->request->get('redenciones'))){
+        if($pro=($request->request->get('redenciones'))){
             $page = 1;
             $session->set('filtros_redenciones', $pro);
         }
@@ -193,8 +195,8 @@ class RedencionController extends Controller
 		    ->leftJoin('pc.catalogos', 'c')
 		    ->where($sqlFiltro);
 		    
-		if($this->get('request')->get('sort')){
-		    $query->orderBy($this->get('request')->get('sort'), $this->get('request')->get('direction'));    
+		if($request->get('sort')){
+		    $query->orderBy($request->get('sort'), $request->get('direction'));    
 	    }
 	    
 	    $arrayFiltro['programa'] = $id;
@@ -211,16 +213,16 @@ class RedencionController extends Controller
             array( 'id'=>$id, 'redenciones'=>$pagination, 'catalogos' => $catalogos, 'filtros' => $filtros));
     }
 
-    public function listadoprogramaAction($programa)
+    public function listadoprogramaAction($programa, Request $request)
     {
         $em = $this->getDoctrine()->getManager();
         
         $session = $this->get('session');
          
-        $page = $this->get('request')->get('page');
+        $page = $request->get('page');
         if(!$page) $page= 1;
             
-        if($pro=($this->get('request')->request->get('redenciones'))){
+        if($pro=($request->request->get('redenciones'))){
             $page = 1;
             $session->set('filtros_redencionesgeneral', $pro);
         }
@@ -267,8 +269,8 @@ class RedencionController extends Controller
 		$minimo = $query->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
 		//echo "<pre>"; print_r($minimo); echo "</pre>"; exit;
 		    
-		if($this->get('request')->get('sort')){
-		    $query->orderBy($this->get('request')->get('sort'), $this->get('request')->get('direction'));    
+		if($request->get('sort')){
+		    $query->orderBy($request->get('sort'), $request->get('direction'));    
 	    }
 		   
         $paginator  = $this->get('knp_paginator');
@@ -280,12 +282,12 @@ class RedencionController extends Controller
 
         
         $redencion = new Redenciones();
-        $form =$this->get('form.factory')->createNamedBuilder('redenciones', 'form',  null, array(
+        $form =$this->get('form.factory')->createNamedBuilder('redenciones', FormType::class,  null, array(
                 ))
-            ->add('redencionestado', 'entity', array(
+            ->add('redencionestado', EntityType::class, array(
                 'class' => 'IncentivesRedencionesBundle:Redencionesestado',
-                'property' => 'nombre',
-                'empty_value' => 'Seleccione',
+                'choice_label' => 'nombre',
+                //'empty_value' => 'Seleccione',
                 'required' => false,
         ))
         ->getForm();
@@ -1528,11 +1530,11 @@ class RedencionController extends Controller
         $form = $this->createForm(new RedencionProductoType(array('id_catalogo'=>$id_catalogo)), $redencionD);
                     
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
 
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
-                $pro=($this->get('request')->request->get('redencionproducto'));
+                $pro=($request->request->get('redencionproducto'));
                 // realiza alguna acción, tal como guardar la tarea en la base de datos
 
                 $productoD = $em->getRepository('IncentivesCatalogoBundle:Productocatalogo')->find($pro['productocatalogo']);
@@ -1562,14 +1564,14 @@ class RedencionController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $redencionD = $em->getRepository('IncentivesRedencionesBundle:Redenciones')->find($id);
-        $form = $this->createForm(new JustificacionEnvioType(), $redencionD);
+        $form = $this->createForm(JustificacionEnvioType::class, $redencionD);
                     
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
 
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
-                $pro=($this->get('request')->request->get('justificacion'));
+                $pro=($request->request->get('justificacion'));
                 // realiza alguna acción, tal como guardar la tarea en la base de datos
 
                 $justificacionD = $em->getRepository('IncentivesRedencionesBundle:Justificacion')->find($pro['justificacion']);
@@ -1782,14 +1784,14 @@ class RedencionController extends Controller
 
     	$redencionD = $em->getRepository('IncentivesRedencionesBundle:Redenciones')->find($redencionE->getRedencion()->getId());
 
-        $form = $this->createForm(new EnvioType(), $redencionE);
+        $form = $this->createForm(EnvioType::class, $redencionE);
                     
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
 
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
-                $pro=($this->get('request')->request->get('envios'));
+                $pro=($request->request->get('envios'));
                 // realiza alguna acción, tal como guardar la tarea en la base de datos
                 $redencionE->setCiudadNombre($pro['ciudadNombre']);
                 $redencionE->setDireccion($pro['direccion']);
@@ -2002,16 +2004,16 @@ class RedencionController extends Controller
 
     }
     
-    public function listadoCompletoAction()
+    public function listadoCompletoAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
         
         $session = $this->get('session');
          
-        $page = $this->get('request')->get('page');
+        $page = $request->get('page');
         if(!$page) $page= 1;
             
-        if($pro=($this->get('request')->request->get('redenciones'))){
+        if($pro=($request->request->get('redenciones'))){
             $page = 1;
             $session->set('filtros_redencionescompleto', $pro);
         }
@@ -2058,8 +2060,8 @@ class RedencionController extends Controller
 		//$minimo = $query->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
 		//echo "<pre>"; print_r($minimo); echo "</pre>"; exit;
 		    
-		if($this->get('request')->get('sort')){
-		    $query->orderBy($this->get('request')->get('sort'), $this->get('request')->get('direction'));    
+		if($request->get('sort')){
+		    $query->orderBy($request->get('sort'), $request->get('direction'));    
 	    }
 		   
         $paginator  = $this->get('knp_paginator');
@@ -2073,10 +2075,10 @@ class RedencionController extends Controller
         $redencion = new Redenciones();
         $form =$this->get('form.factory')->createNamedBuilder('redenciones', 'form',  null, array(
                 ))
-            ->add('redencionestado', 'entity', array(
+            ->add('redencionestado', EntityType::class, array(
                 'class' => 'IncentivesRedencionesBundle:Redencionesestado',
-                'property' => 'nombre',
-                'empty_value' => 'Seleccione',
+                'choice_label' => 'nombre',
+                //'empty_value' => 'Seleccione',
                 'required' => false,
         ))
         ->getForm();

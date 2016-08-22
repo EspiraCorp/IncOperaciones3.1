@@ -24,10 +24,10 @@ class ClienteController extends Controller
         $cliente = new Cliente();
         $programa = new Programa();
 
-        $form = $this->createForm(new ClienteType(), $cliente);
+        $form = $this->createForm(ClienteType::class, $cliente);
                     
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
 
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
@@ -65,21 +65,21 @@ class ClienteController extends Controller
 
         if (isset($id)){
             $cliente = $em->getRepository('IncentivesCatalogoBundle:Cliente')->find($id);
-            $form = $this->createForm(new ClienteType(), $cliente);
+            $form = $this->createForm(ClienteType::class, $cliente);
         }else{
-            $form = $this->createForm(new ClienteType());
+            $form = $this->createForm(ClienteType::class);
             $cliente = new Cliente();
         }
 
         if ($request->isMethod('POST')) {
-            $pro=($this->get('request')->request->get('cliente'));
-            $form->bind($request);
+            $pro=($request->request->get('cliente'));
+            $form->handleRequest($request);
 
 
             if ($form->isValid()) {
                 
-                $pro=($this->get('request')->request->get('cliente'));
-                $id=($this->get('request')->request->get('id'));
+                $pro=($request->request->get('cliente'));
+                $id=($request->request->get('id'));
                 $cliente = $em->getRepository('IncentivesCatalogoBundle:Cliente')->find($id);
                 $cliente->setNombre($pro["nombre"]);
                 $documento = $em->getRepository('IncentivesOperacionesBundle:Tipodocumento')->find($pro["tipodocumento"]);

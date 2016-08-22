@@ -14,6 +14,8 @@ use Incentives\SolicitudesBundle\Form\Type\RequisicionProductoAgregarType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+use Dompdf\Dompdf;
+
 class RequisicionesController extends Controller
 {
      /**
@@ -36,10 +38,10 @@ class RequisicionesController extends Controller
         $requisiciones = $em->getRepository('IncentivesSolicitudesBundle:Requisicion')->findAll();
         $requisicion = new Requisicion();
 
-        $form = $this->createForm(new RequisicionType(), $requisicion);
-                    
+        $form = $this->createForm(RequisicionType::class, $requisicion);
+        
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
 
             if ($form->isValid()) {
                 
@@ -91,25 +93,25 @@ class RequisicionesController extends Controller
         $em = $this->getDoctrine()->getManager();
         $requisicionproducto = new RequisicionProducto();
 
-        $form = $this->createForm(new RequisicionProductoAgregarType(), $requisicionproducto);
+        $form = $this->createForm(RequisicionProductoAgregarType::class, $requisicionproducto);
                     
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
 
             if ($form->isValid()) {
                 // realiza alguna acción, tal como guardar la tarea en la base de datos
                 
-                $id=($this->get('request')->request->get('id'));
-                $pro=($this->get('request')->request->get('requisicionproducto'));
+                $pro = $request->request->all();
+                $id = $pro['id'];
                 
                 $requisicion = $em->getRepository('IncentivesSolicitudesBundle:Requisicion')->find($id);
                 $estado = $em->getRepository('IncentivesOrdenesBundle:OrdenesEstado')->find(1);
-                $producto = $em->getRepository('IncentivesCatalogoBundle:Producto')->find($pro['producto']);
-                $requisicionproducto->setCantidad($pro["cantidad"]);
-                $requisicionproducto->setValorunidad($pro["valorunidad"]);
-                $requisicionproducto->setValortotal($pro["valorunidad"]/(1 - ($pro["incremento"]/100))*$pro["cantidad"]);
-                $requisicionproducto->setLogistica($pro["logistica"]);
-                $requisicionproducto->setIncremento($pro["incremento"]);
+                $producto = $em->getRepository('IncentivesCatalogoBundle:Producto')->find($pro['requisicion_producto_agregar']['producto']);
+                $requisicionproducto->setCantidad($pro['requisicion_producto_agregar']["cantidad"]);
+                $requisicionproducto->setValorunidad($pro['requisicion_producto_agregar']["valorunidad"]);
+                $requisicionproducto->setValortotal($pro['requisicion_producto_agregar']["valorunidad"]/(1 - ($pro['requisicion_producto_agregar']["incremento"]/100))*$pro['requisicion_producto_agregar']["cantidad"]);
+                $requisicionproducto->setLogistica($pro['requisicion_producto_agregar']["logistica"]);
+                $requisicionproducto->setIncremento($pro['requisicion_producto_agregar']["incremento"]);
                 $requisicionproducto->setRequisicion($requisicion);
                 $requisicionproducto->setProducto($producto);
 
@@ -135,7 +137,7 @@ class RequisicionesController extends Controller
 
 
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
 
             if ($form->isValid()) {
                 $ordenes = $em->getRepository('IncentivesOrdenesBundle:OrdenesCompra')->find($id);
@@ -159,7 +161,7 @@ class RequisicionesController extends Controller
                 $em->flush();
                 
                 $form=null;
-                $form = $this->createForm(new OrdenesCompraCantidadType(), $orden);
+                $form = $this->createForm(OrdenesCompraCantidadType::class, $orden);
             }
             
         }  
@@ -185,19 +187,19 @@ class RequisicionesController extends Controller
 
         $cotizacion = $productos->getCotizacion()->getId();
 
-        $form = $this->createForm(new CotizacionesProductoCantidadType(), $productos);
+        $form = $this->createForm(CotizacionesProductoCantidadType::class, $productos);
                     
         if ($request->isMethod('POST')) {
-            $form->bind($request);
-            $valores = $request->get('cotizacionesproducto');
+            $form->handleRequest($request);
+            $valores = $request->request->all();
 
             if ($form->isValid()) {
 
                 //actualiza valores
-                $productos->setCantidad($valores['cantidad']);
-                $productos->setValorunidad($valores['valorunidad']);
-                $productos->setValortotal($valores['valorunidad']*$valores['cantidad']);
-                $productos->setLogistica($valores['logistica']);
+                $productos->setCantidad($valores['cotizaciones_producto']['cantidad']);
+                $productos->setValorunidad($valores['cotizaciones_producto']['valorunidad']);
+                $productos->setValortotal($valores['cotizaciones_producto']['valorunidad']*$valores['cotizaciones_producto']['cantidad']);
+                $productos->setLogistica($valores['cotizaciones_producto']['logistica']);
                 $em->persist($productos);
                 $em->flush();
                 
@@ -241,12 +243,12 @@ class RequisicionesController extends Controller
         ));
 
 
-        require_once($this->get('kernel')->getRootDir().'/config/dompdf_config.inc.php');
+        
         $rootDir = dirname($this->container->getParameter('kernel.root_dir'));
         $Dir = '/web/Cotizaciones/';
         $uploadDir = $rootDir.$Dir;
 
-        $dompdf = new \DOMPDF();
+        $dompdf = new DOMPDF();
         $dompdf->load_html($html,'UTF-8');
         $dompdf->render();
         $pdf = $dompdf->output();

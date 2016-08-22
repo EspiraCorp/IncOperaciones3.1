@@ -24,18 +24,18 @@ class ContactoController extends Controller
     	$em = $this->getDoctrine()->getManager();
         if (isset($id)){
 	        $contacto = $em->getRepository('IncentivesOperacionesBundle:Contacto')->find($id);
-	        $form = $this->createForm(new ContactoType(), $contacto);
+	        $form = $this->createForm(ContactoType::class, $contacto);
 	    }else{
-	    	$form = $this->createForm(new ContactoType());
+	    	$form = $this->createForm(ContactoType::class;
 	    	$contacto = new Contacto();
 	    }
                     
 		if ($request->isMethod('POST')) {
-			$form->bind($request);
+			$form->handleRequest($request);
 
 			if ($form->isValid()) {
-				$pro=($this->get('request')->request->get('contacto'));
-				$id=($this->get('request')->request->get('id'));
+				$pro=($request->request->get('contacto'));
+				$id=($request->request->get('id'));
 				$query = $em->createQuery(
 				    'UPDATE IncentivesOperacionesBundle:Contacto p 
 				    SET p.nombres=:nombres, p.correo=:correo, p.telefono=:telefono, p.cargo=:cargo
@@ -91,14 +91,14 @@ class ContactoController extends Controller
 	    }
         $contacto = new Contacto();
 
-		$form = $this->createForm(new ContactoType(), $contacto);
+		$form = $this->createForm(ContactoType::class, $contacto);
                     
 		if ($request->isMethod('POST')) {
-			$form->bind($request);
+			$form->handleRequest($request);
 
 			if ($form->isValid()) {
 				// realiza alguna acción, tal como guardar la tarea en la base de datos
-				$id=($this->get('request')->request->get('id'));
+				$id=($request->request->get('id'));
 				$proveedor = $em->getRepository('IncentivesOperacionesBundle:Proveedores')->find($id);
                 $contacto->setProveedor($proveedor);
                 $proveedor->addContacto($contacto);

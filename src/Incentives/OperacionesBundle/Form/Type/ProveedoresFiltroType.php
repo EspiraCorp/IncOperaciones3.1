@@ -16,6 +16,7 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use PUGX\AutocompleterBundle\Form\Type\AutocompleteType;
 
 class ProveedoresFiltroType extends AbstractType
 {
@@ -52,35 +53,35 @@ class ProveedoresFiltroType extends AbstractType
         $builder->add('pais', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:Pais',
             'choice_label' => 'nombre',
-            //'empty_value' => 'Seleccione una opcion',
+            ////'empty_value' => 'Seleccione una opcion',
             'required' => false,
             'data' => $this->pais_id ,
         ));
         $builder->add('ciudad', EntityType::class, array(
 			'class' => 'IncentivesOperacionesBundle:Ciudad',
 			'choice_label' => 'nombre',
-            //'empty_value' => 'Seleccione una opcion',
+            ////'empty_value' => 'Seleccione una opcion',
             'required' => false,
             'data' => $this->ciudad_id ,
 		));
         $builder->add('categoria', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:Categoria',
             'choice_label' => 'nombre',
-            //'empty_value' => 'Seleccione una opcion',
+            ////'empty_value' => 'Seleccione una opcion',
             'required' => false
         ));
 
         $builder->add('proveedortipo', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:ProveedoresTipo',
             'choice_label' => 'nombre',
-            //'empty_value' => 'Seleccione una opcion',
+            ////'empty_value' => 'Seleccione una opcion',
             'label' => 'Tipo'
         ));
 
         $builder->add('estado', EntityType::class, array(
             'class' => 'IncentivesCatalogoBundle:Estados',
             'choice_label' => 'nombre',
-            //'empty_value' => 'Seleccione una opcion',
+            ////'empty_value' => 'Seleccione una opcion',
             'label' => 'Estado',
             'data' => $this->estado_id,
         ));

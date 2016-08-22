@@ -8,13 +8,16 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use PUGX\AutocompleterBundle\Form\Type\AutocompleteType;
 
 class SolicitudesAsignarType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
 
-        $builder->add('responsable', 'entity', array(
+        $builder->add('responsable', EntityType::class, array(
             'class' => 'IncentivesBaseBundle:Usuario',
             'query_builder' => function(EntityRepository $repository) { 
                 return $repository->createQueryBuilder('u')
@@ -22,13 +25,13 @@ class SolicitudesAsignarType extends AbstractType
 					->where('u.isActive = 1 AND g.id IN (2,3,7,12,13)')
 					->orderBy('u.nombre', 'ASC');
             },
-            'property' => 'nombre',
-            'empty_value' => 'Seleccione una opción',
+            'choice_label' => 'nombre',
+            //'empty_value' => 'Seleccione una opción',
             'label' => 'Responsable'
         ));
         
         
-        $builder->add('Enviar', 'submit');
+        $builder->add('Enviar', SubmitType::class);
 
     }
  

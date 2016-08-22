@@ -5,6 +5,7 @@ namespace Incentives\OrdenesBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class OrdenesTrackingType extends AbstractType
 {
@@ -23,7 +24,7 @@ class OrdenesTrackingType extends AbstractType
         ;
 
         $builder->add('tracking');
-        $builder->add('Enviar', 'submit');
+        $builder->add('Enviar', SubmitType::class);
     }
     
     /**

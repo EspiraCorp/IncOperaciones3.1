@@ -1,0 +1,73 @@
+{% extends "::base.html.twig" %}
+
+{% block cuerpo %}
+
+<div class="box span12">
+    <div class="box-content">
+        <div style="background: white; width: 200px; float: left;" class="box">
+            <div class="box-header well"><h2>PRODUCTOS</h2></div>
+            {% for productos in pagination %}
+                 <div style="height: 240px; width: 180px;" class="box span3">
+                    <div data-original-title="" class="box-header well">
+                        {{ productos.nombre }}
+                    </div>
+                     <div class="box-content">
+                        <div style="height: 100px; width: 100px;">
+                           
+                        </div>
+                        <div>
+                            <strong>Referencia:</strong> {{ productos.referencia }}<br>
+                            <strong>Marca:</strong> {{ productos.referencia }}<br>
+                            <strong>Categoria:</strong> {{ productos.referencia }}<br>
+                            <a id="enlaceajax15" class="btn btn-success" href="/operaciones/web/app_dev.php/proveedores/estado/15">Activo</a>
+                        </div>      
+                    </div>       
+                </div>
+            {% endfor %}
+        </div>
+
+        <div id="tabs" style="background: white; width: 800px;  float: left;">
+        <ul>
+        {% for catalogos in catalogo %}
+            <li id="cat{{ catalogos.id }}"><a id="#catalogo{{ catalogos.id }}" href="#catalogo{{ catalogos.id }}"><span>{{ catalogos.nombre }}</span></a></li>
+        {% endfor %}
+        </ul>
+        
+        {% for catalogos in catalogo %}
+            <div id="catalogo{{ catalogos.id }}" >
+
+            </div>
+        {% endfor %}
+        </div>  
+    </div>
+    <div class="box span11">
+        <div class="box-content">
+                <div class="dataTables_info">Mostrando {{ pagination.getItemNumberPerPage*(pagination.getCurrentPageNumber-1)+1  }} a {{ pagination.getItemNumberPerPage*pagination.getCurrentPageNumber }} de {{ pagination.getTotalItemCount }}   Productos
+                </div>
+                <div class="pagination pagination-centered">
+                        {{ knp_pagination_render(pagination) }}                    
+                </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+
+    <script src="{{ asset('js/jquery-2.0.2.js') }}" type="text/javascript"></script>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <script>
+        $( "#tabs" ).tabs().scrollabletab()//jQuery scrollable dataTables_info;
+    </script>
+    <script>
+        $(document).ready(function(){
+            {% for catalogos in catalogo %}
+            $("#cat{{ catalogos.id }}").click(function(evento){
+                evento.preventDefault();
+                $("#catalogo{{ catalogos.id }}").load("{{ path('productocatalogo_grupo') }}");
+            });
+            {% endfor %}
+        })
+    </script>
+{% endblock %}

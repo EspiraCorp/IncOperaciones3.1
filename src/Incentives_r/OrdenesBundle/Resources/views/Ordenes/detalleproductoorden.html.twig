@@ -1,0 +1,42 @@
+<table>
+    <tr>
+        <th>Id</th>
+        <th>Redencion</th>
+        <th>Programa</th>
+        <th>Participante</th>
+        <th>Documento</th>
+        <th>Fecha</th>
+        <th>Valor Compra</th>
+        <th>Valor Venta</th>
+        <th>Rentabilidad</th>
+    </tr>
+{% set ij = 0 %}
+{% for redencion in redenciones %}
+    <tr>
+        {% set ij = ij + 1 %}
+        <td>{{ ij }}</td>
+        <td>{{ redencion.codigoredencion }}</td>
+        <td>{{ redencion.participante.programa.nombre }}</td>
+        <td>{{ redencion.participante.nombre }}</td>
+        <td>{{ redencion.participante.documento }}</td>
+        <td>{{ redencion.fecha | date("Y-m-d") }}</td>
+        {% set rentabilidad = 0 %}
+        {% set valorventa = 0 %}
+        {% set valorcompra = redencion.productocatalogo.precio %}
+        {% if (redencion.productocatalogo.precio!=0 and redencion.productocatalogo.incremento!=0) %}
+            {% if (redencion.ordenesProducto.ordenesCompra.trm!=0) %}
+                {% set valorcompra = (redencion.ordenesProducto.valorunidad/redencion.ordenesProducto.ordenesCompra.trm) %}
+            {% endif %}
+            {% set valorventa = valorcompra/(1-(redencion.productocatalogo.incremento/100)) %}
+            {% set rentabilidad = (1-((redencion.ordenesProducto.valorunidad - (redencion.ordenesProducto.descuento/redencion.ordenesProducto.cantidad))/valorventa ))*100 %}
+            {% if (redencion.ordenesProducto.ordenesCompra.trm!=0) %}
+                 {% set rentabilidad = (1-(((redencion.ordenesProducto.valorunidad - (redencion.ordenesProducto.descuento/redencion.ordenesProducto.cantidad))/redencion.ordenesProducto.ordenesCompra.trm)/valorventa ))*100 %}
+            {% endif %}
+        {% endif %}
+        <td>${{ valorcompra |number_format(2, ',', '.') }}</td>
+        <td>${{ valorventa |number_format(2, ',', '.') }}</td>
+        <td>{{ rentabilidad |number_format(2, ',', '.') }}%</td>
+    </tr>
+
+{% endfor %}
+</table>

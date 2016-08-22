@@ -27,7 +27,7 @@ class InventariosController extends Controller
     {
 
         // obtener el objeto de la petición
-    	$request = $this->getRequest();
+    	
 
         $cliente = $_SERVER['REMOTE_ADDR'];
         $ruta = $_SERVER['PATH_INFO'];
@@ -213,11 +213,11 @@ class InventariosController extends Controller
      * @Route("/salida")
      * @Template()
      */
-    public function salidaAction()
+    public function salidaAction(Request $request)
     {
 
         // obtener el objeto de la petición
-        $request = $this->getRequest();
+        
 
         $cliente = $_SERVER['REMOTE_ADDR'];
         $ruta = $_SERVER['PATH_INFO'];
@@ -337,11 +337,11 @@ class InventariosController extends Controller
      * @Route("/salida")
      * @Template()
      */
-    public function devolucionAction()
+    public function devolucionAction(Request $request)
     {
 
         // obtener el objeto de la petición
-        $request = $this->getRequest();
+        
 
         $cliente = $_SERVER['REMOTE_ADDR'];
         $ruta = $_SERVER['PATH_INFO'];
@@ -423,11 +423,11 @@ class InventariosController extends Controller
 
     }
 
-    public function datoscompraAction()
+    public function datoscompraAction(Request $request)
     {
 
                 // obtener el objeto de la petición
-    	$request = $this->getRequest();
+    	
 
         $cliente = $_SERVER['REMOTE_ADDR'];
         $ruta = $_SERVER['PATH_INFO'];

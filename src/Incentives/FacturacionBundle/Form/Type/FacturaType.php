@@ -5,6 +5,15 @@ namespace Incentives\FacturacionBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\CollecctionType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use PUGX\AutocompleterBundle\Form\Type\AutocompleteType;
 
 class FacturaType extends AbstractType
 {
@@ -29,29 +38,29 @@ class FacturaType extends AbstractType
         $id_programa = $this->id_programa;
 
         $builder
-            ->add('fecha', 'date', array(
+            ->add('fecha', DateType::class, array(
             'input'  => 'datetime',
             'widget' => 'single_text',
         ))
-            ->add('fechaInicio', 'date', array(
+            ->add('fechaInicio', DateType::class, array(
             'input'  => 'datetime',
             'widget' => 'single_text',
         ))
-            ->add('fechaFin', 'date', array(
+            ->add('fechaFin', DateType::class, array(
             'input'  => 'datetime',
             'widget' => 'single_text',
         ))
             ->add('numero')
-            ->add('requisiciones','checkbox', array('label' => 'Requisiciones'))
-            ->add('premios','checkbox', array('label' => 'Redenciones', 'attr'  => array('checked'   => 'checked')))
-            ->add('logistica','checkbox', array('label' => 'Premios Con Logistica', 'attr'  => array('checked'  => 'checked')))
+            ->add('requisiciones', CheckboxType::class, array('label' => 'Requisiciones'))
+            ->add('premios', CheckboxType::class, array('label' => 'Redenciones', 'attr'  => array('checked'   => 'checked')))
+            ->add('logistica', CheckboxType::class, array('label' => 'Premios Con Logistica', 'attr'  => array('checked'  => 'checked')))
         ;
         
-        $builder->add('pais', 'entity', array(
-                'empty_value' => 'Select',
+        $builder->add('pais', EntityType::class, array(
+                //'empty_value' => 'Select',
                 'label' => 'Pais', 
                 'class' => 'IncentivesOperacionesBundle:Pais', 
-                'property' => 'nombre', 
+                'choice_label' => 'nombre', 
                 'query_builder' => function(\Doctrine\ORM\EntityRepository $er) use ($id_programa) {
                     return $er->createQueryBuilder('p')
                     ->addSelect('c')
@@ -63,14 +72,14 @@ class FacturaType extends AbstractType
             ))
            ;
         
-        $builder->add('periodo', 'entity', array(
+        $builder->add('periodo', EntityType::class, array(
             'class' => 'IncentivesFacturacionBundle:Periodos',
-            'property' => 'periodo',
-            'empty_value' => 'Seleccione una opcion',
+            'choice_label' => 'periodo',
+            //'empty_value' => 'Seleccione una opcion',
             'label' => 'Periodo'
         ));
 
-        $builder->add('detalle', 'collection', array(
+        $builder->add('detalle', CollectionType::class, array(
              'type'  => new FacturaDetalleType(),
                 'label'          => 'Detalle',
                 'by_reference'   => false,
@@ -78,7 +87,7 @@ class FacturaType extends AbstractType
                 'allow_add'      => true
         ));
 
-        $builder->add('Enviar', 'submit');
+        $builder->add('Enviar', SubmitType::class);
     }
     
     /**

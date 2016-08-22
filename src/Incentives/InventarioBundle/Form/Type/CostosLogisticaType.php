@@ -5,6 +5,7 @@ namespace Incentives\InventarioBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class CostosLogisticaType extends AbstractType
 {
@@ -20,7 +21,7 @@ class CostosLogisticaType extends AbstractType
             ->add('cantidad')
             ->add('observacion');
 
-        $builder->add('Enviar', 'submit');
+        $builder->add('Enviar', SubmitType::class);
     }
     
     /**

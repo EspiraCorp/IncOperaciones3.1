@@ -1,0 +1,92 @@
+<style>
+body {
+	font: 10pt Verdana;
+}
+.marco {
+  border-width:1px;
+  border-style:solid;
+  border-color:#000000;
+  padding:10px 50px;
+}
+.marcoinverso {
+	background-color:#000;
+	padding:10px 50px;
+	color:#fff;
+}
+pre {
+	font: 9pt Verdana;
+  text-align:center;
+}
+.derecha {
+  text-align:right;
+}
+.tabla1{
+	margin: 10px;
+	width:100%;
+	padding: .5em;
+}
+.tabla2{
+	border-collapse: collapse;
+	width:100%;
+	border: 1px solid #000;
+}
+.tabla2 td{
+	font: 8pt Verdana;
+  text-align:center;
+  border: 1px solid #000;
+}
+.total{
+	font: bold 11pt Verdana;
+	background-color:#ccc;
+}
+.invisible{
+	border: 0px;
+	background-color:#fff;
+}
+th{
+	font: bold 11pt Verdana;
+  text-align:center;
+  background-color:#ffcc00;
+  border: 1px solid #000;
+}
+#columna1 {
+  width:200px;
+}
+#columna2 { 
+  margin-left:220px;
+  margin-right:20px;
+  margin-top:10px;  
+  background-color:#ffffbb;
+}
+</style>
+<body>
+<pre class="marco">
+<b>Planilla de inventario</b>
+Asignaciones del {{ fecha | date("Y-m-d") }}
+</pre>
+<div class="marco">
+	<table>
+		<tr>
+			<th>Producto</th>
+			<th>Codigo EAN</th>
+			<th>Marca</th>
+			<th>Programa</th>
+			<th>Participante</th>
+			<th>Documento</th>
+			<th>Direccion</th>
+		</tr>
+{% for inventarios in inventario %}
+	{% if (date(inventarios.fechaSalida)|date("m/d/Y") >= date(fecha)|date("m/d/Y") and date(inventarios.fechaSalida)|date("m/d/Y") < date(fecha)|date_modify("+1 day")|date("m/d/Y")) %}
+		<tr>
+			<td>{{ inventarios.producto.nombre }}</td>
+			<td>{{ inventarios.producto.codEAN }}</td>
+			<td>{{ inventarios.producto.marca }}</td>
+			<td>{{ inventarios.redencion.productocatalogo.catalogos.programa.nombre }}</td>
+			<td>{{ inventarios.redencion.participante.nombre }}</td>
+			<td>{{ inventarios.redencion.participante.tipodocumento.nombre }} {{ inventarios.redencion.participante.documento }}</td>
+			<td>{{ inventarios.redencion.participante.direccion }}</td>
+	{% endif %}
+{% endfor %}
+</div>
+</body>
+

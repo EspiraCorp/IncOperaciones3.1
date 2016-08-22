@@ -1,0 +1,50 @@
+{% extends '::basePop.html.twig' %}
+{% block title %}Editar Valores{% endblock %}
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+	<div class="box span12">
+		<div class="box-header well" data-original-title>
+	    	<h2><i class="icon-edit"></i>Editar VAlores</h2>
+	     	<div class="box-icon">
+	        	<a href="{{ path('cotizaciones_datos') }}/{{ cotizacion }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+	    	</div>
+		</div>
+		<div class="box-content">
+			<form action="{{ path('cotizaciones_valores') }}/{{ id }}" method="POST" {{ form_enctype(form) }} class="form-horizontal">
+			    {{ form_errors(form) }}
+			    <input type='hidden' name='id' value={{ id }}>
+			    <fieldset>
+					<table>
+						<tr>
+							<td> 
+						        Cantidad {{ form_widget(form.cantidad, { 'attr': {'class': 'input-xlarge focused'} }) }}
+							</td>
+						</tr>
+						<tr>
+							<td> 
+						        Valor Unidad {{ form_widget(form.valorunidad, { 'attr': {'class': 'input-xlarge focused'} }) }}
+							</td>
+						</tr>
+						<tr>
+							<td> Logistica Individual {{ form_widget(form.logistica, { 'attr': {'class': 'input-xlarge focused'} }) }}
+							</td>
+						</tr>
+						<tr>
+							<td> 
+							    {{ form_widget(form.Enviar, { 'attr': {'class': 'btn btn-primary'} }) }}
+							</td>
+						</tr>
+					</table>
+			</fieldset>
+			{{ form_widget(form._token) }}
+			</form>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+   
+{% endblock %}

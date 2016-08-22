@@ -18,7 +18,7 @@
 						<tr><td>Cliente</td><td>{{ programa.cliente.nombre }}</td></tr>
 					</tbody>
 				</table>
-<form action="{{ path('factura_nueva') }}/{{ programa.id }}" method="POST" {{ form_enctype(form) }} class="form-horizontal" novalidate>
+<form action="{{ path('factura_nueva') }}/{{ programa.id }}" method="POST"  class="form-horizontal" novalidate>
     {{ form_errors(form) }}
     <fieldset>
         <input type='hidden' name='programa' value={{ programa.id }}>

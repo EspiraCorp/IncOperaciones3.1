@@ -6,6 +6,12 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Incentives\OperacionesBundle\Entity\ProveedoresRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use PUGX\AutocompleterBundle\Form\Type\AutocompleteType;
 
 class OrdenesCompraType extends AbstractType
 {
@@ -16,13 +22,13 @@ class OrdenesCompraType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('fechaCreacion', 'date', array(
+            ->add('fechaCreacion', DateType::class, array(
             'input'  => 'datetime',
             'widget' => 'single_text',
         ));
 
         $builder
-            ->add('fechaVencimiento', 'date', array(
+            ->add('fechaVencimiento', DateType::class, array(
             'input'  => 'datetime',
             'widget' => 'single_text',
         ));
@@ -50,49 +56,49 @@ class OrdenesCompraType extends AbstractType
             ->add('cancelado')
         ;
 
-        $builder->add('proveedor', 'entity', array(
+        $builder->add('proveedor', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:Proveedores',
 	        'query_builder' => function(ProveedoresRepository $repository) { 
                 return $repository->createQueryBuilder('u')->orderBy('u.nombre', 'ASC')
 					->where('u.estado = :id')->setParameter('id', '1');
             },
-            'property' => 'nombre',
-            'empty_value' => 'Seleccione una opcion',
+            'choice_label' => 'nombre',
+            //'empty_value' => 'Seleccione una opcion',
             'label' => 'Proveedor'
         ));
 
-        $builder->add('pais', 'entity', array(
+        $builder->add('pais', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:Pais',
-            'property' => 'nombre',
-            'empty_value' => 'Seleccione una opcion',
+            'choice_label' => 'nombre',
+            //'empty_value' => 'Seleccione una opcion',
             'label' => 'Pais'
         ));
         
-        $builder->add('categoria', 'entity', array(
+        $builder->add('categoria', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:Categoria',
-            'property' => 'nombre',
-            'empty_value' => 'Seleccione una opcion',
+            'choice_label' => 'nombre',
+            //'empty_value' => 'Seleccione una opcion',
             'label' => 'Categoria'
         ));
         
-        $builder->add('programa', 'entity', array(
+        $builder->add('programa', EntityType::class, array(
             'class' => 'IncentivesCatalogoBundle:Programa',
-            'property' => 'nombre',
-            'empty_value' => 'Seleccione una opcion',
+            'choice_label' => 'nombre',
+            //'empty_value' => 'Seleccione una opcion',
             'label' => 'Programa'
         ));
         
-        $builder->add('monedaTipo', 'entity', array(
+        $builder->add('monedaTipo', EntityType::class, array(
             'class' => 'IncentivesOrdenesBundle:MonedaTipo',
-            'property' => 'nombre',
-            'empty_value' => 'Seleccione una opcion',
+            'choice_label' => 'nombre',
+            //'empty_value' => 'Seleccione una opcion',
             'label' => 'Tipo de Moneda'
         ));
 
-        $builder->add('ordenesEstado', 'entity', array(
-            'class' => 'IncentivesOrdenesBundle:ordenesEstado',
-            'property' => 'nombre',
-            'empty_value' => 'Seleccione una opcion',
+        $builder->add('ordenesEstado', EntityType::class, array(
+            'class' => 'IncentivesOrdenesBundle:OrdenesEstado',
+            'choice_label' => 'nombre',
+            //'empty_value' => 'Seleccione una opcion',
             'label' => 'Estado'
         ));
 
@@ -104,7 +110,7 @@ class OrdenesCompraType extends AbstractType
                 'allow_add'      => true
         ));
 
-        $builder->add('Enviar', 'submit');
+        $builder->add('Enviar', SubmitType::class);
     }
     
     /**

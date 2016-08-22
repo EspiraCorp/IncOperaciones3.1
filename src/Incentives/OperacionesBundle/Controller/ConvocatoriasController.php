@@ -28,16 +28,16 @@ class ConvocatoriasController extends Controller
         $convocatoria = new Convocatorias();
         $proveedor = new ConvocatoriasProveedores();
 
-        $form = $this->createForm(new ConvocatoriasType(), $convocatoria);
+        $form = $this->createForm(ConvocatoriasType::class, $convocatoria);
 
         if ($request->isMethod('POST')) {
 
-            $form->bind($request);
+            $form->handleRequest($request);
 
             //if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
                     
-                $pro=($this->get('request')->request->get('convocatorias'));
+                $pro=($request->request->get('convocatorias'));
 
                 $convocatoria->setTitulo($pro["titulo"]);
                 $convocatoria->setDescripcion($pro["descripcion"]);
@@ -111,16 +111,16 @@ class ConvocatoriasController extends Controller
         $convocatoria = $em->getRepository('IncentivesOperacionesBundle:Convocatorias')->find($id);
         $proveedor = new ConvocatoriasProveedores();
 
-        $form = $this->createForm(new ConvocatoriasEdicionType(), $convocatoria);
+        $form = $this->createForm(ConvocatoriasEdicionType::class, $convocatoria);
 
         if ($request->isMethod('POST')) {
 
-            $form->bind($request);
+            $form->handleRequest($request);
 
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
                     
-                $pro=($this->get('request')->request->get('convocatorias'));
+                $pro=($request->request->get('convocatorias'));
 
                 $convocatoria->setTitulo($pro["titulo"]);
                 $convocatoria->setDescripcion($pro["descripcion"]);
@@ -183,14 +183,14 @@ class ConvocatoriasController extends Controller
         }
         $proveedor = new ConvocatoriasProveedores();
 
-        $form = $this->createForm(new ConvocatoriasProveedorType(), $proveedor);
+        $form = $this->createForm(ConvocatoriasProveedorType::class, $proveedor);
                     
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
 
             if ($form->isValid()) {
                 // realiza alguna acción, tal como guardar la tarea en la base de datos
-                $id=($this->get('request')->request->get('id'));
+                $id=($request->request->get('id'));
                 $convocatoria = $em->getRepository('IncentivesOperacionesBundle:Convocatorias')->find($id);
                 $proveedor->setConvocatorias($convocatoria);
                 //$convocatoria->addConvocatoriasproveedores($proveedor);
@@ -316,11 +316,11 @@ class ConvocatoriasController extends Controller
         $em = $this->getDoctrine()->getManager();
         $convocatoria = $em->getRepository('IncentivesOperacionesBundle:ConvocatoriasProveedores')->findAll();
 
-        $form = $this->createForm(new ConvocatoriasProveedoresType());
+        $form = $this->createForm(ConvocatoriasProveedoresType::class);
 
         if ($request->isMethod('POST')) {
 
-            $form->bind($request);
+            $form->handleRequest($request);
 
             if ($form->isValid()) {
 
@@ -328,7 +328,7 @@ class ConvocatoriasController extends Controller
                     ->getRepository('IncentivesOperacionesBundle:ConvocatoriasProveedores');
                 $convocatoria = $repositoryp->findOneBy(array('proveedor' => $id_prov, 'convocatorias' => $id));
 
-                $pro=($this->get('request')->request->get('convocatoriasproveedores'));
+                $pro=($request->request->get('convocatoriasproveedores'));
 
                 $convocatoria->setObservacion($pro["observacion"]);
 
@@ -414,11 +414,11 @@ class ConvocatoriasController extends Controller
     {
         $archivo= new ConvocatoriasArchivos();
 
-        $form = $this->createForm(new ConvocatoriasArchivosType(), $archivo);
+        $form = $this->createForm(ConvocatoriasArchivosType::class, $archivo);
 
         if ($request->isMethod('POST')) {
 
-            $form->bind($request);
+            $form->handleRequest($request);
 
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();

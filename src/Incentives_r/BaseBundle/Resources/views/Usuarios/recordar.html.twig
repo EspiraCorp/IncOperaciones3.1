@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Operaciones Inc logistica </title>
+<link href="{{ asset('css/generales.css') }}" type="text/css" rel="stylesheet" />
+</head>
+
+<body>
+    <section>
+     <div id="error">
+      {% if error %}
+          <div>{% if error.message is not null %}Verifique su correo.{% endif %}</div>
+        {% endif %}
+      </div>
+        <form id="login" action="{{ path('recordar_password') }}" method="post">
+        <span class="recordar_titulo">RECORDAR CONTRASEÑA</span><br><br><br>
+        <span class="ingresar_correo">Ingrese el correo</span><br>
+          <input type="text" size="50" required class="cuadro" nid="email" name="email" ><br>
+          <input type="submit" value="Enviar" class="botoningresar">
+      </form>
+    </section>
+    <footer> Todos los derechos reservados Incgroup 2015.</footer>
+</body>
+</html>

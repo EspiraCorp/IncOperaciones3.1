@@ -73,22 +73,22 @@ class SolicitudesController extends Controller
 
         $solicitud = new Solicitud();
 
-        $form = $this->createForm(new SolicitudType(), $solicitud);
+        $form = $this->createForm(SolicitudType::class, $solicitud);
 
         if ($request->isMethod('POST')) {
 
-            $form->bind($request);
+            $form->handleRequest($request);
 
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
                     
-                $pro=($this->get('request')->request->get('cotizaciones'));
+                $pro = $request->request->all();
                 
-                $tipo = $em->getRepository('IncentivesSolicitudesBundle:SolicitudTipo')->find($pro['tipo']);
+                $tipo = $em->getRepository('IncentivesSolicitudesBundle:SolicitudTipo')->find($pro['solicitud']['tipo']);
                 $estado = $em->getRepository('IncentivesSolicitudesBundle:SolicitudesEstado')->find(1);
 
-                $solicitud->setTitulo($pro["titulo"]);
-                $solicitud->setDescripcion($pro["descripcion"]);
+                $solicitud->setTitulo($pro['solicitud']["titulo"]);
+                $solicitud->setDescripcion($pro['solicitud']["descripcion"]);
                 //$solicitud->setMantis($pro["mantis"]);
                 $solicitud->setTipo($tipo);
                 $solicitud->setEstado($estado);
@@ -101,7 +101,7 @@ class SolicitudesController extends Controller
 
                 $em->flush();
 
-		$this->correoAction($solicitud->getId(), 'creada');
+                $this->correoAction($solicitud->getId(), 'creada');
 
                 return $this->redirect($this->generateUrl('solicitudes_datos')."/".$solicitud->getId());
 
@@ -124,18 +124,18 @@ class SolicitudesController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $solicitud = $em->getRepository('IncentivesSolicitudesBundle:Solicitud')->find($id);
-        $form = $this->createForm(new SolicitudType(), $solicitud);
+        $form = $this->createForm(SolicitudType::class, $solicitud);
 
         if ($request->isMethod('POST')) {
 
             $em = $this->getDoctrine()->getManager();
                     
-            $pro=($this->get('request')->request->get('cotizaciones'));
+            $pro = $request->request->all();
                 
-            $tipo = $em->getRepository('IncentivesSolicitudesBundle:SolicitudTipo')->find($pro['tipo']);
+            $tipo = $em->getRepository('IncentivesSolicitudesBundle:SolicitudTipo')->find($pro['cotizaciones']['tipo']);
             
             if(isset($pro["estado"])){
-                $estado = $em->getRepository('IncentivesSolicitudesBundle:SolicitudesEstado')->find($pro["estado"]);
+                $estado = $em->getRepository('IncentivesSolicitudesBundle:SolicitudesEstado')->find($pro['cotizaciones']["estado"]);
                 $solicitud->setEstado($estado);
             }
             
@@ -229,11 +229,11 @@ class SolicitudesController extends Controller
         $em = $this->getDoctrine()->getManager();
         $convocatoria = $em->getRepository('IncentivesOperacionesBundle:ConvocatoriasProveedores')->findAll();
 
-        $form = $this->createForm(new ConvocatoriasProveedoresType());
+        $form = $this->createForm(ConvocatoriasProveedoresType::class);
 
         if ($request->isMethod('POST')) {
 
-            $form->bind($request);
+            $form->handleRequest($request);
 
             if ($form->isValid()) {
 
@@ -241,9 +241,9 @@ class SolicitudesController extends Controller
                     ->getRepository('IncentivesOperacionesBundle:ConvocatoriasProveedores');
                 $convocatoria = $repositoryp->findOneBy(array('proveedor' => $id_prov, 'convocatorias' => $id));
 
-                $pro=($this->get('request')->request->get('convocatoriasproveedores'));
+                $pro = $request->request->all();
 
-                $convocatoria->setObservacion($pro["observacion"]);
+                $convocatoria->setObservacion($pro['convocatoriasproveedores']['observacion']);
 
                 $file = $form["archivo"]->getData();
                 
@@ -329,18 +329,18 @@ class SolicitudesController extends Controller
     {
         $asignacion = new SolicitudesAsignar();
 
-        $form = $this->createForm(new SolicitudesAsignarType(), $asignacion);
+        $form = $this->createForm(SolicitudesAsignarType::class, $asignacion);
 
         if ($request->isMethod('POST')) {
 
-            $form->bind($request);
+            $form->handleRequest($request);
 
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
-                    
-                $pro=($this->get('request')->request->get('responsable'));
                 
-                $usuario = $em->getRepository('IncentivesBaseBundle:Usuario')->find($pro['responsable']);
+                $pro = $request->request->all();
+                
+                $usuario = $em->getRepository('IncentivesBaseBundle:Usuario')->find($pro['responsable']['responsable']);
                 $solicitudEnt = $em->getRepository('IncentivesSolicitudesBundle:Solicitud')->find($solicitud);
                 $estado = $em->getRepository('IncentivesCatalogoBundle:Estados')->find(1);
 
@@ -368,11 +368,11 @@ class SolicitudesController extends Controller
     {
         $archivo= new SolicitudesArchivos();
 
-        $form = $this->createForm(new ArchivosType(), $archivo);
+        $form = $this->createForm(ArchivosType::class, $archivo);
 
         if ($request->isMethod('POST')) {
 
-            $form->bind($request);
+            $form->handleRequest($request);
 
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
@@ -419,11 +419,11 @@ class SolicitudesController extends Controller
     {
         $archivo= new SolicitudesArchivos();
 
-        $form = $this->createForm(new ArchivosType(), $archivo);
+        $form = $this->createForm(ArchivosType::class, $archivo);
 
         if ($request->isMethod('POST')) {
 
-            $form->bind($request);
+            $form->handleRequest($request);
 
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
@@ -470,11 +470,11 @@ class SolicitudesController extends Controller
     {
         $archivo= new SolicitudesArchivos();
 
-        $form = $this->createForm(new ArchivosType(), $archivo);
+        $form = $this->createForm(ArchivosType::class, $archivo);
 
         if ($request->isMethod('POST')) {
 
-            $form->bind($request);
+            $form->handleRequest($request);
 
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
@@ -643,19 +643,19 @@ class SolicitudesController extends Controller
     public function observacionesAction(Request $request, $id)
     {
         $observacion = new SolicitudesObservaciones();
-        $form = $this->createForm(new SolicitudesObservacionesType(), $observacion);
+        $form = $this->createForm(SolicitudesObservacionesType::class, $observacion);
 
         if ($request->isMethod('POST')) {
 
-            $form->bind($request);
+            $form->handleRequest($request);
 
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
-                $pro=($this->get('request')->request->get('observaciones'));
+                $pro = $request->request->all();
                 
                 $solicitudEnt = $em->getRepository('IncentivesSolicitudesBundle:Solicitud')->find($id);
                 $observacion->setSolicitud($solicitudEnt);
-                $observacion->setObservacion($pro['observacion']);
+                $observacion->setObservacion($pro['observacion']['observacion']);
 
                 $em->persist($observacion);
                 $em->flush();
@@ -680,13 +680,13 @@ class SolicitudesController extends Controller
             ->setAction($this->generateUrl('solicitudes_cargardespachos'))
             ->setMethod('POST')
             ->add('excel', 'file')
-            ->add('cargar', 'submit')
+            ->add('cargar', SubmitType::class)
             ->getForm();
             
         if ($request->isMethod('POST')) {
             
 
-            $form->bind($request);
+            $form->handleRequest($request);
 
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();

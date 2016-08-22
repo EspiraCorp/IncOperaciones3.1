@@ -7,33 +7,37 @@ namespace Incentives\BaseBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class UserType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('username', 'text', array('label' => 'Usuario'));
-        $builder->add('nombre', 'text', array('label' => 'Nombre'));
-        $builder->add('email', 'email');
-        $builder->add('grupos', 'entity', array(
+        $builder->add('username', TextType::class, array('label' => 'Usuario'));
+        $builder->add('nombre', TextType::class, array('label' => 'Nombre'));
+        $builder->add('email', EmailType::class);
+        $builder->add('grupos', EntityType::class, array(
             'class' => 'IncentivesBaseBundle:Grupo',
-            'property'=>'nombre',
+            'choice_label'=>'nombre',
             'label' => 'Grupo',
             'multiple'  => true,
-            'empty_value' => '--Seleccionar--'
+            //'empty_value' => '--Seleccionar--'
         ));
-        $builder->add('proveedor', 'entity', array(
+        $builder->add('proveedor', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:Proveedores',
-            'property'=>'nombre',
+            'choice_label'=>'nombre',
             'label' => 'Proveedor',
-            'empty_value' => '--Seleccionar--',
+            //'empty_value' => '--Seleccionar--',
             'required' => false
         ));
-        $builder->add('cliente', 'entity', array(
+        $builder->add('cliente', EntityType::class, array(
             'class' => 'IncentivesCatalogoBundle:Cliente',
-            'property'=>'nombre',
+            'choice_label'=>'nombre',
             'label' => 'Cliente',
-            'empty_value' => '--Seleccionar--',
+            //'empty_value' => '--Seleccionar--',
             'required' => false
         ));
         $builder->add('password', 'repeated', array(
@@ -44,7 +48,7 @@ class UserType extends AbstractType
         ));
 
         $builder->add('isActive');
-        $builder->add('Enviar', 'submit');
+        $builder->add('Enviar', SubmitType::class);
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

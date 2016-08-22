@@ -14,6 +14,8 @@ use Incentives\SolicitudesBundle\Form\Type\CotizacionesProductoCantidadType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+use Dompdf\Dompdf;
+
 class CotizacionesController extends Controller
 {
      /**
@@ -37,10 +39,10 @@ class CotizacionesController extends Controller
         $cotizacion = new Cotizacion();
         $estado = $em->getRepository('IncentivesSolicitudesBundle:CotizacionesEstado')->find('1');
 
-        $form = $this->createForm(new CotizacionType(), $cotizacion);
+        $form = $this->createForm(CotizacionType::class, $cotizacion);
                     
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
 
             if ($form->isValid()) {
                 
@@ -74,10 +76,10 @@ class CotizacionesController extends Controller
         $em = $this->getDoctrine()->getManager();
         
         $cotizacion = $em->getRepository('IncentivesSolicitudesBundle:Cotizacion')->find($id);
-        $form = $this->createForm(new CotizacionType(), $cotizacion);
+        $form = $this->createForm(CotizacionType::class, $cotizacion);
                     
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
 
             if ($form->isValid()) {
                 
@@ -102,7 +104,7 @@ class CotizacionesController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
 
             if ($form->isValid()) {
                 $ordenes = $em->getRepository('IncentivesOrdenesBundle:OrdenesCompra')->find($id);
@@ -135,7 +137,7 @@ class CotizacionesController extends Controller
                 $em->flush();
 
                 $form=null;
-                $form = $this->createForm(new OrdenesCompraCantidadType(), $orden);
+                $form = $this->createForm(OrdenesCompraCantidadType::class, $orden);
             }
         }  
 
@@ -160,16 +162,16 @@ class CotizacionesController extends Controller
         $em = $this->getDoctrine()->getManager();
         $cotizacionproducto = new CotizacionProducto();
 
-        $form = $this->createForm(new CotizacionProductoAgregarType(), $cotizacionproducto);
+        $form = $this->createForm(CotizacionProductoAgregarType::class, $cotizacionproducto);
                     
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
 
             if ($form->isValid()) {
                 // realiza alguna acción, tal como guardar la tarea en la base de datos
                 
-                $id=($this->get('request')->request->get('id'));
-                $pro=($this->get('request')->request->get('cotizacionproducto'));
+                $id=($request->request->get('id'));
+                $pro=($request->request->get('cotizacionproducto'));
                 
                 $cotizacion = $em->getRepository('IncentivesSolicitudesBundle:Cotizacion')->find($id);
                 $estado = $em->getRepository('IncentivesOrdenesBundle:OrdenesEstado')->find(1);
@@ -205,7 +207,7 @@ class CotizacionesController extends Controller
 
 
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
 
             if ($form->isValid()) {
                 $ordenes = $em->getRepository('IncentivesOrdenesBundle:OrdenesCompra')->find($id);
@@ -229,7 +231,7 @@ class CotizacionesController extends Controller
                 $em->flush();
                 
                 $form=null;
-                $form = $this->createForm(new OrdenesCompraCantidadType(), $orden);
+                $form = $this->createForm(OrdenesCompraCantidadType::class, $orden);
             }
             
         }  
@@ -255,10 +257,10 @@ class CotizacionesController extends Controller
 
         $cotizacion = $productos->getCotizacion()->getId();
 
-        $form = $this->createForm(new CotizacionesProductoCantidadType(), $productos);
+        $form = $this->createForm(CotizacionesProductoCantidadType::class, $productos);
                     
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
             $valores = $request->get('cotizacionesproducto');
 
             if ($form->isValid()) {
@@ -293,10 +295,10 @@ class CotizacionesController extends Controller
 
         $cotizacion = $productos->getCotizacion()->getId();
 
-        $form = $this->createForm(new CotizacionesProductoCantidadType(), $productos);
+        $form = $this->createForm(CotizacionesProductoCantidadType::class, $productos);
                     
         if ($request->isMethod('POST')) {
-           // $form->bind($request);
+           // $form->handleRequest($request);
                 $valores = $request->get('cotizacionesproducto');
                 
                 $estado = $em->getRepository('IncentivesOrdenesBundle:OrdenesEstado')->find(2);
@@ -415,12 +417,12 @@ class CotizacionesController extends Controller
         ));
 
 
-        require_once($this->get('kernel')->getRootDir().'/config/dompdf_config.inc.php');
+        
         $rootDir = dirname($this->container->getParameter('kernel.root_dir'));
         $Dir = '/web/Cotizaciones/';
         $uploadDir = $rootDir.$Dir;
 
-        $dompdf = new \DOMPDF();
+        $dompdf = new DOMPDF();
         $dompdf->load_html($html,'UTF-8');
         $dompdf->render();
         $pdf = $dompdf->output();

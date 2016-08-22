@@ -1,6 +1,6 @@
 
 <div class="box-content">
-<form action="{{ path('productocatalogo_nuevo') }}" method="POST" {{ form_enctype(form) }} class="form-horizontal">
+<form action="{{ path('productocatalogo_nuevo') }}" method="POST"  class="form-horizontal">
     {{ form_errors(form) }}
     <input type='hidden' name='producto' value={{ producto }}>
     <input type='hidden' name='catalogo' value={{ catalogo }}>

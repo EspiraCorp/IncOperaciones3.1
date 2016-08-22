@@ -1,0 +1,9 @@
+# src/Incentives/OrdenesBundle/Resources/config/validation.yml
+Incentives\OrdenesBundle\Entity\OrdenesCompra:
+    properties:
+        proveedor:
+            - NotBlank: ~
+        fechaVencimiento:
+            - NotBlank: ~
+        fechaCreacion:
+            - NotBlank: ~

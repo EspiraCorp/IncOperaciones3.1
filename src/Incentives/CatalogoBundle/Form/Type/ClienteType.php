@@ -5,6 +5,11 @@ namespace Incentives\CatalogoBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\TextTType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use PUGX\AutocompleterBundle\Form\Type\AutocompleteType;
 
 class ClienteType extends AbstractType
 {
@@ -21,14 +26,14 @@ class ClienteType extends AbstractType
             ->add('correo')
         ;
 
-        $builder->add('tipodocumento', 'entity', array(
+        $builder->add('tipodocumento', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:Tipodocumento',
-            'property' => 'nombre',
-            'empty_value' => 'Seleccione una opcion',
+            'choice_label' => 'nombre',
+            //'empty_value' => 'Seleccione una opcion',
         ));
-        $builder->add('numero_documento', 'text', array('required' => false)); 
+        $builder->add('numero_documento', TextType::class, array('required' => false)); 
 
-        $builder->add('programa', 'collection', array(
+        $builder->add('programa', CollectionType::class, array(
             'type'  => new ProgramaclienteType(),
             'label'          => 'Programa',
             'by_reference'   => false,
@@ -36,7 +41,7 @@ class ClienteType extends AbstractType
             'allow_add'      => true
         ));
 
-        $builder->add('Enviar', 'submit');
+        $builder->add('Enviar', SubmitType::class);
     }
     
     /**

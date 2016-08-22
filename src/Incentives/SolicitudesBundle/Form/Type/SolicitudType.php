@@ -8,33 +8,41 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use PUGX\AutocompleterBundle\Form\Type\AutocompleteType;
 
 class SolicitudType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('titulo');
-        $builder->add('descripcion','textarea');
+        $builder->add('descripcion',TextareaType::class);
         $builder->add('mantis');
         
-        $builder->add('tipo', 'entity', array(
+        $builder->add('tipo', EntityType::class, array(
             'class' => 'IncentivesSolicitudesBundle:SolicitudTipo',
-            'property' => 'nombre',
-            'empty_value' => 'Seleccione una opción',
+            'choice_label' => 'nombre',
+            //'empty_value' => 'Seleccione una opción',
             'label' => 'Tipo'
         ));
         
-        $builder->add('prioridad', 'entity', array(
+        $builder->add('prioridad', EntityType::class, array(
             'class' => 'IncentivesSolicitudesBundle:Prioridad',
-            'property' => 'nombre',
-            'empty_value' => 'Seleccione una opción',
+            'choice_label' => 'nombre',
+            //'empty_value' => 'Seleccione una opción',
             'label' => 'Prioridad'
         ));
         
-        $builder->add('programa', 'entity', array(
+        $builder->add('programa', EntityType::class, array(
             'class' => 'IncentivesCatalogoBundle:Programa',
-            'property' => 'nombreCC',
-            'empty_value' => 'Seleccione una opción',
+            'choice_label' => 'nombreCC',
+            //'empty_value' => 'Seleccione una opción',
             'label' => 'Centro Costos',
             'query_builder' => function (EntityRepository $er) {
                 return $er->createQueryBuilder('p')
@@ -42,17 +50,17 @@ class SolicitudType extends AbstractType
             },
         ));
         
-        $builder->add('estado', 'entity', array(
+        $builder->add('estado', EntityType::class, array(
             'class' => 'IncentivesSolicitudesBundle:SolicitudesEstado',
-            'property' => 'nombre',
-            'empty_value' => 'Seleccione una opción',
+            'choice_label' => 'nombre',
+            //'empty_value' => 'Seleccione una opción',
             'label' => 'Estado',
         ));
         
-        $builder->add('solicitante', 'entity', array(
+        $builder->add('solicitante', EntityType::class, array(
             'class' => 'IncentivesBaseBundle:Usuario',
-            'property' => 'nombre',
-            'empty_value' => 'Seleccione una opción',
+            'choice_label' => 'nombre',
+            //'empty_value' => 'Seleccione una opción',
             'label' => 'Solicitante',
             'query_builder' => function (EntityRepository $er) {
                 return $er->createQueryBuilder('u')
@@ -62,7 +70,7 @@ class SolicitudType extends AbstractType
             },
         ));
        
-        $builder->add('Enviar', 'submit');
+        $builder->add('Enviar', SubmitType::class);
 
     }
  

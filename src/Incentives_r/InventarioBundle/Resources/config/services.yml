@@ -1,0 +1,7 @@
+parameters:
+#    incentives_inventario.example.class: Incentives\InventarioBundle\Example
+
+services:
+#    incentives_inventario.example:
+#        class: %incentives_inventario.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

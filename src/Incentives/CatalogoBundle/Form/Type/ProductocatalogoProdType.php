@@ -5,6 +5,11 @@ namespace Incentives\CatalogoBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use PUGX\AutocompleterBundle\Form\Type\AutocompleteType;
 
 class ProductocatalogoProdType extends AbstractType
 {
@@ -15,7 +20,7 @@ class ProductocatalogoProdType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('activo', 'checkbox', array(
+            ->add('activo', CheckboxType::class, array(
             'required' => false
         ) )
             ->add('puntosTemporal')
@@ -24,10 +29,10 @@ class ProductocatalogoProdType extends AbstractType
             ->add('logisticaTemporal')
             ->add('agotado');
             
-        $builder->add('catalogos', 'entity', array(
+        $builder->add('catalogos', EntityType::class, array(
             'class' => 'IncentivesCatalogoBundle:Catalogos',
-            'property' => 'nombre',
-            'empty_value' => 'Seleccione una opcion',
+            'choice_label' => 'nombre',
+            //'empty_value' => 'Seleccione una opcion',
             'query_builder' => function(\Doctrine\ORM\EntityRepository $er) { 
                 return $er->createQueryBuilder('u')->orderBy('u.nombre', 'ASC')
 					->where('u.estado = :id')->setParameter('id', '1')
@@ -35,21 +40,21 @@ class ProductocatalogoProdType extends AbstractType
             },
         ));
         
-         $builder->add('categoria', 'entity', array(
+         $builder->add('categoria', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:Categoria',
-            'property' => 'nombre',
-            'empty_value' => 'Seleccione una opcion',
+            'choice_label' => 'nombre',
+            //'empty_value' => 'Seleccione una opcion',
             'label' => 'Subcategoria',
         ));
 
-        $builder->add('actualizacion', 'choice', array(
+        $builder->add('actualizacion', ChoiceType::class, array(
             'choices'   => array(
                 0   => 'Automatica',
                 1 => 'Manual',
             ),
             'expanded'  => true,
         ));
-        $builder->add('Enviar', 'submit');
+        $builder->add('Enviar', SubmitType::class);
         
     }
     

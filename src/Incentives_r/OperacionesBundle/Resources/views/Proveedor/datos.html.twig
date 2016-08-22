@@ -1,0 +1,275 @@
+{#% extends '::base.html.twig' %#}
+{% extends app.request.isXmlHttpRequest ? "MDWDemoBundle::layout_ajax.html.twig" : "::base.html.twig" %}
+{% block title %}Datos Proveedor{% endblock %}
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+<div class="box">
+    <div class="box-header well" data-original-title="">
+        Proveedores
+        {% if not is_granted('ROLE_PROV')  %}
+        <div class="box-icon">
+				<div class="box-icon">
+                    <a href="{{ path('proveedores') }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+                </div>
+    	</div>
+    	{% endif %}
+    </div>
+</div>
+    <div class="box span6">
+	    <div class="box-content">
+	    	<div class="box-header well">
+				<h2>
+				{% if (is_granted('ROLE_ADMIN') or is_granted('ROLE_DIR') or is_granted('ROLE_ASIS') or is_granted('ROLE_ASISCOMP')) or is_granted('ROLE_CAT') %}
+					<a href="{{ path('proveedores_editar',  {"id": proveedor.id}) }}" title="Editar proveedor">
+						<button class="btn btn-primary">
+							<i class="icon-edit icon-white"></i>
+						</button>
+					</a>
+				{% endif %}
+				</i>Datos Proveedor</h2>
+				{% if (is_granted('ROLE_ADMIN') or is_granted('ROLE_DIR') or is_granted('ROLE_ASIS') or is_granted('ROLE_ASISCOMP') or is_granted('ROLE_CAT'))  %}
+					<div class="box-icon">
+						<a href="{{ path('productos_proveedor',  {"id": proveedor.id}) }}"  class="btn btn-info" title="Productos">
+		            		<i class="icon-barcode icon-white"></i>
+						</a>
+						<a href="{{ path('proveedores_importar_proveedor',  {"id": proveedor.id}) }}"  class="btn btn-info" title="Asignar productos a proveedor">
+		            		<i class="icon-list-alt icon-white"></i>
+						</a>
+						<a href="{{ path('proveedores_correo_ingreso',  {"id": proveedor.id}) }}"  class="btn btn-info" title="Enviar correo de ingreso">
+					           <i class="icon-envelope icon-white"></i>
+						</a>
+					</div>
+				{% endif %}
+			</div>
+
+				<table class="table table-bordered table-striped">
+					<tbody>
+						<tr><td>Nombre</td><td>{{ proveedor.nombre }}</td></tr>
+						<tr><td>Tipo de Documento</td><td>{{ proveedor.tipodocumento.nombre }}</td></tr>
+						<tr><td>Documento</td><td>{{ proveedor.numerodocumento }}</td></tr>
+						<tr><td>Correo</td><td>{{ proveedor.correo }}</td></tr>
+						<tr><td>Categoria</td><td>{% if proveedor.categoria is null %}{% else %}{{ proveedor.categoria.nombre }}{% endif %}</td></tr>
+						<tr><td>Clasificacion</td><td>{% if proveedor.proveedorclasificacion is null %}{% else %}{{ proveedor.proveedorclasificacion.nombre }}{% endif %}</td></tr>
+                        <tr><td>Area</td><td>{% if proveedor.proveedorarea is null %}{% else %}{{ proveedor.proveedorarea.nombre }}{% endif %}</td></tr>
+                        <tr><td>Tipo</td><td>{% if proveedor.proveedortipo is null %}{% else %}{{ proveedor.proveedortipo.nombre }}{% endif %}</td></tr>
+						<tr><td>Registro Camara</td><td>{{ proveedor.registrocamara }}</td></tr>
+						<tr><td>Sede Principal</td><td>{{ proveedor.sedeprincipal }}</td></tr>
+						<tr><td>Dirección</td><td>{{ proveedor.direccion }}</td></tr>
+						<tr><td>Teléfono</td><td>{{ proveedor.telefono }}</td></tr>
+						<tr><td>Línea de Atención</td><td>{{ proveedor.lineaAtencion }}</td></tr>
+						<tr><td>Tiempo de Entrega</td><td>{{ proveedor.tiempoEntrega }} días</td></tr>
+						<tr><td>Sedes</td><td>{{ proveedor.sedes }}</td></tr>
+						<tr><td>Datos Sedes</td><td>{{ proveedor.datossedes }}</td></tr>
+						<tr><td>Página Web</td><td>{{ proveedor.pagina }}</td></tr>
+						<tr><td>Fecha de Creación</td><td>{{ proveedor.fecha | date("Y-m-d") }}</td></tr>
+						<tr><td>Actividades Económicas</td><td>{% for actividad in aeconomica %}{{actividad.codigo}} - {% endfor %}</td></tr>
+					</tbody>
+				</table>
+		</div>
+	</div>
+
+	<div class="box span5">
+		<div class="box-content">
+		    <div class="box-header well">
+				<h2>
+					<a href="{{ path('proveedores_documentos_carga',  {"id": proveedor.id}) }}" title="Agregar Documento">
+						<button class="btn btn-small btn-success">
+							<i class="icon-plus icon-white"></i>
+						</button>
+					</a>
+					Documentos
+				</h2>
+			</div>
+			<table class="table table-bordered table-striped">
+				<thead>
+					<tr>
+						<th>Nombre</th>
+						<th>Fecha</th>
+						<th>Estado</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for archivos in archivo %}		
+							<tr>
+								<td><a href="{{asset(archivos.ruta | slice (5))}}{{archivos.archivo}}" target="_blank">{{archivos.archivo}}</a></td>
+								<td>{{archivos.fecha | date("Y-m-d")}}</td>
+								<td>{% if (archivos.estado.id!=1) %}<a class="btn btn-danger 1" onClick="confirmar('{{ url("proveedores_archivo_estado", {"id": archivos.id}) }}')" href="#">Inactivo</a>{% else %}<a class="btn btn-success 1" onClick="confirmar('{{ url("proveedores_archivo_estado", {"id": archivos.id}) }}')" href="#">Activo</a>{% endif %}</td>
+							</tr>			
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+	
+	<div class="box span5">
+		<div class="box-content">
+		    <div class="box-header well">
+				<h2>
+					<a href="{{ path('proveedores_catalogo_carga',  {"id": proveedor.id}) }}" title="Cargar Catalogo">
+						<button class="btn btn-small btn-success">
+							<i class="icon-plus icon-white"></i>
+						</button>
+					</a>
+				Catálogos</h2>
+			</div>
+			<table class="table table-bordered table-striped">
+				<thead>
+					<tr>
+						<th>Nombre</th>
+						<th>Fecha</th>
+						<th>Estado</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for catalogos in catalogo %}		
+						<tr>
+							<td><a href="{{asset(catalogos.ruta | slice (5))}}{{catalogos.archivo}}" target='_blank'>{{catalogos.archivo}}</a></td>
+							<td>{{catalogos.fecha | date("Y-m-d") }}</td>
+							<td>{% if (catalogos.estado.id!=1) %}<a class="btn btn-danger 1" onClick="confirmar('{{ url("proveedores_catalogo_estado", {"id": catalogos.id}) }}')" href="#">Inactivo</a>{% else %}<a class="btn btn-success 1" onClick="confirmar('{{ url("proveedores_catalogo_estado", {"id": catalogos.id}) }}')" href="#">Activo</a>{% endif %}</td>
+						</tr>			
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+	
+	<div class="box span5">
+		<div class="box-content">
+		    <div class="box-header well">
+				<h2>
+					{% if (is_granted('ROLE_ADMIN') or is_granted('ROLE_DIR') or is_granted('ROLE_ASIS') or is_granted('ROLE_ASISCOMP'))  %}
+						<a href="{{ path('proveedores_calificacion',  {"id": proveedor.id}) }}" title="Calificar Proveedor">
+							<button class="btn btn-small btn-success">
+								<i class="icon-plus icon-white"></i>
+							</button>
+						</a>
+					{% endif %}
+				Calificación</h2>
+			</div>
+			<table class="table table-bordered table-striped">
+				<thead>
+					<tr>
+						<th>Periodo</th>
+						<th>N°</th>
+						<th>Calificación</th>
+						<th>Plan Acción</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for calif in calificacion %}		
+						<tr>
+							<td>{{calif.periodo }}</td>
+							<td>{{calif.numero }}</td>
+							<td><a href="{{ path("calificacion_datos", {"id": calif.id}) }}">{{calif.calificacion}}</a></td>
+							<td>{% if calif.planAccion is defined and calif.planAccion!="" %}<a href="{{ calif.planAccion | slice(72) }}">Descargar</a>{% endif %}</td>
+						</tr>			
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<div class="box span12">
+		<div class="box-content">
+		    <div class="box-header well">
+				<h2>
+					<a href="{{ path('contacto_nuevo',  {"id": proveedor.id}) }}" title="Agregar Contacto">
+						<button class="btn btn-small btn-success">
+							<i class="icon-plus icon-white"></i>
+						</button>
+					</a>	
+					Contactos
+				</h2>
+			</div>
+			<table class="table table-bordered table-striped">
+					<thead>
+						<tr>
+							<th>Id</th>
+							<th>Nombre</th>
+							<th>Correo</th>
+							<th>Teléfono</th>
+							<th>Cargo</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for contactos in contacto %}
+						<tr>
+							<td>{{contactos.id}}</td>
+							<td>{{contactos.nombres}}</td>
+							<td>{{contactos.correo}}</td>
+							<td>{{contactos.telefono}}</td>
+							<td>{{contactos.cargo}}</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+		</div>
+	</div>
+
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script>
+
+	function confirmar(ruta)
+	{
+	  if (confirm("Deseo eliminar el documento")==true){
+	  	self.location=ruta;
+	  }else{
+	  	alert("OK");
+	  }
+	  
+	}
+
+        var x;
+		x=$(document);
+		x.ready(inicializarEventos);
+
+		function inicializarEventos()
+		{
+		 var x;
+		 x=$("div.estado a");
+		 x.each(resaltarParrafos);
+		}
+
+		// function resaltarParrafos()
+		// {
+		//  var x=$(this);
+		//  var parrafo=(x.attr('id'));
+		//  parrafo=parseInt(parrafo);
+		//  alert(parrafo);
+		//  $("#"+parrafo).click(function(evento){
+		//                evento.preventDefault();
+		//                $("#destino").load("{{ url('proveedores_estado', {'id':"+parrafo+"}) }}"),	
+		// 					function() {
+		// 						alert( "Actualizacion realizada." );
+		// 					} );
+		//        });
+		// }
+
+        // x=$("div.estado a");
+        // x.each(mostrar);
+
+        // function mostrar()
+        // {
+        // 	var x=$(this);
+        // 	alert (x.attr('id'));
+        // }
+
+  //       function resaltarParrafos(){
+  //       	var x=$(this);
+		// 	var parrafo=(x.attr('id'));
+		// 	alert(parrafo);
+		// 	$('div.estado').click(function(evento){
+		// 		evento.preventDefault();
+		// 		$("#destino").load("{{ url('proveedores_estado', {'id':"+parrafo+"}) }}",	
+		// 			function() {
+		// 				alert( "Actualizacion realizada." );
+		// 			} );
+		// 	});
+		// })
+	</script>
+{% endblock %}

@@ -9,7 +9,7 @@
         </div>
     </div>
     <div class="box-content">
-		<form action="{{ path('convocatorias_proveedor', {"id": id}) }}" method="POST" {{ form_enctype(form) }}>
+		<form action="{{ path('convocatorias_proveedor', {"id": id}) }}" method="POST" >
 			<input type='hidden' name='id' value={{ id }}>
 				{{ form_errors(form) }}			    
 

@@ -5,6 +5,9 @@ namespace Incentives\InventarioBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class CierreType extends AbstractType
 {
@@ -15,23 +18,23 @@ class CierreType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('cierreEstado', 'entity', array(
-                'empty_value' => 'Select',
+        $builder->add('cierreEstado', EntityType::class, array(
+                //'empty_value' => 'Select',
                 'label' => 'Estado Cierre', 
                 'class' => 'IncentivesInventarioBundle:CierreEstado', 
-                'property' => 'nombre',
+                'choice_label' => 'nombre',
             ));
         $builder->add('observacion');
-        $builder->add('fechaEntrega','date', array(
+        $builder->add('fechaEntrega',DateType::class, array(
             'widget' => 'single_text',
         ));
         
-        $builder->add('devolucionTipo', 'entity', array(
+        $builder->add('devolucionTipo', EntityType::class, array(
             'mapped' => false,
             'class' => 'IncentivesGarantiasBundle:NovedadesDevolucionTipo',
         ));
 
-        $builder->add('Enviar', 'submit');
+        $builder->add('Enviar', SubmitType::class);
     }
     
     /**

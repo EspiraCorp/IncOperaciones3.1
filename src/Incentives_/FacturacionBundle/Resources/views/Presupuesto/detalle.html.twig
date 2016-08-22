@@ -1,0 +1,86 @@
+{% extends app.request.isXmlHttpRequest ? "MDWDemoBundle::layout_ajax.html.twig" : "::base.html.twig" %}
+{% block title %}Presupuesto Programa{% endblock %}
+{% block cuerpo %}
+
+<div class="row-fluid sortable ui-sortable">
+	<div class="box">
+	    <div class="box-header well" data-original-title="">
+	        Presupuesto Programa
+	        <div class="box-icon">
+					<div class="box-icon">
+	                    <a href="{{ path('presupuesto_listado') }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+	                </div>
+	    	</div>
+	    </div>
+	</div>
+
+	 <div class="box span10">
+	    <div class="box-content">
+	    	<div class="box-header well">
+				<h2>Datos Programa</h2>
+			</div>
+
+				<table class="table table-bordered table-striped">
+					<tbody>
+						<tr><td>Nombre</td><td>{{ programa.nombre }}</td>
+							<td>Cliente</td><td>{{ programa.cliente.nombre}}</td></tr>
+						<tr><td>Descripcion</td><td>{{ programa.descripcion }}</td>
+							<td>Fecha inicio</td><td>{{ programa.fechainicio | date("Y-m-d") }}</td></tr>
+						<tr><td>Fecha fin</td><td>{{ programa.fechafin | date("Y-m-d") }}</td>
+							<td>Iva</td><td>{{ programa.iva }}</td></tr>
+						<tr><td>Logistica</td><td>{{ programa.logistica }}</td>
+							<td>Días de entrega</td><td>{{ programa.diasentrega }}</td></tr>
+					</tbody>
+				</table>
+		</div>
+	</div>
+
+	<div class="box span12">
+	    <div class="box-content">
+			<table class="table table-bordered table-striped">
+				<thead>
+					<tr>
+						<th>Area</th>
+						<th>Descripcion</th>
+						<th>Presupuesto</th>
+						<th>Ejecutado</th>
+						<th>%</th>
+						<th>Editar</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for area in areas %}		
+					<tr>
+						<td>{{ area.nombre }}</td>
+						<td>{{ presupuestos[area.id]['descripcion'] }}</td>
+						<td>{{ presupuestos[area.id]['valor'] }}</td>
+						<td>{{ presupuestos[area.id]['ejecutado'] }}</td>
+						<td>{{ presupuestos[area.id]['porc'] }}</td>
+						<td>
+							<a href="{{ path('presupuesto_editar',  {"programa": programa.id, "area": area.id}) }}">
+								<button class="btn btn-primary">
+									<i class="icon-edit icon-white"></i>
+								</button>
+							</a>
+						</td>
+					</tr>			
+					{% endfor %}
+					<tr>
+						<td>Total</td>
+						<td></td>
+						<td>{{ presupuestos['total']['valor'] }}</td>
+						<td>{{ presupuestos['total']['ejecutado'] }}</td>
+						<td>{{ presupuestos['total']['porc'] }}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>	
+
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	
+{% endblock %}

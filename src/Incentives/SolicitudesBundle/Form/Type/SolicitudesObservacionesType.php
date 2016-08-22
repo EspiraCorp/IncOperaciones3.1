@@ -8,13 +8,15 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Doctrine\ORM\EntityRepository;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class SolicitudesObservacionesType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('observacion','textarea');
-        $builder->add('Enviar', 'submit');
+        $builder->add('observacion',TextareaType::class);
+        $builder->add('Enviar', SubmitType::class);
     }
  
     public function setDefaultOptions(OptionsResolverInterface $resolver)

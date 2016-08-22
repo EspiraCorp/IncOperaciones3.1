@@ -1,0 +1,30 @@
+
+<form action="{{ path('ordenes_tracking') }}/41" method="POST" {{ form_enctype(form) }} class="form-horizontal">
+    {{ form_errors(form) }}
+    <input type='hidden' name='id' value={{ id }}>
+    <fieldset>
+		<table>
+			<tr>
+				<td> 
+			        Orden Amazon {{ form_widget(form.ordenAmazon, { 'attr': {'class': 'input-xlarge focused', 'style': 'width: 100px !important'} }) }}
+				</td>
+				<td> 
+			        Tracking {{ form_widget(form.tracking, { 'attr': {'class': 'input-xlarge focused', 'style': 'width: 100px !important'} }) }}
+				</td>
+				<td> 
+			        Tarjeta {{ form_widget(form.tarjeta, { 'attr': {'class': 'input-xlarge focused', 'style': 'width: 100px !important'} }) }}
+				</td>
+				<td> 
+			        Precio {{ form_widget(form.precio, { 'attr': {'class': 'input-xlarge focused', 'style': 'width: 100px !important'} }) }}
+				</td>
+				<td> 
+			        Cantidad {{ form_widget(form.cantidad, { 'attr': {'class': 'input-xlarge focused', 'style': 'width: 100px !important'} }) }}
+				</td>
+				<td> 
+				    {{ form_widget(form.Enviar, { 'attr': {'class': 'btn btn-primary'} }) }}
+				</td>
+			</tr>
+		</table>
+</fieldset>
+{{ form_widget(form._token) }}
+</form>

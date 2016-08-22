@@ -5,6 +5,8 @@ namespace Incentives\RedencionesBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class GuiaEnvioType extends AbstractType
 {
@@ -19,19 +21,19 @@ class GuiaEnvioType extends AbstractType
             ->add('valor')
         ;
 
-        $builder->add('ordenProducto', 'entity', array(
+        $builder->add('ordenProducto', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:OrdenesProducto',
-            'property' => 'id',
-            'empty_value' => 'Seleccione una opcion',
+            'choice_label' => 'id',
+            //'empty_value' => 'Seleccione una opcion',
         ));
 
-        $builder->add('courier', 'entity', array(
+        $builder->add('courier', EntityType::class, array(
             'class' => 'IncentivesInventarioBundle:Courier',
-            'property' => 'nombre',
-            'empty_value' => 'Seleccione una opcion',
+            'choice_label' => 'nombre',
+            //'empty_value' => 'Seleccione una opcion',
         ));
 
-        $builder->add('Enviar', 'submit');
+        $builder->add('Enviar', SubmitType::class);
     }
     
     /**

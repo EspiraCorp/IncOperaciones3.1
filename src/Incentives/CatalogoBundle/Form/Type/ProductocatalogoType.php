@@ -5,6 +5,10 @@ namespace Incentives\CatalogoBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\CoiceType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class ProductocatalogoType extends AbstractType
 {
@@ -15,7 +19,7 @@ class ProductocatalogoType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('activo', 'checkbox', array(
+            ->add('activo', CheckboxType::class, array(
             'required' => false
         ) )
             ->add('puntosTemporal')
@@ -24,14 +28,14 @@ class ProductocatalogoType extends AbstractType
             ->add('logisticaTemporal')
             ->add('agotado');
 
-        $builder->add('actualizacion', 'choice', array(
+        $builder->add('actualizacion', ChoiceType::class, array(
             'choices'   => array(
                 0   => 'Automatica',
                 1 => 'Manual',
             ),
             'expanded'  => true,
         ));
-        $builder->add('Enviar', 'submit');
+        $builder->add('Enviar', SubmitType::class);
         
     }
     

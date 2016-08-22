@@ -31,7 +31,7 @@ class RedencionesController extends Controller
     	$mensaje = "";
         
     	// obtener el objeto de la petición
-		$request = $this->getRequest();
+		
 
 		// obtiene el valor de un parámetro $_GET
 		if(null !== $request->query->get('parametros')) {
@@ -276,7 +276,7 @@ class RedencionesController extends Controller
     {
         
     	// obtener el objeto de la petición
-		$request = $this->getRequest();
+		
 
 		// obtiene el valor de un parámetro $_GET
 		if(null !== $request->query->get('parametros')) {
@@ -472,7 +472,7 @@ class RedencionesController extends Controller
     {
         
 		// obtener el objeto de la petición
-		$request = $this->getRequest();
+		
 
 		// obtiene el valor de un parámetro $_GET
 		if(null !== $request->query->get('parametros')) {
@@ -557,7 +557,7 @@ class RedencionesController extends Controller
     {
         
 		// obtener el objeto de la petición
-		$request = $this->getRequest();
+		
 
 		// obtiene el valor de un parámetro $_GET
 		if(null !== $request->query->get('parametros')) {
@@ -689,7 +689,7 @@ class RedencionesController extends Controller
     {
         
 		// obtener el objeto de la petición
-		$request = $this->getRequest();
+		
 
 		// obtiene el valor de un parámetro $_GET
 		if(null !== $request->query->get('parametros')) {
@@ -812,7 +812,7 @@ class RedencionesController extends Controller
     {
         
 		// obtener el objeto de la petición
-		$request = $this->getRequest();
+		
 
 		// obtiene el valor de un parámetro $_GET
 		if(null !== $request->query->get('parametros')) {
@@ -909,7 +909,7 @@ class RedencionesController extends Controller
     {
         
 		// obtener el objeto de la petición
-		$request = $this->getRequest();
+		
 
 		// obtiene el valor de un parámetro $_GET
 		if(null !== $request->query->get('parametros')) {

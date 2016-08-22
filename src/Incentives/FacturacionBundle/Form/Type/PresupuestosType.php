@@ -5,6 +5,7 @@ namespace Incentives\FacturacionBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class PresupuestosType extends AbstractType
 {
@@ -20,14 +21,14 @@ class PresupuestosType extends AbstractType
             ->add('descripcion')
         ;
 
-        /*$builder->add('tipo', 'entity', array(
+        /*$builder->add('tipo', EntityType::class, array(
             'class' => 'IncentivesFacturacionBundle:Tipocostos',
-            'property' => 'nombre',
-            'empty_value' => 'Seleccione una opcion',
+            'choice_label' => 'nombre',
+            //'empty_value' => 'Seleccione una opcion',
             'label' => 'Tipo'
         ));*/
 
-        $builder->add('Enviar', 'submit');
+        $builder->add('Enviar', SubmitType::class);
     }
     
     /**

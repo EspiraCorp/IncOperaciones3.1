@@ -5,6 +5,10 @@ namespace Incentives\FacturacionBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use PUGX\AutocompleterBundle\Form\Type\AutocompleteType;
 
 class FacturaGenerarType extends AbstractType
 {
@@ -15,20 +19,20 @@ class FacturaGenerarType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('fecha', 'date', array(
+            ->add('fecha', DateType::class, array(
             'input'  => 'datetime',
             'widget' => 'single_text',
         ));
 
-        $builder->add('periodo', 'entity', array(
+        $builder->add('periodo', EntityType::class, array(
             'class' => 'IncentivesFacturacionBundle:Periodos',
-            'property' => 'periodo',
-            'empty_value' => 'Seleccione una opcion',
+            'choice_label' => 'periodo',
+            //'empty_value' => 'Seleccione una opcion',
             'label' => 'Periodo'
         ));
 
 
-        $builder->add('Enviar', 'submit');
+        $builder->add('Enviar', SubmitType::class);
     }
     
     /**

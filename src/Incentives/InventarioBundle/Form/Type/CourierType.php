@@ -5,6 +5,8 @@ namespace Incentives\InventarioBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class CourierType extends AbstractType
 {
@@ -21,13 +23,13 @@ class CourierType extends AbstractType
             ->add('direccion')
             ->add('correo');
 
-        $builder->add('tipodocumento', 'entity', array(
+        $builder->add('tipodocumento', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:Tipodocumento',
-            'property' => 'nombre',
-            'empty_value' => 'Seleccione una opcion',
+            'choice_label' => 'nombre',
+            //'empty_value' => 'Seleccione una opcion',
         ));
 
-        $builder->add('Enviar', 'submit');
+        $builder->add('Enviar', SubmitType::class);
     }
     
     /**

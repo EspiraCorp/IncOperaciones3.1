@@ -5,6 +5,8 @@ namespace Incentives\RedencionesBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class JustificacionEnvioType extends AbstractType
 {
@@ -16,17 +18,17 @@ class JustificacionEnvioType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
 
-        $builder->add('justificacion', 'entity', array(
-                'empty_value' => 'Select',
+        $builder->add('justificacion', EntityType::class, array(
+                //'empty_value' => 'Select',
                 'label' => 'Justificacion', 
                 'class' => 'IncentivesRedencionesBundle:Justificacion', 
-                'property' => 'nombre', 
+                'choice_label' => 'nombre', 
             ))
            ;
            
         $builder->add('observacionJustificacion');
 
-        $builder->add('Enviar', 'submit');
+        $builder->add('Enviar', SubmitType::class);
     }
     
     /**

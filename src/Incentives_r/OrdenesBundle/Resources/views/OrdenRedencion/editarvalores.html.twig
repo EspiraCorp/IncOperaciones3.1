@@ -1,0 +1,223 @@
+{% extends app.request.isXmlHttpRequest ? "MDWDemoBundle::layout_ajax.html.twig" : "::base.html.twig" %}
+{% block title %}Datos Orden{% endblock %}
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+<div class="box">
+    <div class="box-header well" data-original-title="">
+        Orden	
+        <div class="box-icon">
+				<div class="box-icon">
+                    <a href="{{ path('ordenes_datos',  {"id": ordenes.id}) }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+                </div>
+    	</div>
+    </div>
+</div>
+    <div class="box span12">
+	    <div class="box-content">
+	    	
+	    	<div class="box-header well">
+				<h2>
+				<a href="{{ path('ordenes_editar',  {"id": ordenes.id}) }}">
+					{% if (ordenes.ordenesEstado.nombre =='Abierta') %}
+						<button class="btn btn-primary">
+							<i class="icon-edit icon-white"></i>
+						</button>
+					{% endif %}
+				</a>
+				</i>Datos Orden</h2>
+				
+			</div>
+			
+
+				<table class="table table-bordered table-striped">
+					<tbody>
+						<tr><td>Consecutivo</td><td>{{ ordenes.consecutivo }}</td></tr>
+						<tr><td>Proveedor</td><td>{{ ordenes.proveedor.nombre }}</td></tr>
+						<tr><td>Fecha de solicitud</td><td>{{ ordenes.fechaCreacion | date("Y-m-d") }}</td></tr>
+						<tr><td>Fecha de entrega</td><td>{{ ordenes.fechaVencimiento | date("Y-m-d")  }}</td></tr>
+						<tr><td>Cancelado</td>
+							{% if ordenes.cancelado==true %}
+								<td>Si</td>
+							{% else %}
+								<td>No</td>
+							{% endif %}
+						</tr>
+						<tr><td>Estado</td><td>{{ ordenes.ordenesEstado.nombre }}
+							
+							</td>
+						</tr>
+					</tbody>
+				</table>
+		</div>
+	</div>
+
+	
+
+	<div class="box span12">
+		<div class="box-content">
+			
+		    <div class="box-header well">
+				<h2>
+					<a href="{{ path('ordenes_agregarproducto',  {"id": ordenes.id}) }}">
+					{% if (ordenes.ordenesEstado.nombre =='Abierta') %}
+						<button class="btn btn-small btn-success">
+							<i class="icon-plus icon-white"></i>
+						</button>
+					{% endif %}
+				</a>
+					Productos
+				</h2>
+			</div>			
+
+			<form action="{{ path("ordenredencion_valores", {"id": ordenes.id}) }}" method="POST" {{ form_enctype(form) }} class="form-horizontal" novalidate>
+			    <div class="ordenesProducto" data-prototype="{{ form_widget(form.ordenesProducto.vars.prototype)|e }}">
+			    </div>
+			    {{ form_errors(form) }}
+				{{ form_widget(form._token) }}
+			</form>
+
+
+			{% if productos | length!=0 %}
+			<table class="table table-bordered table-striped">
+				<thead>
+					<tr>
+						<th>Referencia</th>
+						<th>Id</th>
+						<th>Codigo de Barras</th>
+						<th>Codigo Incentives</th>
+						<th>Cantidad</th>
+						<th>Cantidad Recibida</th>
+						<th>Valor Unitario</th>
+						<th>Descuento</th>
+						<th>Valor Total</th>
+						<th></th>
+					</tr>
+				</thead>
+				{% set total=0 %}
+				<tbody>
+					{% set j=0 %}
+					{% for producto in productos %}	
+					<tr>
+						{% set i=0 %}
+								<td>{{ producto.producto.referencia }}</td>
+								<td>{{ producto.producto.id }}</td>
+								<td>{{ producto.producto.codEAN  }}</td>	
+								<td>{{ producto.producto.codInc  }}</td>		
+								<td>{{ producto.cantidad  }}</td>
+								<td>{{ producto.cantidadrecibida  }}</td>
+								<td>$ {{ producto.valorunidad|number_format(2, ',', '.') }}</td>
+								<td>$ {{ producto.descuento|number_format(2, ',', '.') }}</td>
+								<td>$ {{ (producto.valortotal - producto.descuento )|number_format(2, ',', '.') }}</td>
+								
+								{% set total= total + producto.valortotal - producto.descuento %}
+								
+								<td colspan="2">{{ render(controller('IncentivesOrdenesBundle:OrdenRedencion:valores', { "id": producto.id})) }}</td>
+								{% set i=i+1 %}
+							<td><a class="btn btn-danger" id="ordenproducto_{{ producto.id }}" href="{{ path("ordenredencion_eliminar", {"id": producto.id}) }}">Eliminar</a></td>
+	
+						</tr>	
+						
+						{% if (ordenes.ordenestipo.id == 2) %}
+						<tr id="detalle_{{ j }}">
+							<td colspan="1"></td>
+							<td colspan="11">
+			                    <div>{{ render(controller('IncentivesOrdenesBundle:Ordenes:editarProductoOrden', { 'productoOrden': producto.id })) }}</div>
+			                </td>
+			            </tr>
+		            {% endif %}
+					{% endfor %}
+				</tbody>
+			</table>
+			{% endif %}
+		</div>
+	</div>
+
+
+
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script>
+
+
+	// Get the div that holds the collection of addresses
+        var collectionHolder = $('div.ordenesProducto');
+
+        var Holder = $('button.btn-small');
+
+        // setup an "add a address" link
+        //var $newLinkLi = $('<button class="btn btn-small btn-success"><a href="#"><i class="icon-plus icon-white"></i></a></button>');
+
+        $(function(){
+
+            // add the "add a address" anchor and li to the addresses div
+            Holder.parent().append($newLinkLi);
+
+            // count the current form inputs we have (e.g. 2), use that as the new
+            // index when inserting a new item (e.g. 2)
+            collectionHolder.data('index', collectionHolder.find(':input').length);
+
+            $newLinkLi.on('click', function(e) {
+                // prevent the link from creating a "#" on the URL
+                e.preventDefault();
+
+                // add a new address form (see next code block)
+                addTagForm(collectionHolder);
+            });
+
+        });
+
+
+        function addTagForm(collectionHolder) {
+            // Get the data-prototype explained earlier
+            var titulo=$('<div class="box-header well" data-original-title="">Agregar producto</div>;');
+            var prototype = collectionHolder.data('prototype');
+
+            // get the new index
+            var index = collectionHolder.data('index');
+
+            // Replace '__name__' in the prototype's HTML to
+            // instead be a number based on how many items we have
+            var newForm = prototype.replace(/__name__/g, index);
+
+            // increase the index with one for the next item
+            collectionHolder.data('index', index + 1);
+
+            // Display the form in the page in an li, before the "Add a address" link li
+            var $newFormLi = $('<div class="box span4" id="ordenesProducto'+ index +'"><div class="box-header well" data-original-title="">Agregar Producto<div class="box-icon"><a class="btn btn-closer btn-round"  id="closeordenesProducto'+ index +'" href="#"><i class="icon-remove"></i></a></div></div></div>').append(newForm);
+            collectionHolder.append($newFormLi);
+
+            var $Closer = $('#closeordenesProducto'+ index);
+
+             $Closer.on('click', function(e) {
+                // prevent the link from creating a "#" on the URL
+                e.preventDefault();
+
+                $( "div" ).remove( "#ordenesProducto"+ index );
+            });
+        }
+
+                var x;
+		x=$(document);
+		x.ready(inicializarEventos);
+
+		function inicializarEventos()
+		{
+		 var x;
+		 x=$("div.estado a");
+		 x.each(resaltarParrafos);
+		}
+
+	function confirmar(ruta)
+	{
+	  if (confirm("Cambiar estado")==true){
+	  	self.location=ruta;
+	  }else{
+	  	alert("OK");
+	  }
+	  
+	}
+
+	</script>
+{% endblock %}

@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Operaciones Inc logistica </title>
+<link href="{{ asset('css/generales.css') }}" type="text/css" rel="stylesheet" />
+</head>
+
+<body>
+	<section>
+     <div id="error">
+                {% for flashMessage in app.session.flashbag.get('notice') %}
+                    {{ flashMessage }}
+                {% endfor %}
+                
+                {% for flashMessage in app.session.flashbag.get('warning') %}
+                    {{ flashMessage }}       
+            {% endfor %}
+      {% if error %}
+          <div>{% if error.message is not null %}Verifique su usuario y contraseña{% endif %}</div>
+        {% endif %}
+      </div>
+    	<form id="login" action="{{ path('login_check') }}" method="post">
+          Usuario<br>
+          <input type="text" size="50" required class="cuadro" nid="username" name="_username" value="{{ last_username }}" ><br><br>
+          Contraseña<br>
+          <input id="password" name="_password" type="password" size="50" class="cuadro"><br><br>
+          <input type="submit" value="Ingresar" class="botoningresar">
+      </form>
+      <div id="restablecer"><a href="{{ path('recordar_password') }}" class="olvidemicontrasena">Olvidé mi contraseña</a>
+      </div>
+    </section>
+    <footer> Todos los derechos reservados Incgroup 2015.</footer>
+</body>
+</html>

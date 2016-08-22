@@ -1,0 +1,164 @@
+<style>
+body {
+	font: 10pt Verdana;
+}
+.marco {
+  border-width:1px;
+  border-style:solid;
+  border-color:#000000;
+  padding:10px 50px;
+}
+.marcoinverso {
+	background-color:#000;
+	padding:10px 50px;
+	color:#fff;
+}
+pre {
+	font: 9pt Verdana;
+  text-align:center;
+}
+.derecha {
+  text-align:right;
+}
+.tabla1{
+	margin: 10px;
+	width:100%;
+	padding: .5em;
+}
+.tabla2{
+	border-collapse: collapse;
+	width:100%;
+	border: 1px solid #000;
+}
+.tabla2 td{
+	font: 8pt Verdana;
+  text-align:center;
+  border: 1px solid #000;
+}
+.total{
+	font: bold 11pt Verdana;
+	background-color:#ccc;
+}
+.invisible{
+	border: 0px;
+	background-color:#fff;
+}
+th{
+	font: bold 11pt Verdana;
+  text-align:center;
+  background-color:#ffcc00;
+  border: 1px solid #000;
+}
+#columna1 {
+  width:200px;
+}
+#columna2 { 
+  margin-left:220px;
+  margin-right:20px;
+  margin-top:10px;  
+  background-color:#ffffbb;
+}
+</style>
+<body>
+<pre class="marco">
+<b>PRE-FACTURA GENERAL</b>
+CÓDIGO: TOD-FOR-013
+DDOCUMENTO VIGENTE A PARTIR DEL 05/05/2011
+ÚLTIMA ACTUALIZACION 10/10/2011
+VERSION 2
+</pre>
+<div class="marco">
+	 <div class="derecha">Consecutivo No.: {{ factura.numero }}</div>
+	 	<table class="tabla1">
+	 		<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+	 		<tr>
+	 			<td>Cliente:</td>
+	 			<td>{{ factura.programa.cliente.nombre }}</td>
+	 		</tr>
+	 		<tr>
+	 			<td>Programa:</td>
+	 			<td>{{ factura.programa.nombre }}</td>
+	 		</tr>
+	 		<tr>
+	 			<td>Centro de Costos:</td>
+	 			<td>{{ factura.programa.centrocostos }}</td>
+	 		</tr>
+	 		<tr>
+	 			<td>Periodo:</td>
+	 			<td>{{ factura.periodo.periodo }}</td>
+	 		</tr>
+	 		<tr>
+	 			<td>Fecha de reporte:</td>
+	 			<td>{{ factura.fecha | date("d-M-Y") }}</td>
+	 		</tr>
+	 	</table>
+	 	<h2>CONCEPTO: PREMIOS CON LOGÍSTICA</h2>
+	 	<table class="tabla2">
+	 		<tr>
+	 			<th>ID</th>
+	 			<th>CANTIDAD</th>
+	 			<th>DESCRIPCION</th>
+	 			<th>VALOR UNITARIO</th>
+	 			<th>PRECIO TOTAL</th>
+	 		</tr>
+	 		{% set totalunidades=0 %}
+	 		{% set subtotal=0 %}
+	 		{% for item in productos %}
+	 		<tr>
+	 			<td>{{ item.producto.codInc }}</td>
+	 			<td>{{ item.cantidad }}</td>
+	 			<td>{{ item.descripcion }}</td>
+	 			<td>$ {{ item.valorunitario |number_format(2, ',', '.') }}</td>
+	 			<td>$ {{ item.valortotal |number_format(2, ',', '.') }}</td>
+	 			{% set subtotal = subtotal + item.valortotal %}
+	 				{% set totalunidades = totalunidades + item.cantidad %}
+	 		</tr>
+	 		{% endfor %}
+	 		<tr>
+	 			<td>TOTAL</td>
+	 			<td>{{ totalunidades }}</td>
+	 			<td></td>
+	 			<td></td>
+	 			<td></td>
+	 		</tr>
+	 		<tr class="total">
+	 			<td colspan="3" class="invisible"></td>
+	 			<td>TOTAL A PAGAR</td>
+	 			<td>$ {{ subtotal |number_format(2, ',', '.') }}</td>
+	 		</tr>
+	 	</table>
+	 	<br>
+	 	
+	 	<h2>CONCEPTO: LOGÍSTICA</h2>
+	 	<table class="tabla2">
+	 		<tr>
+	 			<th>ID</th>
+	 			<th>CANTIDAD</th>
+	 			<th>DESCRIPCION</th>
+	 			<th>VALOR UNITARIO</th>
+	 			<th>VALOR TOTAL</th>
+	 		</tr>
+	 		{% set totalunidades=0 %}
+	 		{% set subtotal=0 %}
+	 		{% for item in logistica %}
+	 		<tr>
+	 			<td></td>
+	 			<td>{{ item.cantidad }}</td>
+	 			<td>{{ item.descripcion }}</td>
+	 			<td>$ {{ item.valorunitario|number_format(2, ',', '.')  }}</td>
+	 			<td>$ {{ item.valortotal|number_format(2, ',', '.')  }}</td>
+	 			{% set subtotal = subtotal + item.valortotal %}
+	 		</tr>
+	 		{% endfor %}
+	 		<tr class="total">
+	 			<td colspan="3" class="invisible"></td>
+	 			<td>GRAN TOTAL</td>
+	 			<td>$ {{ subtotal|number_format(2, ',', '.')  }}</td>
+	 		</tr>
+	 		<tr><td colspan="5">El precio NO incluye IVA</td></tr>
+	 	</table>
+
+
+</div>
+</body>
+

@@ -1,26 +1,30 @@
 <?php
 
-namespace Incentives\catalogoBundle\Form\Type;
+namespace Incentives\CatalogoBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormEvent;
+use PUGX\AutocompleterBundle\Form\Type\AutocompleteType;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class ProductoprecioType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('proveedor', 'entity', array(
+        $builder->add('proveedor', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:Proveedores',
-            'property' => 'nombre',
-            'empty_value' => 'Seleccione una opcion',
+            'choice_label' => 'nombre',
+            //'empty_value' => 'Seleccione una opcion',
         ));
         $builder->add('precio');
         $builder->add('precioDolares');
-        $builder->add('principal', 'checkbox', array(
+        $builder->add('principal', CheckboxType::class, array(
             'label'     => '¿Es el proveedor principal para el producto?',
             'required'  => false,
         ));

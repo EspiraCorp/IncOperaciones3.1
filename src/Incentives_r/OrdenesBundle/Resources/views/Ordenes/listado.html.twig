@@ -1,0 +1,100 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Ordenes de compra{% endblock %}
+{% block sidebar %}
+{% endblock %}
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+	<div class="box span12">
+		<div class="box-header well">
+			<h2><i class="icon-th-list"></i>Ordenes de compra</h2>
+			<div class="box-icon">
+    	    {% if not is_granted('ROLE_PROV') %}
+    	    <a href="{{ path('tracking_reporte') }}" title="Reporte Tracking" class="btn btn-primary">
+                <i class="icon-plane icon-white"></i>
+            </a> 
+            <a href="{{ path('ordenes_nueva') }}" title="Agregar" class="btn btn-primary btn-success">
+                <i class="icon-plus icon-white"></i>
+            </a>
+            <a href="{{ path('ordenes_generarsegmentado') }}" title="Generar" class="btn btn-primary btn-info">
+                <i class="icon-cog icon-white"></i>
+            </a>
+            
+            <a href="{{ path('ordenes_exportar') }}" title="Exportar Listado" class="btn btn-info">
+                <i class="icon-th icon-white"></i>
+            </a>
+            
+            <a href="{{ path('ordenes_exportar_productos') }}" title="Productos Orden" class="btn btn-info">
+                <i class="icon-barcode icon-white"></i>
+            </a>
+            
+            {% if is_granted('ROLE_EJEC') %}
+    	    <a href="{{ path('ordenredencion_totalpass') }}" title="Generar Total Pass" class="btn btn-primary btn-danger">
+                <i class="icon-tags icon-white"></i>
+            </a>
+            {% endif %}
+			
+			{% endif %}
+			</div>
+		</div>
+		<div class="box-content">
+			<div id="dashboard">
+                    <div id="tabla" class="" cellspacing="0" width="100%">
+                      <table id="ordenes" class="display">
+                        <thead style="display:table-row-group;"  >
+                          <tr>
+                            <th>Id</th>
+                            <th>Numero</th>
+                            <th>Proveedor</th>
+                            <th>Pais</th>
+                            <th>Categoria</th>
+                            <th>Fecha solicitud</th>
+                            <th>Fecha entrega</th>
+                            <th>Valor total</th>
+                            <th>Tipo</th>
+                            <th>Estado</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for orden in listado %}
+                          <tr>
+                            <td>{{ orden.id }}</td>
+                            <td><a href="{{ path("ordenes_datos", {"id": orden.id}) }}">{{ orden.consecutivo }}</a></td>
+                            <td>{{ orden.proveedor.nombre }}</td>
+                            <td>{{ orden.pais.nombre }}</td>
+                            <td>{{ orden.categoria.nombre }}</td>
+                            <td>{{ orden.fechaCreacion | date("Y-m-d") }}</td>
+                            <td>{{ orden.fechaVencimiento | date("Y-m-d") }}</td>
+                            <td>{{ orden.total|number_format(2, ',', '.')  }}</td>
+                            <td>{{ orden.ordenesTipo.nombre }}</td>
+                            <td>{{ orden.ordenesEstado.nombre }}</td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                         <tfoot style="display: table-header-group;">
+                          <tr>
+                            <th>Id</th>
+                            <th>Numero</th>
+                            <th>Proveedor</th>
+                            <th>Pais</th>
+                            <th>Categoria</th>
+                            <th>Fecha solicitud</th>
+                            <th>Fecha entrega</th>
+                            <th>Valor total</th>
+                            <th>Tipo</th>
+                            <th>Estado</th>
+                          </tr>
+                        </tfoot>
+                      </table>
+                    </div>   
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+
+
+  
+{% endblock %}
+

@@ -5,6 +5,9 @@ namespace Incentives\RedencionesBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use PUGX\AutocompleterBundle\Form\Type\AutocompleteType;
 
 class ParticipanteType extends AbstractType
 {
@@ -24,27 +27,27 @@ class ParticipanteType extends AbstractType
             ->add('barrio')
         ;
 
-        $builder->add('tipodocumento', 'entity', array(
+        $builder->add('tipodocumento', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:Tipodocumento',
-            'property' => 'nombre',
-            'empty_value' => 'Seleccione una opcion',
+            'choice_label' => 'nombre',
+            //'empty_value' => 'Seleccione una opcion',
         ));
 
-        $builder->add('ciudad', 'entity', array(
+        $builder->add('ciudad', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:Ciudad',
-            'property' => 'nombre',
-            'empty_value' => 'Seleccione una opcion',
+            'choice_label' => 'nombre',
+            //'empty_value' => 'Seleccione una opcion',
         ));
 
-        $builder->add('programa', 'entity', array(
+        $builder->add('programa', EntityType::class, array(
             'class' => 'IncentivesCatalogoBundle:Programa',
-            'property' => 'nombre',
-            'empty_value' => 'Seleccione una opcion',
+            'choice_label' => 'nombre',
+            //'empty_value' => 'Seleccione una opcion',
         ));
 
 
 
-        $builder->add('Enviar', 'submit');
+        $builder->add('Enviar', SubmitType::class);
     }
     
     /**

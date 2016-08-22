@@ -5,6 +5,8 @@ namespace Incentives\OrdenesBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class OrdenesCompraproductoType extends AbstractType
 {
@@ -14,7 +16,7 @@ class OrdenesCompraproductoType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('ordenesProducto', 'collection', array(
+        $builder->add('ordenesProducto', CollectionType::class, array(
              'type'  => new OrdenesProductoType(),
                 'label'          => 'Productos',
                 'by_reference'   => false,
@@ -22,7 +24,7 @@ class OrdenesCompraproductoType extends AbstractType
                 'allow_add'      => true
         ));
 
-        $builder->add('Enviar', 'submit');
+        $builder->add('Enviar', SubmitType::class);
     }
     
     /**

@@ -1,0 +1,59 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Novedad{% endblock %}
+
+{% block cuerpo %}
+<div class="box">
+    <div class="box-header well" data-original-title="">
+        Acción a realizar
+        <div class="box-icon">
+        <div class="box-icon">
+                    <a href="{{ path('garantiasrecompra_aprobacion') }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+                </div>
+      </div>
+    </div>
+</div>
+    <div class="box span12">
+      <div class="box-content">
+        
+        <div class="box-header well">
+        <h2>
+        
+        </i>Datos Redencion</h2>
+        </h2>
+      </div>
+      
+
+        <table class="table table-bordered table-striped">
+          <tbody>
+            <tr><td>Programa</td><td>{{ redencion.productocatalogo.catalogos.programa.nombre }}</td></tr>
+            <tr><td>Participante</td><td>{{ redencion.participante.nombre }}</td></tr>
+            <tr><td>Documento</td><td>{{ redencion.participante.documento }}</td></tr>
+            <tr><td>Fecha de solicitud</td><td>{{ redencion.fecha | date("Y-m-d") }}</td></tr>
+            <tr><td>Valor</td><td>{{ redencion.valor }}</td></tr>
+            <tr><td>Codigo</td><td>{{ redencion.codigoredencion }}</td></tr>
+            <tr><td>Estado Redención</td><td>{{ redencion.redencionestado.nombre }}</td></tr>
+            <tr><td>Observación Garantia</td><td>{{ novedad.observacion }}</td></tr>
+            <tr><td>Observación Acción</td><td>{{ novedad.observacionaccion }}</td></tr>
+            
+          </tbody>
+        </table>
+    </div>
+        <div class="box-content">
+            <div class="estado" >
+                <a class="btn btn-info" href="{{ url('garantiasrecompra_aprobar') }}/{{ novedad.id }}")>
+                    <i class="icon-ok icon-white" align='rigth'></i>                                    
+                    Aprobar                                      
+                </a>
+                                                
+                <a class="btn btn-danger" href='{{ url('garantiasrecompra_cancelar') }}/{{ novedad.id }}"'>
+                    <i class="icon-trash icon-white" align='rigth'></i>                                    
+                    Cancelar                                      
+                </a>
+                                                
+          </div>
+        </div>
+
+  </div>
+
+  {% endblock %}

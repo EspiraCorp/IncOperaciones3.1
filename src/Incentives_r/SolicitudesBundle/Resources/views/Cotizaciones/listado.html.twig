@@ -1,0 +1,98 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Cotizaciones{% endblock %}
+{% block sidebar %}
+{{ parent() }}
+{% endblock %}
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+	<div class="box span12">
+		<div class="box-header well">
+			<h2><i class="icon-th-list"></i>Cotizaciones</h2>
+		</div>
+		<div class="box-content">
+			<div id="dashboard">
+                    <div id="tabla" class="" cellspacing="0" width="100%">
+                      <table id="ordenes" class="display">
+                        <thead style="display:table-row-group;"  >
+                          <tr>
+                            <th>Id</th>
+                            <th>Consecutivo</th>
+                            <th>Fecha Creacion</th>
+                            <th>Estado</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for cotizacion in listado %}
+                          <tr>
+                            <td>{{ cotizacion.id }}</td>
+                            <td><a href="{{ path("cotizaciones_datos", {"id": cotizacion.id}) }}">{{ cotizacion.consecutivo }}</a></td>
+                            <td>{{ cotizacion.fechaCreacion | date("Y-m-d") }}</td>
+                            <td>{{ cotizacion.estado.nombre }}</td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                         <tfoot style="display: table-header-group;">
+                          <tr>
+                            <th>Id</th>
+                            <th>Consecutivo</th>
+                            <th>Fecha Creacion</th>
+                            <th>Estado</th>
+                          </tr>
+                        </tfoot>
+                      </table>
+                    </div>   
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+
+{{ parent() }}
+
+  <script type="text/javascript">
+ $(document).ready(function() {
+//    inifuntion
+ var table = $('#ordenes').dataTable({
+
+            "sDom": 'T<"clear">lfrtip',
+             "bPaginate": true,
+             "bLengthChange": true,
+             "bFilter": true,
+             "bSort": true,
+             "bInfo": false,
+             "bAutoWidth": true,
+             "bJQueryUI": false,
+             "sPaginationType": "full_numbers",
+             "iDisplayLength": 50,
+             "aLengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "Todo"] ],
+              initComplete: function () {
+                    this.api().columns().every( function () {
+                        var column = this;
+                        var select = $('<select style="width: 100%"><option value=""></option></select>')
+                            .appendTo( $(column.footer()).empty() )
+                            .on( 'change', function () {
+                                var val = $.fn.dataTable.util.escapeRegex(
+                                    $(this).val()
+                                );
+         
+                                column
+                                    .search( val ? '^'+val+'$' : '', true, false )
+                                    .draw();
+                            } );
+         
+                        column.data().unique().sort().each( function ( d, j ) {
+                            //limpiar
+                            //d
+                            select.append( '<option value="'+d+'">'+d+'</option>' )
+                        } );
+                    } );
+                }
+    });
+
+})
+  </script>
+
+{% endblock %}
+

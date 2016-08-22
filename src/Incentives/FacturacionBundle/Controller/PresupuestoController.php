@@ -123,20 +123,20 @@ class PresupuestoController extends Controller
 
         if (isset($presupuesto)){
             $presupuesto = $em->getRepository('IncentivesFacturacionBundle:Presupuestos')->find($presupuesto->getId());
-            $form = $this->createForm(new PresupuestosType(), $presupuesto);
+            $form = $this->createForm(PresupuestosType::class, $presupuesto);
 
         }else{
-            $form = $this->createForm(new PresupuestosType());
+            $form = $this->createForm(PresupuestosType::class;
             $presupuesto = new Presupuestos();
         }
 
         if ($request->isMethod('POST')) {
             
-            $form->bind($request);
+            $form->handleRequest($request);
 
             if ($form->isValid()) {
                 
-                $pro=($this->get('request')->request->get('presupuestos'));
+                $pro=($request->request->get('presupuestos'));
                 $programaE = $em->getRepository('IncentivesCatalogoBundle:Programa')->find($programa);
                 $areaE = $em->getRepository('IncentivesFacturacionBundle:Areas')->find($area);
                 //$tipo = $em->getRepository('IncentivesFacturacionBundle:Tipocostos')->find($pro['tipo']);

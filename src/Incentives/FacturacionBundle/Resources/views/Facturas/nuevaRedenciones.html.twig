@@ -19,7 +19,7 @@
 						<tr><td>Pais</td><td>{{ pais.nombre }}</td></tr>
 					</tbody>
 				</table>
-<form action="{{ path('factura_redencionesgenerar') }}" method="POST" {{ form_enctype(form) }} class="form-horizontal" novalidate>
+<form action="{{ path('factura_redencionesgenerar') }}" method="POST"  class="form-horizontal" novalidate>
     <fieldset>
         <input type='hidden' name='pais' value={{ pais.id }}>
         <input type='hidden' name='programa' value={{ programa.id }}>

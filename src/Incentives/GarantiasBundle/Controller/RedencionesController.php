@@ -118,14 +118,14 @@ class RedencionesController extends Controller
 
         $novedad = new Novedades();
         $redencionD = $em->getRepository('IncentivesRedencionesBundle:Redenciones')->find($redencion);
-        $form = $this->createForm(new NovedadType(), $novedad);
+        $form = $this->createForm(NovedadType::class, $novedad);
                     
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
 
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
-                $pro=($this->get('request')->request->get('novedad'));
+                $pro=($request->request->get('novedad'));
                 // realiza alguna acción, tal como guardar la tarea en la base de datos
                 $redencionN = $em->getRepository('IncentivesRedencionesBundle:Redenciones')->find($redencion);
                 $novedad->setRedencion($redencionD);
@@ -158,14 +158,14 @@ class RedencionesController extends Controller
         $datosenvio = $em->getRepository('IncentivesRedencionesBundle:Redencionesenvios')->findByRedencion($redencionId);
         $imagen = $em->getRepository('IncentivesCatalogoBundle:Imagenproducto')->findBy(array('producto' => $redencionD->getProductocatalogo()->getProducto()->getId(), 'estado' => 1));
 
-        $form = $this->createForm(new NovedadaccionType(), $novedadD);
+        $form = $this->createForm(NovedadaccionType::class, $novedadD);
                     
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
 
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
-                $pro=($this->get('request')->request->get('novedad'));
+                $pro=($request->request->get('novedad'));
                 // realiza alguna acción, tal como guardar la tarea en la base de datos
                 $redencionN = $em->getRepository('IncentivesRedencionesBundle:Redenciones')->find($redencionD->getId());
                 $novedadD->setRedencion($redencionD);
@@ -317,14 +317,14 @@ class RedencionesController extends Controller
 
     	$redencionD = $em->getRepository('IncentivesRedencionesBundle:Redenciones')->find($redencionE->getRedencion()->getId());
 
-        $form = $this->createForm(new EnvioType(), $redencionE);
+        $form = $this->createForm(EnvioType::class, $redencionE);
                     
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
 
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
-                $pro=($this->get('request')->request->get('envios'));
+                $pro=($request->request->get('envios'));
                 // realiza alguna acción, tal como guardar la tarea en la base de datos
                 $redencionE->setCiudadNombre($pro['ciudadNombre']);
                 $redencionE->setDireccion($pro['direccion']);

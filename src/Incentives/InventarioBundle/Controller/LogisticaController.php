@@ -46,11 +46,11 @@ class LogisticaController extends Controller
             ->setAction($this->generateUrl('inventario_cargardespachos'))
             ->setMethod('POST')
             ->add('excel', 'file')
-            ->add('cargar', 'submit')
+            ->add('cargar', SubmitType::class)
             ->getForm();
 
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
 
             $excel = $form['excel']->getData();
 
@@ -197,11 +197,11 @@ class LogisticaController extends Controller
             ->setAction($this->generateUrl('inventario_importar_planilla'))
             ->setMethod('POST')
             ->add('excel', 'file')
-            ->add('cargar', 'submit')
+            ->add('cargar', SubmitType::class)
             ->getForm();
 
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
 
             $excel = $form['excel']->getData();
 

@@ -5,6 +5,8 @@ namespace Incentives\CatalogoBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class Maestro2Type extends AbstractType
 {
@@ -14,14 +16,14 @@ class Maestro2Type extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('maestro', 'collection', array(
+        $builder->add('maestro', CollectionType::class, array(
             'type'  => new MaestroType(),
             'by_reference'   => false,
             'allow_delete'   => true,
             'allow_add'      => true
         ));
 
-        $builder->add('Enviar', 'submit');
+        $builder->add('Enviar', SubmitType::class);
     }
     
     /**

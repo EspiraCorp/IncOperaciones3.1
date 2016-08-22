@@ -1,0 +1,138 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Catalogos{% endblock %}
+{% block sidebar %}
+{{ parent() }}
+{% endblock %}
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+	<div class="box span12">
+		<div class="box-header well">
+			<h2><i class="icon-th-list"></i>Catalogos</h2>
+      <div class="box-icon"> 
+          <a href="{{ path('catalogo_nuevo') }}" class="btn btn-round" title="Agregar"><i class="icon-plus"></i></a>
+      </div>
+		</div>
+		<div class="box-content">
+			<div id="dashboard">
+          <div id="tabla" class="" cellspacing="0" width="100%">
+                      <table id="catalogos" class="display">
+                        <thead style="display:table-row-group;" >
+                          <tr>
+                            <th>Id</th>
+                            <th>Nombre</th>
+                            <th>Programa</th>
+                            <th>Cliente</th>
+                            <th>Fecha Inicio</th>
+                            <th>Fecha Fin</th>
+                            {% if not is_granted('ROLE_CLI') %}
+                            <th>Valor punto</th>
+                            <th>Puntos maximo</th>
+                            <th>Pais</th>
+                            <th>Estado</th>
+                            {% endif %}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for catalogo in listado %}
+                          <tr>
+                            <td>{{ catalogo.id }}</td>
+                            <td><a href="{{ path("catalogo_datos", {"id": catalogo.id}) }}">{{ catalogo.nombre }}</a></td>
+                            <td>{{ catalogo.programa.nombre }}</td>
+                            <td>{{ catalogo.programa.cliente.nombre }}</td>
+                            <td>{{ catalogo.programa.fechainicio | date("Y-m-d")  }}</td>
+                            <td>{{ catalogo.programa.fechafin | date("Y-m-d") }}</td>
+                            {% if not is_granted('ROLE_CLI') %}
+                            <td>{{ catalogo.valorPunto }}</td>
+                            <td>{{ catalogo.puntosMaximos }}</td>
+                            <td>{{ catalogo.pais.nombre }}</td>
+                            <td>{% if (catalogo.estado.id!=1) %}<a class="btn btn-danger 1" onClick="confirmar('{{ url("catalogo_estado", {"id": catalogo.id}) }}')" href="#">Inactivo</a>{% else %}<a class="btn btn-success 1" onClick="confirmar('{{ url("catalogo_estado", {"id": catalogo.id}) }}')" href="#">Activo</a>{% endif %}</td>
+                            {% endif %}
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                         <tfoot style="display: table-header-group;">
+                          <tr>
+                            <th>Id</th>
+                            <th>Nombre</th>
+                            <th>Programa</th>
+                            <th>Cliente</th>
+                            <th>Fecha Inicio</th>
+                            <th>Fecha Fin</th>
+                            {% if not is_granted('ROLE_CLI') %}
+                            <th>Valor punto</th>
+                            <th>Puntos maximo</th>
+                            <th>Pais</th>
+                            <th>Estado</th>
+                            {% endif %}
+                          </tr>
+                        </tfoot>
+                      </table>
+                    </div>
+      </div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+
+{{ parent() }}
+
+	<script type="text/javascript">
+ $(document).ready(function() {
+//    inifuntion
+ var table = $('#catalogos').dataTable({
+
+            "sDom": 'T<"clear">lfrtip',
+             "bPaginate": true,
+             "bLengthChange": true,
+             "bFilter": true,
+             "bSort": true,
+             "bInfo": false,
+             "bAutoWidth": true,
+             "bJQueryUI": false,
+             "sPaginationType": "full_numbers",
+             "iDisplayLength": 20,
+             "aLengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "Todo"] ],
+              initComplete: function () {
+                    this.api().columns().every( function () {
+                        var column = this;
+                        var select = $('<select style="width: 100%"><option value=""></option></select>')
+                            .appendTo( $(column.footer()).empty() )
+                            .on( 'change', function () {
+                                var val = $.fn.dataTable.util.escapeRegex(
+                                    $(this).val()
+                                );
+         
+                                column
+                                    .search( val ? '^'+val+'$' : '', true, false )
+                                    .draw();
+                            } );
+         
+                        column.data().unique().sort().each( function ( d, j ) {
+                            //limpiar
+                            //d
+                            select.append( '<option value="'+d+'">'+d+'</option>' )
+                        } );
+                    } );
+                }
+    });
+
+})
+  </script>
+
+  <script type="text/javascript">
+      function confirmar(ruta)
+      {
+        if (confirm("Desea cambiar el estado")==true){
+            self.location=ruta;
+        }else{
+            alert("OK");
+        }
+        
+      }
+  </script>
+
+{% endblock %}
+

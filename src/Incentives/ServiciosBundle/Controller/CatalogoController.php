@@ -25,7 +25,7 @@ class CatalogoController extends Controller
     {
         
         // obtener el objeto de la petición
-        $request = $this->getRequest();
+        
 
         // obtiene el valor de un parámetro $_GET
         $parametros = $request->query->get('parametros');
@@ -202,7 +202,7 @@ class CatalogoController extends Controller
     {
         
     	// obtener el objeto de la petición
-		$request = $this->getRequest();
+		
 
 		// obtiene el valor de un parámetro $_GET
 		$parametros = $request->query->get('parametros');
@@ -263,7 +263,7 @@ class CatalogoController extends Controller
     {
         
         // obtener el objeto de la petición
-        $request = $this->getRequest();
+        
 
         // obtiene el valor de un parámetro $_GET
         $parametros = $request->query->get('parametros');
@@ -297,7 +297,7 @@ class CatalogoController extends Controller
     {
         
         // obtener el objeto de la petición
-        $request = $this->getRequest();
+        
 
         // obtiene el valor de un parámetro $_GET
         $parametros = $request->query->get('parametros');

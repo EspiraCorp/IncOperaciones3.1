@@ -1,0 +1,145 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Catalogos{% endblock %}
+{% block sidebar %}
+{{ parent() }}
+{% endblock %}
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+	<div class="box span12">
+		<div class="box-header well">
+			<h2><i class="icon-th-list"></i>Catalogos</h2>
+      <div class="box-icon"> 
+          <a href="{{ path('catalogo_nuevo') }}" class="btn btn-round" title="Agregar"><i class="icon-plus"></i></a>
+      </div>
+		</div>
+		<div class="box-content">
+			<div id="dashboard">
+                    <div class="row-fluid">
+                        <div id="control1" class="span3"></div>
+                        <div id="control2" class="span3"></div>
+                        <div id="control3" class="span3"></div>
+                        <div id="control4" class="span3"></div>
+                    </div>
+                    <div id="tabla" class="row-fluid"></div>  
+            </div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+
+{{ parent() }}
+
+	<script type="text/javascript" src="//www.google.com/jsapi"></script>
+    <script type="text/javascript">
+      google.load('visualization', '1.1', {packages: ['controls']});
+    </script>
+    <script type="text/javascript">
+      function drawVisualization() {
+        // Prepare the data.
+        var data = google.visualization.arrayToDataTable([
+          ['Nombre', 'Programa', 'Cliente','Fecha Inicio', 'Fecha Fin', 'Valor punto','Puntos maximos','Pais','Estado'],
+          {% for catalogo in listado %}
+                [ '<a href="{{ path("catalogo_datos", {"id": catalogo.id}) }}">{{ catalogo.nombre }}</a>',
+                 '{{ catalogo.programa.nombre }}',
+                 '{{ catalogo.programa.cliente.nombre }}',
+                 '{{ catalogo.programa.fechainicio | date("Y-m-d")  }}',
+                 '{{ catalogo.programa.fechafin | date("Y-m-d") }}',
+                 '{{ catalogo.valorPunto }}',
+                 '{{ catalogo.puntosMaximos }}',
+                 '{{ catalogo.pais.nombre }}',
+                 '{% if (catalogo.estado.id!=1) %}<a class="btn btn-danger 1" onClick="confirmar(\'{{ url("catalogo_estado", {"id": catalogo.id}) }}\')" href="#">Inactivo</a>{% else %}<a class="btn btn-success 1" onClick="confirmar(\'{{ url("catalogo_estado", {"id": catalogo.id}) }}\')" href="#">Activo</a>{% endif %}',],
+            {% endfor %}
+        ]);
+      
+        // Define a StringFilter control for the 'Name' column
+        var stringFilter = new google.visualization.ControlWrapper({
+          'controlType': 'StringFilter',
+          'containerId': 'control1',
+          'options': {
+            'filterColumnLabel': 'Programa',
+            'matchType': 'any'
+          }
+        });
+
+        var stringFilter2 = new google.visualization.ControlWrapper({
+          'controlType': 'StringFilter',
+          'containerId': 'control2',
+          'options': {
+            'filterColumnLabel': 'Cliente',
+            'matchType': 'any'
+          }
+        });
+
+        var stringFilter3 = new google.visualization.ControlWrapper({
+          'controlType': 'CategoryFilter',
+          'containerId': 'control3',
+          'options': {
+            'filterColumnLabel': 'Fecha Inicio',
+            'ui': {
+              'allowTyping': true,
+              'allowMultiple': true
+            }
+          }
+        });
+
+        var stringFilter4 = new google.visualization.ControlWrapper({
+          'controlType': 'CategoryFilter',
+          'containerId': 'control4',
+          'options': {
+            'filterColumnLabel': 'Fecha Fin',
+            'ui': {
+              'allowTyping': true,
+              'allowMultiple': true
+            }
+          }
+        });
+      
+        // Define a table visualization
+        var table = new google.visualization.ChartWrapper({
+                'chartType': 'Table',
+                'containerId': 'tabla',
+            options: {
+              showRowNumber: true,
+              page: 'enable',
+              pageSize: 25,
+              pagingSymbols: {
+                  prev: '<<',
+                  next: '>>'
+              },
+              pagingButtonsConfiguration: 'auto',
+              'allowHtml': true,
+          }
+        });
+
+        // Create the dashboard.
+        var dashboard = new google.visualization.Dashboard(document.getElementById('dashboard')).
+          // Configure the string filter to affect the table contents
+          bind(stringFilter, table).
+          bind(stringFilter2, table).
+          bind(stringFilter3, table).
+          bind(stringFilter4, table).
+          // Draw the dashboard
+          draw(data);
+      }
+      
+
+      google.setOnLoadCallback(drawVisualization);
+    </script>
+
+  <script type="text/javascript">
+      function confirmar(ruta)
+      {
+        if (confirm("Desea cambiar el estado")==true){
+            self.location=ruta;
+        }else{
+            alert("OK");
+        }
+        
+      }
+  </script>
+
+{% endblock %}
+

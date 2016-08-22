@@ -1,0 +1,123 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Envios - Redenciones por programa{% endblock %}
+{% block sidebar %}
+{{ parent() }}
+{% endblock %}
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+	<div class="box span12">
+		<div class="box-header well">
+			<h2><i class="icon-th-list"></i>Envios - Redenciones por programa</h2>
+		</div>
+		<div class="box-content">
+			<div id="dashboard">
+                    <div class="row-fluid">
+                        <div id="control1" class="span3"></div>
+                        <div id="control2" class="span3"></div>
+                        <div id="control3" class="span3"></div>
+                        <div id="control4" class="span3"></div>
+                    </div>
+                    <div id="tabla" class="row-fluid"></div>  
+            </div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+
+{{ parent() }}
+
+	<script type="text/javascript" src="//www.google.com/jsapi"></script>
+    <script type="text/javascript">
+      google.load('visualization', '1.1', {packages: ['controls']});
+    </script>
+    <script type="text/javascript">
+      function drawVisualization() {
+        // Prepare the data.
+        var data = google.visualization.arrayToDataTable([
+          ['Programa', 'Redenciones','Fecha ultima autorizacion'],
+          {% for programas in programa %}
+                [ '<a href="{{ path("inventario_redenciones", {"programa": programas.id }) }}">{{ programas.nombre }}</a>',
+                 '{{ listado[programas.id][0] }}',
+                 '{% if (fechas[programas.id] ==fechas[0]) %}Aun no se han hecho autorizaciones{% else %}{{ fechas[programas.id] | date("Y-m-d") }}{% endif %}',],
+            {% endfor %}
+        ]);
+      
+        // Define a StringFilter control for the 'Name' column
+        var stringFilter = new google.visualization.ControlWrapper({
+          'controlType': 'StringFilter',
+          'containerId': 'control1',
+          'options': {
+            'filterColumnLabel': 'Programa',
+            'matchType': 'any'
+          }
+        });
+
+        var stringFilter2 = new google.visualization.ControlWrapper({
+          'controlType': 'StringFilter',
+          'containerId': 'control2',
+          'options': {
+            'filterColumnLabel': 'Redenciones',
+            'matchType': 'any'
+          }
+        });
+
+          var stringFilter4 = new google.visualization.ControlWrapper({
+          'controlType': 'CategoryFilter',
+          'containerId': 'control4',
+          'options': {
+            'filterColumnLabel': 'Fecha ultima autorizacion',
+            'ui': {
+              'allowTyping': true,
+              'allowMultiple': true
+            }
+          }
+        });
+      
+        // Define a table visualization
+        var table = new google.visualization.ChartWrapper({
+                'chartType': 'Table',
+                'containerId': 'tabla',
+            options: {
+              showRowNumber: true,
+              page: 'enable',
+              pageSize: 25,
+              pagingSymbols: {
+                  prev: '<<',
+                  next: '>>'
+              },
+              pagingButtonsConfiguration: 'auto',
+              'allowHtml': true,
+          }
+        });
+
+        // Create the dashboard.
+        var dashboard = new google.visualization.Dashboard(document.getElementById('dashboard')).
+          // Configure the string filter to affect the table contents
+          bind(stringFilter, table).
+          bind(stringFilter2, table).
+          bind(stringFilter4, table).
+          // Draw the dashboard
+          draw(data);
+      }
+      
+
+      google.setOnLoadCallback(drawVisualization);
+    </script>
+
+  <script type="text/javascript">
+      function confirmar(ruta)
+      {
+        if (confirm("Desea cambiar el estado")==true){
+            self.location=ruta;
+        }else{
+            alert("OK");
+        }
+        
+      }
+  </script>
+
+{% endblock %}
+

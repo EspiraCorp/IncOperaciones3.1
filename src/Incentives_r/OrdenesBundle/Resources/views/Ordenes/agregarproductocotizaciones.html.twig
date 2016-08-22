@@ -1,0 +1,102 @@
+{% extends app.request.isXmlHttpRequest ? "MDWDemoBundle::layout_ajax.html.twig" : "::base.html.twig" %}
+{% block title %}Datos Orden{% endblock %}
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+<div class="box">
+    <div class="box-header well" data-original-title="">
+        Agregar Productos de Cotizacion	
+        <div class="box-icon">
+				<div class="box-icon">
+                    <a href="{{ path('ordenes_datos',  {"id": ordenes.id}) }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+                </div>
+    	</div>
+    </div>
+</div>
+    <div class="box span12">
+	    <div class="box-content">
+	    	
+	    	<div class="box-header well">
+				<h2>Agregar Productos de Cotizacion</h2>
+				
+			</div>
+			
+
+				<table class="table table-bordered table-striped">
+					<tbody>
+						<tr><td>Consecutivo</td><td>{{ ordenes.consecutivo }}</td></tr>
+						<tr><td>Proveedor</td><td>{{ ordenes.proveedor.nombre }}</td></tr>
+						<tr><td>Fecha de solicitud</td><td>{{ ordenes.fechaCreacion | date("Y-m-d") }}</td></tr>
+						<tr><td>Fecha de entrega</td><td>{{ ordenes.fechaVencimiento | date("Y-m-d")  }}</td></tr>
+						<tr><td>Cancelado</td>
+							{% if ordenes.cancelado==true %}
+								<td>Si</td>
+							{% else %}
+								<td>No</td>
+							{% endif %}
+						</tr>
+						<tr><td>Estado</td><td>{{ ordenes.ordenesEstado.nombre }}
+							
+							</td>
+						</tr>
+					</tbody>
+				</table>
+		</div>
+	</div>
+
+<div class="box span12">
+		<div class="box-content">
+			
+		    <div class="box-header well">
+				<h2>
+					Productos x Agregar
+				</h2>
+			</div>
+
+			{% if productos | length!=0 %}
+			<table class="table table-bordered table-striped">
+				<thead>
+					<tr>
+						<th>Referencia</th>
+						<th>Nombre</th>
+						<th>Descripcion</th>
+						<th>Cantidad</th>
+						<th>Valor Unitario</th>
+						<th>Logistica Individual</th>
+						<th>Valor total</th>
+						<th></th>
+					</tr>
+				</thead>
+				{% set total=0 %}
+				<tbody>
+					{% set subtotal=0 %}
+	 				{% set totaliva = 0 %}
+					{% for producto in productos %}	
+					<tr>
+							<td>{{ producto.producto.referencia }}</td>
+							<td>{{ producto.producto.nombre }}</td>
+							<td>{{ producto.producto.descripcion }}</td>
+							<td>{{ producto.cantidad }}</td>
+							<td>$ {{ producto.valorunidad|number_format(2, ',', '.') }}</td>
+							<td>$ {{ producto.logistica|number_format(2, ',', '.') }}</td>
+							<td>$ {{ (producto.valortotal + (producto.logistica*producto.cantidad))|number_format(2, ',', '.') }}</td>
+							<td>
+								{% if( producto.estado.id == 2 and (is_granted('ROLE_DIR') or is_granted('ROLE_ASIS') or is_granted('ROLE_ASISCOMP'))) %}	
+								<a class="btn btn-success" id="productagregar_{{ producto.id }}" href="{{ path("ordenes_agregarproducto_cotizaciones", {"id": producto.id, "ordencompra": ordenes.id}) }}">
+									<i class="icon-plus icon-white" align='rigth'></i>			
+									Agregar										
+								</a>
+								{% endif %}
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			{% endif %}
+		</div>
+	</div>
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	
+{% endblock %}

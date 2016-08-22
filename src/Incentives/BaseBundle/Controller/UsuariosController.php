@@ -19,18 +19,18 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 class UsuariosController extends Controller
 {
     
-    public function listadoAction()
+    public function listadoAction(Request $request)
     {
-            $form = $this->createForm(new UserType());
+            $form = $this->createForm(UserType::class);
             
             $em = $this->getDoctrine()->getManager();
             
             $session = $this->get('session');
             
-            $page = $this->get('request')->get('page');
+            $page = $request->get('page');
             if(!$page) $page= 1;
             
-            if($pro=($this->get('request')->request->get('usuario'))){
+            if($pro=($request->request->get('usuario'))){
                 $page = 1;
                 $session->set('filtros_usuarios', $pro);
             }
@@ -65,8 +65,8 @@ class UsuariosController extends Controller
                 ->leftJoin('u.proveedor', 'p')
                 ->where($sqlFiltro);
         
-        if($this->get('request')->get('sort')){
-            $query->orderBy($this->get('request')->get('sort'), $this->get('request')->get('direction'));    
+        if($request->get('sort')){
+            $query->orderBy($request->get('sort'), $request->get('direction'));    
         }else{
             $query->orderBy("g.nombre", "ASC");    
         }
@@ -90,7 +90,7 @@ class UsuariosController extends Controller
   //       $usuario->setSalt('');
 
   	    //$form = $this->createForm(new RegistrationType(), new Registration());
-        $form = $this->createForm(new UserType(), $usuario);
+        $form = $this->createForm(UserType::class, $usuario);
   	    $form->handleRequest($request);
 
   	    if ($form->isValid()) {
@@ -116,7 +116,7 @@ class UsuariosController extends Controller
   	    $em = $this->getDoctrine()->getManager();
 
         $usuario = $em->getRepository('IncentivesBaseBundle:Usuario')->find($id);
-        $form = $this->createForm(new UserType(), $usuario);
+        $form = $this->createForm(UserType::class, $usuario);
                     
     		if ($request->isMethod('POST')) {
     			

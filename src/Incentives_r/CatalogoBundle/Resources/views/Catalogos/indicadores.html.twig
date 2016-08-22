@@ -1,0 +1,68 @@
+{% extends app.request.isXmlHttpRequest ? "MDWDemoBundle::layout_ajax.html.twig" : "::base.html.twig" %}
+
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+<div class="box span12">
+    <div class="box-header well" data-original-title="">
+        Indicadores
+        <div class="box-icon">
+				<div class="box-icon">
+                    <a href="{{ path('catalogo_datos',  {"id": catalogo.id}) }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+                </div>
+    	</div>
+    </div>
+	
+	    <div class="box span10">
+	    	<div class="box-header well">
+				<h2>
+				<a href="{{ path('catalogo_editar',  {"id": catalogo.id}) }}">
+				</a>
+				</i>Categorias</h2>
+			</div>
+	    	<div class="box-content">
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Numero</th>
+							<th>Nombre Categoria</th>
+							<th>Visibles</th>
+							<th>Por Aprobar Operaciones</th>
+							<th>Por Aprobar Ejecutivo</th>
+							<th>Por Aprobar Director</th>
+							<th>Por Aprobar Cliente</th>
+							<th>Inactivos /Rechazados</th>
+							<th>Total</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% set i=1 %}
+						{% set total=0 %}
+						{% for categoria in categorias %}
+							<tr>
+								<th>{{ i }}</th>
+								<td>{{ categoria.nombre }}</td>
+								<td>{{ categoria.visibles }}</td>
+								<td>{{ categoria.operaciones }}</td>
+								<td>{{ categoria.comercial }}</td>
+								<td>{{ categoria.director }}</td>
+								<td>{{ categoria.cliente }}</td>
+								<td>{{ categoria.inactivos }}</td>
+								<td>{{ categoria.total }}</td>
+							</tr>
+							{% set i=i+1 %}
+						{% endfor %}
+						
+					</tbody>
+				</table>
+			</div>
+		</div>
+		</div>
+	</div>
+</div>
+
+
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+{% endblock %}

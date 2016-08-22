@@ -1,0 +1,120 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Generar Facturas{% endblock %}
+
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+<div class="box span12">
+<div class="box-header well" data-original-title>
+                        <h2><i class="icon-edit"></i>Generar Facturas</h2>
+                        <div class="box-icon">
+                            <a href="{{ path('facturacion_listado') }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+                        </div>
+                    </div>
+<div class="box-content">
+
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th colspan="6"><h3>Redenciones</h3></th>
+        <tr>
+        <tr>
+            <th>País</th>
+            <th>Programa</th>
+            <th>Cantidad</th>
+            <th>Fecha Inicial</th>
+            <th>Ultima Fecha</th>
+            <th></th>
+        </tr>
+        {% set i=0 %}
+        {% for redencion in redenciones %}
+            {% set i=i+1 %}
+            <tr><td width="200px">{{ redencion.pais }}</td>
+                <td>{{ redencion.programa }}</td>
+                <td>{{ redencion.total }}</td>
+                <td>{{ redencion.fechaInicio }}</td>
+                <td>{{ redencion.fechaFin }}</td>
+                <td>
+                    <a class="btn btn-info" onClick="post('{{ path('factura_redencionesgenerar') }}', {pais: {{ redencion.idpais }}, programa: {{ redencion.idprograma }}})">Generar</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+    
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th colspan="6"><h3>Requisiciones</h3></th>
+        <tr>
+        <tr>
+            <th>Programa</th>
+            <th>Cantidad</th>
+            <th></th>
+        </tr>
+        {% set i=0 %}
+        {% for requisicion in requisiciones %}
+            {% set i=i+1 %}
+            <tr><td>{{ requisicion.programa }}</td>
+                <td>{{ requisicion.total }}</td>
+                <td>
+                    <a class="btn btn-info" onClick="post('{{ path('factura_requisicionesgenerar') }}', {programa: {{ requisicion.idPrograma }}})">Generar</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+    
+    
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th colspan="6"><h3>Logistica</h3></th>
+        <tr>
+        <tr>
+            <th>País</th>
+            <th>Programa</th>
+            <th>Cantidad</th>
+            <th></th>
+        </tr>
+        {% set i=0 %}
+        {% for logistica in logisticas %}
+            {% set i=i+1 %}
+            <tr><td width="200px">{{ logistica.pais }}</td>
+                <td>{{ logistica.programa }}</td>
+                <td>{{ logistica.total }}</td>
+                <td>
+                    <a class="btn btn-info" onClick="post('{{ path('factura_logisticagenerar') }}')">Generar</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+</div>
+</div>
+ </div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+  <script>
+    function post(path, parameters) {
+        var form = $('<form></form>');
+    
+        form.attr("method", "post");
+        form.attr("action", path);
+    
+        $.each(parameters, function(key, value) {
+            var field = $('<input></input>');
+    
+            field.attr("type", "hidden");
+            field.attr("name", key);
+            field.attr("value", value);
+            form.append(field);
+        });
+    
+        // The form needs to be a part of the document in
+        // order for us to be able to submit it.
+        $(document.body).append(form);
+        form.submit();
+    }
+
+    function detalle(id){
+        $('#detalle_'+id).toggle();
+    }
+  </script>
+{% endblock %}

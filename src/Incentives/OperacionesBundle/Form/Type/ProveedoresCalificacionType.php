@@ -5,6 +5,11 @@ namespace Incentives\OperacionesBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use PUGX\AutocompleterBundle\Form\Type\AutocompleteType;
 
 class ProveedoresCalificacionType extends AbstractType
 {
@@ -15,7 +20,7 @@ class ProveedoresCalificacionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('fecha', 'date', array(
+            ->add('fecha', DateType::class, array(
             'widget' => 'single_text',
         ))
             ->add('observacion')
@@ -28,18 +33,18 @@ class ProveedoresCalificacionType extends AbstractType
             ->add('calificacion')
         ;
 
-        $builder->add('periodo', 'choice', array(
+        $builder->add('periodo', ChoiceType::class, array(
             'choices' => array('2015' => '2015', '2016' => '2016', '2017' => '2017', '2018' => '2018', '2019' => '2019', '2020' => '2020', '2021' => '2021')
         ));
 
-        $builder->add('proveedor', 'entity', array(
+        $builder->add('proveedor', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:Proveedores',
-            'property' => 'nombre',
-            'empty_value' => 'Seleccione una opcion',
+            'choice_label' => 'nombre',
+            //'empty_value' => 'Seleccione una opcion',
             'label' => 'Proveedor'
         ));
 
-        $builder->add('Enviar', 'submit');
+        $builder->add('Enviar', SubmitType::class);
     }
     
     /**

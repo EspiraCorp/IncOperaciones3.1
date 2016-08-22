@@ -1,0 +1,39 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}IncentivesCatalogoBundle:Producto:nuevo{% endblock %}
+
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+<div class="box span12">
+<div class="box-header well" data-original-title>
+                        <h2><i class="icon-edit"></i>Nueva imagen</h2>
+                        <div class="box-icon">
+                            <a href="{{ path('producto_datos', {'id': id}) }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+                        </div>
+                    </div>
+<div class="box-content">
+<form action="{{ path('producto_agregarimagen') }}" method="POST" {{ form_enctype(form) }} class="form-horizontal">
+    <input type='hidden' name='id' value={{ id }}>
+    {{ form_errors(form) }}
+    <fieldset>
+        <div class="control-group">
+            {{ form_label(form.path, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.path, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+    </fieldset>
+
+    <div class="row-fluid sortable ui-sortable">
+
+    </div>  
+<div class="form-actions">
+	<input type="submit" name="Enviar">
+	
+</div>
+{{ form_widget(form._token) }}
+</form>
+</div>
+</div>
+ </div>
+{% endblock %}

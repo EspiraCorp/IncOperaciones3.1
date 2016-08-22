@@ -28,11 +28,13 @@ use PHPExcel_Writer_Excel2007;
 use PHPExcel_Cell_DataValidation;
 use PHPExcel_Style_Fill;
 
+use Dompdf\Dompdf;
+
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
-use BG\BarcodeBundle\Util\Base1DBarcode as barCode;
-use BG\BarcodeBundle\Util\Base2DBarcode as matrixCode;
+//use BG\BarcodeBundle\Util\Base1DBarcode as barCode;
+//use BG\BarcodeBundle\Util\Base2DBarcode as matrixCode;
 
 class OrdenRedencionController extends Controller
 {
@@ -1261,12 +1263,11 @@ class OrdenRedencionController extends Controller
         ));
 
 
-        require_once($this->get('kernel')->getRootDir().'/config/dompdf_config.inc.php');
         $rootDir = dirname($this->container->getParameter('kernel.root_dir'));
         $Dir = '/web/Ordenes/';
         $uploadDir = $rootDir.$Dir;
 
-        $dompdf = new \DOMPDF();
+        $dompdf = new DOMPDF();
         $dompdf->load_html($html,'UTF-8');
         $dompdf->render();
         $pdf = $dompdf->output();
@@ -1292,7 +1293,7 @@ class OrdenRedencionController extends Controller
         $OrdenesProducto = $this->getDoctrine()->getRepository('IncentivesOrdenesBundle:OrdenesProducto')->findByOrdenesCompra($ordenesOP->getId());
         $cantCC = array();
     
-        $codes = $this->barcodes($id);
+        //$codes = $this->barcodes($id);
         //echo 'prueba'; exit;
         foreach($OrdenesProducto as $keyOP => $valueOP){
             //Determinar los CC
@@ -1345,13 +1346,11 @@ class OrdenRedencionController extends Controller
             'cc' => $cantCC, 'codes' => $codes
         ));
 
-
-        require_once($this->get('kernel')->getRootDir().'/config/dompdf_config.inc.php');
         $rootDir = dirname($this->container->getParameter('kernel.root_dir'));
         $Dir = '/web/Ordenes/';
         $uploadDir = $rootDir.$Dir;
 
-        $dompdf = new \DOMPDF();
+        $dompdf = new DOMPDF();
         $dompdf->set_option( 'dpi' , '120' );
         $dompdf->load_html($html,'UTF-8');
         $dompdf->render();
@@ -1375,15 +1374,15 @@ class OrdenRedencionController extends Controller
         $orden = new OrdenesCompra();
         
         $productos=array();
-        $form = $this->createForm(new OrdenesCompraType(), $orden);
+        $form = $this->createForm(OrdenesCompraType::class, $orden);
                     
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
 
             if ($form->isValid()) {
                 $estado = $em->getRepository('IncentivesOrdenesBundle:OrdenesEstado')->find('3');
-                $agregar=($this->get('request')->request->get('agregar'));
-                $proveedor = $em->getRepository('IncentivesOperacionesBundle:Proveedores')->find($this->get('request')->request->get('proveedor'));
+                $agregar=($request->request->get('agregar'));
+                $proveedor = $em->getRepository('IncentivesOperacionesBundle:Proveedores')->find($request->request->get('proveedor'));
 
                 $tipo = $em->getRepository('IncentivesOrdenesBundle:OrdenesTipo')->find("3");
                 $orden->setProveedor($proveedor);
@@ -1458,11 +1457,11 @@ class OrdenRedencionController extends Controller
         $em = $this->getDoctrine()->getManager();
         $producto = new OrdenesProducto();
         $orden = new OrdenesCompra();
-        $form = $this->createForm(new OrdenesCompraCantidadType(), $orden);       
+        $form = $this->createForm(OrdenesCompraCantidadType::class, $orden);       
 
 
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
 
             if ($form->isValid()) {
                 $ordenes = $em->getRepository('IncentivesOrdenesBundle:OrdenesCompra')->find($id);
@@ -1486,7 +1485,7 @@ class OrdenRedencionController extends Controller
                 $em->flush();
                 
                 $form=null;
-                $form = $this->createForm(new OrdenesCompraCantidadType(), $orden);
+                $form = $this->createForm(OrdenesCompraCantidadType::class, $orden);
             }
             
             $this->pdfAction($id);
@@ -1526,15 +1525,15 @@ class OrdenRedencionController extends Controller
             $productos = new OrdenesProducto();
         }
 
-        $form = $this->createForm(new OrdenesProductoCantidadType(), $productos);
+        $form = $this->createForm(OrdenesProductoCantidadType::class, $productos);
                     
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
             $valores = $request->get('ordenesproducto');
 
             if ($form->isValid()) {
-                $id=($this->get('request')->request->get('id'));
-                $ordenes=($this->get('request')->request->get('ordenesproducto'));
+                $id=($request->request->get('id'));
+                $ordenes=($request->request->get('ordenesproducto'));
                 $productos = $em->getRepository('IncentivesOrdenesBundle:OrdenesProducto')->find($id);
                 $cantidad_inicial = $productos ->getCantidad();
                 $orden = $em->getRepository('IncentivesOrdenesBundle:OrdenesCompra')->find($productos->getOrdenesCompra()->getId());
@@ -1612,15 +1611,15 @@ class OrdenRedencionController extends Controller
            echo "error"; 
         }
 
-        $form = $this->createForm(new OrdenesTrackingType(), $tracking);
+        $form = $this->createForm(OrdenesTrackingType::class, $tracking);
                     
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
             $valores = $request->get('ordenestracking');
 
             if ($form->isValid()) {
-                $id=($this->get('request')->request->get('id'));
-                $ordenes=($this->get('request')->request->get('ordenesproducto'));
+                $id=($request->request->get('id'));
+                $ordenes=($request->request->get('ordenesproducto'));
                 $productos = $em->getRepository('IncentivesOrdenesBundle:OrdenesProducto')->find($id);
 
                 //actualiza valores
@@ -1806,13 +1805,11 @@ if(isset($value['tracking']['ordenproducto']['redencion'])) {
             'cc' => $cantCC
         ));
 
-
-        require_once($this->get('kernel')->getRootDir().'/config/dompdf_config.inc.php');
         $rootDir = dirname($this->container->getParameter('kernel.root_dir'));
         $Dir = '/web/Ordenes/';
         $uploadDir = $rootDir.$Dir;
 
-        $dompdf = new \DOMPDF();
+        $dompdf = new DOMPDF();
         $dompdf->load_html($html,'UTF-8');
         $dompdf->render();
         $pdf = $dompdf->output();

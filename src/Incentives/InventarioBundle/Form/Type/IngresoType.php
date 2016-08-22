@@ -5,6 +5,10 @@ namespace Incentives\InventarioBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use PUGX\AutocompleterBundle\Form\Type\AutocompleteType;
 
 class IngresoType extends AbstractType
 {
@@ -14,18 +18,18 @@ class IngresoType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('producto', 'entity', array(
+        $builder->add('producto', EntityType::class, array(
             'class' => 'IncentivesCatalogoBundle:Producto',
-            'property' => 'nombreid',
-            'empty_value' => 'Seleccione una opcion',
+            'choice_label' => 'nombreid',
+            //'empty_value' => 'Seleccione una opcion',
         ));
-        $builder->add('cantidad', 'integer', array(
+        $builder->add('cantidad', IntegerType::class, array(
                 "mapped" => false,
             ));
         $builder->add('valorCompra');
         $builder->add('observacion');
 
-        $builder->add('Enviar', 'submit');
+        $builder->add('Enviar', SubmitType::class);
     }
     
     /**

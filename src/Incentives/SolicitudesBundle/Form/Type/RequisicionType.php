@@ -6,6 +6,9 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Incentives\OperacionesBundle\Entity\ProveedoresRepository;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use PUGX\AutocompleterBundle\Form\Type\AutocompleteType;
 
 class RequisicionType extends AbstractType
 {
@@ -16,7 +19,7 @@ class RequisicionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('fechaCreacion', 'date', array(
+            ->add('fechaCreacion', DateType::class, array(
             'input'  => 'datetime',
             'widget' => 'single_text',
         ));
@@ -24,7 +27,7 @@ class RequisicionType extends AbstractType
         $builder
             ->add('observaciones');
 
-        $builder->add('Enviar', 'submit');
+        $builder->add('Enviar', SubmitType::class);
     }
     
     /**

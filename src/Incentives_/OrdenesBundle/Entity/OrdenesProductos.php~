@@ -1,0 +1,66 @@
+<?php
+
+namespace Incentives\OrdenesBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * OrdenesProductos
+ *
+ * @ORM\Table()
+ * @ORM\Entity
+ */
+class OrdenesProductos
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+
+    /**
+     * 
+     * @ORM\ManyToOne(targetEntity="Incentives\CatalogoBundle\Entity\Producto", inversedBy="ordenesproductos", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="producto_id", referencedColumnName="id")
+     * 
+     */
+    protected $productos;
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set productos
+     *
+     * @param \Incentives\CatalogoBundle\Entity\Producto $productos
+     * @return OrdenesProductos
+     */
+    public function setProductos(\Incentives\CatalogoBundle\Entity\Producto $productos = null)
+    {
+        $this->productos = $productos;
+    
+        return $this;
+    }
+
+    /**
+     * Get productos
+     *
+     * @return \Incentives\CatalogoBundle\Entity\Producto 
+     */
+    public function getProductos()
+    {
+        return $this->productos;
+    }
+}

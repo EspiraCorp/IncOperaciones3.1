@@ -54,7 +54,7 @@ class ProveedorController extends Controller
                     
 		if ($request->isMethod('POST')) {
 
-			$form->bind($request);
+			$form->handleRequest($request);
 
 			if ($form->isValid()) {
 				$em = $this->getDoctrine()->getManager();
@@ -67,7 +67,7 @@ class ProveedorController extends Controller
                     }
                 }    
                     
-                $pro=($this->get('request')->request->get('proveedores'));
+                $pro=($request->request->get('proveedores'));
 
                 $proveedor->setDireccion($pro["direccion"]);
                 $pais = $em->getRepository('IncentivesOperacionesBundle:Pais')->find($pro["pais"]);
@@ -166,13 +166,13 @@ class ProveedorController extends Controller
 	    $actividad = new Aeconomica();
 
 		if ($request->isMethod('POST')) {
-			$pro=($this->get('request')->request->get('proveedores'));
-			$form->bind($request);
+			$pro=($request->request->get('proveedores'));
+			$form->handleRequest($request);
 
 			//if ($form->isValid()) {
 				
-				$pro=($this->get('request')->request->get('proveedores'));
-				$id=($this->get('request')->request->get('id'));
+				$pro=($request->request->get('proveedores'));
+				$id=($request->request->get('id'));
 				$proveedor = $em->getRepository('IncentivesOperacionesBundle:Proveedores')->find($id);
 				
 				$proveedor->setDireccion($pro["direccion"]);
@@ -433,13 +433,13 @@ class ProveedorController extends Controller
 	    }
 	    
 	    $archivo = new Archivos();
-	    $form = $this->createForm(new ArchivosType(), $archivo);
+	    $form = $this->createForm(ArchivosType::class, $archivo);
 	       
 		if ($request->isMethod('POST')) {
-			$form->bind($request);
+			$form->handleRequest($request);
 
 			if ($form->isValid()) {
-				$id=($this->get('request')->request->get('id'));
+				$id=($request->request->get('id'));
 				$proveedor = $em->getRepository('IncentivesOperacionesBundle:Proveedores')->find($id);
 			    $file = $form['archivo']->getData();
 			    // compute a random name and try to guess the extension (more secure)
@@ -471,7 +471,7 @@ class ProveedorController extends Controller
 
 			    $archivo->setArchivo($nombreArchivo);
 			    $archivo->setRuta($Dir);
-			    $id=($this->get('request')->request->get('id'));
+			    $id=($request->request->get('id'));
                 $archivo->setProveedor($proveedor);
                 
                 $estado = $em->getRepository('IncentivesCatalogoBundle:Estados')->find(1);
@@ -507,13 +507,13 @@ class ProveedorController extends Controller
 	     	$proveedor = new Proveedores();
 	    }
 	    $catalogo = new Catalogo();
-	    $form = $this->createForm(new CatalogoType(), $catalogo);
+	    $form = $this->createForm(CatalogoType::class, $catalogo);
 	       
 		if ($request->isMethod('POST')) {
-			$form->bind($request);
+			$form->handleRequest($request);
 
 			if ($form->isValid()) {
-				$id=($this->get('request')->request->get('id'));
+				$id=($request->request->get('id'));
 				$proveedor = $em->getRepository('IncentivesOperacionesBundle:Proveedores')->find($id);
 				
 			    $file = $form['archivo']->getData();
@@ -535,7 +535,7 @@ class ProveedorController extends Controller
 			    $catalogo->setRuta($Dir);
 			    $catalogo->setArchivo($nombreArchivo);
 
-			    $id=($this->get('request')->request->get('id'));
+			    $id=($request->request->get('id'));
                 $catalogo->setProveedor($proveedor);
 			     
 			    $estado = $em->getRepository('IncentivesCatalogoBundle:Estados')->find(1);
@@ -574,10 +574,10 @@ class ProveedorController extends Controller
         $pais = new Country();
         $ciudad = new City();
 
-		$form = $this->createForm(new LocationType(), $pais);
+		$form = $this->createForm(LocationType::class, $pais);
 
 		if ($request->isMethod('POST')) {
-			$form->bind($request);
+			$form->handleRequest($request);
 
 			if ($form->isValid()) {
 			}
@@ -596,7 +596,7 @@ class ProveedorController extends Controller
 	    $this->em = $this->get('doctrine')->getEntityManager();
 	    $this->repository = $this->em->getRepository('RunnerMainBundle:City');
 	 
-	    $countryId = $this->get('request')->query->get('data');
+	    $countryId = $request->query->get('data');
 	 
 	    $cities = $this->repository->findByCountry($countryId);
 	 
@@ -660,7 +660,7 @@ class ProveedorController extends Controller
     	$em = $this->getDoctrine()->getManager();
     	if (isset($id)){
 	        $usuario = $em->getRepository('IncentivesBaseBundle:Usuario')->find($id);
-	        $form = $this->createForm(new PassType(), $usuario);
+	        $form = $this->createForm(PassType::class, $usuario);
 	    	if ($usuario->getPassword()==$pass)
 	    	{
 	    		return $this->render('IncentivesOperacionesBundle:Proveedor:pass.html.twig', array(
@@ -672,7 +672,7 @@ class ProveedorController extends Controller
 		        );
 		    }
 	    }else{
-	    	$form = $this->createForm(new PassType());
+	    	$form = $this->createForm(PassType::class);
 	    	$usuario = new Usuario();
 	    }
 
@@ -685,12 +685,12 @@ class ProveedorController extends Controller
 
 
     	if ($request->isMethod('POST')) {
-			$form->bind($request);
+			$form->handleRequest($request);
 
 			if ($form->isValid()) {
-				$pro=($this->get('request')->request->get('password'));
-				$id=($this->get('request')->request->get('id'));
-				$pass=($this->get('request')->request->get('pass'));
+				$pro=($request->request->get('password'));
+				$id=($request->request->get('id'));
+				$pass=($request->request->get('pass'));
 				$usuario = $em->getRepository('IncentivesBaseBundle:Usuario')->find($id);
 
 				if ($usuario->getPassword()!=$pass)
@@ -735,11 +735,11 @@ class ProveedorController extends Controller
             ->setAction($this->generateUrl('proveedores_importar'))
             ->setMethod('POST')
             ->add('excel', 'file')
-            ->add('cargar', 'submit')
+            ->add('cargar', SubmitType::class)
             ->getForm();
 
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
 
             $excel = $form['excel']->getData();
 
@@ -1359,17 +1359,17 @@ public function exportarAction()
      	$calificacion->setUsuario($user);
      	$calificacion->setEstado("0");
 
-	    $form = $this->createForm(new ProveedoresCalificacionType(), $calificacion);
+	    $form = $this->createForm(ProveedoresCalificacionType::class, $calificacion);
 	       
 		if ($request->isMethod('POST')) {
 
-            $form->bind($request);
+            $form->handleRequest($request);
 
             if ($form->isValid()) {
 				$proveedor = $em->getRepository('IncentivesOperacionesBundle:Proveedores')->find($id);
                 $calificacion->setProveedor($proveedor);
 
-                $pro=($this->get('request')->request->get('proveedorescalificacion'));
+                $pro=($request->request->get('proveedorescalificacion'));
                 $qb = $em->createQueryBuilder();
 			    $qb->select('count(c)');
 			    $qb->from('IncentivesOperacionesBundle:ProveedoresCalificacion','c');
@@ -1400,20 +1400,20 @@ public function exportarAction()
 
      	$calificacion = new ProveedoresCalificacion();
 
-	    $form = $this->createForm(new ProveedoresPlanType(), $calificacion);
+	    $form = $this->createForm(ProveedoresPlanType::class, $calificacion);
 
 	    $proveedor =  $this->getUser()->getProveedor();
 	       
 		if ($request->isMethod('POST')) {
 
-            $form->bind($request);
+            $form->handleRequest($request);
 
             if ($form->isValid()) {
             	$em = $this->getDoctrine()->getManager();
 
-                $pro=($this->get('request')->request->get('cargaplan'));	
+                $pro=($request->request->get('cargaplan'));	
 
-                $id=($this->get('request')->request->get('id'));
+                $id=($request->request->get('id'));
 				$calificacion = $em->getRepository('IncentivesOperacionesBundle:ProveedoresCalificacion')->find($id);
 
                 $calificacion->setObservacionproveedor($pro["observacionproveedor"]);
@@ -1539,11 +1539,11 @@ public function exportarAction()
             ->setAction($this->generateUrl('proveedores_importar_proveedor'))
             ->setMethod('POST')
             ->add('excel', 'file')
-            ->add('cargar', 'submit')
+            ->add('cargar', SubmitType::class)
             ->getForm();
 
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
 
             $excel = $form['excel']->getData();
 
@@ -1587,7 +1587,7 @@ public function exportarAction()
             echo count($repetidos_doc).'</br>';
             echo count($repetidos_corr).'</br>';*/
             
-            //$proveedor_id = $this->get('request')->query->get('id');
+            //$proveedor_id = $request->query->get('id');
             //$pro = $this->getRequest();
 			//$pro->query->get('id'); 
 			//$pro->query->get('id');

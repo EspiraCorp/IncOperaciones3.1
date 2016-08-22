@@ -1,0 +1,7 @@
+parameters:
+#    incentives_ordenes.example.class: Incentives\OrdenesBundle\Example
+
+services:
+#    incentives_ordenes.example:
+#        class: %incentives_ordenes.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

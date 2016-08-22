@@ -1,0 +1,7 @@
+parameters:
+#    incentives_cotizaciones.example.class: Incentives\Bundle\SolicitudesBundle\Example
+
+services:
+#    incentives_cotizaciones.example:
+#        class: %incentives_cotizaciones.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

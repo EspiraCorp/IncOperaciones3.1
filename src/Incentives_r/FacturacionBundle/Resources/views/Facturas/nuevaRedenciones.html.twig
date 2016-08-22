@@ -1,0 +1,72 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Nueva Factura Redenciones{% endblock %}
+
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+<div class="box span8">
+    <div class="box-header well" data-original-title>
+        <h2><i class="icon-edit"></i>Nueva Factura Redenciones</h2>
+            <div class="box-icon">
+                <a href="{{ path('facturas_listado', {"programa": programa.id }) }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+            </div>
+    </div>
+<div class="box-content">
+    <table class="table table-bordered table-striped">
+					<tbody>
+						<tr><td>Programa</td><td>{{ programa.nombre }}</td></tr>
+						<tr><td>Cliente</td><td>{{ programa.cliente.nombre }}</td></tr>
+						<tr><td>Pais</td><td>{{ pais.nombre }}</td></tr>
+					</tbody>
+				</table>
+<form action="{{ path('factura_redencionesgenerar') }}" method="POST" {{ form_enctype(form) }} class="form-horizontal" novalidate>
+    <fieldset>
+        <input type='hidden' name='pais' value={{ pais.id }}>
+        <input type='hidden' name='programa' value={{ programa.id }}>
+        <div class="control-group">
+            {{ form_label(form.periodo, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.periodo, { 'id': 'fecha', 'value' :  fechaInicio|date("Y-m-d") }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            {{ form_label(form.fecha, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.fecha, { 'id': 'fecha', 'value' :  fecha|date("Y-m-d") }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            {{ form_label(form.fechaInicio, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.fechaInicio, { 'id': 'fecha', 'value' :  fechaInicio|date("Y-m-d") }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            {{ form_label(form.fechaFin, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.fechaFin, { 'id': 'fecha', 'value' :  fechaFin|date("Y-m-d") }) }}
+            </div>
+        </div>
+    </fieldset>
+
+<div class="form-actions">
+    {{ form_widget(form.Enviar, { 'attr': {'class': 'btn btn-primary'} }) }}
+</div>
+{{ form_widget(form._token) }}
+</form>
+</div>
+</div>
+ </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        $( "#fecha" ).datepicker({ dateFormat: 'yy-mm-dd' });
+        $( "#fechaInicio" ).datepicker({ dateFormat: 'yy-mm-dd' });
+        $( "#fechaFin" ).datepicker({ dateFormat: 'yy-mm-dd' });
+    </script>
+
+
+{% endblock %}

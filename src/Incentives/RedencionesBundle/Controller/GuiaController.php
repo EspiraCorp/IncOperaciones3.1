@@ -23,10 +23,10 @@ class GuiaController extends Controller
 
         $guia = new GuiaEnvio();
 
-        $form = $this->createForm(new GuiaEnvioType(), $guia);
+        $form = $this->createForm(GuiaEnvioType::class, $guia);
                     
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
 
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();

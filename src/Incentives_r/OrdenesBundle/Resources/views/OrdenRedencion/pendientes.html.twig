@@ -1,0 +1,97 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Nueva Orden{% endblock %}
+
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+<div class="box span12">
+<div class="box-header well" data-original-title>
+                        <h2><i class="icon-edit"></i>Nueva Orden</h2>
+                        <div class="box-icon">
+                            <a href="{{ path('ordenes') }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+                        </div>
+                    </div>
+<div class="box-content">
+<form action="{{ path('ordenredencion_pendientes') }}" method="POST" {{ form_enctype(form) }} class="form-horizontal" novalidate>
+    {{ form_errors(form) }}
+    <fieldset>
+        <div class="control-group">
+            {{ form_label(form.proveedor, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.proveedor, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            {{ form_label(form.fechaCreacion, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.fechaCreacion, { 'id': 'fechaCreacion' }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            {{ form_label(form.fechaVencimiento, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.fechaVencimiento, { 'id': 'fechaVencimiento' }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            {{ form_label(form.observaciones, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.observaciones, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        
+    </fieldset>
+    <div class="row-fluid sortable ui-sortable">
+        <div class="ordenesProducto box span10" data-prototype="{{ form_widget(form.ordenesProducto.vars.prototype)|e }}">
+            <div class="box-header well" data-original-title>            
+                <h2><i class="icon-user"></i>Productos</h2>
+            </div>
+            <div class="box-content">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Agregar</th>
+                            <th>Producto</th>
+                            <th>Cantidad pendiente</th>
+                            <th>Orden Original</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% set i=0 %}
+                        {% for orden in ordenes %}
+                            {% for producto in productos %}
+                                {% if (producto.ordenesCompra==orden and producto.cantidadrecibida!=producto.cantidad) %}
+                                {% set i=i+1 %}
+                                 <tr>
+                                    <td><input type="checkbox" name="agregar[{{ i }}]" value={{ producto.id }}></td>
+                                    <td>{{ producto.producto.nombre }}</td>
+                                    <td>{{ producto.cantidad-producto.cantidadrecibida }}</td>
+                                    <td>{{ producto.ordenesCompra.id }}</td>
+                                 </tr>
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                    </tbody>
+                </table>   
+                </div>
+        </div> 
+    </div>  
+<div class="form-actions">
+    {{ form_widget(form.Enviar, { 'attr': {'class': 'btn btn-primary'} }) }}
+</div>
+{{ form_widget(form._token) }}
+</form>
+</div>
+</div>
+ </div>
+{% endblock %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+   <script>
+        $( "#fechaCreacion" ).datepicker({ dateFormat: 'yy-mm-dd' });
+        $( "#fechaVencimiento" ).datepicker({ dateFormat: 'yy-mm-dd' });
+    </script>
+
+{% endblock %}

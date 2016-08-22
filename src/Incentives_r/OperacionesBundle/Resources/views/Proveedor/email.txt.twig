@@ -1,0 +1,13 @@
+Bogotá, Colombia. 
+
+Apreciado {{ usuario.nombre }},
+
+Desde hoy, al haber diligenciado su inscripción en nuestra plataforma tecnológica su empresa hace parte de nuestro selecto grupo de proveedores, agradecemos el tiempo empleado en la realización del registro. 
+
+Igualmente, le invitamos a formalizar la inscripción y adjuntar la documentación necesaria para culminar satisfactoriamente esta actividad.
+
+Para actualizar su contraseña por favor ingrese a la siguiente direccion.
+
+{{ url('proveedores_actualizarpassword', {'id': usuario.id, 'pass': usuario.password}) }}
+
+USUARIO: {{ usuario.username }}

@@ -1,0 +1,51 @@
+incentives_garantias_homepage:
+    path:  /hello/{name}
+    defaults: { _controller: IncentivesGarantiasBundle:Default:index }
+
+garantias_redenciones:
+    path:  /garantias/redenciones
+    defaults: { _controller: IncentivesGarantiasBundle:Redenciones:listado}
+
+garantiasredenciones_programa:
+    path:  /garantias/redenciones/{programa}
+    defaults: { _controller: IncentivesGarantiasBundle:Redenciones:listadoprograma, programa: null}
+
+garantiasredenciones_datos:
+    path:  /garantias/datosredencion/{redencion}
+    defaults: { _controller: IncentivesGarantiasBundle:Redenciones:datosredencion, redencion: null}
+
+garantiasnovedad_nueva:
+    path:  /garantias/novedadnueva/{redencion}
+    defaults: { _controller: IncentivesGarantiasBundle:Redenciones:novedad, redencion: null}
+
+garantiasnovedades_listado:
+    path:  /garantias/novedadeslistado
+    defaults: { _controller: IncentivesGarantiasBundle:Redenciones:novedadeslistado}
+
+garantiasnovedades_accion:
+    path:  /garantias/novedadesaccion/{novedad}
+    defaults: { _controller: IncentivesGarantiasBundle:Redenciones:novedadesaccion, novedad: null}
+
+garantiasrecompras_listado:
+    path:  /garantias/recompraslistado
+    defaults: { _controller: IncentivesGarantiasBundle:Redenciones:recompraslistado}
+
+garantiasrecompra_aprobacion:
+    path:  /garantias/recompraaprobacion/{novedad}
+    defaults: { _controller: IncentivesGarantiasBundle:Redenciones:aprobacionrecompra, novedad: null}
+
+garantiasrecompra_aprobar:
+    path:  /garantias/recompraaprobar/{novedad}
+    defaults: { _controller: IncentivesGarantiasBundle:Redenciones:aprobarrecompra, novedad: null}
+
+garantiasrecompra_cancelar:
+    path:  /garantias/recompracancelar/{novedad}
+    defaults: { _controller: IncentivesGarantiasBundle:Redenciones:cancelarrecompra, novedad: null}
+
+garantias_editarenvio:
+    path:  /garantias/editarenvio/{redencion}
+    defaults: { _controller: IncentivesGarantiasBundle:Redenciones:envioedicion, redencion: null}
+
+garantias_reenvios:
+    path:  /garantias/reenvios
+    defaults: { _controller: IncentivesGarantiasBundle:Redenciones:reenvioslistado }

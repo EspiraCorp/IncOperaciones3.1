@@ -1,0 +1,32 @@
+<table>
+    <tr>
+        <th>Id</th>
+        <th>Programa</th>
+        <th>Centro Costos</th>
+        <th>Valor Compra</th>
+        <th>Valor Venta</th>
+        <th>Rentabilidad</th>
+    </tr>
+{% set ij = 0 %}
+{% for producto in productos %}
+    <tr>
+        {% set ij = ij + 1 %}
+        <td>{{ ij }}</td>
+        <td>{{ producto.ordenesCompra.solicitud.programa.nombre }}</td>
+        <td>{{ producto.ordenesCompra.solicitud.programa.centrocostos }}</td>
+        {% set rentabilidad = 0 %}
+        {% set valorventa = 0 %}
+            {% if (producto.valorunidad!=0 and producto.incremento!=0) %}
+                {% set valorventa = producto.precioCliente/(1-(producto.incremento/100)) %}
+                {% if (producto.valorunidad!=0 and producto.incremento!=0) %}
+                    {% set rentabilidad = (1-((producto.valorunidad - (producto.descuento/producto.cantidad))/valorventa ))*100 %}
+                {% endif %}
+            {% endif %}
+        <td>${{ producto.valorunidad |number_format(2, ',', '.') }}</td>
+        <td>${{ valorventa |number_format(2, ',', '.') }}</td>
+        <td>{{ rentabilidad |number_format(2, ',', '.') }}%</td>
+    </tr>
+
+{% endfor %}
+</table>
+

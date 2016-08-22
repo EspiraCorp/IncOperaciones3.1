@@ -1,0 +1,24 @@
+{# src/incentives/ProveedoresBundle/Resources/views/Default/new.html.twig #}
+{% extends '::base.html.twig' %}
+{% block title %}Editar proveedor{% endblock %}
+{% block cuerpo %}
+<div class="box span12">
+    <div class="box-header well" data-original-title="">
+        Editar Proveedor<div class="box-icon"><a class="btn btn-minimize btn-round" href="#"><i class="icon-chevron-up"></i></a><a class="btn btn-close btn-round" href="#"><i class="icon-remove"></i></a></div>
+    </div>
+    <div class="row">
+        <div class="span12">
+            <form action="{{ path('incentives_operaciones_prueba') }}" method="POST" novalidate>
+                {{ form_row(form.address) }}
+                {{ form_row(form.country) }}
+                {{ form_row(form.province) }}
+                {{ form_row(form.city) }}
+                {{ form_rest(form) }}
+                <button type="submit" class="btn btn-success">
+                    Guardar
+                </button>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+

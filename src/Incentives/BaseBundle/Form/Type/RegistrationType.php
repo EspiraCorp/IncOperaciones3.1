@@ -4,6 +4,7 @@ namespace Incentives\BaseBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 
 class RegistrationType extends AbstractType
 {
@@ -12,7 +13,7 @@ class RegistrationType extends AbstractType
         $builder->add('user', new UserType());
         $builder->add(
             'Terminos y condiciones',
-            'checkbox',
+            CheckboxType::classs,
             array('property_path' => 'termsAccepted')
         );
     }

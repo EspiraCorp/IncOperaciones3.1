@@ -5,6 +5,9 @@ namespace Incentives\RedencionesBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use PUGX\AutocompleterBundle\Form\Type\AutocompleteType;
 
 class RedencionProductoType extends AbstractType
 {
@@ -25,11 +28,11 @@ class RedencionProductoType extends AbstractType
 		
 		$id_catalogo = $this->id_catalogo;
 
-        $builder->add('productocatalogo', 'entity', array(
-                'empty_value' => 'Select',
+        $builder->add('productocatalogo', EntityType::class, array(
+                //'empty_value' => 'Select',
                 'label' => 'Producto', 
                 'class' => 'IncentivesCatalogoBundle:Productocatalogo', 
-                'property' => 'producto.nombreId', 
+                'choice_label' => 'producto.nombreId', 
                 'query_builder' => function(\Doctrine\ORM\EntityRepository $er) use ($id_catalogo) {
                     return $er->createQueryBuilder('p')
                     ->addSelect('pd')
@@ -41,7 +44,7 @@ class RedencionProductoType extends AbstractType
             ))
            ;
 
-        $builder->add('Enviar', 'submit');
+        $builder->add('Enviar', SubmitType::class);
     }
     
     /**

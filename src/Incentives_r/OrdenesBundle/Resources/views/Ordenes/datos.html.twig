@@ -1,0 +1,298 @@
+{% extends app.request.isXmlHttpRequest ? "MDWDemoBundle::layout_ajax.html.twig" : "::base.html.twig" %}
+{% block title %}Datos Orden{% endblock %}
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+<div class="box">
+    <div class="box-header well" data-original-title="">
+        Orden	
+        <div class="box-icon">
+				<div class="box-icon">
+                    <a href="{{ path('ordenes') }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+                </div>
+    	</div>
+    </div>
+</div>
+    <div class="box span12">
+	    <div class="box-content">
+	    	
+	    	<div class="box-header well">
+				<h2>
+				    {% if (is_granted('ROLE_DIR') or ordenes.ordenesEstado.id == 1)%}
+					<a href="{{ path('ordenes_editar',  {"id": ordenes.id}) }}">
+						<button class="btn btn-primary">
+							<i class="icon-edit icon-white"></i>
+						</button>
+					</a>
+					{% endif %}
+					
+					
+				</i>Datos Orden</h2>
+				
+					<div class="box-icon">
+						<a href="{{asset(ordenes.rutapdf | slice (5))}}"  class="btn btn-info" target="_blank">
+							<i class="icon-download-alt icon-white"></i>
+						</a>
+					{% if not is_granted('ROLE_PROV') %}
+						<a href="{{asset(ordenes.rutapdfcodes | slice (5))}}"  class="btn btn-info">
+							<i class="icon-barcode icon-white"></i>
+						</a>
+					{% if (ordenes.ordenesEstado.id == 5) %}
+						<a href="{{ path('ordenredencion_pdffinal',  {"id": ordenes.id}) }}"  class="btn btn-info">
+							<i class="icon-download icon-white"></i>
+						</a>
+					{% endif %}
+
+					{% if (ordenes.ordenesEstado.id != 1) %}
+						<a href="{{ path('ordenes_correo',  {"id": ordenes.id}) }}"  class="btn btn-info">
+							<i class="icon-envelope icon-white"></i>
+						</a>
+					{% endif %}
+					{% endif %}
+					</div>
+			</div>
+			
+
+				<table class="table table-bordered table-striped">
+					<tbody>
+						<tr><td>Consecutivo</td><td>{{ ordenes.consecutivo }}</td></tr>
+						<tr><td>Proveedor</td><td>{{ ordenes.proveedor.nombre }}</td></tr>
+						<tr><td>Programa</td><td>{% if ordenes.programa is not null %}{{ ordenes.programa.nombre }}{% endif %}</td></tr>
+						<tr><td>Fecha de solicitud</td><td>{{ ordenes.fechaCreacion | date("Y-m-d") }}</td></tr>
+						<tr><td>Fecha de entrega</td><td>{{ ordenes.fechaVencimiento | date("Y-m-d")  }}</td></tr>
+						<tr><td>Tipo Moneda</td><td>{% if ordenes.monedaTipo is not null %}{{ ordenes.monedaTipo.nombre }}{% endif %}</td></tr>
+						<tr><td>TRM</td><td>{{ ordenes.trm  }}</td></tr>
+						<tr><td>Cancelado</td>
+							{% if ordenes.cancelado==true %}
+								<td>Si</td>
+							{% else %}
+								<td>No</td>
+							{% endif %}
+						</tr>
+						<tr><td>Estado</td><td>{{ ordenes.ordenesEstado.nombre }}</td>
+						</tr>
+						{% if not is_granted('ROLE_PROV') %}
+						<tr><td>Acción</td><td>
+								<div class="estado" >
+									
+										{% if (ordenes.ordenesEstado.id == 1) %}
+												<a class="btn btn-info" onClick='confirmar("{{ url('ordenredencion_aprobar', {'id': ordenes.id}) }}")'>
+												<i class="icon-ok icon-white" align='rigth'></i>	
+												Aprobar										
+											</a>
+										{% endif %}
+										{% if (ordenes.ordenesEstado.id == 2 or ordenes.ordenesEstado.id == 4) %}
+											<a class="btn btn-info" onClick='confirmar("{{ url('ordenredencion_cerrar', {'id': ordenes.id }) }}")'>
+													<i class="icon-ok icon-white" align='rigth'></i>									
+													Cerrar										
+												</a>
+										{% endif %}
+										{% if (ordenes.ordenesEstado.id == 1 or ordenes.ordenesEstado.id == 2) %}
+											<a class="btn btn-danger" onClick='confirmar("{{ url('ordenredencion_cancelar', {'id': ordenes.id }) }}")'>
+												<i class="icon-trash icon-white" align='rigth'></i>			
+													Cancelar										
+											</a>
+										{% endif %}
+									
+								</div>
+							</td>
+						</tr>
+						{% endif %}
+					</tbody>
+				</table>
+		</div>
+	</div>
+
+	
+
+	<div class="box span12">
+		<div class="box-content">
+			
+		    <div class="box-header well">
+				<h2>
+					{% if not is_granted('ROLE_PROV') %}
+							{% if ordenes.ordenesEstado.id==1 or is_granted('ROLE_DIR') %}
+							<a href="{{ path('ordenredencion_editarvalores',  {"id": ordenes.id}) }}">
+								<button class="btn btn-primary">
+									<i class="icon-edit icon-white"></i>
+								</button>
+							</a>
+							
+							{% if ordenes.ordenesTipo.id==1  %}
+							<a href="{{ path('ordenes_producto_cotizaciones',  {"id": ordenes.id}) }}">
+								<button class="btn btn-info">
+									<i class="icon-plus icon-white"></i>
+								</button>
+							</a>
+							{% endif %}
+							
+							<!-- <a href="{{ path('ordenes_agregarproducto',  {"id": ordenes.id}) }}">
+								<button class="btn btn-info">
+									<i class="icon-plus icon-white"></i>
+								</button>
+							</a> -->
+						{% endif %}
+						
+						
+					{% endif %}
+					Productos
+				</h2>
+			</div>
+
+			{% if productos | length!=0 %}
+			<table class="table table-bordered table-striped">
+				<thead>
+					<tr>
+						<th>Referencia</th>
+						<th>Nombre</th>
+						<th>Codigo de Barras</th>
+						<th>Codigo Incentives</th>
+						<th>Descripcion</th>
+						<th>Cantidad</th>
+						<th>Cantidad recibida</th>
+						<th>Valor unitario</th>
+						<th>Descuento</th>
+						<th>Valor total</th>
+					</tr>
+				</thead>
+				{% set total=0 %}
+				<tbody>
+					{% set subtotal=0 %}
+	 				{% set totaliva = 0 %}
+	 				{% set descuento = 0 %}
+	 				{% set j=0 %}
+					{% for producto in productos %}	
+					<tr>
+						{% set j=j+1 %}
+						{% set i=0 %}
+								<td>{{ producto.producto.referencia }}</td>
+								<td>{{ producto.producto.nombre }}</td>
+								<td>{{ producto.producto.codEAN }}</td>	
+								<td>{{ producto.producto.codInc }}</td>	
+								<td>{{ producto.producto.descripcion  }}</td>	
+								<td>{{ producto.cantidad }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a id="{{ i }}" onClick="detalle('{{ j }}')" class="btn btn-success">+</a></td>
+								<td>{{ producto.cantidadrecibida  }}</td>
+								<td>$ {{ producto.valorunidad|number_format(2, ',', '.') }}</td>
+								<td>$ {{ producto.descuento|number_format(2, ',', '.') }}</td>
+								<td>$ {{ (producto.valortotal - producto.descuento)|number_format(2, ',', '.') }}</td>
+								{% if producto.producto.estadoIva == true %}
+										{% set totaliva = totaliva + ((producto.valortotal - producto.descuento)*(producto.producto.iva/100)) %}
+								{% endif %}	
+								{% set descuento = descuento + producto.descuento %}
+								{% set subtotal = subtotal + producto.valortotal - producto.descuento  %}				
+								{% set i=i+1 %}
+
+					</tr>
+					
+					{% if (ordenes.ordenestipo.id == 2) %}
+					<tr id="detalle_{{ j }}" class="hide">
+						<td colspan="1"></td>
+						<td colspan="11">
+		                    <div>{{ render(controller('IncentivesOrdenesBundle:Ordenes:detalleProductoOrden', { 'productoOrden': producto.id })) }}</div>
+		                </td>
+		            </tr>
+		            {% endif %}
+		            
+		            {% if (ordenes.ordenestipo.id == 1) %}
+					<tr id="detalle_{{ j }}" class="hide">
+						<td colspan="3"></td>
+						<td colspan="6">
+		                    <div>{{ render(controller('IncentivesOrdenesBundle:Ordenes:detalleProductoRequisicion', { 'productoOrden': producto.id })) }}</div>
+		                </td>
+		            </tr>
+		            {% endif %}
+
+					{% if ordenes.proveedor.id == 79 %}
+						<tr>
+							<td colspan="1"></td>
+							<td colspan="10">
+							{% if(tracking[producto.id]|length > 0) %}
+								<table class="table table-bordered table-striped">
+									<tr>
+										<th>O. Amazon</th>
+										<th>Tracking</th>
+										<th>Tarjeta</th>
+										<th>Precio</th>
+										<th>Cantidad</th>
+									</tr>
+									{% for track in tracking[producto.id] %}
+									<tr>
+										<td>{{ track.ordenAmazon }}</td>
+										<td>{{ track.tracking }}</td>
+										<td>{{ track.tarjeta }}</td>
+										<td>{{ track.precio }}</td>
+										<td>{{ track.cantidad }}</td>
+									</tr>
+									{% endfor %}
+								</table>
+							{% endif %}
+							{{ render(controller('IncentivesOrdenesBundle:OrdenRedencion:tracking', { "id": producto.id})) }}</td>
+							</td>
+						</tr>
+						
+					{% endif %}
+
+					{% endfor %}
+					<tr>
+						<th colspan='9'>Subtotal</th>
+						<td>$ {{ subtotal|number_format(2, ',', '.') }}</td>
+					</tr>
+					<tr>
+			 			<th colspan='9'>Domicilio</th>
+			 			<td>$ {{ ordenes.domicilio|number_format(2, ',', '.') }}</td>
+			 		</tr>
+			 		<tr>
+			 			<th colspan='9'>Servicio Logistico</th>
+			 			<td>$ {{ ordenes.servicioLogistico|number_format(2, ',', '.') }}</td>
+			 		</tr>
+			 		<tr>
+			 			<th colspan='9'>Comisicon Bancaria</th>
+			 			<td>$ {{ ordenes.comisionBancaria|number_format(2, ',', '.') }}</td>
+			 		</tr>
+			 		
+			 		<!-- <tr>
+			 			<th colspan='9'>Descuentos</th>
+			 			<td>$ {{ descuento|number_format(2, ',', '.') }}</td>
+			 		</tr> -->
+			 		
+					<tr>
+						
+						{% if ordenes.aplicaIva==1 %} {% set totaliva = totaliva + (ordenes.domicilio * 0.16) %} {% endif %}
+	 					{% if ordenes.aplicaIva==1 %} {% set totaliva = totaliva + (ordenes.comisionBancaria * 0.16) %} {% endif %}
+	 		
+						<th colspan='9'>IVA</th>
+						<td>$ {{ totaliva|number_format(2, ',', '.') }}</td>
+					</tr>
+					<tr>
+						<th colspan='9'>Valor total</th>
+						{% set total = subtotal + totaliva + ordenes.domicilio + ordenes.servicioLogistico + ordenes.comisionBancaria %}
+						<td>$ {{ total|number_format(2, ',', '.') }}</td>
+					</tr>
+				</tbody>
+			</table>
+			{% endif %}
+		</div>
+	</div>
+
+
+
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script>
+
+	function confirmar(ruta)
+	{
+	  if (confirm("Cambiar estado")==true){
+	  	self.location=ruta;
+	  }else{
+	  	alert("OK");
+	  }
+	  
+	}
+	 function detalle(id){
+        $('#detalle_'+id).toggle();
+    }
+
+	</script>
+{% endblock %}

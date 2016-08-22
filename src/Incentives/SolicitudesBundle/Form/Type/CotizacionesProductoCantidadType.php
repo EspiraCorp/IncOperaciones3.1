@@ -5,6 +5,7 @@ namespace Incentives\SolicitudesBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class CotizacionesProductoCantidadType extends AbstractType
 {
@@ -21,7 +22,7 @@ class CotizacionesProductoCantidadType extends AbstractType
             ->add('incremento')
         ;
 
-        $builder->add('Enviar', 'submit');
+        $builder->add('Enviar', SubmitType::class);
     }
     
     /**

@@ -21,6 +21,8 @@ use PHPExcel_Writer_Excel2007;
 use PHPExcel_Cell_DataValidation;
 use PHPExcel_Style_Fill;
 
+use Dompdf\Dompdf;
+
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
@@ -87,14 +89,14 @@ class FacturasController extends Controller
         $programa = $em->getRepository('IncentivesCatalogoBundle:Programa')->find($programa);
                     
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
 
-            $pro=($this->get('request')->request->get('factura'));
+            $pro=($request->request->get('factura'));
 
             if ($form->isValid()) {
                 // realiza alguna acción, tal como guardar la tarea en la base de datos
 
-                $id=($this->get('request')->request->get('programa'));
+                $id=($request->request->get('programa'));
                 
                 $ordenes = $em->getRepository('IncentivesFacturacionBundle:Factura')->findAll();
                 
@@ -468,7 +470,7 @@ class FacturasController extends Controller
         $facturas = $em->getRepository('IncentivesFacturacionBundle:Factura')->findAll();
         $factura = new Factura();
 
-        $form = $this->createForm(new FacturaGenerarType(), $factura);
+        $form = $this->createForm(FacturaGenerarType::class, $factura);
 
         $id = $programa;          
 
@@ -535,7 +537,7 @@ class FacturasController extends Controller
     {   
 
         //id del programar a facturar
-        $pro=($this->get('request')->request->get('factura'));
+        $pro=($request->request->get('factura'));
 
         $em = $this->getDoctrine()->getManager();
 
@@ -684,10 +686,9 @@ class FacturasController extends Controller
         $html = $this->render('IncentivesFacturacionBundle:Facturas:pdf.html.twig', 
             array('factura' => $factura,'productos'=>$productos, 'logistica'=>$logistica));
 
-        require_once($this->get('kernel')->getRootDir().'/config/dompdf_config.inc.php');
         $uploadDir=dirname($this->container->getParameter('kernel.root_dir')).'/web/Facturas/';
 
-        $dompdf = new \DOMPDF();
+        $dompdf = new DOMPDF();
         $dompdf->load_html($html,'UTF-8');
         $dompdf->render();
         $pdf = $dompdf->output();
@@ -728,10 +729,9 @@ class FacturasController extends Controller
         $html = $this->render('IncentivesFacturacionBundle:FacturasPremios:pdf.html.twig', 
             array('factura' => $factura, 'detalle'=>$detalle));
 
-        require_once($this->get('kernel')->getRootDir().'/config/dompdf_config.inc.php');
         $uploadDir=dirname($this->container->getParameter('kernel.root_dir')).'/web/bundles/FacturacionBundle/Facturas/';
 
-        $dompdf = new \DOMPDF();
+        $dompdf = new DOMPDF();
         $dompdf->load_html(utf8_decode($html));
         $dompdf->render();
         $pdf = $dompdf->output();
@@ -1075,9 +1075,9 @@ class FacturasController extends Controller
                     
         
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
 
-            $pro=($this->get('request')->request->get('factura'));
+            $pro=($request->request->get('factura'));
             
             if ($form->isValid()) {
                 // realiza alguna acción, tal como guardar la tarea en la base de datos
@@ -1247,13 +1247,13 @@ class FacturasController extends Controller
         $pais = $em->getRepository('IncentivesOperacionesBundle:Pais')->find($pais);
                     
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
 
-            $pro=($this->get('request')->request->get('factura'));
+            $pro=($request->request->get('factura'));
 
             if ($form->isValid()) {
 
-                $id=($this->get('request')->request->get('programa'));
+                $id=($request->request->get('programa'));
                 
                 $ordenes = $em->getRepository('IncentivesFacturacionBundle:Factura')->findAll();
                 
@@ -1442,16 +1442,16 @@ class FacturasController extends Controller
         $em = $this->getDoctrine()->getManager();
         $logistica = new FacturaLogistica();
 
-        $form = $this->createForm(new FacturaLogisticaType(), $logistica);
+        $form = $this->createForm(FacturaLogisticaType::class, $logistica);
                     
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
 
             if ($form->isValid()) {
                 // realiza alguna acción, tal como guardar la tarea en la base de datos
                 
-                $id=($this->get('request')->request->get('id'));
-                $pro=($this->get('request')->request->get('facturalogistica'));
+                $id=($request->request->get('id'));
+                $pro=($request->request->get('facturalogistica'));
                 
                 $factura = $em->getRepository('IncentivesFacturacionBundle:Factura')->find($id);
                 $logistica->setCantidad($pro["cantidad"]);

@@ -20,6 +20,8 @@ use PHPExcel_Writer_Excel2007;
 use PHPExcel_Cell_DataValidation;
 use PHPExcel_Worksheet_Drawing;
 
+use Dompdf\Dompdf;
+
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
@@ -168,12 +170,11 @@ class CalificacionController extends Controller
             'datos' => $datos
         ));
 
-        require_once($this->get('kernel')->getRootDir().'/config/dompdf_config.inc.php');
         $rootDir = dirname($this->container->getParameter('kernel.root_dir'));
         $Dir = '/web/Calificacion/';
         $uploadDir = $rootDir.$Dir;
 
-        $dompdf = new \DOMPDF();
+        $dompdf = new DOMPDF();
         $dompdf->load_html($html,'UTF-8');
         $dompdf->render();
         $pdf = $dompdf->output();
@@ -201,12 +202,11 @@ class CalificacionController extends Controller
             'datos' => $datos
         ));
 
-        require_once($this->get('kernel')->getRootDir().'/config/dompdf_config.inc.php');
         $rootDir = dirname($this->container->getParameter('kernel.root_dir'));
         $Dir = '/web/Calificacion/';
         $uploadDir = $rootDir.$Dir;
 
-        $dompdf = new \DOMPDF();
+        $dompdf = new DOMPDF();
         $dompdf->load_html($html,'UTF-8');
         $dompdf->render();
         $pdf = $dompdf->output();

@@ -1,0 +1,102 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Novedad{% endblock %}
+
+{% block cuerpo %}
+<div class="box">
+    <div class="box-header well" data-original-title="">
+        Registrar Novedad 
+        <div class="box-icon">
+        <div class="box-icon">
+                    <a href="{{ path('ordenes') }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+                </div>
+      </div>
+    </div>
+</div>
+    <div class="box span6">
+      <div class="box-content">
+        
+        <div class="box-header well">
+        <h2>
+        
+        </i>Datos Redencion</h2>
+        </h2>
+      </div>
+      
+
+        <table class="table table-bordered table-striped">
+          <tbody>
+            <tr><td>Programa</td><td>{{ redencion.productocatalogo.catalogos.programa.nombre }}</td></tr>
+            <tr><td>Participante</td><td>{{ redencion.participante.nombre }}</td></tr>
+            <tr><td>Documento</td><td>{{ redencion.participante.documento }}</td></tr>
+            <tr><td>Fecha de solicitud</td><td>{{ redencion.fecha | date("Y-m-d") }}</td></tr>
+             <tr><td>Puntos</td><td>{{ redencion.puntos }}</td></tr>
+            <tr><td>Valor</td><td>{{ redencion.valor }}</td></tr>
+            <tr><td>Codigo</td><td>{{ redencion.codigoredencion }}</td></tr>
+            <tr><td>Estado</td><td>{{ redencion.redencionestado.nombre }}</td></tr>
+            
+          </tbody>
+        </table>
+    </div>
+    
+    <div class="box span6">
+      <div class="box-content">
+        <div class="box-header well">
+          <h2></i>Datos Producto</h2>
+        </div>
+        <table class="table table-bordered table-striped">
+          <tbody>
+            <tr><td colspan="2">
+              {% if imagen|length > 0 %}
+              <a href="../../../{{ imagen[0].path| slice (0) }}" target='_blank'><img src="../../../{{( imagen[0].path| slice (0))[:-4]}}_min.jpg"><a>
+              {% endif %}
+              </td></tr>
+            <tr><td>Sku</td><td>{{ redencion.productocatalogo.producto.codInc }}</td></tr>
+            <tr><td>Nombre</td><td>{{ redencion.productocatalogo.producto.nombre }}</td></tr>
+            <tr><td>Descripcion</td><td>{{ redencion.productocatalogo.producto.descripcion }}</td></tr>
+            <tr><td>Categoria</td><td>{{ redencion.productocatalogo.categoria.nombre }}</td></tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+  </div>
+
+
+ <div class="box span12">
+<div class="box-header well" data-original-title>
+                        <h2><i class="icon-edit"></i>Novedad</h2>
+                        
+                    </div>
+<div class="box-content">
+<form action="" method="POST" {{ form_enctype(form) }} class="form-horizontal">
+    {{ form_errors(form) }}
+    <fieldset>
+        <div class="control-group">
+            {{ form_label(form.observacion, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.observacion, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            {{ form_label(form.tipo, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.tipo, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            {{ form_label(form.devolucionTipo, label|default('Devolución Causa'), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.devolucionTipo, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        
+    </fieldset>
+ <div class="form-actions">
+    {{ form_widget(form.Enviar, { 'attr': {'class': 'btn btn-primary'} }) }}
+</div>
+{{ form_widget(form._token) }}
+</form>
+</div>
+</div>
+
+  {% endblock %}

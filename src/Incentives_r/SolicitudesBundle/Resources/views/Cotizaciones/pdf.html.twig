@@ -1,0 +1,169 @@
+<style>
+body {
+	font: 10pt Verdana;
+}
+.marco {
+  border-width:1px;
+  border-style:solid;
+  border-color:#000000;
+  padding:10px 50px;
+}
+.marcoinverso {
+	background-color:#000;
+	padding:10px 50px;
+	color:#fff;
+}
+pre {
+	font: 9pt Verdana;
+  text-align:center;
+}
+.derecha {
+  text-align:right;
+}
+.tabla1{
+	margin: 10px;
+	width:100%;
+	padding: .5em;
+}
+.tabla2{
+	border-collapse: collapse;
+	width:100%;
+	border: 1px solid #000;
+}
+.tabla2 td{
+	font: 8pt Verdana;
+  text-align:center;
+  border: 1px solid #000;
+}
+.total{
+	font: bold 11pt Verdana;
+	background-color:#ccc;
+}
+.invisible{
+	border: 0px;
+	background-color:#fff;
+}
+th{
+	font: bold 11pt Verdana;
+  text-align:center;
+  background-color:#ffcc00;
+  border: 1px solid #000;
+}
+#columna1 {
+  width:200px;
+}
+#columna2 { 
+  margin-left:220px;
+  margin-right:20px;
+  margin-top:10px;  
+  background-color:#ffffbb;
+}
+</style>
+<body>
+<pre class="marco">
+<b>COTIZACIÓN</b>						
+CÓDIGO: OPE-FOR-003						
+DOCUMENTO VIGENTE A PARTIR DEL 01/02/2011						
+VERSIÓN 2						
+</pre>
+<div class="marco">
+	 <div class="derecha">Consecutivo No.: {{ cotizacion.consecutivo }}</div>
+	 	<table class="tabla1">
+	 		<tr><td></td><td>
+	 		<tr>
+	 			<td>Fecha de cotización:</td>
+	 			<td>{{ cotizacion.fechaCreacion | date("d-M-Y") }}</td>
+	 		</tr>
+	 		<tr>
+	 			<td>Cotización vigente hasta el:</td>
+	 			<td>{{ cotizacion.fechaVencimiento | date("d-M-Y") }}</td>
+	 		</tr>
+	 		<tr>
+	 			<td>A continuación presento propuesta según especificaciones requeridas, así:</td>
+	 			<td></td>
+	 		</tr>
+	 		Cotización vigente hasta el:
+	 		
+	 	</table>
+	 	<table class="tabla2">
+	 		<tr>
+	 			<th>PRODUCTO</th>
+	 			<th>DESCRIPCION</th>
+	 			<th>CANTIDAD</th>
+	 			<th>VALOR UNITARIO</th>
+	 			<th>LOGISTICA INDIVIDUAL</th>
+	 			<th>VALOR TOTAL</th>
+	 		</tr>
+	 		{% set linea = 0 %}
+	 		{% set totalunidades = 0 %}
+	 		{% set subtotal = 0 %}
+	 		{% set totaliva = 0 %}
+	 		{% set totalPago = 0 %}
+	 		{% for producto in productos %}
+	 		<tr>
+	 			<td>{{ producto.producto.nombre }}</td>
+	 			<td>{{ producto.producto.descripcion }}</td>
+	 			<td>{{ producto.cantidad }}</td>
+	 			<td>$ {{ (producto.valorunidad/(1 - (producto.incremento/100)))|number_format(2, ',', '.') }}</td>
+	 			<td>$ {{ producto.logistica|number_format(2, ',', '.') }}</td>
+	 			<td>$ {{ (producto.valortotal+(producto.logistica*producto.cantidad))|number_format(2, ',', '.') }}</td>
+	 			{% set totalunidades = totalunidades + producto.cantidad %}
+	 			{% set subtotal = subtotal + producto.valortotal+(producto.logistica*producto.cantidad) %}
+	 			{% if(producto.producto.estadoIva==1) %}
+	 				{% set totaliva = totaliva + (producto.producto.iva/100)*producto.valortotal %}
+	 			{% endif %}
+	 		</tr>
+	 			{% set linea = linea + 1 %}
+	 		{% endfor %}
+
+	 		{% set restantes = 9 - linea %}
+	 		{% for i in range(1, restantes) %}
+	 		<tr>
+	 			<td>-</td>
+	 			<td></td>
+	 			<td></td>
+	 			<td></td>
+	 			<td></td>
+	 			<td> </td>
+	 		</tr>
+	 		{% endfor %}
+	 		{% set totaliva = totaliva %}
+	 		{% set totalPago = totaliva + subtotal + cotizacion.logistica %}
+	 		<tr class="total">
+	 			<td colspan="2">TOTAL UNIDADES</td>
+	 			<td>{{ totalunidades }}</td>
+	 			<td></td>
+	 			<td>SUBTOTAL</td>
+	 			<td>$ {{ subtotal|number_format(2, ',', '.') }}</td>
+	 		</tr>
+	 		
+	 		<tr class="total">
+	 			<td class="invisible" colspan="4" ></td>
+	 			<td>LOGISTICA CONSOLIDADA</td>
+	 			<td>$ {{ cotizacion.logistica|number_format(2, ',', '.') }}</td>
+	 		</tr>
+	 		<tr class="total">
+	 			<td colspan="4" class="invisible"></td>
+	 			<td>IVA</td>
+	 			<td>$ {{ totaliva|number_format(2, ',', '.') }}</td>
+	 		</tr>
+	 		<tr class="total">
+	 			<td colspan="4" class="invisible"></td>
+	 			<td>TOTAL</td>
+	 			<td>$ {{ totalPago|number_format(2, ',', '.') }}</td>
+	 		</tr>
+	 	</table>
+	 	<br>
+	 	<div class="marco">
+	 		<b>OBSERVACIONES:</b>
+ 			{{ cotizacion.observaciones }}
+ 		</div>
+ 		<div class="marco">
+ 			<b>CONDICIONES COMERCIALES:</b>
+ 			{{ cotizacion.condiciones }}
+ 		</div>
+	 	<br>
+ </div>
+</body>
+
+

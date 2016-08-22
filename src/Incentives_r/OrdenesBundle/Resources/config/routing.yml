@@ -1,0 +1,190 @@
+incentives_ordenes_homepage:
+    path:  /hello/{name}
+    defaults: { _controller: IncentivesOrdenesBundle:Default:index }
+
+ordenes:
+    path:  /ordenes
+    defaults: { _controller: IncentivesOrdenesBundle:Ordenes:listado }
+
+ordenes_nueva:
+    path:  /ordenes/nueva
+    defaults: { _controller: IncentivesOrdenesBundle:Ordenes:nueva }
+
+ordenes_nueva_solicitud:
+    path:  /ordenes/nuevasolicitud/{solicitudId}
+    defaults: { _controller: IncentivesOrdenesBundle:Ordenes:nuevaOrdenSolicitud, solicitudId: null }
+
+ordenes_datos:
+    path:  /ordenes/datos/{id}
+    defaults: { _controller: IncentivesOrdenesBundle:Ordenes:datos , id: null  }
+
+ordenes_editar:
+    path:  /ordenes/editar/{id}
+    defaults: { _controller: IncentivesOrdenesBundle:Ordenes:editar , id: null  }
+
+ordenes_recibir:
+    path:  /ordenes/recibir/{id}
+    defaults: { _controller: IncentivesOrdenesBundle:Ordenes:verificar , id: null  }
+
+ordenes_estado:
+    path:  /ordenes/estado/{id}/{cierre}
+    defaults: { _controller: IncentivesOrdenesBundle:Ordenes:estado , id: null, cierre:null  }
+
+ordenes_pdf:
+    path:  /ordenes/pdf/{id}
+    defaults: { _controller: IncentivesOrdenesBundle:Ordenes:pdf , id: null  }
+
+ordenes_pdfcodes:
+    path:  /ordenes/pdfcodes/{id}
+    defaults: { _controller: IncentivesOrdenesBundle:OrdenRedencion:pdfCodes , id: null  }
+
+ordenes_total:
+    path:  /ordenes/total/{id}
+    defaults: { _controller: IncentivesOrdenesBundle:Ordenes:totalorden , id: null  }
+
+ordenes_correo:
+    path:  /ordenes/correo/{id}
+    defaults: { _controller: IncentivesOrdenesBundle:Ordenes:correo, id: null }
+    requirements:
+        id:  \d+
+
+ordenredencion_generar:
+    path:  /ordenredencion/generar
+    defaults: { _controller: IncentivesOrdenesBundle:OrdenRedencion:generar}
+
+ordenredencion_generartotalpass:
+    path:  /ordenredencion/generartotalpass/{id}
+    defaults: { _controller: IncentivesOrdenesBundle:OrdenRedencion:generartotalpass, id: null }
+
+ordenredencion_totalpass:
+    path:  /ordenredencion/totalpass
+    defaults: { _controller: IncentivesOrdenesBundle:OrdenRedencion:totalPass }
+
+ordenredencion_aprobar:
+    path:  /ordenredencion/aprobar/{id}
+    defaults: { _controller: IncentivesOrdenesBundle:OrdenRedencion:aprobar, id: null}
+
+ordenredencion_cerrar:
+    path:  /ordenredencion/cerrar/{id}
+    defaults: { _controller: IncentivesOrdenesBundle:OrdenRedencion:cerrar, id: null}
+
+ordenredencion_cancelar:
+    path:  /ordenredencion/cancelar/{id}
+    defaults: { _controller: IncentivesOrdenesBundle:OrdenRedencion:cancelar, id: null}
+
+ordenredencion_pendientes:
+    path:  /ordenredencion/pendientes
+    defaults: { _controller: IncentivesOrdenesBundle:OrdenRedencion:pendientes}
+
+ordenredencion_editarvalores:
+    path:  /ordenredencion/editarvalores/{id}
+    defaults: { _controller: IncentivesOrdenesBundle:OrdenRedencion:editarvalores , id: null  }
+
+ordenredencion_listadopendientes:
+    path:  /ordenredencion/listadopendientes/{id}
+    defaults: { _controller: IncentivesOrdenesBundle:OrdenRedencion:listadopendientes , id: null  }
+
+ordenredencion_valores:
+    path:  /ordenredencion/valores/{id}
+    defaults: { _controller: IncentivesOrdenesBundle:OrdenRedencion:valores , id: null  }
+
+ordenredencion_pdf:
+    path:  /ordenredencion/pdf/{id}
+    defaults: { _controller: IncentivesOrdenesBundle:OrdenRedencion:pdf , id: null  }
+
+ordenredencion_pdffinal:
+    path:  /ordenredencion/pdffinal/{id}
+    defaults: { _controller: IncentivesOrdenesBundle:OrdenRedencion:pdffinal , id: null  }
+
+ordenes_ingreso_listado:
+    path:  /ordenes/ingreso/listado
+    defaults: { _controller: IncentivesOrdenesBundle:Ordenes:ingresolistado}
+
+ordenes_ingreso:
+    path:  /ordenes/ingreso/{id}
+    defaults: { _controller: IncentivesOrdenesBundle:Ordenes:ingreso , id: null}
+
+ordenes_ingreso_detalle:
+    path:  /ordenes/detalleingreso/{productoOrden}
+    defaults: { _controller: IncentivesOrdenesBundle:Ordenes:detalleIngreso, productoOrden: null }
+
+ordenes_ingreso_redencion:
+    path:  /ordenes/ingresoredencion/{redencion}
+    defaults: { _controller: IncentivesOrdenesBundle:Ordenes:ingresoRedencion, redencion: null }
+
+ordenes_agregarproducto:
+    path:  /ordenes/agregarproducto/{id}
+    defaults: { _controller: IncentivesOrdenesBundle:Ordenes:agregarproducto , id: null}
+
+ordenes_producto_cotizaciones:
+    path:  /ordenes/productocotizaciones/{id}
+    defaults: { _controller: IncentivesOrdenesBundle:Ordenes:productoCotizaciones , id: null}
+
+ordenes_agregarproducto_cotizaciones:
+    path:  /ordenes/agregarproductocotizaciones/{id}/{ordencompra}
+    defaults: { _controller: IncentivesOrdenesBundle:Ordenes:agregarProductoCotizaciones , id: null, ordencompra: null}
+
+ordenes_procesarvalores:
+    path:  /ordenes/procesarvalores
+    defaults: { _controller: IncentivesOrdenesBundle:Ordenes:procesarvalores }
+
+ordenes_actualizarcantidad:
+    path:  /ordenes/actualizarcantidad/{id}
+    defaults: { _controller: IncentivesOrdenesBundle:Ordenes:actualizarCantidad, id: null }
+
+ordenes_cerrarorden:
+    path:  /ordenes/cerrarorden/{id}
+    defaults: { _controller: IncentivesOrdenesBundle:Ordenes:cerrarOrden, id: null }
+
+ordenes_tracking:
+    path:  /ordenes/tracking/{id}
+    defaults: { _controller: IncentivesOrdenesBundle:OrdenRedencion:tracking , id: null}
+
+tracking_reporte:
+    path:  /tracking/reporte
+    defaults: { _controller: IncentivesOrdenesBundle:OrdenRedencion:trackingReporte }
+
+productos_proveedor:
+    path:  /productos/proveedor/{id}
+    defaults: { _controller: IncentivesOrdenesBundle:Ordenes:productosProveedor, id: null}
+
+ordenredencion_eliminar:
+    path:  /ordenredencion/eliminar/{id}
+    defaults: { _controller: IncentivesOrdenesBundle:OrdenRedencion:eliminarProducto , id: null  }
+
+ordenredencion_eliminarred:
+    path:  /ordenredencion/eliminarred/{id}
+    defaults: { _controller: IncentivesOrdenesBundle:OrdenRedencion:eliminarRedencion , id: null  }
+
+ordenes_generarsegmentado:
+    path:  /ordenes/generarsegmentado
+    defaults: { _controller: IncentivesOrdenesBundle:OrdenRedencion:generarSegmentado }
+
+ordenes_detallesegmentado:
+    path:  /ordenes/detallesegmentado/{id}/{categoria}
+    defaults: { _controller: IncentivesOrdenesBundle:OrdenRedencion:detalleSegmentado, id: null, categoria: null }
+
+ordenes_productoorden_detalle:
+    path:  /ordenes/detalleproductoorden/{productoOrden}
+    defaults: { _controller: IncentivesOrdenesBundle:Ordenes:detalleProductoOrden, productoOrden: null }
+    
+ordenes_productorequisicion_detalle:
+    path:  /ordenes/detalleproductorequisicion/{productoOrden}
+    defaults: { _controller: IncentivesOrdenesBundle:Ordenes:detalleProductoRequisicion, productoOrden: null }
+
+ordenes_productoorden_editar:
+    path:  /ordenes/editarproductoorden/{productoOrden}
+    defaults: { _controller: IncentivesOrdenesBundle:Ordenes:editarProductoOrden, productoOrden: null }
+    
+ordenes_reporteamazon:
+    path:  /ordenes/reporteamazon
+    defaults: { _controller: IncentivesOrdenesBundle:Ordenes:reporteAmazon }
+    
+ordenes_exportar:
+    path:  /ordenes/exportar
+    defaults: { _controller: IncentivesOrdenesBundle:Ordenes:exportar }
+    
+ordenes_exportar_productos:
+    path:  /ordenes/exportarproductos
+    defaults: { _controller: IncentivesOrdenesBundle:Ordenes:exportarProductos }
+

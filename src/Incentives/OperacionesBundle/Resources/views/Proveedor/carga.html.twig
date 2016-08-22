@@ -6,7 +6,7 @@
         Carga de Documentos<div class="box-icon"><a class="btn btn-minimize btn-round" href="#"><i class="icon-chevron-up"></i></a><a class="btn btn-close btn-round" href="#"><i class="icon-remove"></i></a></div>
     </div>
     <div class="box-content">
-		<form action="{{ path('proveedores_documentos_carga') }}" method="POST" {{ form_enctype(form) }}>
+		<form action="{{ path('proveedores_documentos_carga') }}" method="POST" >
 			<input type='hidden' name='id' value={{ id }}>
 				{{ form_errors(form) }}
 				{{ form_rest(form) }}

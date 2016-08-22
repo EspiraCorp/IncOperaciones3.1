@@ -32,6 +32,8 @@ use PHPExcel_Writer_Excel2007;
 use PHPExcel_Cell_DataValidation;
 use PHPExcel_Style_Fill;
 
+use Dompdf\Dompdf;
+
 ini_set('max_execution_time', 500);
 
 class InventarioController extends Controller
@@ -251,7 +253,7 @@ class InventarioController extends Controller
         $em->flush();
 
 
-        require_once($this->get('kernel')->getRootDir().'/config/dompdf_config.inc.php');
+        
         $uploadDir=dirname($this->container->getParameter('kernel.root_dir')).'/web/Planillas/';
         
         // Create new PHPExcel object
@@ -351,7 +353,7 @@ class InventarioController extends Controller
                 'inventario'=>$inventario, 'fecha'=>$fecha
             ));
 
-            /*require_once($this->get('kernel')->getRootDir().'/config/dompdf_config.inc.php');
+            /*
             $uploadDir=dirname($this->container->getParameter('kernel.root_dir')).'/web/bundles/OperacionesBundle/Planillas/';
             
             $dompdf = new \DOMPDF();
@@ -432,7 +434,7 @@ class InventarioController extends Controller
             $planilla->setPlanillaEstado($estado);
             $planilla->setConsecutivo(count($planillas)+1);
 
-            require_once($this->get('kernel')->getRootDir().'/config/dompdf_config.inc.php');
+            
             $uploadDir=dirname($this->container->getParameter('kernel.root_dir')).'/web/Planillas/';
             
             // $dompdf = new \DOMPDF();
@@ -522,11 +524,11 @@ class InventarioController extends Controller
             ->setAction($this->generateUrl('inventario_importar_planilla'))
             ->setMethod('POST')
             ->add('excel', 'file')
-            ->add('cargar', 'submit')
+            ->add('cargar', SubmitType::class)
             ->getForm();
 
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
 
             $excel = $form['excel']->getData();
 
@@ -674,7 +676,7 @@ class InventarioController extends Controller
 	
         $inventario = $em->getRepository('IncentivesInventarioBundle:Inventario')->findByPlanilla($planilla->getId());
 
-        require_once($this->get('kernel')->getRootDir().'/config/dompdf_config.inc.php');
+        
         $uploadDir=dirname($this->container->getParameter('kernel.root_dir')).'/web/Planillas';
         
         // Create new PHPExcel object
@@ -836,7 +838,7 @@ class InventarioController extends Controller
 
             $inventario = $em->getRepository('IncentivesInventarioBundle:Inventario')->findByPlanilla($planilla->getId());
 
-            require_once($this->get('kernel')->getRootDir().'/config/dompdf_config.inc.php');
+            
             $uploadDir=dirname($this->container->getParameter('kernel.root_dir')).'/web/Planillas';
             
             // Create new PHPExcel object
@@ -1022,11 +1024,11 @@ class InventarioController extends Controller
         
         $em = $this->getDoctrine()->getManager();
         
-        $form = $this->createForm (new IngresoType());
+        $form = $this->createForm(IngresoType::class);
         
         if ($request->isMethod('POST')) {
-            $form->bind($request);
-            $pro=($this->get('request')->request->get('inventario'));
+            $form->handleRequest($request);
+            $pro=($request->request->get('inventario'));
             
             for($ic=1; $ic<=$pro['cantidad']; $ic++){
         
@@ -1084,7 +1086,7 @@ class InventarioController extends Controller
 
         $session = $this->get('session');
         
-        if($pro=($this->get('request')->request->get('inventario'))){
+        if($pro=($request->request->get('inventario'))){
             $page = 1;
             $session->set('filtros_salida', $pro);
         }
@@ -1128,7 +1130,7 @@ class InventarioController extends Controller
         $paginator  = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
             $listado,
-            $this->get('request')->query->get('page', 1)/*page number*/,
+            $request->query->get('page', 1)/*page number*/,
             50 /*limit per page*/
         );
         
@@ -1146,11 +1148,11 @@ class InventarioController extends Controller
         $redencionI = null;
         if($inventario->getRedencion() != Null) $redencionI = $em->getRepository('IncentivesRedencionesBundle:Redenciones')->find($inventario->getRedencion()->getId());
         
-        $form = $this->createForm (new SalidaType(), $inventario);
+        $form = $this->createForm(SalidaType::class, $inventario);
         
         if ($request->isMethod('POST')) {
-            $form->bind($request);
-            $pro=($this->get('request')->request->get('inventario'));
+            $form->handleRequest($request);
+            $pro=($request->request->get('inventario'));
             
             $inventario->setFechaSalida(new \DateTime());
             if(isset($pro['salio'])) $inventario->setSalio($pro['salio']);
@@ -1199,7 +1201,7 @@ class InventarioController extends Controller
         $qb->where($str_filtro);
         $despachos = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
         //echo "<pre>"; print_r($despachos); echo "</pre>"; exit;
-        require_once($this->get('kernel')->getRootDir().'/config/dompdf_config.inc.php');
+        
         $uploadDir=dirname($this->container->getParameter('kernel.root_dir')).'/web/Planillas';
         
         // Create new PHPExcel object
@@ -1347,7 +1349,7 @@ class InventarioController extends Controller
       $despachos =  $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
 
       //echo "<pre>"; print_r($Inventarios); echo "</pre>"; exit;
-      $form = $this->createForm(new PlanillasGenerarType());
+      $form = $this->createForm(PlanillasGenerarType::class);
 
       if ($request->isMethod('POST')) {
                 // realiza alguna acción, tal como guardar la tarea en la base de datos
@@ -1460,13 +1462,13 @@ class InventarioController extends Controller
     $em = $this->getDoctrine()->getManager();
        
         $planilla = new Planilla();
-        $form = $this->createForm(new PlanillaType(), $planilla);
+        $form = $this->createForm(PlanillaType::class, $planilla);
                     
         $fecha = date_create()->format('Y-m-d');
 
         if ($request->isMethod('POST')) {
             
-            $form->bind($request);
+            $form->handleRequest($request);
 
             //if ($form->isValid()) {
 
@@ -1515,13 +1517,13 @@ public function planillaSolicitudAction(Request $request, $id){
     $em = $this->getDoctrine()->getManager();
        
         $planilla = new Planilla();
-        $form = $this->createForm(new PlanillaType(), $planilla);
+        $form = $this->createForm(PlanillaType::class, $planilla);
                     
         $fecha = date_create()->format('Y-m-d');
 
         if ($request->isMethod('POST')) {
             
-            $form->bind($request);
+            $form->handleRequest($request);
 
             //if ($form->isValid()) {
 
@@ -1595,13 +1597,13 @@ public function planillaSolicitudAction(Request $request, $id){
     public function planillagregarAction(Request $request, $planilla, $producto){
         
         $em = $this->getDoctrine()->getManager();
-        $form = $this->createForm (new AgregarType());
+        $form = $this->createForm(AgregarType::class);
         
         $cantidad = $request->get('cantidad');
         $planillaR = $em->getRepository('IncentivesInventarioBundle:Planilla')->find($planilla);
 
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
 
                $pro = $request->get('envio');
                 // realiza alguna acción, tal como guardar la tarea en la base de datos
@@ -1668,10 +1670,10 @@ public function planillaSolicitudAction(Request $request, $id){
             
         $session = $this->get('session');
             
-        $page = $this->get('request')->get('page');
+        $page = $request->get('page');
         if(!$page) $page= 1;
             
-        if($pro=($this->get('request')->request->get('producto'))){
+        if($pro=($request->request->get('producto'))){
             $page = 1;
             $session->set('filtros_productos', $pro);
         }
@@ -1754,16 +1756,16 @@ public function planillaSolicitudAction(Request $request, $id){
     public function cierreEntregaAction(Request $request, $id, $planilla){
 
         $em = $this->getDoctrine()->getManager();
-        $form = $this->createForm(new CierreType());
+        $form = $this->createForm(CierreType::class);
         
         $guia = $em->getRepository('IncentivesInventarioBundle:InventarioGuia')->find($id);
         
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
 
             if ($form->isValid()) {
                 
-                $pro=($this->get('request')->request->get('cierre'));
+                $pro=($request->request->get('cierre'));
                 
                 $estado = $em->getRepository('IncentivesInventarioBundle:cierreEstado')->find($pro['cierreEstado']);
                 $guia->setCierreEstado($estado);
@@ -1814,16 +1816,16 @@ public function planillaSolicitudAction(Request $request, $id){
   public function costosPlanillaAction(Request $request, $planilla){
 
         $em = $this->getDoctrine()->getManager();
-        $form = $this->createForm(new CostosLogisticaType());
+        $form = $this->createForm(CostosLogisticaType::class);
         
         //echo "<pre>"; print_r($inventario); echo "</pre>"; exit;
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
 
             if ($form->isValid()) {
                 // realiza alguna acción, tal como guardar la tarea en la base de datos
                 
-                $pro=($this->get('request')->request->get('costosLogistica'));
+                $pro=($request->request->get('costosLogistica'));
                 $costosLogistica = new CostosLogistica();
                 
                 $planillaEnt = $em->getRepository('IncentivesInventarioBundle:Planilla')->find($planilla);
@@ -1994,7 +1996,7 @@ public function planillaSolicitudAction(Request $request, $id){
         
         $session = $this->get('session');
         
-        if($pro=($this->get('request')->request->get('inventario'))){
+        if($pro=($request->request->get('inventario'))){
             $page = 1;
             $session->set('filtros_liberar', $pro);
         }
@@ -2043,7 +2045,7 @@ public function planillaSolicitudAction(Request $request, $id){
         $paginator  = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
             $listado,
-            $this->get('request')->query->get('page', 1)/*page number*/,
+            $request->query->get('page', 1)/*page number*/,
             50 /*limit per page*/
         );
         
@@ -2061,11 +2063,11 @@ public function planillaSolicitudAction(Request $request, $id){
         $redencionI = null;
         if($inventario->getRedencion() != Null) $redencionI = $em->getRepository('IncentivesRedencionesBundle:Redenciones')->find($inventario->getRedencion()->getId());
         
-        $form = $this->createForm (new SalidaType(), $inventario);
+        $form = $this->createForm (SalidaType::class, $inventario);
         
         if ($request->isMethod('POST')) {
-            $form->bind($request);
-            $pro=($this->get('request')->request->get('inventario'));
+            $form->handleRequest($request);
+            $pro=($request->request->get('inventario'));
             
             $inventario->setFechaSalida(new \DateTime());
             if(isset($pro['salio'])) $inventario->setSalio($pro['salio']);
@@ -2166,11 +2168,11 @@ public function planillaSolicitudAction(Request $request, $id){
             ->setAction($this->generateUrl('inventario_importar_planilla'))
             ->setMethod('POST')
             ->add('excel', 'file')
-            ->add('cargar', 'submit')
+            ->add('cargar', SubmitType::class)
             ->getForm();
 
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
 
             $excel = $form['excel']->getData();
 

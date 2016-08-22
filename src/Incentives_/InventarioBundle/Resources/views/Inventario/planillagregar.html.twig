@@ -1,0 +1,141 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Agregar Productos{% endblock %}
+
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+<div class="box span12">
+<div class="box-header well" data-original-title>
+                        <h2><i class="icon-edit"></i>Agregar Productos</h2>
+                         <div class="box-icon">
+                            <a href="{{ path('planilla_requisicion') }}/{{ planilla }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+                        </div>
+                    </div>
+<div class="box-content">
+<form action="{{ path('planilla_agregar') }}/{{ planilla }}/{{ producto }}" method="POST" {{ form_enctype(form) }} class="form-horizontal" novalidate>
+    {{ form_errors(form) }}
+    <fieldset>
+
+        <div class="control-group">
+            {{ form_label(form.nombre, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.nombre, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        
+        <div class="control-group">
+            {{ form_label(form.documento, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.documento, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            {{ form_label(form.ciudadNombre, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.ciudadNombre, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            {{ form_label(form.departamentoNombre, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.departamentoNombre, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>  
+        <div class="control-group">
+            {{ form_label(form.direccion, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.direccion, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div> 
+        <div class="control-group">
+            {{ form_label(form.barrio, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.barrio, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            {{ form_label(form.telefono, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.telefono, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            {{ form_label(form.celular, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.celular, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+
+        <div class="control-group">
+            {{ form_label(form.nombreContacto, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.nombreContacto, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            {{ form_label(form.documentoContacto, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.documentoContacto, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            {{ form_label(form.ciudadContacto, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.ciudadContacto, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            {{ form_label(form.departamentoContacto, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.departamentoContacto, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>  
+        <div class="control-group">
+            {{ form_label(form.direccionContacto, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.direccionContacto, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div> 
+        <div class="control-group">
+            {{ form_label(form.barrioContacto, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.barrioContacto, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            {{ form_label(form.telefonoContacto, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.telefonoContacto, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            {{ form_label(form.celularContacto, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.celularContacto, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label">Cantidad</label>
+            <div class="controls">
+                <input type="number" name="cantidad">
+            </div>
+        </div> 
+
+        <div class="control-group">
+            {{ form_label(form.observaciones, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.observaciones, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div> 
+
+    </fieldset>  
+<div class="form-actions">
+    {{ form_widget(form.Enviar, { 'attr': {'class': 'btn btn-primary'} }) }}
+</div>
+{{ form_widget(form._token) }}
+</form>
+</div>
+</div>
+ </div>
+{% endblock %}

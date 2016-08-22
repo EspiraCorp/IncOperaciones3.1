@@ -12,7 +12,7 @@
                         </div>
                     </div>
 <div class="box-content">
-<form action="{{ path('ordenes_editar') }}" method="POST" {{ form_enctype(form) }} class="form-horizontal">
+<form action="{{ path('ordenes_editar') }}" method="POST"  class="form-horizontal">
     {{ form_errors(form) }}
     <input type='hidden' name='id' value={{ id }}>
     <fieldset>
