@@ -126,7 +126,7 @@ class PresupuestoController extends Controller
             $form = $this->createForm(PresupuestosType::class, $presupuesto);
 
         }else{
-            $form = $this->createForm(PresupuestosType::class;
+            $form = $this->createForm(PresupuestosType::class);
             $presupuesto = new Presupuestos();
         }
 

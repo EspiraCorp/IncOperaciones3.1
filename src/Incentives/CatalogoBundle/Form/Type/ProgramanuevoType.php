@@ -12,8 +12,10 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use PUGX\AutocompleterBundle\Form\Type\AutocompleteType;
+use Incentives\CatalogoBundle\Form\Type\CatalogoprogramaType;
 
 class ProgramanuevoType extends AbstractType
 {
@@ -51,8 +53,8 @@ class ProgramanuevoType extends AbstractType
             'expanded'  => true,
         ));
 
-        $builder->add('catalogos', 'collection', array(
-            'type'  => new CatalogoprogramaType(),
+        $builder->add('catalogos', CollectionType::class, array(
+            'entry_type'  => CatalogoprogramaType::class,
             'label'          => 'Catalogo',
             'by_reference'   => false,
             'allow_delete'   => true,

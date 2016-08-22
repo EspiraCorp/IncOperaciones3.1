@@ -20,7 +20,7 @@ class ContactoType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Incentives\OperacionesBundle\Entity\Contacto', //Como collection
+            'data_class' => 'Incentives\OperacionesBundle\Entity\Contacto',
         ));
     }
 

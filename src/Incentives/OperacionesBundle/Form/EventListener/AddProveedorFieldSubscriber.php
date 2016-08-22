@@ -6,6 +6,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -32,8 +33,8 @@ class AddProveedorFieldSubscriber implements EventSubscriberInterface
         // If you didn't pass any data to the form, the data is "null".
         // This should be considered a new "Product"
         if (!$data || !$data->getId()) {
-            $form->add('convocatoriasproveedores', 'collection', array(
-				'type' 	=> new ConvocatoriasProveedorType(),
+            $form->add('convocatoriasproveedores', CollectionType::class, array(
+				'entry_type' 	=> ConvocatoriasProveedorType::class,
                 'label'          => 'Proveedores',
                 'by_reference'   => false,
                 //'prototype_data' => new Address(),

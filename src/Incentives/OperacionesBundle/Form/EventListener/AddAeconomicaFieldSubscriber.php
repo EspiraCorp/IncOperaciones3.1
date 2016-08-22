@@ -9,6 +9,7 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use PUGX\AutocompleterBundle\Form\Type\AutocompleteType;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -32,8 +33,8 @@ class AddAeconomicaFieldSubscriber implements EventSubscriberInterface
         // If you didn't pass any data to the form, the data is "null".
         // This should be considered a new "Product"
         if ($data ) {
-            $form->add('aeconomica', 'collection', array(
-				'type' 	=> new AeconomicaType(),
+            $form->add('aeconomica', CollectionType::class, array(
+				'entry_type' 	=> AeconomicaType::class,
                 'label'          => 'Actividad economica',
                 'by_reference'   => false,
                 //'prototype_data' => new Address(),

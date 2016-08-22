@@ -26,7 +26,7 @@ class ContactoController extends Controller
 	        $contacto = $em->getRepository('IncentivesOperacionesBundle:Contacto')->find($id);
 	        $form = $this->createForm(ContactoType::class, $contacto);
 	    }else{
-	    	$form = $this->createForm(ContactoType::class;
+	    	$form = $this->createForm(ContactoType::class);
 	    	$contacto = new Contacto();
 	    }
                     

@@ -13,6 +13,7 @@ use PUGX\AutocompleterBundle\Form\Type\AutocompleteType;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Incentives\CatalogoBundle\Form\Type\ImagenproductoType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
 class AddImagenproductoFieldSubscriber implements EventSubscriberInterface
 {
@@ -32,8 +33,8 @@ class AddImagenproductoFieldSubscriber implements EventSubscriberInterface
         // If you didn't pass any data to the form, the data is "null".
         // This should be considered a new "Product"
         if (!$data || !$data->getId()) {
-            $form->add('imagenproducto', 'collection', array(
-            'type'  => new ImagenproductoType(),
+            $form->add('imagenproducto', CollectionType::class, array(
+            'entry_type'  => ImagenproductoType::class,
             'label'          => 'Imagen producto',
             'by_reference'   => false,
             'allow_delete'   => true,

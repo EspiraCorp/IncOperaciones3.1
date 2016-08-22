@@ -16,7 +16,7 @@ class AeconomicaType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Incentives\OperacionesBundle\Entity\Aeconomica', //Como collection
+            'data_class' => 'Incentives\OperacionesBundle\Entity\Aeconomica',
         ));
     }
 
