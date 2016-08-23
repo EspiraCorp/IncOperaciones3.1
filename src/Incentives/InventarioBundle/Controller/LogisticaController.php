@@ -22,6 +22,8 @@ use Incentives\InventarioBundle\Form\Type\CierreType;
 use Incentives\InventarioBundle\Form\Type\CostosLogisticaType;
 use Incentives\InventarioBundle\Form\Type\PlanillasGenerarType;
 use Incentives\GarantiasBundle\Entity\Novedades;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -196,7 +198,7 @@ class LogisticaController extends Controller
         $form = $this->createFormBuilder($excelForm)
             ->setAction($this->generateUrl('inventario_importar_planilla'))
             ->setMethod('POST')
-            ->add('excel', 'file')
+            ->add('excel', FileType::class)
             ->add('cargar', SubmitType::class)
             ->getForm();
 

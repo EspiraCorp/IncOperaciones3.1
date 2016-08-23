@@ -65,11 +65,11 @@ class UsuariosController extends Controller
                 ->leftJoin('u.proveedor', 'p')
                 ->where($sqlFiltro);
         
-        if($request->get('sort')){
+        /*if($request->get('sort')){
             $query->orderBy($request->get('sort'), $request->get('direction'));    
         }else{
             $query->orderBy("g.nombre", "ASC");    
-        }
+        }*/
 
         $paginator  = $this->get('knp_paginator');
         $pagination = $paginator->paginate(

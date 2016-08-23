@@ -10,6 +10,8 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class UserType extends AbstractType
@@ -40,8 +42,8 @@ class UserType extends AbstractType
             //'empty_value' => '--Seleccionar--',
             'required' => false
         ));
-        $builder->add('password', 'repeated', array(
-                'type' => 'password',
+        $builder->add('password', RepeatedType::class, array(
+                'type' => PasswordType::class,
                 'invalid_message' => 'Las dos contraseñas deben coincidir',
                 'options' => array('label' => 'Contraseña'),
                 'required' => false,

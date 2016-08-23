@@ -7,7 +7,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-use Symfony\Component\Form\Extension\Core\Type\TextTType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use PUGX\AutocompleterBundle\Form\Type\AutocompleteType;
 
@@ -34,7 +34,7 @@ class ClienteType extends AbstractType
         $builder->add('numero_documento', TextType::class, array('required' => false)); 
 
         $builder->add('programa', CollectionType::class, array(
-            'type'  => new ProgramaclienteType(),
+            'entry_type'  => ProgramaclienteType::class,
             'label'          => 'Programa',
             'by_reference'   => false,
             'allow_delete'   => true,
