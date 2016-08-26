@@ -1086,7 +1086,7 @@ class InventarioController extends Controller
 
         $session = $this->get('session');
         
-        if($pro = $request->request->all()['inventario']){
+        if($pro = $request->request->get('inventario')){
             $page = 1;
             $session->set('filtros_salida', $pro);
         }
@@ -1673,7 +1673,7 @@ public function planillaSolicitudAction(Request $request, $id){
         $page = $request->get('page');
         if(!$page) $page= 1;
             
-        if($pro = $request->request->all()['producto']){
+        if($pro = $request->request->get('producto')){
             $page = 1;
             $session->set('filtros_productos', $pro);
         }
@@ -1997,7 +1997,7 @@ public function planillaSolicitudAction(Request $request, $id){
         
         $session = $this->get('session');
         
-        if($pro = $request->request->all()['inventario']){
+        if($pro = $request->request->get('inventario')){
             $page = 1;
             $session->set('filtros_liberar', $pro);
         }

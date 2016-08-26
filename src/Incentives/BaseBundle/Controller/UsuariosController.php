@@ -30,7 +30,7 @@ class UsuariosController extends Controller
             $page = $request->get('page');
             if(!$page) $page= 1;
             
-            if($pro = $request->request->all()['usuario']){
+            if($pro = $request->request->get('usuario')){
                 $page = 1;
                 $session->set('filtros_usuarios', $pro);
             }

@@ -256,7 +256,7 @@ class ProductoController extends Controller
             $page = $request->get('page');
             if(!$page) $page= 1;
             
-            if($pro = $request->request->all()['producto']){
+            if($pro = $request->request->get('producto')){
                 $page = 1;
                 $session->set('filtros_productos', $pro);
             }
@@ -334,7 +334,7 @@ class ProductoController extends Controller
             $page = $request->get('page');
             if(!$page) $page= 1;
             
-            if($pro = $request->request->all()['producto']){
+            if($pro = $request->request->get('producto')){
                 $page = 1;
                 $session->set('filtros_productos', $pro);
             }
@@ -1764,7 +1764,7 @@ public function formatoeditarmasAction() {
             $page = $request->get('page');
             if(!$page) $page= 1;
             
-            if($pro = $request->request->all()['producto']){
+            if($pro = $request->request->get('producto')){
                 $page = 1;
                 $session->set('filtros_productos_busqueda', $pro);
             }

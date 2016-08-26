@@ -306,7 +306,7 @@ class CatalogosController extends Controller
         $page = $request->get('page');
         if(!$page) $page= 1;
             
-        if($pro = $request->request->all()['producto']){
+        if($pro = $request->request->get('producto')){
             $page = 1;
             $session->set('filtros_galeria', $pro);
         }
@@ -422,7 +422,7 @@ class CatalogosController extends Controller
         $page = $request->get('page');
         if(!$page) $page= 1;
             
-        if($pro = $request->request->all()['producto']){
+        if($pro = $request->request->get('producto')){
             $page = 1;
             $session->set('filtros_aprobar', $pro);
         }
@@ -729,7 +729,7 @@ class CatalogosController extends Controller
         $page = $request->get('page');
         if(!$page) $page= 1;
             
-        if($pro = $request->request->all()['producto']){
+        if($pro = $request->request->get('producto')){
             $page = 1;
             $session->set('filtros_imagenes', $pro);
         }

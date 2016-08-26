@@ -157,7 +157,7 @@ class RedencionController extends Controller
         $page = $request->get('page');
         if(!$page) $page= 1;
             
-        if($pro = $request->request->all()['redenciones']){
+        if($pro = $request->request->get('redenciones')){
             $page = 1;
             $session->set('filtros_redenciones', $pro);
         }
@@ -222,7 +222,7 @@ class RedencionController extends Controller
         $page = $request->get('page');
         if(!$page) $page= 1;
             
-        if($pro = $request->request->all()['redenciones']){
+        if($pro = $request->request->get('redenciones')){
             $page = 1;
             $session->set('filtros_redencionesgeneral', $pro);
         }
@@ -1534,7 +1534,7 @@ class RedencionController extends Controller
 
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
-                $pro = $request->request->all()['redencion_producto'};
+                $pro = $request->request->all()['redencion_producto'];
                 // realiza alguna acción, tal como guardar la tarea en la base de datos
 
                 $productoD = $em->getRepository('IncentivesCatalogoBundle:Productocatalogo')->find($pro['productocatalogo']);
@@ -2013,7 +2013,7 @@ class RedencionController extends Controller
         $page = $request->get('page');
         if(!$page) $page= 1;
             
-        if($pro = $request->request->all()['redenciones']){
+        if($pro = $request->request->get('redenciones')){
             $page = 1;
             $session->set('filtros_redencionescompleto', $pro);
         }
