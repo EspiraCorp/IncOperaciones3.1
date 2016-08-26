@@ -1028,7 +1028,7 @@ class InventarioController extends Controller
         
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
-            $pro=($request->request->get('inventario'));
+            $pro = $request->request->all()['inventario'];
             
             for($ic=1; $ic<=$pro['cantidad']; $ic++){
         
@@ -1086,7 +1086,7 @@ class InventarioController extends Controller
 
         $session = $this->get('session');
         
-        if($pro=($request->request->get('inventario'))){
+        if($pro = $request->request->all()['inventario']){
             $page = 1;
             $session->set('filtros_salida', $pro);
         }
@@ -1152,7 +1152,7 @@ class InventarioController extends Controller
         
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
-            $pro=($request->request->get('inventario'));
+            $pro = $request->request->all()['inventario'];
             
             $inventario->setFechaSalida(new \DateTime());
             if(isset($pro['salio'])) $inventario->setSalio($pro['salio']);
@@ -1673,7 +1673,7 @@ public function planillaSolicitudAction(Request $request, $id){
         $page = $request->get('page');
         if(!$page) $page= 1;
             
-        if($pro=($request->request->get('producto'))){
+        if($pro = $request->request->all()['producto']){
             $page = 1;
             $session->set('filtros_productos', $pro);
         }
@@ -1765,7 +1765,7 @@ public function planillaSolicitudAction(Request $request, $id){
 
             if ($form->isValid()) {
                 
-                $pro=($request->request->get('cierre'));
+                $pro = $request->request->all()['cierre'];
                 
                 $estado = $em->getRepository('IncentivesInventarioBundle:cierreEstado')->find($pro['cierreEstado']);
                 $guia->setCierreEstado($estado);
@@ -1825,7 +1825,7 @@ public function planillaSolicitudAction(Request $request, $id){
             if ($form->isValid()) {
                 // realiza alguna acción, tal como guardar la tarea en la base de datos
                 
-                $pro=($request->request->get('costosLogistica'));
+                $pro = $request->request->all()['costos_logistica'];
                 $costosLogistica = new CostosLogistica();
                 
                 $planillaEnt = $em->getRepository('IncentivesInventarioBundle:Planilla')->find($planilla);
@@ -1881,11 +1881,11 @@ public function planillaSolicitudAction(Request $request, $id){
             $fp = fopen('php://temp','r+');
 
 			// Header
-			$row = array('Id','Producto','Marca','Referencia','Descripcion','SKU','Fecha Ingreso','Salio','Orden Compra','Planilla','Redencion','Observaciones');
+			$row = array('Id','Producto','Marca','Referencia','Descripcion','SKU','Fecha Ingreso','Fecha Salida','Fecha Salida','Salio','Orden Compra','Planilla','Redencion','Observaciones');
 			
     	    $em = $this->getDoctrine()->getManager();
 
-            $query = "SELECT i.id,i.salio,i.fechaEntrada,oc.consecutivo,pl.id planilla,i.observacion,pd.nombre,pd.referencia,pd.marca,pd.codInc,r.id redencion,pd.descripcion
+            $query = "SELECT i.id,i.salio,i.fechaEntrada,i.fechaSalida,oc.consecutivo,pl.id planilla,i.observacion,pd.nombre,pd.referencia,pd.marca,pd.codInc,r.id redencion,pd.descripcion
                     	FROM Inventario i
                     	LEFT JOIN Producto pd ON i.producto_id=pd.id
                     	LEFT JOIN Planilla pl ON i.planilla_id=pl.id
@@ -1893,7 +1893,7 @@ public function planillaSolicitudAction(Request $request, $id){
                     	LEFT JOIN Redenciones r ON i.redencion_id=r.id;";
             
             $conn = $this->get('database_connection'); 
-            $productos = $conn->fetchAll($query, array(1), 0);
+            $productos = $conn->fetchAll($query);
 
 			//echo "<pre>"; print_r($productos); echo "</pre>"; exit;
     			
@@ -1918,6 +1918,7 @@ public function planillaSolicitudAction(Request $request, $id){
     			$row[] = $value['codInc'];
     			
     			$row[] = $value['fechaEntrada'];
+                $row[] = $value['fechaSalida'];
     			$row[] = $value['salio'];
     			
     			$row[] = $value['consecutivo'];
@@ -1996,7 +1997,7 @@ public function planillaSolicitudAction(Request $request, $id){
         
         $session = $this->get('session');
         
-        if($pro=($request->request->get('inventario'))){
+        if($pro = $request->request->all()['inventario']){
             $page = 1;
             $session->set('filtros_liberar', $pro);
         }
@@ -2067,7 +2068,7 @@ public function planillaSolicitudAction(Request $request, $id){
         
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
-            $pro=($request->request->get('inventario'));
+            $pro = $request->request->all()['inventario'];
             
             $inventario->setFechaSalida(new \DateTime());
             if(isset($pro['salio'])) $inventario->setSalio($pro['salio']);

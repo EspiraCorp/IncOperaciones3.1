@@ -185,6 +185,7 @@ class OrdenesProducto
     {
         $this->redenciones = new ArrayCollection();
         $this->guiaEnvio = new ArrayCollection();
+        $this->producto = new ArrayCollection();
     }
 
     /**

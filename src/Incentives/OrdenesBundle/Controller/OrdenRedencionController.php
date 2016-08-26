@@ -750,7 +750,7 @@ class OrdenRedencionController extends Controller
             $em->persist($orden);
             $em->flush();
             $this->pdfAction($orden->getId()); 
-            $this->pdfCodesAction($orden->getId()); 
+            //$this->pdfCodesAction($orden->getId()); 
             $this->totalordenAction($orden->getId());
         }
 
@@ -1381,8 +1381,8 @@ class OrdenRedencionController extends Controller
 
             if ($form->isValid()) {
                 $estado = $em->getRepository('IncentivesOrdenesBundle:OrdenesEstado')->find('3');
-                $agregar=($request->request->get('agregar'));
-                $proveedor = $em->getRepository('IncentivesOperacionesBundle:Proveedores')->find($request->request->get('proveedor'));
+                $agregar = $request->request->all()['agregar'];
+                $proveedor = $em->getRepository('IncentivesOperacionesBundle:Proveedores')->find($request->request->all()['proveedor']);
 
                 $tipo = $em->getRepository('IncentivesOrdenesBundle:OrdenesTipo')->find("3");
                 $orden->setProveedor($proveedor);
@@ -1489,7 +1489,7 @@ class OrdenRedencionController extends Controller
             }
             
             $this->pdfAction($id);
-			$this->pdfCodesAction($id); 
+			//$this->pdfCodesAction($id); 
 			$this->totalordenAction($id);
         }  
 	    
@@ -1532,8 +1532,8 @@ class OrdenRedencionController extends Controller
             $valores = $request->get('ordenesproducto');
 
             if ($form->isValid()) {
-                $id=($request->request->get('id'));
-                $ordenes=($request->request->get('ordenesproducto'));
+                $id = $request->request->all()['id'];
+                $ordenes = $request->request->all()['ordenesproducto'];
                 $productos = $em->getRepository('IncentivesOrdenesBundle:OrdenesProducto')->find($id);
                 $cantidad_inicial = $productos ->getCantidad();
                 $orden = $em->getRepository('IncentivesOrdenesBundle:OrdenesCompra')->find($productos->getOrdenesCompra()->getId());
@@ -1587,8 +1587,8 @@ class OrdenRedencionController extends Controller
                 }
                 
                 $this->pdfAction($productos->getOrdenesCompra()->getId());
-          			$this->pdfCodesAction($productos->getOrdenesCompra()->getId()); 
-          			$this->totalordenAction($productos->getOrdenesCompra()->getId());
+          			//$this->pdfCodesAction($productos->getOrdenesCompra()->getId()); 
+                $this->totalordenAction($productos->getOrdenesCompra()->getId());
                                 
                 return $this->redirect($this->generateUrl('ordenredencion_editarvalores').'/'.$productos->getOrdenesCompra()->getId());
             }
@@ -1618,8 +1618,8 @@ class OrdenRedencionController extends Controller
             $valores = $request->get('ordenestracking');
 
             if ($form->isValid()) {
-                $id=($request->request->get('id'));
-                $ordenes=($request->request->get('ordenesproducto'));
+                $id = $request->request->all()['id'];
+                $ordenes = $request->request->all()['ordenes_producto'];
                 $productos = $em->getRepository('IncentivesOrdenesBundle:OrdenesProducto')->find($id);
 
                 //actualiza valores
@@ -2010,7 +2010,7 @@ if(isset($value['tracking']['ordenproducto']['redencion'])) {
         $idOrden = $producto[0]['ordenesCompra']['id'];
 
         $this->pdfAction($idOrden);
-        $this->pdfCodesAction($idOrden); 
+        //$this->pdfCodesAction($idOrden); 
         //$this->totalordenAction($idOrden);
 
         return $this->redirect($this->generateUrl('ordenredencion_editarvalores').'/'.$idOrden);
@@ -2034,10 +2034,6 @@ if(isset($value['tracking']['ordenproducto']['redencion'])) {
       $redencion->setRedencionestado($estado);
       $redencion->setOrdenesProducto(null);
       $em->persist($redencion);
-
-      //Almacenar Historico
-      $redencionH = $this->get('incentives_redenciones');
-      $redencionH->insertar($redencion);
 
       if($producto){
 
@@ -2064,9 +2060,9 @@ if(isset($value['tracking']['ordenproducto']['redencion'])) {
         $em->persist($producto);
         $em->flush();
 
-	$this->totalordenAction($idOrden);
+        $this->totalordenAction($idOrden);
         $this->pdfAction($idOrden);
-        $this->pdfCodesAction($idOrden); 
+        //$this->pdfCodesAction($idOrden); 
       }
       
       return $this->redirect($this->generateUrl('ordenredencion_editarvalores').'/'.$idOrden);
@@ -2413,7 +2409,7 @@ if(isset($value['tracking']['ordenproducto']['redencion'])) {
                       $em->persist($orden);
                       $em->flush();
                       $this->pdfAction($orden->getId()); 
-                      $this->pdfCodesAction($orden->getId()); 
+                      //$this->pdfCodesAction($orden->getId()); 
                       $this->totalordenAction($orden->getId());
                       $ordenesNuevas .= $orden->getConsecutivo().",";
                   }

@@ -355,8 +355,8 @@ class OrdenesController extends Controller
 
             //if ($form->isValid()) {
                 
-                $pro=($request->request->get('ordenescompra'));
-                $id=($request->request->get('id'));
+                $pro = $request->request->all()['ordenes_compra'];
+                $id = $request->request->all()['id'];
                 $orden = $em->getRepository('IncentivesOrdenesBundle:OrdenesCompra')->find($id);
                 $proveedor = $em->getRepository('IncentivesOperacionesBundle:Proveedores')->find($pro['proveedor']);
                 $orden->setProveedor($proveedor);
@@ -414,8 +414,8 @@ class OrdenesController extends Controller
             $form->handleRequest($request);
 
             if ($form->isValid()) {
-                $id=($request->request->get('id'));
-                $ordenes=($request->request->get('ordenesproducto'));
+                $id = $request->request->all()['id'];
+                $ordenes = $request->request->all()['ordenesproducto'];
                 
                 $productos = $em->getRepository('IncentivesOrdenesBundle:OrdenesProducto')->find($id);
                 $orden = $em->getRepository('IncentivesOrdenesBundle:OrdenesCompra')->find($productos->getOrdenesCompra()->getId());
@@ -800,8 +800,8 @@ class OrdenesController extends Controller
 
         $em = $this->getDoctrine()->getManager();
 
-        $id_prod = ($request->request->get('producto'));
-        $OrdenesP = ($request->request->get('ordenesproducto'));
+        $id_prod = $request->request->all()['producto'];
+        $OrdenesP = $request->request->all()['ordenesproducto'];
         $cantidadR = $OrdenesP['cantidadrecibida'];
 
         $ordenesProducto = $em->getRepository('IncentivesOrdenesBundle:OrdenesProducto')->find($id_prod);
@@ -1003,9 +1003,8 @@ class OrdenesController extends Controller
 
             if ($form->isValid()) {
                 // realiza alguna acción, tal como guardar la tarea en la base de datos
-                
-                $id=($request->request->get('id'));
-                $pro=($request->request->get('ordenesproducto'));
+                $id = $request->request->all()['id'];
+                $pro = $request->request->all()['ordenes_producto_agregar'];
                 
                 $orden = $em->getRepository('IncentivesOrdenesBundle:OrdenesCompra')->find($id);
                 $estado = $em->getRepository('IncentivesCatalogoBundle:Estados')->find(1);
@@ -1354,8 +1353,8 @@ class OrdenesController extends Controller
         
         $em = $this->getDoctrine()->getManager();
 
-        $id_prod = ($request->request->get('producto'));
-        $OrdenesP = ($request->request->get('ordenesproducto'));
+        $id_prod = $request->request->all()['producto'];
+        $OrdenesP = $request->request->all()['ordenesproducto'];
         $cantidadR = 1;
 
         $redencion = $em->getRepository('IncentivesRedencionesBundle:Redenciones')->find($redencion);
@@ -1490,7 +1489,7 @@ class OrdenesController extends Controller
                     LEFT JOIN OrdenesEstado e ON e.id=oc.ordenesEstado_id;";
             
             $conn = $this->get('database_connection'); 
-            $productos = $conn->fetchAll($query, array(1), 0);
+            $productos = $conn->fetchAll($query);
 
 			//echo "<pre>"; print_r($productos); echo "</pre>"; exit;
     			
@@ -1540,21 +1539,23 @@ class OrdenesController extends Controller
             $fp = fopen('php://temp','r+');
 
 			// Header
-			$row = array('Id','Consecutivo','Fecha','Proveedor','Tipo','Estado','Producto','Referencia','Marca','Estado','Cantidad','Valor Unitario','Descuento','Total');
+			$row = array('Id','Consecutivo','Fecha','Proveedor','Tipo','Estado','Producto','Referencia','Marca','Estado','Cantidad','Valor Unitario','Descuento','% IVA','SubTotal','IVA','Total');
 			
     	    $em = $this->getDoctrine()->getManager();
 
-            $query = "SELECT op.id,op.cantidad,op.valorunidad,op.valortotal,op.descuento descuentoProducto,p.nombre producto,p.marca,p.referencia,ep.nombre estadoProducto,oc.consecutivo,oc.fechaCreacion,pv.nombre proveedor,tp.nombre tipo,oc.trm,e.nombre estado,oc.aplicaIva,oc.total,oc.servicioLogistico
+            $query = "SELECT op.id,op.cantidad,op.valorunidad,op.valortotal,op.descuento descuentoProducto,p.nombre producto,p.marca,p.referencia,p.iva IvaPorc,ep.nombre estadoProducto,oc.consecutivo,oc.fechaCreacion,pv.nombre proveedor,tp.nombre tipo,oc.trm,e.nombre estado,oc.aplicaIva,oc.total,oc.servicioLogistico
                     FROM OrdenesProducto op
                     JOIN OrdenesCompra oc ON op.ordenesCompra_id=oc.id
                     LEFT JOIN Producto p ON p.id=op.producto_id
                     LEFT JOIN OrdenesEstado ep ON ep.id=op.estado_id
                     LEFT JOIN Proveedores pv ON pv.id=oc.proveedor_id
                     LEFT JOIN OrdenesTipo tp ON tp.id=oc.ordenesTipo_id
-                    LEFT JOIN OrdenesEstado e ON e.id=oc.ordenesEstado_id;";
+                    LEFT JOIN OrdenesEstado e ON e.id=oc.ordenesEstado_id
+                    GROUP BY op.id;
+                    ";
             
             $conn = $this->get('database_connection'); 
-            $productos = $conn->fetchAll($query, array(1), 0);
+            $productos = $conn->fetchAll($query);
 
 			//echo "<pre>"; print_r($productos); echo "</pre>"; exit;
     			
@@ -1567,7 +1568,10 @@ class OrdenesController extends Controller
 				}
                
                 $ir++;
-               
+                $iva = 0;
+                
+                $iva = ($value['IvaPorc']/100) * $value['valortotal'];
+                
                 $row = array();
                 //Redencion, participante, producto
 				$row[] = $value['id'];//1
@@ -1583,7 +1587,10 @@ class OrdenesController extends Controller
     			$row[] = $value['cantidad'];//10
     			$row[] = number_format($value['valorunidad'], 2, ',', '');//10
     			$row[] = number_format($value['descuentoProducto'], 2, ',', '');//10
+                $row[] = number_format($value['IvaPorc'], 2, ',', '');//10
     			$row[] = number_format($value['valortotal'], 2, ',', '');//10
+                $row[] = number_format($iva, 2, ',', '');//10
+                $row[] = number_format(($iva+$value['valortotal']), 2, ',', '');//10
     			
 				fputcsv($fp,$row,';');
             }

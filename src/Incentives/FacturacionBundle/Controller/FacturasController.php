@@ -91,12 +91,12 @@ class FacturasController extends Controller
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
 
-            $pro=($request->request->get('factura'));
+            $pro= $request->request->all()['factura'];
 
             if ($form->isValid()) {
                 // realiza alguna acción, tal como guardar la tarea en la base de datos
 
-                $id=($request->request->get('programa'));
+                $id = $request->request->all()['programa'];
                 
                 $ordenes = $em->getRepository('IncentivesFacturacionBundle:Factura')->findAll();
                 
@@ -537,7 +537,7 @@ class FacturasController extends Controller
     {   
 
         //id del programar a facturar
-        $pro=($request->request->get('factura'));
+        $pro = $request->request->all()['factura'];
 
         $em = $this->getDoctrine()->getManager();
 
@@ -1077,7 +1077,7 @@ class FacturasController extends Controller
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
 
-            $pro=($request->request->get('factura'));
+            $pro = $request->request->all()['factura'];
             
             if ($form->isValid()) {
                 // realiza alguna acción, tal como guardar la tarea en la base de datos
@@ -1249,11 +1249,11 @@ class FacturasController extends Controller
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
 
-            $pro=($request->request->get('factura'));
+            $pro = $request->request->all()['factura'];
 
             if ($form->isValid()) {
 
-                $id=($request->request->get('programa'));
+                $id = $request->request->all()['programa'];
                 
                 $ordenes = $em->getRepository('IncentivesFacturacionBundle:Factura')->findAll();
                 
@@ -1450,8 +1450,8 @@ class FacturasController extends Controller
             if ($form->isValid()) {
                 // realiza alguna acción, tal como guardar la tarea en la base de datos
                 
-                $id=($request->request->get('id'));
-                $pro=($request->request->get('facturalogistica'));
+                $id = $request->request->all()['id'];
+                $pro = $request->request->all()['facturalogistica'];
                 
                 $factura = $em->getRepository('IncentivesFacturacionBundle:Factura')->find($id);
                 $logistica->setCantidad($pro["cantidad"]);

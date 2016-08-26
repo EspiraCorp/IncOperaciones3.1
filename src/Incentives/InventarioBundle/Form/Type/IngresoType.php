@@ -18,13 +18,13 @@ class IngresoType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('producto', EntityType::class, array(
+        /*$builder->add('producto', EntityType::class, array(
             'class' => 'IncentivesCatalogoBundle:Producto',
             'choice_label' => 'nombreid',
             //'empty_value' => 'Seleccione una opcion',
-        ));
+        ));*/
         $builder->add('cantidad', IntegerType::class, array(
-                "mapped" => false,
+                'mapped' => false,
             ));
         $builder->add('valorCompra');
         $builder->add('observacion');

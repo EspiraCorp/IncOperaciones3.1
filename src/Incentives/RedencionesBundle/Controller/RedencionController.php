@@ -157,7 +157,7 @@ class RedencionController extends Controller
         $page = $request->get('page');
         if(!$page) $page= 1;
             
-        if($pro=($request->request->get('redenciones'))){
+        if($pro = $request->request->all()['redenciones']){
             $page = 1;
             $session->set('filtros_redenciones', $pro);
         }
@@ -222,7 +222,7 @@ class RedencionController extends Controller
         $page = $request->get('page');
         if(!$page) $page= 1;
             
-        if($pro=($request->request->get('redenciones'))){
+        if($pro = $request->request->all()['redenciones']){
             $page = 1;
             $session->set('filtros_redencionesgeneral', $pro);
         }
@@ -1534,7 +1534,7 @@ class RedencionController extends Controller
 
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
-                $pro=($request->request->get('redencionproducto'));
+                $pro = $request->request->all()['redencion_producto'};
                 // realiza alguna acción, tal como guardar la tarea en la base de datos
 
                 $productoD = $em->getRepository('IncentivesCatalogoBundle:Productocatalogo')->find($pro['productocatalogo']);
@@ -1571,7 +1571,7 @@ class RedencionController extends Controller
 
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
-                $pro=($request->request->get('justificacion'));
+                $pro = $request->request->all()['justificacion'];
                 // realiza alguna acción, tal como guardar la tarea en la base de datos
 
                 $justificacionD = $em->getRepository('IncentivesRedencionesBundle:Justificacion')->find($pro['justificacion']);
@@ -1637,7 +1637,7 @@ class RedencionController extends Controller
             $str_filtro .= " GROUP BY r.id  ORDER BY r.fecha ASC";
             
             $conn = $this->get('database_connection'); 
-            $redenciones = $conn->fetchAll($query.$str_filtro, array(1), 0);
+            $redenciones = $conn->fetchAll($query.$str_filtro);
 
 			//echo "<pre>"; print_r($redenciones); echo "</pre>"; exit;
                
@@ -1712,7 +1712,7 @@ class RedencionController extends Controller
                         $str_filtro = ' WHERE d.redencion_id = '.$value['id'];
                         
                         $conn = $this->get('database_connection'); 
-                        $guiasResult = $conn->fetchAll($query.$str_filtro, array(1), 0);
+                        $guiasResult = $conn->fetchAll($query.$str_filtro);
                         
                         $guias = array();
                         $opeador = array();
@@ -1791,7 +1791,7 @@ class RedencionController extends Controller
 
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
-                $pro=($request->request->get('envios'));
+                $pro = $request->request->all()['envios'];
                 // realiza alguna acción, tal como guardar la tarea en la base de datos
                 $redencionE->setCiudadNombre($pro['ciudadNombre']);
                 $redencionE->setDireccion($pro['direccion']);
@@ -2013,7 +2013,7 @@ class RedencionController extends Controller
         $page = $request->get('page');
         if(!$page) $page= 1;
             
-        if($pro=($request->request->get('redenciones'))){
+        if($pro = $request->request->all()['redenciones']){
             $page = 1;
             $session->set('filtros_redencionescompleto', $pro);
         }

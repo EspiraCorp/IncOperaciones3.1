@@ -30,7 +30,7 @@ class UsuariosController extends Controller
             $page = $request->get('page');
             if(!$page) $page= 1;
             
-            if($pro=($request->request->get('usuario'))){
+            if($pro = $request->request->all()['usuario']){
                 $page = 1;
                 $session->set('filtros_usuarios', $pro);
             }
@@ -118,28 +118,27 @@ class UsuariosController extends Controller
         $usuario = $em->getRepository('IncentivesBaseBundle:Usuario')->find($id);
         $form = $this->createForm(UserType::class, $usuario);
                     
-    		if ($request->isMethod('POST')) {
-    			
-          $form->submit($request);
+            if ($request->isMethod('POST')) {
+                
+                $form->handleRequest($request);
 
-    			if ($form->isValid()) {
+                if ($form->isValid()) {
+                    if(isset($pro['password']['first']) && $pro['password']['first']!=""){
+                      $usuario->setPassword($pro['password']['first']);
+                    }
+                    
+                    $em->persist($usuario);
+                    $em->flush();
+                }
 
-            if(isset($pro['password']['first']) && $pro['password']['first']!=""){
-              $usuario->setPassword($pro['password']['first']);
-            }
+                return $this->redirect($this->generateUrl('usuarios'));
+            }    
 
-            $em->persist($usuario);
-            $em->flush();
-    			}
-
-    			return $this->redirect($this->generateUrl('usuarios'));
-    		}    
-
-  	    return $this->render(
-  	        'IncentivesBaseBundle:Usuarios:editar.html.twig',
-  	        array('form' => $form->createView(), 'id' => $id)
-  	    );
-  	}
+        return $this->render(
+            'IncentivesBaseBundle:Usuarios:editar.html.twig',
+            array('form' => $form->createView(), 'id' => $id)
+        );
+    }
 
     public function nombreAction (){
 

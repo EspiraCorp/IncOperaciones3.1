@@ -7,7 +7,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormEvent;
 use PUGX\AutocompleterBundle\Form\Type\AutocompleteType;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -21,6 +21,7 @@ class ProductoprecioType extends AbstractType
             'class' => 'IncentivesOperacionesBundle:Proveedores',
             'choice_label' => 'nombre',
             //'empty_value' => 'Seleccione una opcion',
+            'label'  => 'Proveedor',
         ));
         $builder->add('precio');
         $builder->add('precioDolares');
@@ -30,7 +31,7 @@ class ProductoprecioType extends AbstractType
         ));
     }
     
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
             'data_class' => 'Incentives\CatalogoBundle\Entity\Productoprecio',

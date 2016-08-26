@@ -34,8 +34,8 @@ class ContactoController extends Controller
 			$form->handleRequest($request);
 
 			if ($form->isValid()) {
-				$pro=($request->request->get('contacto'));
-				$id=($request->request->get('id'));
+				$pro = $request->request->all()['contacto'];
+				$id = $request->request->all()['id'];
 				$query = $em->createQuery(
 				    'UPDATE IncentivesOperacionesBundle:Contacto p 
 				    SET p.nombres=:nombres, p.correo=:correo, p.telefono=:telefono, p.cargo=:cargo
@@ -98,7 +98,7 @@ class ContactoController extends Controller
 
 			if ($form->isValid()) {
 				// realiza alguna acción, tal como guardar la tarea en la base de datos
-				$id=($request->request->get('id'));
+				$id = $request->request->all()['id'];
 				$proveedor = $em->getRepository('IncentivesOperacionesBundle:Proveedores')->find($id);
                 $contacto->setProveedor($proveedor);
                 $proveedor->addContacto($contacto);

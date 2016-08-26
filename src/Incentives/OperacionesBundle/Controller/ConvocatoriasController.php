@@ -37,7 +37,7 @@ class ConvocatoriasController extends Controller
             //if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
                     
-                $pro=($request->request->get('convocatorias'));
+                $pro = $request->request->all()['convocatorias'];
 
                 $convocatoria->setTitulo($pro["titulo"]);
                 $convocatoria->setDescripcion($pro["descripcion"]);
@@ -120,7 +120,7 @@ class ConvocatoriasController extends Controller
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
                     
-                $pro=($request->request->get('convocatorias'));
+                $pro = $request->request->all()['convocatorias'];
 
                 $convocatoria->setTitulo($pro["titulo"]);
                 $convocatoria->setDescripcion($pro["descripcion"]);
@@ -190,7 +190,7 @@ class ConvocatoriasController extends Controller
 
             if ($form->isValid()) {
                 // realiza alguna acción, tal como guardar la tarea en la base de datos
-                $id=($request->request->get('id'));
+                $id = $request->request->all()['id'];
                 $convocatoria = $em->getRepository('IncentivesOperacionesBundle:Convocatorias')->find($id);
                 $proveedor->setConvocatorias($convocatoria);
                 //$convocatoria->addConvocatoriasproveedores($proveedor);
@@ -328,7 +328,7 @@ class ConvocatoriasController extends Controller
                     ->getRepository('IncentivesOperacionesBundle:ConvocatoriasProveedores');
                 $convocatoria = $repositoryp->findOneBy(array('proveedor' => $id_prov, 'convocatorias' => $id));
 
-                $pro=($request->request->get('convocatoriasproveedores'));
+                $pro = $request->request->all()['convocatoriasproveedores'];
 
                 $convocatoria->setObservacion($pro["observacion"]);
 

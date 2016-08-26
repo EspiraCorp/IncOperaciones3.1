@@ -40,7 +40,7 @@ class ProgramaController extends Controller
             $form->handleRequest($request);
 
             if ($form->isValid()) {
-                $id=($request->request->get('id'));
+                $id = $request->request->all()['id'];
                 if ($id==0){
                     $id=$programa->getCliente()->getId();
                 }
@@ -94,8 +94,8 @@ class ProgramaController extends Controller
 
 
             if ($form->isValid()) {                
-                $pro=($request->request->get('programa'));
-                $id=($request->request->get('id'));
+                $pro = $request->request->all()['programa'];
+                $id = $request->request->all()['id'];
                 $programa = $em->getRepository('IncentivesCatalogoBundle:Programa')->find($id);
                 $programa->setNombre($pro["nombre"]);
                 $programa->setDescripcion($pro["descripcion"]);

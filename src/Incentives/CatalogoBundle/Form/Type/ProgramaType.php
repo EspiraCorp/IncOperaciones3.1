@@ -39,8 +39,8 @@ class ProgramaType extends AbstractType
 
          $builder->add('iva', ChoiceType::class, array(
             'choices'   => array(
-                0   => 'Si',
-                1 => 'No',
+                'Si' => 1,
+                'No' => 0,
             ),
             'expanded'  => true,
         ));

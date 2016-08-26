@@ -42,7 +42,7 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 class ProveedorController extends Controller
 {
        
-	public function nuevoAction(Request $request)
+    public function nuevoAction(Request $request)
     {
         // crea una task y le asigna algunos datos ficticios para este ejemplo
         
@@ -50,14 +50,14 @@ class ProveedorController extends Controller
         $contacto = new Contacto();
         $usuario = new Usuario();
 
-		$form = $this->createForm(ProveedoresType::class, $proveedor);
+        $form = $this->createForm(ProveedoresType::class, $proveedor);
                     
-		if ($request->isMethod('POST')) {
+        if ($request->isMethod('POST')) {
 
-			$form->handleRequest($request);
+            $form->handleRequest($request);
 
-			if ($form->isValid()) {
-				$em = $this->getDoctrine()->getManager();
+            if ($form->isValid()) {
+                $em = $this->getDoctrine()->getManager();
                 // realiza alguna acción, tal como guardar la tarea en la base de datos
                 if (0 != count($proveedor->getContactos())) {
                     foreach ($proveedor->getContactos() as $contacto) {
@@ -67,33 +67,33 @@ class ProveedorController extends Controller
                     }
                 }    
                     
-                $pro=($request->request->get('proveedores'));
+                $pro = $request->request->all()['proveedores'];
 
-                $proveedor->setDireccion($pro["direccion"]);
-                $pais = $em->getRepository('IncentivesOperacionesBundle:Pais')->find($pro["pais"]);
+                $proveedor->setDireccion($pro['direccion']);
+                $pais = $em->getRepository('IncentivesOperacionesBundle:Pais')->find($pro['pais']);
                 $proveedor->setPais($pais);
-                $ciudad = $em->getRepository('IncentivesOperacionesBundle:Ciudad')->find($pro["ciudad"]);
+                $ciudad = $em->getRepository('IncentivesOperacionesBundle:Ciudad')->find($pro['ciudad']);
                 $proveedor->setCiudad($ciudad);
-                $regimen = $em->getRepository('IncentivesOperacionesBundle:Regimen')->find($pro["regimen"]);
+                $regimen = $em->getRepository('IncentivesOperacionesBundle:Regimen')->find($pro['regimen']);
                 $proveedor->setRegimen($regimen);
-                $clasificacion = $em->getRepository('IncentivesOperacionesBundle:ProveedoresClasificacion')->find($pro["proveedorclasificacion"]);
+                $clasificacion = $em->getRepository('IncentivesOperacionesBundle:ProveedoresClasificacion')->find($pro['proveedorclasificacion']);
                 $proveedor->setProveedorClasificacion($clasificacion);
-                $area = $em->getRepository('IncentivesOperacionesBundle:ProveedoresArea')->find($pro["proveedorarea"]);
+                $area = $em->getRepository('IncentivesOperacionesBundle:ProveedoresArea')->find($pro['proveedorarea']);
                 $proveedor->setProveedorArea($area);
-                $proveedor->setSedeprincipal($pro["sede_principal"]);
-                $proveedor->setRegistrocamara($pro["registro_camara"]);
-                $proveedor->setTelefono($pro["telefono"]);
-                $proveedor->setLineaAtencion($pro["lineaAtencion"]);
+                $proveedor->setSedeprincipal($pro['sede_principal']);
+                $proveedor->setRegistrocamara($pro['registro_camara']);
+                $proveedor->setTelefono($pro['telefono']);
+                $proveedor->setLineaAtencion($pro['lineaAtencion']);
                 $estado = $em->getRepository('IncentivesCatalogoBundle:Estados')->find(1);
                 $proveedor->setEstado($estado);
-                if (isset($pro["sedes"])){
+                if (isset($pro['sedes'])){
                     $proveedor->setSedes(true);
                 }else{
                     $proveedor->setSedes(false);
                 }
-                $proveedor->setDatossedes($pro["datos_sedes"]);
-                $proveedor->setPagina($pro["pagina"]);
-                $tipo = $em->getRepository('IncentivesOperacionesBundle:ProveedoresTipo')->find($pro["proveedortipo"]);
+                $proveedor->setDatossedes($pro['datos_sedes']);
+                $proveedor->setPagina($pro['pagina']);
+                $tipo = $em->getRepository('IncentivesOperacionesBundle:ProveedoresTipo')->find($pro['proveedortipo']);
                 $proveedor->setProveedortipo($tipo);
                 /*if($pro["codigo_postal"]) $proveedor->setCodigopostal($pro["codigo_postal"]);
                 if($pro["cobertura"]) $proveedor->setCobertura($pro["cobertura"]);
@@ -101,15 +101,15 @@ class ProveedorController extends Controller
                 if($pro["tiempo_entrega"]) $proveedor->setTiempoentrega($pro["tiempo_entrega"]);
                 if($pro["cupo_asignado"]) $proveedor->setCupoAsignado($pro["cupo_asignado"]);
                 */
-                $categoria = $em->getRepository('IncentivesOperacionesBundle:Categoria')->find($pro["categoria"]);
+                $categoria = $em->getRepository('IncentivesOperacionesBundle:Categoria')->find($pro['categoria']);
                 $proveedor->setCategoria($categoria);   
 
-                if($pro["proveedortipo"]==1){
-	                $usuario->setNombre($pro["nombre"]);
+                if($pro['proveedortipo']==1){
+	                $usuario->setNombre($pro['nombre']);
 	                //$usuario->setGrupos('Proveedor');
-	                $usuario->setEmail($pro["correo"]);
-	                $usuario->setUsername($pro["numero_documento"]);
-	                $usuario->setPassword($pro["numero_documento"]);
+	                $usuario->setEmail($pro['correo']);
+	                $usuario->setUsername($pro['numero_documento']);
+	                $usuario->setPassword($pro['numero_documento']);
 	                $grupo = $em->getRepository('IncentivesBaseBundle:Grupo')->find(4);
 	                $usuario->setGrupos($grupo);
 	                $usuario->setProveedor($proveedor);
@@ -122,7 +122,7 @@ class ProveedorController extends Controller
 			    try {
 	                $em->flush();
 	               
-	                $this->get('session')->getFlashBag()->add('notice', 'El proveedor con documento '.$pro["numero_documento"].' se creo correctamente');
+	                $this->get('session')->getFlashBag()->add('notice', 'El proveedor con documento '.$pro['numero_documento'].' se creo correctamente');
 			   		
 	                /*if(!$this->correoIngresoAction($proveedor->getId())){
 				    	$this->get('session')->getFlashBag()->add('warning', 'No es posible el envio del correo.');
@@ -166,13 +166,13 @@ class ProveedorController extends Controller
 	    $actividad = new Aeconomica();
 
 		if ($request->isMethod('POST')) {
-			$pro=($request->request->get('proveedores'));
+			$pro = $request->request->all()['proveedores'];
 			$form->handleRequest($request);
 
 			//if ($form->isValid()) {
 				
-				$pro=($request->request->get('proveedores'));
-				$id=($request->request->get('id'));
+				$pro = $request->request->all()['proveedores'];
+				$id = $request->request->all()['id'];
 				$proveedor = $em->getRepository('IncentivesOperacionesBundle:Proveedores')->find($id);
 				
 				$proveedor->setDireccion($pro["direccion"]);
@@ -263,7 +263,7 @@ class ProveedorController extends Controller
         
         if(!$page) $page= 1;
             
-        if($pro=($request->request->get('proveedores'))){
+        if($pro= $request->request->all()['proveedores']){
             $page = 1;
             $session->set('filtros_proveedores', $pro);
         }
@@ -439,7 +439,7 @@ class ProveedorController extends Controller
 			$form->handleRequest($request);
 
 			if ($form->isValid()) {
-				$id=($request->request->get('id'));
+				$id = $request->request->all()['id'];
 				$proveedor = $em->getRepository('IncentivesOperacionesBundle:Proveedores')->find($id);
 			    $file = $form['archivo']->getData();
 			    // compute a random name and try to guess the extension (more secure)
@@ -471,7 +471,7 @@ class ProveedorController extends Controller
 
 			    $archivo->setArchivo($nombreArchivo);
 			    $archivo->setRuta($Dir);
-			    $id=($request->request->get('id'));
+			    $id = $request->request->all()['id'];
                 $archivo->setProveedor($proveedor);
                 
                 $estado = $em->getRepository('IncentivesCatalogoBundle:Estados')->find(1);
@@ -513,7 +513,7 @@ class ProveedorController extends Controller
 			$form->handleRequest($request);
 
 			if ($form->isValid()) {
-				$id=($request->request->get('id'));
+				$id = $request->request->all()['id'];
 				$proveedor = $em->getRepository('IncentivesOperacionesBundle:Proveedores')->find($id);
 				
 			    $file = $form['archivo']->getData();
@@ -535,7 +535,7 @@ class ProveedorController extends Controller
 			    $catalogo->setRuta($Dir);
 			    $catalogo->setArchivo($nombreArchivo);
 
-			    $id=($request->request->get('id'));
+			    $id = $request->request->all()['id'];
                 $catalogo->setProveedor($proveedor);
 			     
 			    $estado = $em->getRepository('IncentivesCatalogoBundle:Estados')->find(1);
@@ -688,9 +688,9 @@ class ProveedorController extends Controller
 			$form->handleRequest($request);
 
 			if ($form->isValid()) {
-				$pro=($request->request->get('password'));
-				$id=($request->request->get('id'));
-				$pass=($request->request->get('pass'));
+				$pro = $request->request->all()['password'];
+				$id = $request->request->all()['id'];
+				$pass = $request->request->all()['pass'];
 				$usuario = $em->getRepository('IncentivesBaseBundle:Usuario')->find($id);
 
 				if ($usuario->getPassword()!=$pass)
@@ -1369,7 +1369,7 @@ public function exportarAction()
 				$proveedor = $em->getRepository('IncentivesOperacionesBundle:Proveedores')->find($id);
                 $calificacion->setProveedor($proveedor);
 
-                $pro=($request->request->get('proveedorescalificacion'));
+                $pro = $request->request->all()['proveedores_calificacion'];
                 $qb = $em->createQueryBuilder();
 			    $qb->select('count(c)');
 			    $qb->from('IncentivesOperacionesBundle:ProveedoresCalificacion','c');
@@ -1411,9 +1411,9 @@ public function exportarAction()
             if ($form->isValid()) {
             	$em = $this->getDoctrine()->getManager();
 
-                $pro=($request->request->get('cargaplan'));	
+                $pro = $request->request->all()['cargaplan'];	
 
-                $id=($request->request->get('id'));
+                $id = $request->request->all()['id'];
 				$calificacion = $em->getRepository('IncentivesOperacionesBundle:ProveedoresCalificacion')->find($id);
 
                 $calificacion->setObservacionproveedor($pro["observacionproveedor"]);

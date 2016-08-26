@@ -198,14 +198,14 @@ class ProductoController extends Controller
         }
 
         if ($request->isMethod('POST')) {
-            $pro=($request->request->get('producto'));
+            $pro = $request->request->all()['producto'];
             $form->handleRequest($request);
 
 
             if ($form->isValid()) {
                 
-                $pro=($request->request->get('producto'));
-                $id=($request->request->get('id'));
+                $pro = $request->request->all()['producto'];
+                $id = $request->request->all()['id'];
                 $producto = $em->getRepository('IncentivesCatalogoBundle:Producto')->find($id);
                 $producto->setNombre($pro["nombre"]);
                 $producto->setDescripcion($pro["descripcion"]);
@@ -256,7 +256,7 @@ class ProductoController extends Controller
             $page = $request->get('page');
             if(!$page) $page= 1;
             
-            if($pro=($request->request->get('producto'))){
+            if($pro = $request->request->all()['producto']){
                 $page = 1;
                 $session->set('filtros_productos', $pro);
             }
@@ -334,7 +334,7 @@ class ProductoController extends Controller
             $page = $request->get('page');
             if(!$page) $page= 1;
             
-            if($pro=($request->request->get('producto'))){
+            if($pro = $request->request->all()['producto']){
                 $page = 1;
                 $session->set('filtros_productos', $pro);
             }
@@ -517,11 +517,12 @@ class ProductoController extends Controller
             if ($form->isValid()) {
                 $conteo=1;
                 $em = $this->getDoctrine()->getManager(); 
-                $id=($request->request->get('id'));
+                $id = $request->request->all()['id'];
                 $producto = $em->getRepository('IncentivesCatalogoBundle:Producto')->find($id);
 
                 $imagen->setProducto($producto);
                 $file = $imagen->getPath();
+                
                 //Tamaño de imagen
                 $original_info = getimagesize($file);
                 $original_w = $original_info[0];
@@ -631,7 +632,7 @@ class ProductoController extends Controller
 
             if ($form->isValid()) {
                 
-                $pro=($request->request->get('productoprecio'));
+                $pro = $request->request->all()['producto_precio'];
                 $proveedor = $em->getRepository('IncentivesOperacionesBundle:Proveedores')->find($pro['proveedor']);
                 $estado = $em->getRepository('IncentivesCatalogoBundle:Estados')->find(1);
                 // realiza alguna acción, tal como guardar la tarea en la base de datos
@@ -1231,8 +1232,8 @@ class ProductoController extends Controller
 
             //if ($form->isValid()) {
                 
-                $pro=($request->request->get('productoprecio'));
-                $id=($request->request->get('id'));
+                $pro = $request->request->all()['productoprecio'];
+                $id = $request->request->all()['id'];
                 $precio = $em->getRepository('IncentivesCatalogoBundle:Productoprecio')->find($id);
                 $proveedor = $em->getRepository('IncentivesOperacionesBundle:Proveedores')->find($pro["proveedor"]);
                 $precio->setPrecio($pro["precio"]);
@@ -1763,7 +1764,7 @@ public function formatoeditarmasAction() {
             $page = $request->get('page');
             if(!$page) $page= 1;
             
-            if($pro=($request->request->get('producto'))){
+            if($pro = $request->request->all()['producto']){
                 $page = 1;
                 $session->set('filtros_productos_busqueda', $pro);
             }

@@ -96,7 +96,7 @@ class MaestroController extends Controller
             $page = $request->get('page');
             if(!$page) $page= 1;
             
-            if($pro=($request->request->get('producto'))){
+            if($pro = $request->request->all()['producto']){
                 $page = 1;
                 $session->set('filtros_maestro', $pro);
             }
@@ -185,7 +185,7 @@ class MaestroController extends Controller
             $filtros->bind($request);
 
             if ($filtros->isValid()) {
-                $flt = ($request->request->get('filtros'));
+                $flt = $request->request->all()['filtros'];
 
                 //Filtros
                 if(isset($flt['nombre']) && $flt['nombre']!=""){
@@ -337,8 +337,8 @@ class MaestroController extends Controller
         
         $em = $this->getDoctrine()->getManager();
 
-        $id_prod = ($request->request->get('producto'));
-        $id_catal = ($request->request->get('catalogo'));
+        $id_prod = $request->request->all()['producto'];
+        $id_catal = $request->request->all()['catalogo'];
 
         $catalogo = $em->getRepository('IncentivesCatalogoBundle:Catalogos')->find($id_catal);
         $producto = $em->getRepository('IncentivesCatalogoBundle:Producto')->find($id_prod);
@@ -359,7 +359,7 @@ class MaestroController extends Controller
 
             if ($form->isValid()) {
 
-                $pro=($request->request->get('productocatalogo'));
+                $pro = $request->request->all()['productocatalogo'];
 
                 if(isset($pro['activo'])){
                     
@@ -407,8 +407,8 @@ class MaestroController extends Controller
         
         $em = $this->getDoctrine()->getManager();
 
-        $id_prod = ($request->request->get('producto'));
-        $id_catal = ($request->request->get('catalogo'));
+        $id_prod = $request->request->all()['producto'];
+        $id_catal = $request->request->all()['catalogo'];
 
         $catalogo = $em->getRepository('IncentivesCatalogoBundle:Catalogos')->find($id_catal);
 
@@ -972,7 +972,7 @@ class MaestroController extends Controller
                //$form->handleRequest($request);
                //if ($form->isValid()) {
                 
-                $pro=($request->request->get('productocatalogo'));
+                $pro = $request->request->all()['producto_catalogo'];
                 $catalogo = $em->getRepository('IncentivesCatalogoBundle:Catalogos')->find($pro['catalogos']);
                 $categoria = $em->getRepository('IncentivesOperacionesBundle:Categoria')->find($pro['categoria']);
                 // realiza alguna acción, tal como guardar la tarea en la base de datos
@@ -1020,7 +1020,7 @@ class MaestroController extends Controller
                 //$form->handleRequest($request);
                 //if ($form->isValid()) {
                 
-                    $pro=($request->request->get('productocatalogo'));
+                    $pro = $request->request->all()['producto_catalogo'];
                     $categoria = $em->getRepository('IncentivesOperacionesBundle:Categoria')->find($pro['categoria']);
                     
                     $puntos = $this->calcularPuntos($pro['precioTemporal'], $pro['incrementoTemporal'], $pro['logisticaTemporal'], $pro['puntosTemporal'], $productocatalogoEditar->getCatalogos()->getId());
@@ -1064,8 +1064,8 @@ class MaestroController extends Controller
            
                 $form->handleRequest($request);
                if ($form->isValid()) {
-                
-                $pro=($request->request->get('productocatalogo'));
+            
+                $pro = $request->request->all()['producto_catalogo'];
                 $catalogoP = $em->getRepository('IncentivesCatalogoBundle:Catalogos')->find($catalogo);
                 $categoria = $em->getRepository('IncentivesOperacionesBundle:Categoria')->find($pro['categoria']);
                 // realiza alguna acción, tal como guardar la tarea en la base de datos
@@ -1116,7 +1116,7 @@ class MaestroController extends Controller
                 
                 $idCatalogo = $productocatalogoEditar->getCatalogos()->getId();
                 
-                    $pro=($request->request->get('productocatalogo'));
+                    $pro = $request->request->all()['productocatalogo'];
                     $categoria = $em->getRepository('IncentivesOperacionesBundle:Categoria')->find($pro['categoria']);
                     
                     $puntos = $this->calcularPuntos($pro['precioTemporal'], $pro['incrementoTemporal'], $pro['logisticaTemporal'], $pro['puntosTemporal'], $idCatalogo);

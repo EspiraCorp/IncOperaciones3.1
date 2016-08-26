@@ -7,6 +7,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Incentives\OrdenesBundle\Form\Type\OrdenesProductoType;
 
 class OrdenesCompraCantidadType extends AbstractType
 {
@@ -18,7 +19,7 @@ class OrdenesCompraCantidadType extends AbstractType
     {
 
         $builder->add('ordenesProducto', Collectiontype::class, array(
-             'type'  => new OrdenesProductoType(),
+                'entry_type'  => OrdenesProductoType::class,
                 'label'          => 'Productos',
                 'by_reference'   => false,
                 'allow_delete'   => true,

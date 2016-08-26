@@ -28,7 +28,7 @@ class OrdenesProductoType extends AbstractType
 
         $builder->add('producto', EntityType::class, array(
             'class' => 'IncentivesCatalogoBundle:Producto',
-	    'query_builder' => function(ProductoRepository $repository) { 
+            'query_builder' => function(ProductoRepository $repository) { 
                 return $repository->createQueryBuilder('u')->orderBy('u.nombre', 'ASC')
 					->where('u.estado = :id')->setParameter('id', '1');
             },

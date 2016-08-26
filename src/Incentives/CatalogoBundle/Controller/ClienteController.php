@@ -72,14 +72,14 @@ class ClienteController extends Controller
         }
 
         if ($request->isMethod('POST')) {
-            $pro=($request->request->get('cliente'));
+            $pro = $request->request->all()['cliente'];
             $form->handleRequest($request);
 
 
             if ($form->isValid()) {
                 
-                $pro=($request->request->get('cliente'));
-                $id=($request->request->get('id'));
+                $pro = $request->request->all()['cliente'];
+                $id = $request->request->all()['id'];
                 $cliente = $em->getRepository('IncentivesCatalogoBundle:Cliente')->find($id);
                 $cliente->setNombre($pro["nombre"]);
                 $documento = $em->getRepository('IncentivesOperacionesBundle:Tipodocumento')->find($pro["tipodocumento"]);

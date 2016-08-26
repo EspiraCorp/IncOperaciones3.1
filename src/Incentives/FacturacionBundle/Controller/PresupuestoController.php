@@ -136,7 +136,7 @@ class PresupuestoController extends Controller
 
             if ($form->isValid()) {
                 
-                $pro=($request->request->get('presupuestos'));
+                $pro = $request->request->all()['presupuestos'];
                 $programaE = $em->getRepository('IncentivesCatalogoBundle:Programa')->find($programa);
                 $areaE = $em->getRepository('IncentivesFacturacionBundle:Areas')->find($area);
                 //$tipo = $em->getRepository('IncentivesFacturacionBundle:Tipocostos')->find($pro['tipo']);

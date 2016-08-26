@@ -168,10 +168,9 @@ class CotizacionesController extends Controller
             $form->handleRequest($request);
 
             if ($form->isValid()) {
-                // realiza alguna acción, tal como guardar la tarea en la base de datos
                 
-                $id=($request->request->get('id'));
-                $pro=($request->request->get('cotizacionproducto'));
+                $id = $request->request->all()['id'];
+                $pro = $request->request->all()['cotizacion_producto_agregar'];
                 
                 $cotizacion = $em->getRepository('IncentivesSolicitudesBundle:Cotizacion')->find($id);
                 $estado = $em->getRepository('IncentivesOrdenesBundle:OrdenesEstado')->find(1);

@@ -16,9 +16,11 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
-use Symfony\Component\Form\Extension\Core\Type\CollecionType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use PUGX\AutocompleterBundle\Form\Type\AutocompleteType;
+use Incentives\OperacionesBundle\Form\Type\AeconomicaType;
 
 class ProveedoresedicionType extends AbstractType
 {
@@ -73,7 +75,7 @@ class ProveedoresedicionType extends AbstractType
         $builder->add('telefono');
         $builder->add('lineaAtencion', TextType::class, array('required' => false));
         $builder->add('correo');
-        $builder->add('pagina','url', array('required' => false));
+        $builder->add('pagina', UrlType::class, array('required' => false));
         $builder->add('codigo_postal', TextType::class, array('required' => false));
         $builder->add('cobertura', TextType::class, array('required' => false));
         $builder->add('condiciones_comerciales', TextType::class, array('required' => false));
@@ -81,7 +83,7 @@ class ProveedoresedicionType extends AbstractType
         $builder->add('cupo_asignado', NumberType::class, array('required' => false));
 
         $builder->add('aeconomica', CollectionType::class, array(
-                'type'  => new AeconomicaType(),
+                'entry_type'  => AeconomicaType::class,
                 'label'          => 'Actividad economica',
                 'by_reference'   => false,
                 //'prototype_data' => new Address(),

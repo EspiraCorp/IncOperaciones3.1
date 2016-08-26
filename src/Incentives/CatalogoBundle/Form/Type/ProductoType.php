@@ -42,8 +42,8 @@ class ProductoType extends AbstractType
         $builder->add('peso',IntegerType::class,array('label'  => 'Peso (Kg)',));
         $builder->add('estadoIva', ChoiceType::class, array(
             'choices'   => array(
-                1   => 'Si',
-                0 => 'No',
+                'Si' => 1,
+                'No' => 0,
             ),
             'expanded'  => true,
         ));

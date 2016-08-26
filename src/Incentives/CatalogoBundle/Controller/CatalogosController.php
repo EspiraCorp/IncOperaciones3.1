@@ -48,7 +48,7 @@ class CatalogosController extends Controller
             $form->handleRequest($request);
 
             if ($form->isValid()) {
-                $id=($request->request->get('id'));
+                $id = $request->request->all()['id'];
                 if ($id==0){
                     $id=$catalogo->getPrograma()->getId();
                 }
@@ -95,8 +95,8 @@ class CatalogosController extends Controller
 
 
             if ($form->isValid()) {                
-                $pro=($request->request->get('catalogos'));
-                $id=($request->request->get('id'));
+                $pro = $request->request->all()['catalogos'];
+                $id = $request->request->all()['id'];
                 $catalogo = $em->getRepository('IncentivesCatalogoBundle:Catalogos')->find($id);
                 $catalogo->setNombre($pro["nombre"]);
                 $catalogo->setDescripcion($pro["descripcion"]);
@@ -306,7 +306,7 @@ class CatalogosController extends Controller
         $page = $request->get('page');
         if(!$page) $page= 1;
             
-        if($pro=($request->request->get('producto'))){
+        if($pro = $request->request->all()['producto']){
             $page = 1;
             $session->set('filtros_galeria', $pro);
         }
@@ -422,7 +422,7 @@ class CatalogosController extends Controller
         $page = $request->get('page');
         if(!$page) $page= 1;
             
-        if($pro=($request->request->get('producto'))){
+        if($pro = $request->request->all()['producto']){
             $page = 1;
             $session->set('filtros_aprobar', $pro);
         }
@@ -628,9 +628,9 @@ class CatalogosController extends Controller
 
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
-             $pro=($request->request->get('intervalos'));
+             $pro = $request->request->all()['intervalos'];
             if ($form->isValid()) {
-                $id=($request->request->get('id'));
+                $id = $request->request->all()['id'];
 
                 //verificar que el maximo y el minimo no esten dentro de otro intervalo
                 $query = $em->createQueryBuilder()
@@ -682,9 +682,9 @@ class CatalogosController extends Controller
 
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
-             $pro=($request->request->get('intervalos'));
+             $pro = $request->request->all()['intervalos'];
             if ($form->isValid()) {
-                $id=($request->request->get('id'));
+                $id = $request->request->all()['id'];
 
                 //verificar que el maximo y el minimo no esten dentro de otro intervalo
                 $query = $em->createQueryBuilder()
@@ -729,7 +729,7 @@ class CatalogosController extends Controller
         $page = $request->get('page');
         if(!$page) $page= 1;
             
-        if($pro=($request->request->get('producto'))){
+        if($pro = $request->request->all()['producto']){
             $page = 1;
             $session->set('filtros_imagenes', $pro);
         }

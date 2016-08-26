@@ -6,11 +6,13 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Incentives\OperacionesBundle\Entity\ProveedoresRepository;
+use Incentives\OrdenesBundle\Form\Type\OrdenesProductoType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use PUGX\AutocompleterBundle\Form\Type\AutocompleteType;
 
 class OrdenesCompraType extends AbstractType
@@ -102,8 +104,8 @@ class OrdenesCompraType extends AbstractType
             'label' => 'Estado'
         ));
 
-        $builder->add('ordenesProducto', 'collection', array(
-             'type'  => new OrdenesProductoType(),
+        $builder->add('ordenesProducto', Collectiontype::class, array(
+                'entry_type'  => OrdenesProductoType::class,
                 'label'          => 'Productos',
                 'by_reference'   => false,
                 'allow_delete'   => true,

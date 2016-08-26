@@ -67,8 +67,8 @@ class ParticipanteController extends Controller
             var_dump($form->getErrorsAsString());
 
             if ($form->isValid()) {                
-                $pro=($request->request->get('participante'));
-                $id=($request->request->get('id'));
+                $pro = $request->request->all()['participante'];
+                $id = $request->request->all()['id'];
                 $participante = $em->getRepository('IncentivesRedencionesBundle:Participantes')->find($id);
                 $participante->setNombre($pro["nombre"]);
                 $participante->setDocumento($pro["documento"]);

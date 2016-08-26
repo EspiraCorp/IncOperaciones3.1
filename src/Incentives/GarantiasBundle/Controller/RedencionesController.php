@@ -125,7 +125,7 @@ class RedencionesController extends Controller
 
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
-                $pro=($request->request->get('novedad'));
+                $pro = $request->request->all()['novedad'];
                 // realiza alguna acción, tal como guardar la tarea en la base de datos
                 $redencionN = $em->getRepository('IncentivesRedencionesBundle:Redenciones')->find($redencion);
                 $novedad->setRedencion($redencionD);
@@ -164,8 +164,10 @@ class RedencionesController extends Controller
             $form->handleRequest($request);
 
             if ($form->isValid()) {
+                
                 $em = $this->getDoctrine()->getManager();
-                $pro=($request->request->get('novedad'));
+                
+                $pro = $request->request->all()['novedadaccion'];
                 // realiza alguna acción, tal como guardar la tarea en la base de datos
                 $redencionN = $em->getRepository('IncentivesRedencionesBundle:Redenciones')->find($redencionD->getId());
                 $novedadD->setRedencion($redencionD);
@@ -324,7 +326,7 @@ class RedencionesController extends Controller
 
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
-                $pro=($request->request->get('envios'));
+                $pro = $request->request->all()['envios'];
                 // realiza alguna acción, tal como guardar la tarea en la base de datos
                 $redencionE->setCiudadNombre($pro['ciudadNombre']);
                 $redencionE->setDireccion($pro['direccion']);
