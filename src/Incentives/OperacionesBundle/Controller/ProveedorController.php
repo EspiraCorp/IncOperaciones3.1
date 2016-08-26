@@ -263,7 +263,7 @@ class ProveedorController extends Controller
         
         if(!$page) $page= 1;
             
-        if($pro= $request->request->all()['proveedores']){
+        if($pro = $request->request->get('proveedores')){
             $page = 1;
             $session->set('filtros_proveedores', $pro);
         }
