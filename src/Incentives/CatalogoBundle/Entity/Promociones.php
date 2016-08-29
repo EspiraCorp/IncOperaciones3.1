@@ -24,10 +24,10 @@ class Promociones
     
     /**
      * @var string
-     * @ORM\ManyToOne(targetEntity="Productocatalogo", inversedBy="promocion")
-     * @ORM\JoinColumn(name="productocatalogo_id", referencedColumnName="id", nullable=true)
+     * @ORM\ManyToOne(targetEntity="Premios", inversedBy="promocion")
+     * @ORM\JoinColumn(name="premio_id", referencedColumnName="id", nullable=true)
      */
-    protected $productocatalogo;
+    protected $premio;
 
     /**
      * @var string
@@ -53,6 +53,13 @@ class Promociones
     /**
      * @var integer
      *
+     * @ORM\Column(name="cantidad", type="integer", nullable=true)
+     */
+    private $cantidad;
+
+    /**
+     * @var integer
+     *
      * @ORM\Column(name="redimidos", type="integer", nullable=true)
      */
     private $redimidos;
@@ -67,16 +74,16 @@ class Promociones
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="fechainicio", type="date", nullable=true)
+     * @ORM\Column(name="fechaInicio", type="date", nullable=true)
      */
-    private $fechainicio;
+    private $fechaInicio;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="fechafin", type="date", nullable=true)
+     * @ORM\Column(name="fechaFin", type="date", nullable=true)
      */
-    private $fechafin;
+    private $fechaFin;
 
     /**
      * @var string
@@ -84,6 +91,11 @@ class Promociones
      * @ORM\JoinColumn(name="estado_id", referencedColumnName="id", nullable=true)
      */
     protected $estado;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Incentives\RedencionesBundle\Entity\Redenciones", mappedBy="promocion")
+     */
+    protected $redencion;
 
     /**
      * @var \DateTime
@@ -236,78 +248,6 @@ class Promociones
     }
 
     /**
-     * Set fechainicio
-     *
-     * @param \DateTime $fechainicio
-     *
-     * @return Promociones
-     */
-    public function setFechainicio($fechainicio)
-    {
-        $this->fechainicio = $fechainicio;
-
-        return $this;
-    }
-
-    /**
-     * Get fechainicio
-     *
-     * @return \DateTime
-     */
-    public function getFechainicio()
-    {
-        return $this->fechainicio;
-    }
-
-    /**
-     * Set fechafin
-     *
-     * @param \DateTime $fechafin
-     *
-     * @return Promociones
-     */
-    public function setFechafin($fechafin)
-    {
-        $this->fechafin = $fechafin;
-
-        return $this;
-    }
-
-    /**
-     * Get fechafin
-     *
-     * @return \DateTime
-     */
-    public function getFechafin()
-    {
-        return $this->fechafin;
-    }
-
-    /**
-     * Set productocatalogo
-     *
-     * @param \Incentives\CatalogoBundle\Entity\Productocatalogo $productocatalogo
-     *
-     * @return Promociones
-     */
-    public function setProductocatalogo(\Incentives\CatalogoBundle\Entity\Productocatalogo $productocatalogo = null)
-    {
-        $this->productocatalogo = $productocatalogo;
-
-        return $this;
-    }
-
-    /**
-     * Get productocatalogo
-     *
-     * @return \Incentives\CatalogoBundle\Entity\Productocatalogo
-     */
-    public function getProductocatalogo()
-    {
-        return $this->productocatalogo;
-    }
-
-    /**
      * Set estado
      *
      * @param \Incentives\CatalogoBundle\Entity\Estados $estado
@@ -377,5 +317,135 @@ class Promociones
     public function getUsuario()
     {
         return $this->usuario;
+    }
+
+    /**
+     * Set premio
+     *
+     * @param \Incentives\CatalogoBundle\Entity\Premios $premio
+     *
+     * @return Promociones
+     */
+    public function setPremio(\Incentives\CatalogoBundle\Entity\Premios $premio = null)
+    {
+        $this->premio = $premio;
+
+        return $this;
+    }
+
+    /**
+     * Get premio
+     *
+     * @return \Incentives\CatalogoBundle\Entity\Premios
+     */
+    public function getPremio()
+    {
+        return $this->premio;
+    }
+
+    /**
+     * Set cantidad
+     *
+     * @param integer $cantidad
+     *
+     * @return Promociones
+     */
+    public function setCantidad($cantidad)
+    {
+        $this->cantidad = $cantidad;
+
+        return $this;
+    }
+
+    /**
+     * Get cantidad
+     *
+     * @return integer
+     */
+    public function getCantidad()
+    {
+        return $this->cantidad;
+    }
+
+    /**
+     * Add redencion
+     *
+     * @param \Incentives\RedencionesBundle\Entity\Redenciones $redencion
+     *
+     * @return Promociones
+     */
+    public function addRedencion(\Incentives\RedencionesBundle\Entity\Redenciones $redencion)
+    {
+        $this->redencion[] = $redencion;
+
+        return $this;
+    }
+
+    /**
+     * Remove redencion
+     *
+     * @param \Incentives\RedencionesBundle\Entity\Redenciones $redencion
+     */
+    public function removeRedencion(\Incentives\RedencionesBundle\Entity\Redenciones $redencion)
+    {
+        $this->redencion->removeElement($redencion);
+    }
+
+    /**
+     * Get redencion
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getRedencion()
+    {
+        return $this->redencion;
+    }
+
+    /**
+     * Set fechaInicio
+     *
+     * @param \DateTime $fechaInicio
+     *
+     * @return Promociones
+     */
+    public function setFechaInicio($fechaInicio)
+    {
+        $this->fechaInicio = $fechaInicio;
+
+        return $this;
+    }
+
+    /**
+     * Get fechaInicio
+     *
+     * @return \DateTime
+     */
+    public function getFechaInicio()
+    {
+        return $this->fechaInicio;
+    }
+
+    /**
+     * Set fechaFin
+     *
+     * @param \DateTime $fechaFin
+     *
+     * @return Promociones
+     */
+    public function setFechaFin($fechaFin)
+    {
+        $this->fechaFin = $fechaFin;
+
+        return $this;
+    }
+
+    /**
+     * Get fechaFin
+     *
+     * @return \DateTime
+     */
+    public function getFechaFin()
+    {
+        return $this->fechaFin;
     }
 }

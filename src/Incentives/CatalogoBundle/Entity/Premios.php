@@ -57,6 +57,11 @@ class Premios
     protected $redencion;
 
     /**
+     * @ORM\OneToMany(targetEntity="Promociones", mappedBy="premio")
+     */
+    protected $promocion;
+
+    /**
      * @var integer
      *
      * @ORM\Column(name="puntosTemporal", type="integer", nullable=true)
@@ -861,5 +866,39 @@ class Premios
     public function getPremiosproductos()
     {
         return $this->premiosproductos;
+    }
+
+    /**
+     * Add promocion
+     *
+     * @param \Incentives\CatalogoBundle\Entity\Promociones $promocion
+     *
+     * @return Premios
+     */
+    public function addPromocion(\Incentives\CatalogoBundle\Entity\Promociones $promocion)
+    {
+        $this->promocion[] = $promocion;
+
+        return $this;
+    }
+
+    /**
+     * Remove promocion
+     *
+     * @param \Incentives\CatalogoBundle\Entity\Promociones $promocion
+     */
+    public function removePromocion(\Incentives\CatalogoBundle\Entity\Promociones $promocion)
+    {
+        $this->promocion->removeElement($promocion);
+    }
+
+    /**
+     * Get promocion
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPromocion()
+    {
+        return $this->promocion;
     }
 }

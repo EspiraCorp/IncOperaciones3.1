@@ -38,6 +38,13 @@ class Redenciones
 
     /**
      * @var string
+     * @ORM\ManyToOne(targetEntity="Incentives\CatalogoBundle\Entity\Promociones", inversedBy="redencion")
+     * @ORM\JoinColumn(name="promocion_id", referencedColumnName="id", nullable=true)
+     */
+    protected $promocion;
+
+    /**
+     * @var string
      * @ORM\ManyToOne(targetEntity="Redencionesestado", inversedBy="redencion")
      * @ORM\JoinColumn(name="redencionestado_id", referencedColumnName="id", nullable=true)
      */
@@ -1199,5 +1206,29 @@ class Redenciones
     public function getPremio()
     {
         return $this->premio;
+    }
+
+    /**
+     * Set promocion
+     *
+     * @param \Incentives\CatalogoBundle\Entity\Promociones $promocion
+     *
+     * @return Redenciones
+     */
+    public function setPromocion(\Incentives\CatalogoBundle\Entity\Promociones $promocion = null)
+    {
+        $this->promocion = $promocion;
+
+        return $this;
+    }
+
+    /**
+     * Get promocion
+     *
+     * @return \Incentives\CatalogoBundle\Entity\Promociones
+     */
+    public function getPromocion()
+    {
+        return $this->promocion;
     }
 }

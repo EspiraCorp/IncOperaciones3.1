@@ -42,11 +42,12 @@ class CatalogoController extends Controller
         if($catalogo->getEstado()->getId() == 1){
 
             $qb = $em->createQueryBuilder();            
-            $qb->select('pr','pp','p','ct');
+            $qb->select('pr','pp','p','ct','promo');
             $qb->from('IncentivesCatalogoBundle:Premios','pr');
-            $qb->leftJoin('pr.premiosproductos', 'pp');
-            $qb->leftJoin('pp.producto', 'p');
+            $qb->Join('pr.premiosproductos', 'pp');
+            $qb->Join('pp.producto', 'p');
             $qb->leftJoin('pr.categoria', 'ct');
+            $qb->leftJoin('pr.promocion', 'promo');
            //Comprobar estado del producto y del producto en el catalogo
             $str_filtro = 'pr.estado = 1 AND pr.aproboOperaciones = 1 AND pr.aproboComercial = 1 AND pr.aproboDirector = 1 AND pr.aproboCliente = 1 AND pr.catalogos = :id_catalogo';
 
@@ -99,7 +100,8 @@ class CatalogoController extends Controller
             
             $arrayParametros['id_catalogo'] = $idCatalogo;
             $qb->setParameters($arrayParametros);
-            $qb->orderBy('pr.puntos', 'ASC');
+            $qb->orderBy('promo.id', 'DESC');
+            $qb->addOrderBy('pr.puntos', 'ASC');
             $premios = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
             //echo "<pre>"; print_r($premios); echo "</pre>"; exit;
             $listado = array();
@@ -130,6 +132,20 @@ class CatalogoController extends Controller
             	$listado[$idP]['puntos'] = $valueP['puntos'];
                 $listado[$idP]['categoria_id'] = $valueP['categoria']['id'];
                 $listado[$idP]['agotado'] = $valueP['agotado'];
+                $listado[$idP]['promocion'] = ($valueP['promocion'])? 1 : 0;
+
+                if($valueP['promocion']){
+                    $datosPromo = $valueP['promocion'][0];
+                    
+                    $listado[$idP]['datosPromocion']['nombre'] = $datosPromo['nombre'];
+                    $listado[$idP]['datosPromocion']['descripcion'] = $datosPromo['descripcion'];
+                    $listado[$idP]['datosPromocion']['puntosSinPromocion'] = $valueP['puntos'];
+                    $listado[$idP]['datosPromocion']['fechaInico'] = $datosPromo['fechaInicio']->format('Y-m-d H:i:s');
+                    $listado[$idP]['datosPromocion']['fechaFin'] = $datosPromo['fechaFin']->format('Y-m-d H:i:s');
+                    $listado[$idP]['datosPromocion']['cantidadTotal'] = $datosPromo['cantidad'];
+                    $listado[$idP]['datosPromocion']['cantidadDisponible'] = $datosPromo['disponibles'];
+                    $listado[$idP]['puntos'] = $datosPromo['nombre'];
+                }
             	
             	//Si el idioma es diferente a español consultar si el producto tiene traduccion
                 if(isset($idioma)){
