@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * SolicitudesAsignar
  *
+ * @ORM\Table(name="SolicitudesAsignar")
  * @ORM\Entity
  */
 class SolicitudesAsignar

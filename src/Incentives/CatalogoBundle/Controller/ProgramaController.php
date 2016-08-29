@@ -41,6 +41,8 @@ class ProgramaController extends Controller
 
             if ($form->isValid()) {
                 $id = $request->request->all()['id'];
+                $pro = $request->request->all()['programanuevo'];
+
                 if ($id==0){
                     $id=$programa->getCliente()->getId();
                 }
@@ -54,6 +56,8 @@ class ProgramaController extends Controller
                     }
                 }    
                 $programa->setCliente($cliente);
+                $centroCostos = $em->getRepository('IncentivesCatalogoBundle:CentroCostos')->find($pro["centroCostos"]);
+                $programa->setCentroCostos($centroCostos);
                 $em->persist($programa);
 
                 $em->flush();
@@ -105,7 +109,8 @@ class ProgramaController extends Controller
                 $programa->setFechafin($fecha2);
                 $programa->setDiasentrega($pro["diasentrega"]);
                 $programa->setIva($pro["iva"]);
-                $programa->setCentrocostos($pro["centrocostos"]);
+                $centroCostos = $em->getRepository('IncentivesCatalogoBundle:CentroCostos')->find($pro["centroCostos"]);
+                $programa->setCentroCostos($centroCostos);
 
                 $em->persist($programa);   
                 $em->flush();

@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * Redenciones
  *
  * @ORM\Entity
+ * @ORM\Table(name="Redenciones")
  */
 class Redenciones
 {
@@ -30,10 +31,10 @@ class Redenciones
 
     /**
      * @var string
-     * @ORM\ManyToOne(targetEntity="Incentives\CatalogoBundle\Entity\Productocatalogo", inversedBy="redencion")
-     * @ORM\JoinColumn(name="productocatalogo_id", referencedColumnName="id", nullable=true)
+     * @ORM\ManyToOne(targetEntity="Incentives\CatalogoBundle\Entity\Premios", inversedBy="redencion")
+     * @ORM\JoinColumn(name="premio_id", referencedColumnName="id", nullable=true)
      */
-    protected $productocatalogo;
+    protected $premio;
 
     /**
      * @var string
@@ -203,6 +204,12 @@ class Redenciones
      * 
      */
     protected $inventario;
+    
+    /**
+     * @ORM\OneToMany(targetEntity="Incentives\InventarioBundle\Entity\Despachos", mappedBy="redencion", cascade={"persist"})
+     * 
+     */
+    protected $despacho;
 
     /**
      * @ORM\OneToMany(targetEntity="RedencionesHistorico", mappedBy="redencion", cascade={"persist"})
@@ -430,29 +437,6 @@ class Redenciones
     public function getParticipante()
     {
         return $this->participante;
-    }
-
-    /**
-     * Set productocatalogo
-     *
-     * @param \Incentives\CatalogoBundle\Entity\Productocatalogo $productocatalogo
-     * @return Redenciones
-     */
-    public function setProductocatalogo(\Incentives\CatalogoBundle\Entity\Productocatalogo $productocatalogo = null)
-    {
-        $this->productocatalogo = $productocatalogo;
-    
-        return $this;
-    }
-
-    /**
-     * Get productocatalogo
-     *
-     * @return \Incentives\CatalogoBundle\Entity\Productocatalogo 
-     */
-    public function getProductocatalogo()
-    {
-        return $this->productocatalogo;
     }
 
     /**
@@ -1158,5 +1142,38 @@ class Redenciones
     public function getObservacionJustificacion()
     {
         return $this->observacionJustificacion;
+    }
+
+    /**
+     * Add despacho
+     *
+     * @param \Incentives\InventarioBundle\Entity\Despachos $despacho
+     * @return Redenciones
+     */
+    public function addDespacho(\Incentives\InventarioBundle\Entity\Despachos $despacho)
+    {
+        $this->despacho[] = $despacho;
+    
+        return $this;
+    }
+
+    /**
+     * Remove despacho
+     *
+     * @param \Incentives\InventarioBundle\Entity\Despachos $despacho
+     */
+    public function removeDespacho(\Incentives\InventarioBundle\Entity\Despachos $despacho)
+    {
+        $this->despacho->removeElement($despacho);
+    }
+
+    /**
+     * Get despacho
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getDespacho()
+    {
+        return $this->despacho;
     }
 }

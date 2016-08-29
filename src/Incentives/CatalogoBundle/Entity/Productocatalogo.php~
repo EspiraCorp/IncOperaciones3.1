@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Productocatalogo
  *
  * @ORM\Entity
+ * @ORM\Table(name="Productocatalogo")
  */
 class Productocatalogo
 {

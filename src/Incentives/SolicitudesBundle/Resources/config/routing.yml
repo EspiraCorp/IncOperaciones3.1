@@ -17,7 +17,11 @@ solicitudes_datos:
 solicitudes_editar:
     path:     /solicitudes/editar/{id}
     defaults: { _controller: IncentivesSolicitudesBundle:Solicitudes:editar, id: null }
-    
+
+solicitudes_exportar:
+    path:  /solicitudes/exportar
+    defaults: { _controller: IncentivesSolicitudesBundle:Solicitudes:exportar }
+
 solicitudes_asignar:
     path:     /solicitudes/asignar/{solicitud}
     defaults: { _controller: IncentivesSolicitudesBundle:Solicitudes:asignarSolicitud, solicitud: null }
@@ -71,6 +75,14 @@ cotizaciones_nueva:
 cotizaciones_datos:
     path:     /cotizaciones/datos/{id}
     defaults: { _controller: IncentivesSolicitudesBundle:Cotizaciones:datos, id: null }
+
+cotizaciones_exportar:
+    path:  /cotizaciones/exportar
+    defaults: { _controller: IncentivesSolicitudesBundle:Cotizaciones:exportar }
+    
+cotizaciones_exportar_productos:
+    path:  /cotizaciones/exportarproductos
+    defaults: { _controller: IncentivesSolicitudesBundle:Cotizaciones:exportarProductos }
     
 cotizaciones_editarvalores:
     path:  /cotizaciones/editarvalores/{id}
@@ -124,6 +136,14 @@ requisiciones_nueva:
 requisiciones_datos:
     path:     /requisiciones/datos/{id}
     defaults: { _controller: IncentivesSolicitudesBundle:Requisiciones:datos, id: null }
+
+requisiciones_exportar:
+    path:  /requisiciones/exportar
+    defaults: { _controller: IncentivesSolicitudesBundle:Requisiciones:exportar }
+    
+requisiciones_exportar_productos:
+    path:  /requisiciones/exportarproductos
+    defaults: { _controller: IncentivesSolicitudesBundle:Requisiciones:exportarProductos }
 
 requisiciones_agregarproducto:
     path:  /requisiciones/agregarproducto/{id}

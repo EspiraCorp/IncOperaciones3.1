@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * Catalogos
  *
  * @ORM\Entity(repositoryClass="Incentives\CatalogoBundle\Entity\CatalogosRepository")
+ * @ORM\Table(name="Catalogos")
  */
 class Catalogos
 {

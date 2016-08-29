@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * Convocatorias
  *
+ * @ORM\Table(name="Convocatorias")
  * @ORM\Entity
  */
 class Convocatorias

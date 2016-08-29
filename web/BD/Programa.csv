@@ -1,0 +1,73 @@
+"id";"cliente_id";"nombre";"centrocostos";"descripcion";"fechainicio";"fechafin";"estado_id";"logistica";"iva";"diasentrega";"usuario_id";"fechaModificacion"
+"1";"1";"DEMO";"1710";"Programa de demostración";"2014-02-01";"2015-01-01";"1";"9";"1";"20";NULL;NULL
+"3";"4";"PITS ";"3100";"Programa de incentivos para los Administradores";"2014-08-12";"2015-08-12";NULL;"0";"0";"25";NULL;NULL
+"4";"10";"BI-CHC";"4000";"Programa de incentivos ";"2014-08-22";"2015-08-22";NULL;"0";"0";"0";NULL;NULL
+"8";"15";"Formula ganadora";"7601";"Programa de incentivos";"2014-12-31";"2015-05-31";NULL;NULL;"1";"30";NULL;NULL
+"9";"16";"Ganas porque Ganas con Kellogs";"7202";"Programa de incentivos";"2015-03-01";"2015-12-31";NULL;NULL;"1";"30";NULL;NULL
+"10";"17";"Tu esfuerzo vale";"6902";"Programa de incentivos";"2015-01-01";"2015-12-31";NULL;NULL;"1";"15";NULL;NULL
+"11";"18";"Salimos contoda 2015";"1806";"programa de incentivos";"2015-02-01";"2015-11-30";NULL;NULL;"1";"30";NULL;NULL
+"12";"19";"a ganar  deliciosa mente";"1710";"programa de incentivos";"2015-02-01";"2015-11-30";NULL;NULL;"1";"30";NULL;NULL
+"13";"20";"MARITZ";"7000";"Programa de incentivos";"2013-02-01";"2018-02-01";NULL;NULL;"1";"30";NULL;NULL
+"14";"21";"A la fija con BDF 2015";"3506";"Programa de incentivos";"2015-03-01";"2015-10-31";NULL;NULL;"0";"5";NULL;NULL
+"15";"21";"PLAN ELITE 2015";"3507";"Programa de incentivos";"2015-05-01";"2015-11-30";NULL;NULL;"0";"30";NULL;NULL
+"16";"22";"Que Equipazo 2015";"7701";"Programa de incentivos";"2015-04-01";"2015-06-30";NULL;NULL;"0";"5";NULL;NULL
+"17";"23";"SOCIO ESTRELLA 2015";"6402";"Programa de incentivos";"2015-01-01";"2015-12-31";NULL;NULL;"0";"20";NULL;NULL
+"18";"14";"Brinsa premium";"6703";"programa de incentivos";"2015-02-01";"2015-11-30";NULL;NULL;"0";"10";NULL;NULL
+"19";"14";"Brinsa club";"6704";"programas de incentivos";"2015-04-01";"2015-12-31";NULL;NULL;"0";"10";NULL;NULL
+"20";"24";"Socios Nutresa Autoservicios";"5808";"Programa de incentivos";"2015-04-01";"2015-12-31";NULL;NULL;"0";"30";NULL;NULL
+"21";"25";"FANATIKOS";"6105";"Programa de incentivos";"2015-03-01";"2015-12-31";NULL;NULL;"0";"5";NULL;NULL
+"22";"26";"Conquistadores QBE";"1007-5101";"Programa de incentivos dirigidos a los asesores comerciales o brokers de seguros, f&i y asesores f&i que los premia por la colocación de pólizas de vehículos con QBE";"2015-06-01";"2016-05-31";NULL;NULL;"1";"45";NULL;NULL
+"23";"27";"Casaluker Comercial";"2033";"Programa de redención de puntos";"2015-05-01";"2015-07-31";NULL;NULL;"1";"15";NULL;NULL
+"24";"27";"Casaluker Mercaderistas";"2032";"Catalogo de redención de puntos";"2015-05-01";"2015-07-31";NULL;NULL;"1";"30";NULL;NULL
+"25";"27";"Casaluker Águilas";"2033";"Catalogo redención de puntos";"2015-05-01";"2015-07-31";NULL;NULL;"1";"30";NULL;NULL
+"26";"28";"HERO";"7801";"Catalogo de redención de puntos";"2015-05-01";"2015-12-31";NULL;NULL;"0";"15";NULL;NULL
+"27";"1";"prueba";"7777";"Prueba";"2015-08-31";"2015-08-31";NULL;NULL;"1";"20";NULL;NULL
+"29";"1";"prueba";"6799";"Prueba";"2015-08-31";"2016-01-30";NULL;NULL;"1";"25";NULL;NULL
+"30";"29";"EXPEDICIÓN AL ÉXITO";"5304";"CATALOG DE PUNTOS";"2015-04-01";"2016-03-31";NULL;NULL;"1";"30";NULL;NULL
+"31";"25";"Club Huggies";"6109";"Catalogo";"2015-08-07";"2016-08-07";NULL;NULL;"1";"30";NULL;NULL
+"32";"30";"Socios & Amigos internacionales";"2703";"tiqueteadores / agencias de viajes";"2015-08-01";"2017-07-31";NULL;NULL;"0";"15";"4";"2016-02-01 11:50:58"
+"33";"24";"Nutresa";"5807";"Catalogo de redención de sellos";"2015-06-01";"2016-05-31";NULL;NULL;"1";"15";NULL;NULL
+"34";"24";"Nutresa";"5807";"Catalogo de redención de sellos";"2015-06-01";"2016-05-31";NULL;NULL;"1";"15";NULL;NULL
+"35";"31";"Socios Nutresa Amigos para crecer tiendas";"5807";"Catatalogo sellos";"2016-05-31";"2016-05-31";NULL;NULL;"0";"15";NULL;NULL
+"36";"32";"Catalogo Incentivos";"1017";"Catalogo de redención de estrellas";"2015-05-11";"2016-04-30";NULL;NULL;"1";"15";"13";"2015-09-28 14:42:18"
+"37";"17";"Allus";"6903";"Catalogo de redención de puntos";"2015-02-15";"2015-12-31";NULL;NULL;"1";"8";"13";"2015-10-08 08:51:21"
+"38";"32";"iNCENTIVATE";"1017";"PROGRAM INTERNO";"2015-05-01";"2016-04-30";NULL;NULL;"1";"30";"4";"2015-11-17 16:27:47"
+"39";"30";"Socios & Amigos Colombia";"2702";"tiqueteadores / agencias de viajes";"2015-08-01";"2017-07-31";NULL;NULL;"1";"15";"4";"2016-02-01 11:51:57"
+"40";"34";"Club McCain";"8201";"Catalogo de redención de puntos de McCain";"2016-02-01";"2016-12-31";NULL;NULL;"0";"20";"13";"2016-01-04 08:50:08"
+"41";"16";"Ganas Porque Ganas";"7203";"Catalogo de redención de puntos";"2016-02-01";"2016-12-31";NULL;NULL;"0";"21";"13";"2016-01-06 14:21:21"
+"42";"35";"Ganas Porque Ganas 2016";"7203";"Catalogo Redención de puntos";"2016-02-01";"2016-12-31";NULL;NULL;"0";"21";"13";"2016-01-06 14:22:16"
+"43";"24";"Socios Nutresa Minimercados Bogota ";"5804";"catalogo de redención de puntos";"2016-04-01";"2016-12-31";NULL;NULL;"1";"15";"13";"2016-06-28 09:33:25"
+"44";"36";"PLAN ELITE 2016 DUEÑOS ";"3509";"catalogo de pre redenciones";"2016-03-01";"2016-11-30";NULL;NULL;"0";"20";"13";"2016-01-18 11:17:28"
+"45";"36";"PLAN ELITE 2016 DEPENDIENTE";"3509";"Catalogo de acumulación de puntos";"2016-03-01";"2016-11-30";NULL;NULL;"1";"20";"13";"2016-01-18 11:49:05"
+"46";"24";"Socios Nutresa amigos para crecer Mayoristas 2016";"5810";"Catalogo de  premios inmediatos";"2016-02-01";"2016-12-31";NULL;NULL;"0";"20";"13";"2016-07-26 09:10:39"
+"47";"18";"Salimos con toda 2016";"1807";"catalogo de redención de puntos";"2016-03-01";"2016-11-30";NULL;NULL;"1";"30";"14";"2016-02-05 11:56:13"
+"48";"37";"Catalogos internacionales Av Bussines";"8000";"Catalogo Internacionales";"2016-01-31";"2016-12-31";NULL;NULL;"0";"20";"13";"2016-01-25 09:52:46"
+"49";"37";"Catalogos internacionales EDENRED";"7002";"Catálogos internacionales";"2016-02-01";"2016-12-31";NULL;NULL;"1";"20";"13";"2016-01-25 09:53:56"
+"50";"37";"Catalogos internacionales MARITZ";"7000";"catalogo de MARITZ";"2016-01-31";"2016-12-31";NULL;NULL;"1";"20";"13";"2016-01-25 09:54:50"
+"51";"24";"Socios Nutresa amigos para crecer Autoservicios  2016";"5812";"Catalogo Autoservicios";"2016-01-31";"2016-12-30";NULL;NULL;"0";"30";"13";"2016-01-27 12:26:41"
+"52";"25";"Fanatikos 2016";"6111";"catalogo redencion de puntos";"2016-02-01";"2016-12-30";NULL;NULL;"1";"20";"13";"2016-01-27 14:11:30"
+"53";"25";"Club mayoristas";"6113";"catalogo de redención de puntos";"2016-02-01";"2016-12-30";NULL;NULL;"1";"20";"13";"2016-01-27 14:12:47"
+"54";"25";"Club pañalero 2016";"6112";"catalogo de redención de puntos";"2016-01-01";"2016-12-30";NULL;NULL;"1";"20";"13";"2016-01-27 14:14:10"
+"55";"39";"CONECTADOS CON SANOFI";"8301";"Programa de lealtad";"2016-03-01";"2016-12-31";NULL;NULL;"1";"20";"13";"2016-02-02 10:15:43"
+"56";"9";"PITS 2015";"4309";"CATALOGO DE REDENCIÓN";"2015-01-04";"2015-11-30";NULL;NULL;"1";"20";"13";"2016-02-02 14:51:35"
+"57";"41";"Allus 2016";"6905";NULL;"2015-01-15";"2016-12-30";NULL;NULL;"1";"30";"13";"2016-02-08 10:30:00"
+"58";"42";"Encantados";"123456";"Programa de visitas.";"2016-03-01";"2016-12-30";NULL;NULL;"1";"15";"13";"2016-02-09 11:50:45"
+"59";"43";"PITS COPEC ";"12345678";"Programa dirigido a los atendedores de las estaciones de servicio de Chile";"2016-03-01";"2017-02-28";NULL;NULL;"1";"30";"13";"2016-05-17 11:51:03"
+"60";"44";"Socio estrella 2016";"6404";"Compras";"2016-01-01";"2016-12-31";NULL;NULL;"1";"15";"13";"2016-02-17 11:15:21"
+"61";"19";"A ganar 2016";"1711";"Programa de incentivos";"2016-02-01";"2016-12-30";NULL;NULL;"1";"30";"13";"2016-03-02 15:21:41"
+"62";"9";"PITS 2016";"4312";"Programa de incentivos";"2016-01-01";"2016-12-31";NULL;NULL;"1";"20";"13";"2016-03-03 10:57:04"
+"63";"9";"Altoque 2016";"4311";"Programa de incentivos";"2016-02-01";"2016-12-31";NULL;NULL;"1";"20";"13";"2016-03-03 10:59:12"
+"64";"9";"Carrera de Gazelas 2016";"4409";"Programa de incentivos";"2016-02-01";"2016-12-31";NULL;NULL;"1";"20";"13";"2016-03-03 11:00:40"
+"65";"21";"A LA FIJA 2016";"3508";"Catalogo de  recargas";"2016-02-01";"2016-11-30";NULL;NULL;"1";"15";"13";"2016-03-31 12:45:25"
+"66";"45";"Preferidos";"8401";"Catalogo de Preferidos Asesores y Directivos de venta";"2016-01-01";"2016-12-31";NULL;NULL;"0";"20";"13";"2016-04-11 07:30:17"
+"67";"46";"Socios Nutresa Consumo Local";"5815";;"2016-07-01";"2016-12-31";NULL;NULL;"1";"30";"13";"2016-04-28 16:15:06"
+"68";"47";"Merial";"8601";"Catalogo para clínicas veterinarias y pets shops";"2016-07-01";"2016-12-31";NULL;NULL;"0";"15";"13";"2016-06-17 12:10:47"
+"69";"48";"Preferidos - Prabyc 2016";"8701";"Catálogo para redención de puntos para Referidos y Clientes.";"2016-08-01";"2017-01-31";NULL;NULL;"1";"20";"13";"2016-06-09 16:24:34"
+"70";"48";"Cazadores";"8702";"programa dirigido a vendedores.";"2016-07-01";"2017-02-28";NULL;NULL;"1";"15";"13";"2016-06-28 15:19:55"
+"71";"17";"Tu esfuerzo vale 2016";"6904";"No hay catalogo porque el plan paga por total pass
+ solo es para hacer solicitudes de cotización, compra, despachos.";"2015-10-01";"2016-12-31";NULL;NULL;"1";"20";"13";"2016-06-13 08:02:29"
+"72";"29";"Expedicion totto 2016 - 2017";"5305";"Catalo";"2016-04-01";"2017-03-31";NULL;NULL;"1";"15";"13";"2016-06-14 09:20:33"
+"73";"24";"Socios Nutresa Minimercados Pereira";"5814";"Catalogo de redención";"2016-04-01";"2016-12-31";NULL;NULL;"1";"25";"14";"2016-06-29 10:54:13"
+"74";"31";"Socios Nutresa Tiendas 2016 - 2017";"5813";"Catalogo redención de estrellas";"2016-07-01";"2017-12-30";NULL;NULL;"1";"15";"13";"2016-07-21 09:57:08"
+"75";"34";"Fuerza Elite";"8201";"Catalogo redención de puntos.";"2016-07-01";"2017-06-01";NULL;NULL;"1";"20";"13";"2016-07-27 12:52:18"
+"76";"19";"Milla Extra";"1713";"Es el programa de incentivos que te llevará exitosamente por un mar de  ventas. Durante esta gran travesía tendrás divertidas actividades abordo,  donde involucrarás y compartirás una experiencia única con tu familia.";"2016-08-01";"2017-02-28";NULL;NULL;"1";"4";"14";"2016-08-16 11:11:35"

@@ -47,21 +47,31 @@ class CatalogosController extends Controller
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
 
-            if ($form->isValid()) {
+            //if ($form->isValid()) {
                 $id = $request->request->all()['id'];
                 if ($id==0){
                     $id=$catalogo->getPrograma()->getId();
                 }
+
+                $pro = $request->request->all()['catalogos'];
                 $programa = $em->getRepository('IncentivesCatalogoBundle:Programa')->find($id);
                 $catalogo->setPrograma($programa);
                 $estado = $em->getRepository('IncentivesCatalogoBundle:Estados')->find(1);
                 $catalogo->setEstado($estado);
+                $catalogo = $em->getRepository('IncentivesCatalogoBundle:Catalogos')->find($id);
+                $catalogo->setNombre($pro["nombre"]);
+                $catalogo->setDescripcion($pro["descripcion"]);
+                $catalogo->setValorpunto($pro["valorPunto"]);
+                $pais = $em->getRepository('IncentivesOperacionesBundle:Pais')->find($pro["pais"]);
+                $catalogo->setPais($pais);
+                $tipo = $em->getRepository('IncentivesCatalogoBundle:Catalogotipo')->find($pro["catalogotipo"]);
+                $catalogo->setCatalogotipo($tipo);
                 $em->persist($catalogo);
 
                 $em->flush();
-
+                
                 return $this->redirect($this->generateUrl('programa_datos').'/'.$id);
-            }
+            //}
         }          
         if ($id!=0){
             return $this->render('IncentivesCatalogoBundle:Catalogos:nuevo.html.twig', array(

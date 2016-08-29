@@ -48,19 +48,18 @@ class ProveedoresFiltroType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('nombre', TextType::class, array('data' => $this->nombre ));
-        $builder->add('numero_documento', TextType::class, array('required' => false, 'data' => $this->numero_documento )); 
-        $builder->add('registro_camara', TextType::class, array('required' => false )); 
+        $builder->add('numero_documento', TextType::class, array('required' => false, 'data' => $this->numero_documento ));  
         $builder->add('pais', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:Pais',
             'choice_label' => 'nombre',
-            ////'empty_value' => 'Seleccione una opcion',
+            'empty_data' => 'Seleccione una opcion',
             'required' => false,
             'data' => $this->pais_id ,
         ));
         $builder->add('ciudad', EntityType::class, array(
 			'class' => 'IncentivesOperacionesBundle:Ciudad',
 			'choice_label' => 'nombre',
-            ////'empty_value' => 'Seleccione una opcion',
+            'empty_data' => 'Seleccione una opcion',
             'required' => false,
             'data' => $this->ciudad_id ,
 		));
@@ -81,18 +80,14 @@ class ProveedoresFiltroType extends AbstractType
         $builder->add('estado', EntityType::class, array(
             'class' => 'IncentivesCatalogoBundle:Estados',
             'choice_label' => 'nombre',
-            ////'empty_value' => 'Seleccione una opcion',
+            'empty_data' => 'Seleccione una opcion',
             'label' => 'Estado',
             'data' => $this->estado_id,
         ));
 
-		$builder->add('direccion', TextType::class, array('required' => false));
-        $builder->add('telefono', TextType::class, array('required' => false));
-        $builder->add('fax', TextType::class, array('required' => false));
         $builder->add('correo', TextType::class, array('data' => $this->correo ));
 
-
-         $builder->add('Enviar', SubmitType::class);
+        $builder->add('Enviar', SubmitType::class);
 
     }
  

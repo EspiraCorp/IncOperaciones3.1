@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  * Catalogo
  *
  * @ORM\Entity
+ * @ORM\Table(name="Catalogo")
  */
 class Catalogo
 {

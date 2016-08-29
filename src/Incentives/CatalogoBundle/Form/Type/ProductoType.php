@@ -52,6 +52,7 @@ class ProductoType extends AbstractType
             'choice_label' => 'nombre',
             //'empty_value' => 'Seleccionar',
         ));
+        $builder->add('precio');
         $builder->add('iva');
         $builder->add('incremento');
         $builder->add('logistica');

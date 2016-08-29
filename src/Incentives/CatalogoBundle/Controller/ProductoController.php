@@ -17,6 +17,9 @@ use Incentives\CatalogoBundle\Entity\Preciohistorico;
 use Incentives\OperacionesBundle\Entity\Proveedores;
 use Symfony\Component\HttpFoundation\Session\Session;
 
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+
 use Incentives\CatalogoBundle\Entity\Excel;
 use Incentives\CatalogoBundle\Entity\Excelmas;
 
@@ -216,6 +219,7 @@ class ProductoController extends Controller
                 $producto->setLargo($pro["largo"]);
                 $producto->setAncho($pro["ancho"]);
                 $producto->setPeso($pro["peso"]);
+                $producto->setPrecio($pro["precio"]);
                 $producto->setIva($pro["iva"]);
                 $producto->setestadoIva($pro["estadoIva"]);
                 $producto->setLogistica($pro["logistica"]);
@@ -256,12 +260,14 @@ class ProductoController extends Controller
             $page = $request->get('page');
             if(!$page) $page= 1;
             
-            if($pro = $request->request->get('producto')){
+            $pro = $request->request->all();
+
+            if(isset($pro['producto'])){
                 $page = 1;
-                $session->set('filtros_productos', $pro);
+                $session->set('filtros_productos', $pro['producto']);
             }
 
-            $sqlFiltro = "";
+            $sqlFiltro = " 1=1 ";
 
             if($filtros = $session->get('filtros_productos')){
 
@@ -283,13 +289,17 @@ class ProductoController extends Controller
                    };
                } 
                 
+            }else{
+                $session->set('filtros_productos', array('estado' => 1));
+                $filtros = $session->get('filtros_productos');
+                $sqlFiltro .= " AND p.estado=1";
             }
 
             if(!isset($filtros['estado']) || $filtros['estado']==""){
                 $sqlFiltro .= " AND p.estado=1";
             }
 
-            $sqlFiltro = 'p.tipo=2 '.$sqlFiltro;
+            $sqlFiltro .= ' AND p.tipo=2 ';
 
             $query = $em->createQueryBuilder()
                 ->select('p producto','pp precio', 'c categoria','e estado', 'ct') 
@@ -422,6 +432,8 @@ class ProductoController extends Controller
      */
     public function datosAction($id)
     {
+        $em = $this->getDoctrine()->getManager();
+
         $repositoryp = $this->getDoctrine()
             ->getRepository('IncentivesCatalogoBundle:Producto');
 
@@ -431,17 +443,24 @@ class ProductoController extends Controller
         $repositorypp = $this->getDoctrine()
             ->getRepository('IncentivesCatalogoBundle:Productoprecio');
         
-        $repositorypc = $this->getDoctrine()
-            ->getRepository('IncentivesCatalogoBundle:Productocatalogo');
-
+        $qb = $em->createQueryBuilder()
+                ->select('p premio','pp premiosproductos','e estado','c catalogo', 'ct categoria','pg','cl') 
+                ->from('IncentivesCatalogoBundle:Premios', 'p')
+                ->Join('p.premiosproductos','pp')
+                ->Join('p.estado','e')
+                ->Join('p.categoria','ct')
+                ->Join('p.catalogos','c')
+                ->Join('c.programa','pg')
+                ->Join('pg.cliente','cl')
+                ->where('pp.producto='.$id);
+        $premios = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
+        //echo "<pre>"; print_r($premios); echo "</pre>"; exit;
         $producto= $repositoryp->find($id);
         $imagen= $repositoryi->findByProducto($id);
-        $productoprecio= $repositorypp->findByProducto($id);
-        $productocatalogo= $repositorypc->findByProducto($id);
-        
+        $productoprecio= $repositorypp->findByProducto($id);      
 
         return $this->render('IncentivesCatalogoBundle:Producto:datos.html.twig', 
-            array('producto' => $producto, 'id'=>$id, 'imagen' => $imagen, 'productoprecio'=>$productoprecio, 'productocatalogo'=>$productocatalogo));
+            array('producto' => $producto, 'id'=>$id, 'imagen' => $imagen, 'productoprecio'=>$productoprecio, 'premios'=>$premios));
     }
 
     /**
@@ -632,14 +651,14 @@ class ProductoController extends Controller
 
             if ($form->isValid()) {
                 
-                $pro = $request->request->all()['producto_precio'];
+                $pro = $request->request->all()['productoprecio'];
                 $proveedor = $em->getRepository('IncentivesOperacionesBundle:Proveedores')->find($pro['proveedor']);
                 $estado = $em->getRepository('IncentivesCatalogoBundle:Estados')->find(1);
                 // realiza alguna acción, tal como guardar la tarea en la base de datos
                 $precio->setProducto($producto);
                 $precio->setProveedor($proveedor);
                 $precio->setPrecio($pro['precio']);
-                $precio->setPrecioDolares($pro['precioDolares']);
+                $precio->setPrecioDolares(($pro['precioDolares']) ? $pro['precioDolares'] : 0);
                 $precio->setEstado($estado);
 
                 if (isset($pro["principal"])){
@@ -873,7 +892,7 @@ class ProductoController extends Controller
             $str_filtro .= " GROUP BY p.id  ORDER BY p.id ASC";
             
             $conn = $this->get('database_connection'); 
-            $productos = $conn->fetchAll($query.$str_filtro, array(1), 0);
+            $productos = $conn->fetchAll($query.$str_filtro);
 
 			//echo "<pre>"; print_r($productos); echo "</pre>"; exit;
                
@@ -914,7 +933,7 @@ class ProductoController extends Controller
                 $str_filtro = ' WHERE pc.producto_id = '.$value['id'];
                         
                 $conn = $this->get('database_connection'); 
-                $catalogos = $conn->fetchAll($query.$str_filtro, array(1), 0);
+                $catalogos = $conn->fetchAll($query.$str_filtro);
                
                 $infCatalogos = "";
                 
@@ -1271,7 +1290,7 @@ class ProductoController extends Controller
         $form = $this->createFormBuilder($excelForm)
             ->setAction($this->generateUrl('producto_editar_mas'))
             ->setMethod('POST')
-            ->add('excel', 'file')
+            ->add('excel', FileType::class)
             ->getForm();
 
             

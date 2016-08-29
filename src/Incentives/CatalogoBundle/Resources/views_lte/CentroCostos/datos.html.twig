@@ -1,0 +1,44 @@
+{% extends app.request.isXmlHttpRequest ? "MDWDemoBundle::layout_ajax.html.twig" : "::base.html.twig" %}
+{% block title %}Datos Programa{% endblock %}
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+<div class="box">
+    <div class="box-header well" data-original-title="">
+        Centro de Costos
+        <div class="box-icon">
+				<div class="box-icon">
+                    <a href="{{ path('centrocostos') }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+                </div>
+    	</div>
+    </div>
+</div>
+    <div class="box span6">
+	    <div class="box-content">
+	    	<div class="box-header well">
+				<h2>
+				<a href="{{ path('centrocostos_editar',  {"id": centrocostos.id}) }}">
+					<button class="btn btn-primary">
+						<i class="icon-edit icon-white"></i>
+					</button>
+				</a>
+				</i>Datos Centro de Costos</h2>
+			</div>
+
+				<table class="table table-bordered table-striped">
+					<tbody>
+						<tr><td>Nombre</td><td>{{ centrocostos.centroCostos }}</td></tr>
+						<tr><td>Nombre</td><td>{{ centrocostos.nombre }}</td></tr>
+						<tr><td>Cliente</td><td>{{ centrocostos.cliente.nombre}}</td></tr>
+						<tr><td>Descripcion</td><td>{{ centrocostos.descripcion }}</td></tr>
+					</tbody>
+				</table>
+		</div>
+	</div>
+	
+
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+
+{% endblock %}

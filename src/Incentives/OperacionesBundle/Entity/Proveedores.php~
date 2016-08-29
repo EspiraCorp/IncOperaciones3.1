@@ -9,6 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Proveedores
  *
  * @ORM\Entity(repositoryClass="Incentives\OperacionesBundle\Entity\ProveedoresRepository")
+ * @ORM\Table(name="Proveedores")
  * 
  */
 class Proveedores
@@ -1352,4 +1353,27 @@ class Proveedores
         return $this->tiempo_entrega;
     }
 
+
+    /**
+     * Set lineaAtencion
+     *
+     * @param string $lineaAtencion
+     * @return Proveedores
+     */
+    public function setLineaAtencion($lineaAtencion)
+    {
+        $this->lineaAtencion = $lineaAtencion;
+    
+        return $this;
+    }
+
+    /**
+     * Get lineaAtencion
+     *
+     * @return string 
+     */
+    public function getLineaAtencion()
+    {
+        return $this->lineaAtencion;
+    }
 }

@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * ProveedoresArea
  *
  * @ORM\Entity
+ * @ORM\Table(name="ProveedoresArea")
  */
 class ProveedoresArea
 {

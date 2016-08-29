@@ -27,6 +27,8 @@ use Incentives\OperacionesBundle\Entity\ProveedoresCalificacion;
 use Incentives\OperacionesBundle\Form\Type\ProveedoresCalificacionType;
 use Incentives\OperacionesBundle\Form\Type\ProveedoresPlanType;
 use Incentives\OperacionesBundle\Form\Type\ProveedoresFiltroType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 use PHPExcel;
 use PHPExcel_IOFactory;
@@ -166,12 +168,10 @@ class ProveedorController extends Controller
 	    $actividad = new Aeconomica();
 
 		if ($request->isMethod('POST')) {
-			$pro = $request->request->all()['proveedores'];
+			$pro = $request->request->all()['proveedoresedicion'];
 			$form->handleRequest($request);
 
 			//if ($form->isValid()) {
-				
-				$pro = $request->request->all()['proveedores'];
 				$id = $request->request->all()['id'];
 				$proveedor = $em->getRepository('IncentivesOperacionesBundle:Proveedores')->find($id);
 				
@@ -256,18 +256,20 @@ class ProveedorController extends Controller
      public function listadoAction(Request $request)
 	{
 		$em = $this->getDoctrine()->getManager();
-            
+        
         $session = $this->get('session');
            
         $page = $request->get('page');
         
         if(!$page) $page= 1;
-            
-        if($pro = $request->request->get('proveedores')){
-            $page = 1;
-            $session->set('filtros_proveedores', $pro);
-        }
 
+        $pro = $request->request->all();
+
+        if(isset($pro['proveedores_filtro'])){
+            $page = 1;
+            $session->set('filtros_proveedores', $pro['proveedores_filtro']);
+        }
+        
         $sqlFiltro = " 1=1 ";
 
         if($filtros = $session->get('filtros_proveedores')){
@@ -288,6 +290,10 @@ class ProveedorController extends Controller
                 };
             } 
                 
+        }else{
+        	$session->set('filtros_proveedores', array('estado' => 1));
+        	$filtros = $session->get('filtros_proveedores');
+        	$sqlFiltro .= " AND e.id=1";
         }
 
 		$form = $this->createForm(ProveedoresFiltroType::class);
@@ -323,11 +329,11 @@ class ProveedorController extends Controller
 	    	$detalle['catalogo'][$idP] = $this->ultimoCatalogo($idP);
 
 	    	if($detalle['documentos'][$idP] >= 100 ){
-				$detalle['clasedoc'][$idP] = 'progress-success';
+				$detalle['clasedoc'][$idP] = 'progress-bar-success';
 	    	}elseif($detalle['documentos'][$idP] >= 60){
-				$detalle['clasedoc'][$idP] = 'progress-warning';
+				$detalle['clasedoc'][$idP] = 'progress-bar-warning';
 	    	}else{
-	    		$detalle['clasedoc'][$idP] = 'progress-danger';
+	    		$detalle['clasedoc'][$idP] = 'progress-bar-danger';
 	    	} 
 
 	    	if($detalle['catalogo'][$idP] == null){
@@ -351,7 +357,7 @@ class ProveedorController extends Controller
             );
 
 	    return $this->render('IncentivesOperacionesBundle:Proveedor:listado_nuevo.html.twig', 
-	    	array('listado' => $pagination, 'detalle' => $detalle, 'form' => $form->createView()));
+	    	array('listado' => $pagination, 'detalle' => $detalle, 'form' => $form->createView(), 'filtros' => $filtros));
 	}
 
     public function datosAction($id)
@@ -734,7 +740,7 @@ class ProveedorController extends Controller
         $form = $this->createFormBuilder($excelForm)
             ->setAction($this->generateUrl('proveedores_importar'))
             ->setMethod('POST')
-            ->add('excel', 'file')
+            ->add('excel', FileType::class)
             ->add('cargar', SubmitType::class)
             ->getForm();
 

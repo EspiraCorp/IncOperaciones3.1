@@ -710,4 +710,28 @@ class Redencionesenvios
     {
         return $this->usuario;
     }
+
+    /**
+     * Add guium
+     *
+     * @param \Incentives\RedencionesBundle\Entity\GuiaEnvio $guium
+     *
+     * @return Redencionesenvios
+     */
+    public function addGuium(\Incentives\RedencionesBundle\Entity\GuiaEnvio $guium)
+    {
+        $this->guia[] = $guium;
+
+        return $this;
+    }
+
+    /**
+     * Remove guium
+     *
+     * @param \Incentives\RedencionesBundle\Entity\GuiaEnvio $guium
+     */
+    public function removeGuium(\Incentives\RedencionesBundle\Entity\GuiaEnvio $guium)
+    {
+        $this->guia->removeElement($guium);
+    }
 }

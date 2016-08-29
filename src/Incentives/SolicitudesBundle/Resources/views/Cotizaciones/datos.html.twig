@@ -49,8 +49,8 @@
 						<tr><td>Vigente Hasta</td><td>{{ cotizacion.fechaCreacion | date("Y-m-d") }}</td></tr>
 						<tr><td>Logistica Consolidada</td><td>{{ cotizacion.logistica }}</td></tr>
 						<tr><td>Solicitud</td><td>{{ cotizacion.solicitud.id }} - {{ cotizacion.solicitud.titulo }}</td>
-						<tr><td>Programa</td><td>{{ cotizacion.solicitud.programa.nombre }}</td>							
-						<tr><td>Cliente</td><td>{{ cotizacion.solicitud.programa.cliente.nombre }}</td>							
+						<tr><td>Centro de Costos</td><td>{{ cotizacion.solicitud.centroCostos.centrocostos }}</td>							
+						<tr><td>Cliente</td><td>{{ cotizacion.solicitud.centroCostos.cliente.nombre }}</td>							
 						<tr><td>Estado</td><td>{{ cotizacion.estado.nombre }}</td></tr>
 						<tr><td>Accion</td>
 							<td>

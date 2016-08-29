@@ -5,6 +5,7 @@ namespace Incentives\CatalogoBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -24,18 +25,22 @@ class ProgramaType extends AbstractType
         $builder
             ->add('nombre')
             ->add('descripcion')
-            ->add('fechainicio',DateType::class, array(
+            ->add('fechainicio', DateType::class, array(
             'input'  => 'datetime',
             'widget' => 'single_text',
         ))
-            ->add('fechafin',DateType::class, array(
+            ->add('fechafin', DateType::class, array(
             'input'  => 'datetime',
             'widget' => 'single_text',
         ))
             ->add('diasentrega')
         ;
         
-        $builder->add('centrocostos');
+        $builder->add('centroCostos', EntityType::class, array(
+            'class' => 'IncentivesCatalogoBundle:CentroCostos',
+            'choice_label' => 'centrocostos',
+            //'empty_value' => 'Seleccione una opcion',
+        ));
 
          $builder->add('iva', ChoiceType::class, array(
             'choices'   => array(

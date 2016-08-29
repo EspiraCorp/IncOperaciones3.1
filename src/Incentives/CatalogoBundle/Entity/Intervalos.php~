@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Intervalos
  *
  * @ORM\Entity
+ * @ORM\Table(name="Intervalos")
  */
 class Intervalos
 {

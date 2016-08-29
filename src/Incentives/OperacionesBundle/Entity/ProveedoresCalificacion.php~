@@ -9,6 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * ProveedoresCalificacion
  *
  * @ORM\Entity
+ * @ORM\Table(name="ProveedoresCalificacion")
  */
 class ProveedoresCalificacion
 {

@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * Courier
  *
+ * @ORM\Table(name="Courier")
  * @ORM\Entity
  */
 class Courier

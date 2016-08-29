@@ -131,12 +131,12 @@
 		<div class="box-content">
 		    <div class="box-header well">
 				<h2>
-					<a href="{{ path('productocatalogo_nuevocatalogo',  {"producto": producto.id}) }}">
+					<a href="{{ path('premios_nuevo_producto',  {"producto": producto.id}) }}">
 						<button class="btn btn-small btn-success">
 							<i class="icon-plus icon-white"></i>
 						</button>
 					</a>	
-					Catalogos
+					Catalogos de Premios
 				</h2>
 			</div>
 			<table class="table table-bordered table-striped">
@@ -157,31 +157,19 @@
 						</tr>
 					</thead>
 					<tbody>
-						{% for catalogo in productocatalogo %}
+						{% for premio in premios %}
 						<tr>
-							<td><a href="{{ path("productocatalogo_editarcatalogo", {"productocatalogo": catalogo.id}) }}">{{ catalogo.catalogos.nombre }}</a></td>
-							<td>{{ catalogo.catalogos.programa.nombre }}</td>
-							<td>{{ catalogo.catalogos.programa.cliente.nombre }}</td>
-							<td>{{ catalogo.puntos }}</td>
-							<td>{{ catalogo.precio }}</td>
-							<td>{{ catalogo.incremento }}</td>
-							<td>{{ catalogo.logistica }}</td>
-							<td>{{ catalogo.puntosTemporal }}</td>
-							<td>{{ catalogo.precioTemporal }}</td>
-							<td>{{ catalogo.incrementoTemporal }}</td>
-							<td>{{ catalogo.logisticaTemporal }}</td>
-							<td>{% if (catalogo.activo==0) %}
-										<a class="btn btn-danger 1" onClick=confirmar('{{ url("producto_estadopremio", {"id": catalogo.id}) }}') href="#">
-										Inactivo</a>
-									{% else %}
-										<a class="btn btn-success 1" {% if is_granted('ROLE_ADMIN') or  is_granted('ROLE_DIR') %}
-																	onClick=confirmar('{{ url("producto_estadopremio", {"id": catalogo.id}) }}')
-																	{% endif %}
-																	href="#">
-										Activo</a>
-									{% endif %}
-								</td>
-							
+							<td><a href="{{ path("productocatalogo_editarcatalogo", {"productocatalogo": premio.premio.id}) }}">{{ premio.premio.catalogos.nombre }}</a></td>
+							<td>{{ premio.premio.catalogos.programa.nombre }}</td>
+							<td>{{ premio.premio.catalogos.programa.cliente.nombre }}</td>
+							<td>{{ premio.premio.puntos }}</td>
+							<td>{{ premio.premio.precio }}</td>
+							<td>{{ premio.premio.incremento }}</td>
+							<td>{{ premio.premio.logistica }}</td>
+							<td>{{ premio.premio.puntosTemporal }}</td>
+							<td>{{ premio.premio.precioTemporal }}</td>
+							<td>{{ premio.premio.incrementoTemporal }}</td>
+							<td>{{ premio.premio.logisticaTemporal }}</td>							
 						</tr>
 						{% endfor %}
 					</tbody>

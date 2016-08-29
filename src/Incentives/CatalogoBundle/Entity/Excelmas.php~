@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Excel
  *
  * @ORM\Entity
+ * @ORM\Table(name="Excel")
  */
 class Excelmas
 {

@@ -124,20 +124,21 @@ class RedencionesController extends Controller
 
 				//buscar producto redimido
 				$qb = $em->createQueryBuilder();            
-		        $qb->select('pc');
-		        $qb->from('IncentivesCatalogoBundle:Productocatalogo','pc');
-		        $qb->leftJoin('pc.producto', 'p');
-		        $str_filtro = 'pc.catalogos = :id_catalogo';
+		        $qb->select('pr');
+		        $qb->from('IncentivesCatalogoBundle:Premios','pr');
+		        $qb->leftJoin('pr.premiosproductos', 'pp');
+		        $qb->leftJoin('pp.producto', 'p');
+		        $str_filtro = 'pr.catalogos = :id_catalogo';
 		        $str_filtro .= ' AND (p.codInc LIKE :sku)';
-		        $str_filtro .= ' AND pc.activo=1 AND pc.aproboCliente=1';
-		        $qb->where($str_filtro);
+		        $str_filtro .= ' AND pr.activo=1 AND pr.aproboCliente=1';
+		        $qb->groupBy('pr.id');
 
 		        //Definicion de parametros para filtros
 		        $arrayParametros['sku'] = $sku;
 		        $arrayParametros['id_catalogo'] = $parametros->catalogo;
 		        $qb->setParameters($arrayParametros);
 		            
-		        $producto = $qb->getQuery()->getOneOrNullResult();
+		        $premio = $qb->getQuery()->getOneOrNullResult();
 
 		        if(isset($producto)){//Si el producto existe almacenar y esta activo y aprobado
 
@@ -158,7 +159,7 @@ class RedencionesController extends Controller
 				        $redencion = new Redenciones();
 
 		                $redencion->setParticipante($participante);
-		                $redencion->setProductocatalogo($producto);
+		                $redencion->setPremio($premio);
 		                $estado = $em->getRepository('IncentivesRedencionesBundle:Redencionesestado')->find('1');
 		                $redencion->setRedencionestado($estado);
 		                $redencion->setCodigoredencion($codRedencion);
@@ -271,6 +272,256 @@ class RedencionesController extends Controller
 		return $response->send();
     
     }
+
+    public function PremioAction(Request $request)
+    {
+
+    	$mensaje = "";
+        
+    	// obtener el objeto de la petición
+		
+
+		// obtiene el valor de un parámetro $_GET
+		if(null !== $request->query->get('parametros')) {
+			$parametros = $request->query->get('parametros');
+		}else{
+			$parametros = $request->request->get('parametros');
+		}
+		$parametros = json_decode(urldecode($parametros));
+		
+		if(!(isset($parametros->participante->id) && $parametros->participante->id!="")){
+            $respuesta['estado'] = 0;
+            $respuesta['mensaje'] = 'No se recibio cédula del participante';
+        }elseif(!(isset($parametros->catalogo) && $parametros->catalogo!="")){
+            $respuesta['estado'] = 0;
+            $respuesta['mensaje'] = 'No se recibio identificacion del catalogo';
+        }else{
+
+        	$em = $this->getDoctrine()->getManager();
+        	$catalogo = $em->getRepository('IncentivesCatalogoBundle:Catalogos')->find($parametros->catalogo);
+
+        	$programa = $catalogo->getPrograma()->getId();
+
+        	//comprobar si el participante existe o no para este programa
+        	$qb = $em->createQueryBuilder();            
+	        $qb->select('p');
+	        $qb->from('IncentivesRedencionesBundle:Participantes','p');
+	        $str_filtro = 'p.programa = :id_programa';
+
+	        if(isset($parametros->participante->id)){
+	             $str_filtro .= ' AND (p.participante LIKE :participante)';
+	             $arrayParametros['participante'] = $parametros->participante->id;
+	        }
+
+	        $qb->where($str_filtro);
+
+	        //Definicion de parametros para filtros
+	        $arrayParametros['id_programa'] = $programa;
+	        $qb->setParameters($arrayParametros);
+	            
+	        $participante = $qb->getQuery()->getOneOrNullResult(); 
+
+		    if(isset($participante)){
+		    	$id_participante = $participante->getId();
+		    }else{
+		    	$participante = new Participantes();
+
+		    	$participante->setLlave($parametros->participante->id."_".$programa);
+		    	$participante->setNombre($parametros->participante->nombre_completo);
+		    	$participante->setDocumento($parametros->participante->cedula);
+		    	$participante->setParticipante($parametros->participante->id);
+		    	$tipodocumento = $em->getRepository('IncentivesOperacionesBundle:Tipodocumento')->find("1");
+		    	$participante->setTipodocumento($tipodocumento);
+		    	if(isset($parametros->participante->correo)) $participante->setCorreo($parametros->participante->correo);
+		    	if(isset($parametros->info_envio->direccion)) $participante->setDireccion($parametros->info_envio->direccion);
+		    	if(isset($parametros->info_envio->ciudad)) $participante->setCiudadNombre($parametros->info_envio->ciudad);
+		    	if(isset($parametros->info_envio->telefono)) $participante->setTelefono($parametros->info_envio->telefono);
+		    	if(isset($parametros->info_envio->celular)) $participante->setCelular($parametros->info_envio->celular);
+		    	if(isset($parametros->info_envio->barrio)) $participante->setBarrio($parametros->info_envio->barrio);
+                $participante->setEstado("1");
+                $estado = $em->getRepository('IncentivesRedencionesBundle:Participantesestado')->find("1");
+                $participante->setParticipanteestado($estado);
+                $programaP = $em->getRepository('IncentivesCatalogoBundle:Programa')->find($programa);
+                $participante->setPrograma($programaP);
+                $em->persist($participante);
+                $em->flush();
+
+                $id_participante = $participante->getId();
+		    }
+
+			$parametros->redencion->fecha;
+
+			//Generar codigo de redencion
+			$random_cod = rand(1, 10000);
+			$codRedencion = $programa.$id_participante.$random_cod;
+			
+			$exitoso = 0;
+
+			//Productos redimidos
+			foreach($parametros->redencion->productos as $keyP){
+				
+				$productoR = explode(";", $keyP);
+				$idPremio = $productoR[0];				
+				$cantidad = $productoR[1];
+				$puntos = 0 ;
+				$valor = 0;
+				if(isset( $productoR[2])) $puntos = $productoR[2];
+				if(isset( $productoR[3])) $valor = $productoR[3];
+
+				$arrayParametros = array();
+
+				//buscar producto redimido
+				$qb = $em->createQueryBuilder();            
+		        $qb->select('pr');
+		        $qb->from('IncentivesCatalogoBundle:Premios','pr');
+		        $qb->leftJoin('pr.premiosproductos', 'pp');
+		        $qb->leftJoin('pp.producto', 'p');
+		        $str_filtro = 'pr.catalogos = :id_catalogo';
+		        $str_filtro .= ' AND (pr.id LIKE :idPremio)';
+		        $str_filtro .= ' AND pr.activo=1 AND pr.aproboCliente=1';
+		        $qb->where($str_filtro);
+		        $qb->groupBy('pr.id');
+
+		        //Definicion de parametros para filtros
+		        $arrayParametros['idPremio'] = $idPremio;
+		        $arrayParametros['id_catalogo'] = $parametros->catalogo;
+		        $qb->setParameters($arrayParametros);
+		            
+		        $premio = $qb->getQuery()->getOneOrNullResult();
+
+		        if(isset($producto)){//Si el producto existe almacenar y esta activo y aprobado
+
+			        $idproductoC = $producto->getId();
+
+			        //Identificar atributos
+			        if(isset($productoR[4])){
+			        	$atributos = $productoR[4];
+				        $atributos = explode(',', $atributos);
+			        } 
+
+			        //Almacenar redencion
+			        for($i=1;$i<=$cantidad;$i++){
+				    
+			        	$noNulo = 0;
+
+			        	//Almacenar Redencion
+				        $redencion = new Redenciones();
+
+		                $redencion->setParticipante($participante);
+		                $redencion->setPremio($premio);
+		                $estado = $em->getRepository('IncentivesRedencionesBundle:Redencionesestado')->find('1');
+		                $redencion->setRedencionestado($estado);
+		                $redencion->setCodigoredencion($codRedencion);
+		                $redencion->setFecha(new \DateTime($parametros->redencion->fecha));
+		                $redencion->setRedimidopor($parametros->redencion->redimidopor);
+		                if(isset($parametros->redencion->otros)) $redencion->setOtros($parametros->redencion->otros);
+		                
+		                //if(isset($parametros->redencion->puntos) && $parametros->redencion->puntos!="" && $parametros->redencion->puntos!=0 && isset($parametros->redencion->valor) && $parametros->redencion->valor!="" && $parametros->redencion->valor!=0){
+							
+							if(isset($valor) && $valor!="" && $valor>0){
+								$redencion->setValor($valor);
+								$noNulo++;
+							} 
+
+							if(isset($puntos) && $puntos!="" && $puntos>0) {
+								$redencion->setPuntos($puntos);
+								$noNulo++;
+							}elseif($producto->getPuntos() != ""){
+								$redencion->setPuntos($producto->getPuntos());
+								$noNulo++;
+							}
+
+							if($noNulo>0){
+								
+								$exitoso++;
+
+								$em->persist($redencion);
+
+								//Almacenar Atributos
+								if(isset($atributos)){
+									foreach ($atributos as $keyAt => $valueAt) {
+										$atributoP = $em->getRepository('IncentivesCatalogoBundle:Atributosproducto')->find($valueAt);
+
+										$atributoR = new Redencionesatributos();
+										$atributoR->setRedencion($redencion);
+										$atributoR->setAtributos($atributoP);
+										$em->persist($atributoR);
+									}
+								}
+
+								//Almacenar Datos de Envio
+								$envio = new RedencionesEnvios();
+								
+								if(isset($parametros->info_envio->cedula)){
+									$envio->setDocumento($parametros->info_envio->cedula);	
+								}elseif(isset($parametros->participante->cedula)){
+									$envio->setDocumento($parametros->participante->cedula);
+								}
+								
+								if(isset($parametros->info_envio->nombre)){
+									$envio->setNombre($parametros->info_envio->nombre);	
+								}elseif(isset($parametros->participante->nombre_completo)){
+									$envio->setNombre($parametros->participante->nombre_completo);
+								}
+								
+								if(isset($parametros->info_envio->direccion)) $envio->setDireccion($parametros->info_envio->direccion);
+								if(isset($parametros->info_envio->ciudad)) $envio->setCiudadNombre($parametros->info_envio->ciudad);
+								if(isset($parametros->info_envio->departamento)) $envio->setDepartamentoNombre($parametros->info_envio->departamento);
+								if(isset($parametros->info_envio->telefono)) $envio->setTelefono($parametros->info_envio->telefono);
+								if(isset($parametros->info_envio->celular)) $envio->setCelular($parametros->info_envio->celular);
+								if(isset($parametros->info_envio->barrio)) $envio->setBarrio($parametros->info_envio->barrio);
+//								if(isset($parametros->participante->cedula)) $envio->setDocumento($parametros->participante->cedula);
+
+								if(isset($parametros->info_envio->contacto_nombre)) $envio->setNombreContacto($parametros->info_envio->contacto_nombre);
+								if(isset($parametros->info_envio->contacto_direccion)) $envio->setDireccionContacto($parametros->info_envio->contacto_direccion);
+								if(isset($parametros->info_envio->contacto_ciudad)) $envio->setCiudadContacto($parametros->info_envio->contacto_ciudad);
+								if(isset($parametros->info_envio->contacto_departamento)) $envio->setDepartamentoContacto($parametros->info_envio->contacto_departamento);
+								if(isset($parametros->info_envio->contacto_telefono)) $envio->setTelefonoContacto($parametros->info_envio->contacto_telefono);
+								if(isset($parametros->info_envio->contacto_celular)) $envio->setCelularContacto($parametros->info_envio->contacto_celular);
+								if(isset($parametros->info_envio->contacto_barrio)) $envio->setBarrioContacto($parametros->info_envio->contacto_barrio);
+								if(isset($parametros->info_envio->contacto_documento)) $envio->setDocumentoContacto($parametros->info_envio->contacto_documento);
+								$envio->setRedencion($redencion);
+								$em->persist($envio);
+
+								$em->flush();
+
+								//Almacenar Historico
+								$redencionH = $this->get('incentives_redenciones');
+								$redencionH->insertar($redencion);
+
+
+							}else{					
+								$mensaje .= " El producto: ".$productoR[0]."  no cuenta con puntos validos.";
+							}
+		                
+		                
+						}
+	            }else{
+
+	            	$mensaje .= " Lo sentimos, el producto solicitado ya se encuentra agotado, por favor redima otro producto del catalogo de premios.";
+	            }
+				
+			}
+
+			if($exitoso>0){
+				$respuesta['estado'] = 1;
+        		$respuesta['mensaje'] = $codRedencion; 
+			}else{
+				$respuesta['estado'] = 0;
+				$respuesta['mensaje']="";
+			}
+        	
+        }
+           
+        $respuesta['mensaje'].=$mensaje;
+
+        print_r(json_encode($respuesta));
+      
+		$response = new Response();
+		return $response->send();
+    
+    }
+
 
     public function AutorizadaAction(Request $request)
     {

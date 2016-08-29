@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Redencionesenvios
  *
+ * @ORM\Table(name="Redencionesenvios")
  * @ORM\Entity
  */
 class Redencionesenvios
@@ -708,5 +709,29 @@ class Redencionesenvios
     public function getUsuario()
     {
         return $this->usuario;
+    }
+
+    /**
+     * Add guium
+     *
+     * @param \Incentives\RedencionesBundle\Entity\GuiaEnvio $guium
+     *
+     * @return Redencionesenvios
+     */
+    public function addGuium(\Incentives\RedencionesBundle\Entity\GuiaEnvio $guium)
+    {
+        $this->guia[] = $guium;
+
+        return $this;
+    }
+
+    /**
+     * Remove guium
+     *
+     * @param \Incentives\RedencionesBundle\Entity\GuiaEnvio $guium
+     */
+    public function removeGuium(\Incentives\RedencionesBundle\Entity\GuiaEnvio $guium)
+    {
+        $this->guia->removeElement($guium);
     }
 }

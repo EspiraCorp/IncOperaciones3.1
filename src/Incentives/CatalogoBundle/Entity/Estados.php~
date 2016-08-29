@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Estados
  *
  * @ORM\Entity
+ * @ORM\Table(name="Estados")
  */
 class Estados
 {

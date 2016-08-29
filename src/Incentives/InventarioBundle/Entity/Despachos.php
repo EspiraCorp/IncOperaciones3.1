@@ -889,4 +889,28 @@ class Despachos
     {
         return $this->ordendespacho;
     }
+
+    /**
+     * Add despachoguium
+     *
+     * @param \Incentives\InventarioBundle\Entity\DespachoGuia $despachoguium
+     *
+     * @return Despachos
+     */
+    public function addDespachoguium(\Incentives\InventarioBundle\Entity\DespachoGuia $despachoguium)
+    {
+        $this->despachoguia[] = $despachoguium;
+
+        return $this;
+    }
+
+    /**
+     * Remove despachoguium
+     *
+     * @param \Incentives\InventarioBundle\Entity\DespachoGuia $despachoguium
+     */
+    public function removeDespachoguium(\Incentives\InventarioBundle\Entity\DespachoGuia $despachoguium)
+    {
+        $this->despachoguia->removeElement($despachoguium);
+    }
 }

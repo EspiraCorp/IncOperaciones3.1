@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * OrdenesTipo
  *
  * @ORM\Entity
+ * @ORM\Table(name="OrdenesTipo")
  */
 class OrdenesTipo
 {

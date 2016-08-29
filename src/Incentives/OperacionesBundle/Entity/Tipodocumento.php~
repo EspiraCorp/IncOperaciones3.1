@@ -9,6 +9,8 @@ use Doctrine\Common\Collections\ArrayCollection;
  * Tipodocumento
  *
  * @ORM\Entity
+ * @ORM\Table(name="Tipodocumento")
+ * 
  */
 class Tipodocumento
 {

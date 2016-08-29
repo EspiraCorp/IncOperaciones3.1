@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * OrdenesCompra
  *
+ * @ORM\Table(name="OrdenesCompraHistorico")
  * @ORM\Entity
  */
 class OrdenesCompraHistorico

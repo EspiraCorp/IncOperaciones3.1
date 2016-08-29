@@ -1,6 +1,6 @@
 {# src/Sinaptica/ProveedoresBundle/Resources/views/Default/new.html.twig #}
 {% extends '::base.html.twig' %}
-{% block title %}Solicitudes Cotizacion{% endblock %}
+{% block title %}Solicitudes{% endblock %}
 {% block sidebar %}
 {{ parent() }}
 {% endblock %}
@@ -8,11 +8,17 @@
 <div class="row-fluid sortable ui-sortable">
 	<div class="box span12">
 		<div class="box-header well">
-			<h2><i class="icon-th-list"></i>Solicitudes Cotizacion</h2>
-			<div class="box-icon">
-                <a href="{{ path('solicitudes_nueva') }}" class="btn btn-round" title="Agregar"><i class="icon-plus"></i></a>
-			</div>
-		</div>
+      <h2><i class="icon-th-list"></i>Solicitudes</h2>
+      <div class="box-icon">
+                <a href="{{ path('solicitudes_exportar') }}" title="Exportar Listado" class="btn btn-info">
+          <i class="icon-th icon-white"></i>
+        </a>
+        
+        <a href="{{ path('solicitudes_nueva') }}" class="btn btn-round" title="Agregar">
+          <i class="icon-plus"></i>
+        </a>
+      </div>
+    </div>
 		<div class="box-content">
 			<div id="dashboard">
                     <div id="tabla" class="" cellspacing="0" width="100%">
@@ -36,7 +42,7 @@
                             <td>{{ solicitud.fechaSolicitud | date("Y-m-d") }}</td>
                             <td>{{ solicitud.tipo.nombre }}</td>
                             <td>{{ solicitud.prioridad.nombre }}</td>
-                            <td>{{ solicitud.programa.nombre }}</td>
+                            <td>{{ solicitud.centroCostos.centrocostos }}</td>
                             <td>{{ solicitud.solicitante.nombre }}</td>
                             <td>{{ solicitud.estado.nombre }}</td>
                           </tr>

@@ -39,9 +39,9 @@ class SolicitudType extends AbstractType
             'label' => 'Prioridad'
         ));
         
-        $builder->add('programa', EntityType::class, array(
-            'class' => 'IncentivesCatalogoBundle:Programa',
-            'choice_label' => 'nombreCC',
+        $builder->add('centroCostos', EntityType::class, array(
+            'class' => 'IncentivesCatalogoBundle:CentroCostos',
+            'choice_label' => 'centrocostos',
             //'empty_value' => 'Seleccione una opción',
             'label' => 'Centro Costos',
             'query_builder' => function (EntityRepository $er) {

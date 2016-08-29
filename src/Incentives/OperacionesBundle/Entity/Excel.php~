@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Excel
  *
- * @ORM\Table(name="excel_proveedor")
+ * @ORM\Table(name="ExcelProveedor")
  * @ORM\Entity
  */
 class Excel

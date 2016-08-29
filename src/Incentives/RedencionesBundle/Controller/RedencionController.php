@@ -54,9 +54,9 @@ class RedencionController extends Controller
         $qb = $em->createQueryBuilder();            
         $qb->select('p','count(r) total');
         $qb->from('IncentivesCatalogoBundle:Programa','p');
-	$qb->leftJoin('p.participantes', 'pt');
-	$qb->leftJoin('pt.redencion', 'r');
-	$qb->groupBy('p.id');
+    	$qb->leftJoin('p.participantes', 'pt');
+    	$qb->leftJoin('pt.redencion', 'r');
+    	$qb->groupBy('p.id');
         $programas = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
         //echo "<pre>";print_r($programas); echo "</pre>";exit;  
 
@@ -76,7 +76,7 @@ class RedencionController extends Controller
                 $programas[$key]['pendientes'] = 0;                
             }
 
-	    $qb = $em->createQueryBuilder();            
+	       $qb = $em->createQueryBuilder();            
             $qb->select('count(r) total');
             $qb->from('IncentivesRedencionesBundle:Redenciones','r');
     	    $qb->leftJoin('r.participante', 'pt');
@@ -1889,7 +1889,7 @@ class RedencionController extends Controller
             $str_filtro .= " GROUP BY r.id  ORDER BY r.fecha ASC";
             
             $conn = $this->get('database_connection'); 
-            $redenciones = $conn->fetchAll($query.$str_filtro, array(1), 0);
+            $redenciones = $conn->fetchAll($query.$str_filtro);
 
 			//echo "<pre>"; print_r($redenciones); echo "</pre>"; exit;
                
@@ -1958,7 +1958,7 @@ class RedencionController extends Controller
                         $str_filtro = ' WHERE d.redencion_id = '.$value['id'];
                         
                         $conn = $this->get('database_connection'); 
-                        $guiasResult = $conn->fetchAll($query.$str_filtro, array(1), 0);
+                        $guiasResult = $conn->fetchAll($query.$str_filtro);
                         
                         $guias = array();
                         $opeador = array();

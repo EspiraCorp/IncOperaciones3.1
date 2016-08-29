@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Factura
  *
  * @ORM\Entity
+ * @ORM\Table(name="Factura")
  */
 class Factura
 {

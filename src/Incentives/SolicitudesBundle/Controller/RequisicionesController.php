@@ -436,5 +436,123 @@ class RequisicionesController extends Controller
 
     }
 
+    public function exportarAction()
+    {         
+            $fp = fopen('php://temp','r+');
+
+            // Header
+            $row = array('Id','Consecutivo','Centro Costos','Solicitud','Titulo Solicitud','Fecha Creacion');
+            
+            $em = $this->getDoctrine()->getManager();
+
+            $query = "SELECT r.id,r.consecutivo,r.fechaCreacion,s.id solicitud,s.titulo,c.nombre centroCostos
+                    FROM Requisicion r
+                    LEFT JOIN Solicitud s ON s.id=r.solicitud_id
+                    LEFT JOIN CentroCostos c ON c.id=s.centroCostos_id;";
+            
+            $conn = $this->get('database_connection'); 
+            $solicitudes = $conn->fetchAll($query, array(1));
+           
+            //echo "<pre>"; print_r($solicitudes); echo "</pre>";
+            //exit;
+            
+            $ir = 0;
+            foreach($solicitudes as $key => $value){              
+               
+               if($ir==0){
+                   
+                    fputcsv($fp,$row,';');
+                }
+               
+                $ir++;
+               
+                $row = array();
+                //Redencion, participante, producto
+                $row[] = $value['id'];//1
+                $row[] = $value['consecutivo'];//2
+                $row[] = $value['centroCostos'];//3
+                $row[] = $value['solicitud'];//4
+                $row[] = $value['titulo'];//6
+                $row[] = $value['fechaCreacion'];//5
+                
+                fputcsv($fp,$row,';');
+            }
+
+            rewind($fp);
+            $csv = stream_get_contents($fp);
+            fclose($fp);
+            
+            $filename = 'Requisiciones.csv';
+            $response = new Response($csv);
+            
+            $response->headers->set('Content-Type', "text/csv");
+            $response->headers->set('Content-Disposition', sprintf('attachment; filename="%s"', $filename));            
+            
+            return $response;
+
+    }
+    
+    public function exportarProductosAction()
+    {         
+            $fp = fopen('php://temp','r+');
+
+            // Header
+            $row = array('Id','Requisicion','Solicitud','Centro de Costos','Fecha Modificación','Producto','Marca','Referencia','Cantidad','Valor Unitario','Total');
+            
+            $em = $this->getDoctrine()->getManager();
+
+            $query = "SELECT rp.id,rp.cantidad,rp.valorunidad,rp.valortotal,rp.fechaModificacion,p.nombre producto,c.centrocostos centroCostos,p.marca,p.referencia,r.consecutivo requisicion,r.fechaCreacion,s.id solicitud
+                    FROM RequisicionProducto rp
+                    JOIN Requisicion r ON rp.requisicion_id=r.id
+                    JOIN Solicitud s ON r.solicitud_id=s.id
+                    JOIN CentroCostos c ON s.centroCostos_id=c.id
+                    LEFT JOIN Producto p ON p.id=rp.producto_id;";
+            
+            $conn = $this->get('database_connection'); 
+            $productos = $conn->fetchAll($query, array(1));
+
+            //echo "<pre>"; print_r($productos); echo "</pre>"; exit;
+                
+            $ir = 0;
+            foreach($productos as $key => $value){              
+               
+               if($ir==0){
+                   
+                    fputcsv($fp,$row,';');
+                }
+               
+                $ir++;
+               
+                $row = array();
+                //Redencion, participante, producto
+                $row[] = $value['id'];//1
+                $row[] = $value['requisicion'];//2
+                $row[] = $value['solicitud'];//3
+                $row[] = $value['centroCostos'];//3
+                $row[] = $value['fechaModificacion'];//4
+                $row[] = $value['producto'];//5
+                $row[] = $value['marca'];//6
+                $row[] = $value['referencia'];//7
+                $row[] = $value['cantidad'];//8
+                $row[] = number_format($value['valorunidad'], 2, ',', '');//9
+                $row[] = number_format($value['valortotal'], 2, ',', '');//10
+                
+                fputcsv($fp,$row,';');
+            }
+
+            rewind($fp);
+            $csv = stream_get_contents($fp);
+            fclose($fp);
+            
+            $filename = 'Requisiciones_Productos.csv';
+            $response = new Response($csv);
+            
+            $response->headers->set('Content-Type', "text/csv");
+            $response->headers->set('Content-Disposition', sprintf('attachment; filename="%s"', $filename));            
+            
+            return $response;
+
+    }
+
 }
 

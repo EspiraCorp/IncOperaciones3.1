@@ -4,7 +4,7 @@
         var settings = {
             url_list: '',
             url_get:  '',
-            min_length: 2,
+            min_length: 1,
             on_select_callback: null
         };
         return this.each(function () {

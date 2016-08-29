@@ -10,6 +10,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * Tipoarchivo
  *
  * @ORM\Entity
+ * @ORM\Table(name="Tipoarchivo")
  */
 class Tipoarchivo
 {

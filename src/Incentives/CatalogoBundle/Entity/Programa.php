@@ -123,10 +123,10 @@ class Programa
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="centrocostos", type="string", length=255, nullable=true)
+     * @ORM\ManyToOne(targetEntity="CentroCostos", cascade={"persist"})
+     * @ORM\JoinColumn(name="centroCostos_id", referencedColumnName="id", nullable=true)
      */
-    private $centrocostos;
+    protected $centroCostos;
 
    /**
      * @var \DateTime
@@ -160,23 +160,25 @@ class Programa
         return $this->id;
     }
 
+
     /**
      * Set nombre
      *
      * @param string $nombre
+     *
      * @return Programa
      */
     public function setNombre($nombre)
     {
         $this->nombre = $nombre;
-    
+
         return $this;
     }
 
     /**
      * Get nombre
      *
-     * @return string 
+     * @return string
      */
     public function getNombre()
     {
@@ -187,19 +189,20 @@ class Programa
      * Set descripcion
      *
      * @param string $descripcion
+     *
      * @return Programa
      */
     public function setDescripcion($descripcion)
     {
         $this->descripcion = $descripcion;
-    
+
         return $this;
     }
 
     /**
      * Get descripcion
      *
-     * @return string 
+     * @return string
      */
     public function getDescripcion()
     {
@@ -210,19 +213,20 @@ class Programa
      * Set fechainicio
      *
      * @param \DateTime $fechainicio
+     *
      * @return Programa
      */
     public function setFechainicio($fechainicio)
     {
         $this->fechainicio = $fechainicio;
-    
+
         return $this;
     }
 
     /**
      * Get fechainicio
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getFechainicio()
     {
@@ -233,19 +237,20 @@ class Programa
      * Set fechafin
      *
      * @param \DateTime $fechafin
+     *
      * @return Programa
      */
     public function setFechafin($fechafin)
     {
         $this->fechafin = $fechafin;
-    
+
         return $this;
     }
 
     /**
      * Get fechafin
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getFechafin()
     {
@@ -256,19 +261,20 @@ class Programa
      * Set logistica
      *
      * @param float $logistica
+     *
      * @return Programa
      */
     public function setLogistica($logistica)
     {
         $this->logistica = $logistica;
-    
+
         return $this;
     }
 
     /**
      * Get logistica
      *
-     * @return float 
+     * @return float
      */
     public function getLogistica()
     {
@@ -279,19 +285,20 @@ class Programa
      * Set iva
      *
      * @param boolean $iva
+     *
      * @return Programa
      */
     public function setIva($iva)
     {
         $this->iva = $iva;
-    
+
         return $this;
     }
 
     /**
      * Get iva
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getIva()
     {
@@ -302,19 +309,20 @@ class Programa
      * Set diasentrega
      *
      * @param integer $diasentrega
+     *
      * @return Programa
      */
     public function setDiasentrega($diasentrega)
     {
         $this->diasentrega = $diasentrega;
-    
+
         return $this;
     }
 
     /**
      * Get diasentrega
      *
-     * @return integer 
+     * @return integer
      */
     public function getDiasentrega()
     {
@@ -322,45 +330,47 @@ class Programa
     }
 
     /**
-     * Set centrocostos
+     * Set fechaModificacion
      *
-     * @param string $centrocostos
+     * @param \DateTime $fechaModificacion
+     *
      * @return Programa
      */
-    public function setCentrocostos($centrocostos)
+    public function setFechaModificacion($fechaModificacion)
     {
-        $this->centrocostos = $centrocostos;
-    
+        $this->fechaModificacion = $fechaModificacion;
+
         return $this;
     }
 
     /**
-     * Get centrocostos
+     * Get fechaModificacion
      *
-     * @return string 
+     * @return \DateTime
      */
-    public function getCentrocostos()
+    public function getFechaModificacion()
     {
-        return $this->centrocostos;
+        return $this->fechaModificacion;
     }
 
     /**
      * Set estado
      *
      * @param \Incentives\CatalogoBundle\Entity\Estados $estado
+     *
      * @return Programa
      */
     public function setEstado(\Incentives\CatalogoBundle\Entity\Estados $estado = null)
     {
         $this->estado = $estado;
-    
+
         return $this;
     }
 
     /**
      * Get estado
      *
-     * @return \Incentives\CatalogoBundle\Entity\Estados 
+     * @return \Incentives\CatalogoBundle\Entity\Estados
      */
     public function getEstado()
     {
@@ -371,19 +381,20 @@ class Programa
      * Set cliente
      *
      * @param \Incentives\CatalogoBundle\Entity\Cliente $cliente
+     *
      * @return Programa
      */
     public function setCliente(\Incentives\CatalogoBundle\Entity\Cliente $cliente = null)
     {
         $this->cliente = $cliente;
-    
+
         return $this;
     }
 
     /**
      * Get cliente
      *
-     * @return \Incentives\CatalogoBundle\Entity\Cliente 
+     * @return \Incentives\CatalogoBundle\Entity\Cliente
      */
     public function getCliente()
     {
@@ -394,12 +405,13 @@ class Programa
      * Add catalogo
      *
      * @param \Incentives\CatalogoBundle\Entity\Catalogos $catalogo
+     *
      * @return Programa
      */
     public function addCatalogo(\Incentives\CatalogoBundle\Entity\Catalogos $catalogo)
     {
         $this->catalogo[] = $catalogo;
-    
+
         return $this;
     }
 
@@ -416,7 +428,7 @@ class Programa
     /**
      * Get catalogo
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getCatalogo()
     {
@@ -424,147 +436,16 @@ class Programa
     }
 
     /**
-     * Add presupuestos
-     *
-     * @param \Incentives\FacturacionBundle\Entity\Presupuestos $presupuestos
-     * @return Programa
-     */
-    public function addPresupuesto(\Incentives\FacturacionBundle\Entity\Presupuestos $presupuestos)
-    {
-        $this->presupuestos[] = $presupuestos;
-    
-        return $this;
-    }
-
-    /**
-     * Remove presupuestos
-     *
-     * @param \Incentives\FacturacionBundle\Entity\Presupuestos $presupuestos
-     */
-    public function removePresupuesto(\Incentives\FacturacionBundle\Entity\Presupuestos $presupuestos)
-    {
-        $this->presupuestos->removeElement($presupuestos);
-    }
-
-    /**
-     * Get presupuestos
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getPresupuestos()
-    {
-        return $this->presupuestos;
-    }
-
-    /**
-     * Add factura
-     *
-     * @param \Incentives\FacturacionBundle\Entity\Factura $factura
-     * @return Programa
-     */
-    public function addFactura(\Incentives\FacturacionBundle\Entity\Factura $factura)
-    {
-        $this->factura[] = $factura;
-    
-        return $this;
-    }
-
-    /**
-     * Remove factura
-     *
-     * @param \Incentives\FacturacionBundle\Entity\Factura $factura
-     */
-    public function removeFactura(\Incentives\FacturacionBundle\Entity\Factura $factura)
-    {
-        $this->factura->removeElement($factura);
-    }
-
-    /**
-     * Get factura
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getFactura()
-    {
-        return $this->factura;
-    }
-
-    /**
-     * Add solicitud
-     *
-     * @param \Incentives\SolicitudesBundle\Entity\Solicitud $solicitud
-     * @return Programa
-     */
-    public function addSolicitud(\Incentives\SolicitudesBundle\Entity\Solicitud $solicitud)
-    {
-        $this->solicitud[] = $solicitud;
-    
-        return $this;
-    }
-
-    /**
-     * Remove solicitud
-     *
-     * @param \Incentives\SolicitudesBundle\Entity\Solicitud $solicitud
-     */
-    public function removeSolicitud(\Incentives\SolicitudesBundle\Entity\Solicitud $solicitud)
-    {
-        $this->solicitud->removeElement($solicitud);
-    }
-
-    /**
-     * Get solicitud
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getSolicitud()
-    {
-        return $this->solicitud;
-    }
-
-    /**
-     * Add participantes
-     *
-     * @param \Incentives\RedencionesBundle\Entity\Participantes $participantes
-     * @return Programa
-     */
-    public function addParticipante(\Incentives\RedencionesBundle\Entity\Participantes $participantes)
-    {
-        $this->participantes[] = $participantes;
-    
-        return $this;
-    }
-
-    /**
-     * Remove participantes
-     *
-     * @param \Incentives\RedencionesBundle\Entity\Participantes $participantes
-     */
-    public function removeParticipante(\Incentives\RedencionesBundle\Entity\Participantes $participantes)
-    {
-        $this->participantes->removeElement($participantes);
-    }
-
-    /**
-     * Get participantes
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getParticipantes()
-    {
-        return $this->participantes;
-    }
-    
-    /**
      * Add ordenesproducto
      *
      * @param \Incentives\OrdenesBundle\Entity\OrdenesProducto $ordenesproducto
+     *
      * @return Programa
      */
     public function addOrdenesproducto(\Incentives\OrdenesBundle\Entity\OrdenesProducto $ordenesproducto)
     {
         $this->ordenesproducto[] = $ordenesproducto;
-    
+
         return $this;
     }
 
@@ -581,58 +462,191 @@ class Programa
     /**
      * Get ordenesproducto
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getOrdenesproducto()
     {
         return $this->ordenesproducto;
     }
-    
-    public function getNombreCC()
-    {
-        return $this->centrocostos .' - '. $this->nombre;
-    }
 
     /**
-     * Set fechaModificacion
+     * Add presupuesto
      *
-     * @param \DateTime $fechaModificacion
+     * @param \Incentives\FacturacionBundle\Entity\Presupuestos $presupuesto
+     *
      * @return Programa
      */
-    public function setFechaModificacion($fechaModificacion)
+    public function addPresupuesto(\Incentives\FacturacionBundle\Entity\Presupuestos $presupuesto)
     {
-        $this->fechaModificacion = $fechaModificacion;
-    
+        $this->presupuestos[] = $presupuesto;
+
         return $this;
     }
 
     /**
-     * Get fechaModificacion
+     * Remove presupuesto
      *
-     * @return \DateTime 
+     * @param \Incentives\FacturacionBundle\Entity\Presupuestos $presupuesto
      */
-    public function getFechaModificacion()
+    public function removePresupuesto(\Incentives\FacturacionBundle\Entity\Presupuestos $presupuesto)
     {
-        return $this->fechaModificacion;
+        $this->presupuestos->removeElement($presupuesto);
+    }
+
+    /**
+     * Get presupuestos
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPresupuestos()
+    {
+        return $this->presupuestos;
+    }
+
+    /**
+     * Add factura
+     *
+     * @param \Incentives\FacturacionBundle\Entity\Factura $factura
+     *
+     * @return Programa
+     */
+    public function addFactura(\Incentives\FacturacionBundle\Entity\Factura $factura)
+    {
+        $this->factura[] = $factura;
+
+        return $this;
+    }
+
+    /**
+     * Remove factura
+     *
+     * @param \Incentives\FacturacionBundle\Entity\Factura $factura
+     */
+    public function removeFactura(\Incentives\FacturacionBundle\Entity\Factura $factura)
+    {
+        $this->factura->removeElement($factura);
+    }
+
+    /**
+     * Get factura
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getFactura()
+    {
+        return $this->factura;
+    }
+
+    /**
+     * Add solicitud
+     *
+     * @param \Incentives\SolicitudesBundle\Entity\Solicitud $solicitud
+     *
+     * @return Programa
+     */
+    public function addSolicitud(\Incentives\SolicitudesBundle\Entity\Solicitud $solicitud)
+    {
+        $this->solicitud[] = $solicitud;
+
+        return $this;
+    }
+
+    /**
+     * Remove solicitud
+     *
+     * @param \Incentives\SolicitudesBundle\Entity\Solicitud $solicitud
+     */
+    public function removeSolicitud(\Incentives\SolicitudesBundle\Entity\Solicitud $solicitud)
+    {
+        $this->solicitud->removeElement($solicitud);
+    }
+
+    /**
+     * Get solicitud
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getSolicitud()
+    {
+        return $this->solicitud;
+    }
+
+    /**
+     * Add participante
+     *
+     * @param \Incentives\RedencionesBundle\Entity\Participantes $participante
+     *
+     * @return Programa
+     */
+    public function addParticipante(\Incentives\RedencionesBundle\Entity\Participantes $participante)
+    {
+        $this->participantes[] = $participante;
+
+        return $this;
+    }
+
+    /**
+     * Remove participante
+     *
+     * @param \Incentives\RedencionesBundle\Entity\Participantes $participante
+     */
+    public function removeParticipante(\Incentives\RedencionesBundle\Entity\Participantes $participante)
+    {
+        $this->participantes->removeElement($participante);
+    }
+
+    /**
+     * Get participantes
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getParticipantes()
+    {
+        return $this->participantes;
+    }
+
+    /**
+     * Set centroCostos
+     *
+     * @param \Incentives\CatalogoBundle\Entity\CentroCostos $centroCostos
+     *
+     * @return Programa
+     */
+    public function setCentroCostos(\Incentives\CatalogoBundle\Entity\CentroCostos $centroCostos = null)
+    {
+        $this->centroCostos = $centroCostos;
+
+        return $this;
+    }
+
+    /**
+     * Get centroCostos
+     *
+     * @return \Incentives\CatalogoBundle\Entity\CentroCostos
+     */
+    public function getCentroCostos()
+    {
+        return $this->centroCostos;
     }
 
     /**
      * Set usuario
      *
      * @param \Incentives\BaseBundle\Entity\Usuario $usuario
+     *
      * @return Programa
      */
     public function setUsuario(\Incentives\BaseBundle\Entity\Usuario $usuario = null)
     {
         $this->usuario = $usuario;
-    
+
         return $this;
     }
 
     /**
      * Get usuario
      *
-     * @return \Incentives\BaseBundle\Entity\Usuario 
+     * @return \Incentives\BaseBundle\Entity\Usuario
      */
     public function getUsuario()
     {

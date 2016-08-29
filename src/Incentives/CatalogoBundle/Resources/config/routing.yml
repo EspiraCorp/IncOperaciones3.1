@@ -313,3 +313,53 @@ productocatalogo_formatocambios:
 productos_proveedor:
     path:  /proveedores/productos/{id}
     defaults: { _controller: IncentivesCatalogoBundle:Catalogos:productosproveedor, id: null }
+
+centrocostos:
+    path:  /centrocostos
+    defaults: { _controller: IncentivesCatalogoBundle:CentroCostos:listado}
+    
+centrocostos_nuevo:
+    path:  /centrocostos/nuevo/{id}
+    defaults: { _controller: IncentivesCatalogoBundle:CentroCostos:nuevo, id: null}
+
+centrocostos_editar:
+    path:  /centrocostos/editar/{id}
+    defaults: { _controller: IncentivesCatalogoBundle:CentroCostos:editar, id: null }
+    requirements:
+        id:  \d+
+
+centrocostos_datos:
+    path:  /centrocostos/datos/{id}
+    defaults: { _controller: IncentivesCatalogoBundle:CentroCostos:datos, id: null }
+    requirements:
+        id:  \d+
+        
+promociones:
+    path:  /promociones
+    defaults: { _controller: IncentivesCatalogoBundle:Promociones:listado}
+
+promociones_nuevo:
+    path:  /promociones/nuevo
+    defaults: { _controller: IncentivesCatalogoBundle:Promociones:nuevo}
+
+promociones_editar:
+    path:  /promociones/editar/{id}
+    defaults: { _controller: IncentivesCatalogoBundle:Promociones:editar, id: null }
+    requirements:
+        id:  \d+
+
+promociones_datos:
+    path:  /promociones/datos/{id}
+    defaults: { _controller: IncentivesCatalogoBundle:Promociones:datos, id: null }
+    requirements:
+        id:  \d+
+
+promociones_estado:
+    path:  /promociones/estado/{id}
+    defaults: { _controller: IncentivesCatalogoBundle:Promociones:estado, id: null }
+    requirements:
+        id:  \d+
+
+premios_nuevo_producto:
+    path:  /premios/nuevo/producto/{producto}
+    defaults: { _controller: IncentivesCatalogoBundle:Premios:nuevoProducto, producto: null }

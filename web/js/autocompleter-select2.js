@@ -5,7 +5,7 @@
             url_list: '',
             url_get: '',
             placeholder: '',
-            otherOptions: {minimumInputLength: 2}
+            otherOptions: {minimumInputLength: 1}
         };
         return this.each(function () {
             if (options) {

@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * Ciudad
  *
  * @ORM\Entity
+ * @ORM\Table(name="Ciudad")
  */
 class Ciudad
 {

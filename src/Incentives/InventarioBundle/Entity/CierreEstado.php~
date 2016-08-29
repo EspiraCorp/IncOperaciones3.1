@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * CierreEstado
  *
  * @ORM\Entity
+ * @ORM\Table(name="CierreEstado")
  */
 class CierreEstado
 {

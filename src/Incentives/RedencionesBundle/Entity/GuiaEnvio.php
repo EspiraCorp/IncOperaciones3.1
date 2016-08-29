@@ -467,4 +467,28 @@ class GuiaEnvio
     {
         return $this->usuario;
     }
+
+    /**
+     * Add inventarioguium
+     *
+     * @param \Incentives\InventarioBundle\Entity\InventarioGuia $inventarioguium
+     *
+     * @return GuiaEnvio
+     */
+    public function addInventarioguium(\Incentives\InventarioBundle\Entity\InventarioGuia $inventarioguium)
+    {
+        $this->inventarioguia[] = $inventarioguium;
+
+        return $this;
+    }
+
+    /**
+     * Remove inventarioguium
+     *
+     * @param \Incentives\InventarioBundle\Entity\InventarioGuia $inventarioguium
+     */
+    public function removeInventarioguium(\Incentives\InventarioBundle\Entity\InventarioGuia $inventarioguium)
+    {
+        $this->inventarioguia->removeElement($inventarioguium);
+    }
 }

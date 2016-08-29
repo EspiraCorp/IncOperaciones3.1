@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * CotizacionProducto
  *
+ * @ORM\Table(name="CotizacionProducto")
  * @ORM\Entity
  */
 class  CotizacionProducto
@@ -20,7 +21,6 @@ class  CotizacionProducto
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
-
 
     /**
      * @var integer
@@ -87,6 +87,14 @@ class  CotizacionProducto
      */
     protected $estado;
     
+    /**
+     * 
+     * @ORM\ManyToOne(targetEntity="Incentives\FacturacionBundle\Entity\FacturaProductos")
+     * @ORM\JoinColumn(name="facturaProducto_id", referencedColumnName="id", nullable=true)
+     * 
+     */
+    protected $facturaProducto;
+
     /**
      * @var \DateTime
      *
@@ -381,5 +389,28 @@ class  CotizacionProducto
     public function getOrdenesproducto()
     {
         return $this->ordenesproducto;
+    }
+
+    /**
+     * Set facturaProducto
+     *
+     * @param \Incentives\FacturacionBundle\Entity\FacturaProductos $facturaProducto
+     * @return CotizacionProducto
+     */
+    public function setFacturaProducto(\Incentives\FacturacionBundle\Entity\FacturaProductos $facturaProducto = null)
+    {
+        $this->facturaProducto = $facturaProducto;
+    
+        return $this;
+    }
+
+    /**
+     * Get facturaProducto
+     *
+     * @return \Incentives\FacturacionBundle\Entity\FacturaProductos 
+     */
+    public function getFacturaProducto()
+    {
+        return $this->facturaProducto;
     }
 }

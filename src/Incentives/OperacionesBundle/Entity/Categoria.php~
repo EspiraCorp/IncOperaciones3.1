@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * Categoria
  *
  * @ORM\Entity
+ * @ORM\Table(name="Categoria")
  */
 class Categoria
 {

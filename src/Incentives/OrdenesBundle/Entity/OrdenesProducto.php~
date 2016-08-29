@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * OrdenesProducto
  *
+ * @ORM\Table(name="OrdenesProducto")
  * @ORM\Entity
  */
 class OrdenesProducto
@@ -184,6 +185,7 @@ class OrdenesProducto
     {
         $this->redenciones = new ArrayCollection();
         $this->guiaEnvio = new ArrayCollection();
+        $this->producto = new ArrayCollection();
     }
 
     /**

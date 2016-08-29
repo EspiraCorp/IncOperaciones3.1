@@ -1,0 +1,21 @@
+<ul class="sidebar-menu">
+    <li class="header">MENU</li>
+    {% for opcion in menu %}
+        <li class="treeview">
+            <a href="">
+                <i class="fa {{ opcion.icono }}"></i> <span>{{ opcion.nombre }}</span>
+                <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                </span>
+            </a>
+            <ul class="treeview-menu">
+                {% for item in opcion.opciones %}
+                    {% if item.tipo == 2 %}
+                        {% set link = item.link %}
+                        <li><a href="{{ path( item.link ) }}"><i class="fa {{ item.icono }}"></i>{{ item.nombre }}</a></li>
+                    {% endif %}
+                {% endfor %}
+            </ul>    
+        </li>   
+    {% endfor %}
+</ul>

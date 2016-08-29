@@ -150,6 +150,13 @@ class Solicitud
     private $observacionesOperaciones;
 
     /**
+     * @var string
+     * @ORM\ManyToOne(targetEntity="Incentives\CatalogoBundle\Entity\CentroCostos", cascade={"persist"})
+     * @ORM\JoinColumn(name="centroCostos_id", referencedColumnName="id", nullable=true)
+     */
+    protected $centroCostos;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="fechaModificacion", type="datetime", nullable=true)
@@ -695,5 +702,54 @@ class Solicitud
     public function getEstado()
     {
         return $this->estado;
+    }
+
+    /**
+     * Add convocatorium
+     *
+     * @param \Incentives\OperacionesBundle\Entity\Convocatorias $convocatorium
+     *
+     * @return Solicitud
+     */
+    public function addConvocatorium(\Incentives\OperacionesBundle\Entity\Convocatorias $convocatorium)
+    {
+        $this->convocatoria[] = $convocatorium;
+
+        return $this;
+    }
+
+    /**
+     * Remove convocatorium
+     *
+     * @param \Incentives\OperacionesBundle\Entity\Convocatorias $convocatorium
+     */
+    public function removeConvocatorium(\Incentives\OperacionesBundle\Entity\Convocatorias $convocatorium)
+    {
+        $this->convocatoria->removeElement($convocatorium);
+    }
+
+
+    /**
+     * Set centroCostos
+     *
+     * @param \Incentives\CatalogoBundle\Entity\CentroCostos $centroCostos
+     *
+     * @return Solicitud
+     */
+    public function setCentroCostos(\Incentives\CatalogoBundle\Entity\CentroCostos $centroCostos = null)
+    {
+        $this->centroCostos = $centroCostos;
+
+        return $this;
+    }
+
+    /**
+     * Get centroCostos
+     *
+     * @return \Incentives\CatalogoBundle\Entity\CentroCostos
+     */
+    public function getCentroCostos()
+    {
+        return $this->centroCostos;
     }
 }

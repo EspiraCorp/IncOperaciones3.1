@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * Productoprecio
  *
  * @ORM\Entity
+ * @ORM\Table(name="Productoprecio")
  */
 class Productoprecio
 {
@@ -70,7 +71,7 @@ class Productoprecio
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="fecha", type="date", nullable=true)
+     * @ORM\Column(name="fecha", type="datetime", nullable=true)
      */
     private $fecha;
 

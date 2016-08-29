@@ -972,7 +972,7 @@ class MaestroController extends Controller
                //$form->handleRequest($request);
                //if ($form->isValid()) {
                 
-                $pro = $request->request->all()['producto_catalogo'];
+                $pro = $request->request->all()['productocatalogo_prod'];
                 $catalogo = $em->getRepository('IncentivesCatalogoBundle:Catalogos')->find($pro['catalogos']);
                 $categoria = $em->getRepository('IncentivesOperacionesBundle:Categoria')->find($pro['categoria']);
                 // realiza alguna acción, tal como guardar la tarea en la base de datos
@@ -991,11 +991,7 @@ class MaestroController extends Controller
                 //$productocatalogo->setIncremento($pro['incrementoTemporal']);
                 //$productocatalogo->setLogistica($pro['logisticaTemporal']);
                   
-                $em->persist($productocatalogo);
-                
-                $productocatalogoH = $this->get('incentives_catalogo');
-                $productocatalogoH->historico($productocatalogo);
-                            
+                $em->persist($productocatalogo);                            
                 $em->flush();
                 //probar el redirect en la verison 2.3 y hacer el ajsutepara la 2.7
                 return $this->redirect($this->generateUrl('producto_datos', array('id' => $producto)));
@@ -1012,15 +1008,17 @@ class MaestroController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $productocatalogoEditar = $em->getRepository('IncentivesCatalogoBundle:Productocatalogo')->find($productocatalogo);
+
         $datosProducto = $em->getRepository('IncentivesCatalogoBundle:Producto')->find($productocatalogoEditar->getProducto()->getId());
-        $form = $this->createForm(new ProductocatalogoProdType(), $productocatalogoEditar);
+        //echo $datosProducto->getId(); exit;
+        $form = $this->createForm(ProductocatalogoProdType::class, $productocatalogoEditar);
         
         if ($request->isMethod('POST')) {
            
                 //$form->handleRequest($request);
                 //if ($form->isValid()) {
                 
-                    $pro = $request->request->all()['producto_catalogo'];
+                    $pro = $request->request->all()['productocatalogo_prod'];
                     $categoria = $em->getRepository('IncentivesOperacionesBundle:Categoria')->find($pro['categoria']);
                     
                     $puntos = $this->calcularPuntos($pro['precioTemporal'], $pro['incrementoTemporal'], $pro['logisticaTemporal'], $pro['puntosTemporal'], $productocatalogoEditar->getCatalogos()->getId());
@@ -1035,9 +1033,6 @@ class MaestroController extends Controller
                     $productocatalogoEditar->setEstadoAprobacion(NULL);
                       
                     $em->persist($productocatalogoEditar);
-                    
-                    $productocatalogoH = $this->get('incentives_catalogo');
-                    $productocatalogoH->historico($productocatalogoEditar);
                     
                     $em->flush();
                     //probar el redirect en la verison 2.3 y hacer el ajsutepara la 2.7

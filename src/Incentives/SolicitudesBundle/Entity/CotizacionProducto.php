@@ -22,7 +22,6 @@ class  CotizacionProducto
      */
     private $id;
 
-
     /**
      * @var integer
      *

@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * RedencionesHistorico
  *
  * @ORM\Entity
+ * @ORM\Table(name="RedencionesHistorico")
  */
 class RedencionesHistorico
 {

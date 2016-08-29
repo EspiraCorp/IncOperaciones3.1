@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * EstadoCatalogo
  *
  * @ORM\Entity
+ * @ORM\Table(name="EstadoCatalogo")
  */
 class EstadoCatalogo
 {

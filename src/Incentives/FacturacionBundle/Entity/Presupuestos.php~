@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Presupuestos
  *
  * @ORM\Entity
+ * @ORM\Table(name="Presupuestos")
  */
 class Presupuestos
 {

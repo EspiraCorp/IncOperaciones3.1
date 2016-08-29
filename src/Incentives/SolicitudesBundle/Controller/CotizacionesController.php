@@ -609,5 +609,129 @@ class CotizacionesController extends Controller
 
     }
 
+    public function exportarAction()
+    {         
+            $fp = fopen('php://temp','r+');
+
+            // Header
+            $row = array('Id','Consecutivo','Centro Costos','Solicitud','Titulo Solicitud','Fecha Creacion','Logistica','Estado');
+            
+            $em = $this->getDoctrine()->getManager();
+
+            $query = "SELECT c.id,c.consecutivo,c.fechaCreacion,c.logistica,s.id solicitud,cc.centrocostos centroCostos,s.titulo,e.nombre estado
+                    FROM Cotizacion c
+                    LEFT JOIN Solicitud s ON s.id=c.solicitud_id
+                    LEFT JOIN CentroCostos cc ON cc.id=s.centroCostos_id
+                    LEFT JOIN CotizacionesEstado e ON e.id=c.estado_id;";
+            
+            $conn = $this->get('database_connection'); 
+            $solicitudes = $conn->fetchAll($query, array(1));
+           
+            //echo "<pre>"; print_r($solicitudes); echo "</pre>";
+            //exit;
+            
+            $ir = 0;
+            foreach($solicitudes as $key => $value){              
+               
+               if($ir==0){
+                   
+                    fputcsv($fp,$row,';');
+                }
+               
+                $ir++;
+               
+                $row = array();
+                //Redencion, participante, producto
+                $row[] = $value['id'];//1
+                $row[] = $value['consecutivo'];//2
+                $row[] = $value['centroCostos'];//4
+                $row[] = $value['solicitud'];//4
+                $row[] = $value['fechaCreacion'];//5
+                $row[] = $value['titulo'];//6
+                $row[] = $value['logistica'];//7
+                $row[] = $value['estado'];//8
+                
+                fputcsv($fp,$row,';');
+            }
+
+            rewind($fp);
+            $csv = stream_get_contents($fp);
+            fclose($fp);
+            
+            $filename = 'Cotizaciones.csv';
+            $response = new Response($csv);
+            
+            $response->headers->set('Content-Type', "text/csv");
+            $response->headers->set('Content-Disposition', sprintf('attachment; filename="%s"', $filename));            
+            
+            return $response;
+
+    }
+    
+    public function exportarProductosAction()
+    {         
+            $fp = fopen('php://temp','r+');
+
+            // Header
+            $row = array('Id','Cotizacion','Solicitud','Fecha Modificación','Producto','Marca','Referencia','Cantidad','Valor Unitario','Total','Estado');
+            
+            $em = $this->getDoctrine()->getManager();
+
+            $query = "SELECT cp.id,cp.cantidad,cp.valorunidad,cp.valortotal,cp.fechaModificacion,p.nombre producto,p.marca,p.referencia,ep.nombre estadoProducto,c.consecutivo cotizacion,cc.centrocostos centroCostos,c.fechaCreacion,ec.nombre estado,s.id solicitud
+                    FROM CotizacionProducto cp
+                    JOIN Cotizacion c ON cp.cotizacion_id=c.id
+                    JOIN Solicitud s ON c.solicitud_id=s.id
+                    JOIN CentroCostos cc ON cc.id=s.centroCostos_id
+                    LEFT JOIN Producto p ON p.id=cp.producto_id
+                    LEFT JOIN OrdenesEstado ep ON ep.id=cp.estado_id
+                    LEFT JOIN OrdenesEstado ec ON ec.id=c.estado_id;";
+            
+            $conn = $this->get('database_connection'); 
+            $productos = $conn->fetchAll($query, array(1));
+
+            //echo "<pre>"; print_r($productos); echo "</pre>"; exit;
+                
+            $ir = 0;
+            foreach($productos as $key => $value){              
+               
+               if($ir==0){
+                   
+                    fputcsv($fp,$row,';');
+                }
+               
+                $ir++;
+               
+                $row = array();
+                //Redencion, participante, producto
+                $row[] = $value['id'];//1
+                $row[] = $value['cotizacion'];//2
+                $row[] = $value['solicitud'];//3
+                $row[] = $value['centroCostos'];//4
+                $row[] = $value['fechaModificacion'];//5
+                $row[] = $value['producto'];//6
+                $row[] = $value['marca'];//7
+                $row[] = $value['referencia'];//8
+                $row[] = $value['cantidad'];//9
+                $row[] = number_format($value['valorunidad'], 2, ',', '');//10
+                $row[] = number_format($value['valortotal'], 2, ',', '');//11
+                $row[] = $value['estadoProducto'];//12
+                
+                fputcsv($fp,$row,';');
+            }
+
+            rewind($fp);
+            $csv = stream_get_contents($fp);
+            fclose($fp);
+            
+            $filename = 'Cotizaciones_Productos.csv';
+            $response = new Response($csv);
+            
+            $response->headers->set('Content-Type', "text/csv");
+            $response->headers->set('Content-Disposition', sprintf('attachment; filename="%s"', $filename));            
+            
+            return $response;
+
+    }
+
 }
 

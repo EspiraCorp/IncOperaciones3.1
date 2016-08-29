@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * ProductoCalificacion
  *
  * @ORM\Entity
+ * @ORM\Table(name="ProductoCalificacion")
  */
 class ProductoCalificacion
 {

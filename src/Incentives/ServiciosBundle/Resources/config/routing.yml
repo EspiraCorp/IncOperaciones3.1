@@ -30,6 +30,10 @@ servicios_redencionnueva:
     path:  /servicios/redencionnueva
     defaults: { _controller: IncentivesServiciosBundle:Redenciones:nueva }
 
+servicios_redencionpremio:
+    path:  /servicios/redencionpremio
+    defaults: { _controller: IncentivesServiciosBundle:Redenciones:premio }
+
 servicios_redencionautorizada:
     path:  /servicios/redencionautorizada
     defaults: { _controller: IncentivesServiciosBundle:Redenciones:autorizada }

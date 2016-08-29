@@ -1,0 +1,258 @@
+{% extends app.request.isXmlHttpRequest ? "MDWDemoBundle::layout_ajax.html.twig" : "::base.html.twig" %}
+{% block title %}Datos Producto{% endblock %}
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+<div class="box">
+    <div class="box-header well" data-original-title="">
+        Productos
+        <div class="box-icon">
+				<div class="box-icon">
+                    <a href="{{ path('producto') }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+                </div>
+    	</div>
+    </div>
+</div>
+    <div class="box span6">
+	    <div class="box-content">
+	    	<div class="box-header well">
+				<h2>
+				<a href="{{ path('producto_editar',  {"id": producto.id}) }}">
+					<button class="btn btn-primary">
+						<i class="icon-edit icon-white"></i>
+					</button>
+				</a>
+				</i>Datos Producto</h2>
+			</div>
+
+				<table class="table table-bordered table-striped">
+					<tbody>
+						<tr><td>Nombre</td><td>{{ producto.nombre }}</td></tr>
+						<tr><td>Tipo</td><td>{{ producto.tipo.nombre}}</td></tr>
+						<tr><td>Categoria</td><td>{{ producto.categoria.nombre}}</td></tr>
+						<tr><td>Clasificación</td><td>{{ producto.productoclasificacion.nombre}}</td></tr>
+						<tr><td>Referencia</td><td>{{ producto.referencia }}</td></tr>
+						<tr><td>Marca</td><td>{{ producto.marca }}</td></tr>
+						<tr><td>Descripcion</td><td>{{ producto.descripcion }}</td></tr>
+						<tr><td>Codigo EAN</td><td>{{ producto.codEAN }}</td></tr>
+						<tr><td>Codigo Incentives</td><td>{{ producto.codInc }}</td></tr>
+						<tr><td>Dimensiones</td><td>{{ producto.Alto }} x {{ producto.Largo }} x {{ producto.Ancho }} cm.</td></tr>
+						<tr><td>Peso</td><td>{{ producto.peso |number_format(2, ',', '.') }} Kg.</td></tr>
+						<tr><td>Precio</td><td>$ {{ producto.precio |number_format(2, ',', '.') }} </td></tr>
+						<tr><td>IVA</td><td>{{ producto.iva |number_format(2, ',', '.') }} %</td></tr>
+						<tr><td>Logistica</td><td>$ {{ producto.logistica |number_format(2, ',', '.') }} </td></tr>
+						<tr><td>Incremento</td><td>{{ producto.incremento |number_format(2, ',', '.') }} %</td></tr>
+					</tbody>
+				</table>
+		</div>
+	</div>
+
+	<div class="box span5">
+		<div class="box-content">
+		    <div class="box-header well">
+				<h2>
+					<a href="{{ path('producto_agregarimagen',  {"id": producto.id}) }}">
+						<button class="btn btn-small btn-success">
+							<i class="icon-plus icon-white"></i>
+						</button>
+					</a>
+					Imagenes
+				</h2>
+			</div>
+			<table class="table table-bordered table-striped">
+				<thead>
+					<tr>
+						<th>Imagenes</th>
+						<th>Estado</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for imagenes in imagen %}		
+							<tr>
+								<td><a href="../../../{{imagenes.path| slice (0)}}" target='_blank'><img src="../../../{{(imagenes.path| slice (0))[:-4]}}_min.jpg"><a></td>
+								<td>{% if (imagenes.estado=='0') %}
+										<a class="btn btn-danger 1" onClick=confirmar('{{ url("producto_estadoimagen", {"id": imagenes.id}) }}') href="#">
+										Inactiva</a>
+									{% else %}
+										<a class="btn btn-success 1" onClick=confirmar('{{ url("producto_estadoimagen", {"id": imagenes.id}) }}') href="#">
+										Activa</a>
+									{% endif %}
+								</td>
+							</tr>			
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<div class="box span6">
+		<div class="box-content">
+		    <div class="box-header well">
+				<h2>
+					<a href="{{ path('producto_agregarprecio',  {"id": producto.id}) }}">
+						<button class="btn btn-small btn-success">
+							<i class="icon-plus icon-white"></i>
+						</button>
+					</a>	
+					Precios
+				</h2>
+			</div>
+			<table class="table table-bordered table-striped">
+					<thead>
+						<tr>
+							<th>Proveedor</th>
+							<th>Precio</th>
+							<th>Precio Dolares</th>
+							<th>Principal</th>
+							<th>Estado</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for precio in productoprecio %}
+						<tr>
+							<td><a href="{{ path("producto_editarprecio", {"id": precio.id}) }}">{{precio.proveedor.nombre}}</a></td>
+							<td>$ {{ precio.precio |number_format(2, '.', ',') }}</td>
+							<td>USD {{ precio.precioDolares |number_format(2, '.', ',') }}</td>
+							<td>{{ precio.principal }}</td>
+							<td>{% if (precio.estado.id==0) %}
+										<a class="btn btn-danger 1" onClick=confirmar('{{ url("producto_estadoprecio", {"id": precio.id}) }}') href="#">
+										Inactivo</a>
+									{% else %}
+										<a class="btn btn-success 1" onClick=confirmar('{{ url("producto_estadoprecio", {"id": precio.id}) }}') href="#">
+										Activo</a>
+									{% endif %}
+								</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+		</div>
+	</div>
+	
+		<div class="box span12">
+		<div class="box-content">
+		    <div class="box-header well">
+				<h2>
+					<a href="{{ path('productocatalogo_nuevocatalogo',  {"producto": producto.id}) }}">
+						<button class="btn btn-small btn-success">
+							<i class="icon-plus icon-white"></i>
+						</button>
+					</a>	
+					Catalogos
+				</h2>
+			</div>
+			<table class="table table-bordered table-striped">
+					<thead>
+						<tr>
+							<th>Catalogo</th>
+							<th>Programa</th>
+							<th>Cliente</th>
+							<th>Puntos</th>
+							<th>Precio</th>
+							<th>Incremento (%)</th>
+							<th>Logistica</th>
+							<th>Puntos Temporal</th>
+							<th>Precio Temporal</th>
+							<th>Incremento Temporal (%)</th>
+							<th>Logistica Temporal</th>
+							<th>Estado</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for catalogo in productocatalogo %}
+						<tr>
+							<td><a href="{{ path("productocatalogo_editarcatalogo", {"productocatalogo": catalogo.id}) }}">{{ catalogo.catalogos.nombre }}</a></td>
+							<td>{{ catalogo.catalogos.programa.nombre }}</td>
+							<td>{{ catalogo.catalogos.programa.cliente.nombre }}</td>
+							<td>{{ catalogo.puntos |number_format(0, '.', ',') }}</td>
+							<td>$ {{ catalogo.precio |number_format(2, '.', ',') }}</td>
+							<td>{{ catalogo.incremento |number_format(2, '.', ',') }}%</td>
+							<td>$ {{ catalogo.logistica |number_format(2, '.', ',')}}</td>
+							<td>{{ catalogo.puntosTemporal |number_format(0, '.', ',')}}</td>
+							<td>$ {{ catalogo.precioTemporal |number_format(2, '.', ',')}}</td>
+							<td>{{ catalogo.incrementoTemporal |number_format(2, '.', ',')}}%</td>
+							<td>$ {{ catalogo.logisticaTemporal |number_format(2, '.', ',')}}</td>
+							<td>{% if (catalogo.activo==0) %}
+										<a class="btn btn-danger 1" onClick=confirmar('{{ url("producto_estadopremio", {"id": catalogo.id}) }}') href="#">
+										Inactivo</a>
+									{% else %}
+										<a class="btn btn-success 1" {% if is_granted('ROLE_ADMIN') or  is_granted('ROLE_DIR') %}
+																	onClick=confirmar('{{ url("producto_estadopremio", {"id": catalogo.id}) }}')
+																	{% endif %}
+																	href="#">
+										Activo</a>
+									{% endif %}
+								</td>
+							
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+		</div>
+	</div>
+	
+
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script>
+
+	function confirmar(ruta)
+	{
+	  if (confirm("Cambiar estado")==true){
+	  	self.location=ruta;
+	  }else{
+	  	alert("OK");
+	  }
+	  
+	}
+
+        var x;
+		x=$(document);
+		x.ready(inicializarEventos);
+
+		function inicializarEventos()
+		{
+		 var x;
+		 x=$("div.estado a");
+		 x.each(resaltarParrafos);
+		}
+
+		// function resaltarParrafos()
+		// {
+		//  var x=$(this);
+		//  var parrafo=(x.attr('id'));
+		//  parrafo=parseInt(parrafo);
+		//  alert(parrafo);
+		//  $("#"+parrafo).click(function(evento){
+		//                evento.preventDefault();
+		//                $("#destino").load("{{ url('proveedores_estado', {'id':"+parrafo+"}) }}"),	
+		// 					function() {
+		// 						alert( "Actualizacion realizada." );
+		// 					} );
+		//        });
+		// }
+
+        // x=$("div.estado a");
+        // x.each(mostrar);
+
+        // function mostrar()
+        // {
+        // 	var x=$(this);
+        // 	alert (x.attr('id'));
+        // }
+
+  //       function resaltarParrafos(){
+  //       	var x=$(this);
+		// 	var parrafo=(x.attr('id'));
+		// 	alert(parrafo);
+		// 	$('div.estado').click(function(evento){
+		// 		evento.preventDefault();
+		// 		$("#destino").load("{{ url('proveedores_estado', {'id':"+parrafo+"}) }}",	
+		// 			function() {
+		// 				alert( "Actualizacion realizada." );
+		// 			} );
+		// 	});
+		// })
+	</script>
+{% endblock %}

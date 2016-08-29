@@ -8,8 +8,17 @@
 <div class="row-fluid sortable ui-sortable">
 	<div class="box span12">
 		<div class="box-header well">
-			<h2><i class="icon-th-list"></i>Cotizaciones</h2>
-		</div>
+      <h2><i class="icon-th-list"></i>Cotizaciones</h2>
+      <div class="box-icon">
+          <a href="{{ path('cotizaciones_exportar') }}" title="Exportar Listado" class="btn btn-info">
+                    <i class="icon-th icon-white"></i>
+                </a>
+                
+                <a href="{{ path('cotizaciones_exportar_productos') }}" title="Exportar Productos" class="btn btn-info">
+                    <i class="icon-barcode icon-white"></i>
+                </a>
+      </div>
+    </div>
 		<div class="box-content">
 			<div id="dashboard">
                     <div id="tabla" class="" cellspacing="0" width="100%">

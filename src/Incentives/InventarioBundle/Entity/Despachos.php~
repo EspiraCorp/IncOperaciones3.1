@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Despachos
  *
+ * @ORM\Table(name="Despachos")
  * @ORM\Entity
  */
 class Despachos
@@ -160,7 +161,7 @@ class Despachos
     private $cantidad;
     
     /**
-     * @ORM\ManyToOne(targetEntity="Incentives\RedencionesBundle\Entity\Redenciones")
+     * @ORM\ManyToOne(targetEntity="Incentives\RedencionesBundle\Entity\Redenciones", inversedBy="despacho")
      * @ORM\JoinColumn(name="redencion_id", referencedColumnName="id", nullable=true)
      */
     protected $redencion;
@@ -887,5 +888,29 @@ class Despachos
     public function getOrdendespacho()
     {
         return $this->ordendespacho;
+    }
+
+    /**
+     * Add despachoguium
+     *
+     * @param \Incentives\InventarioBundle\Entity\DespachoGuia $despachoguium
+     *
+     * @return Despachos
+     */
+    public function addDespachoguium(\Incentives\InventarioBundle\Entity\DespachoGuia $despachoguium)
+    {
+        $this->despachoguia[] = $despachoguium;
+
+        return $this;
+    }
+
+    /**
+     * Remove despachoguium
+     *
+     * @param \Incentives\InventarioBundle\Entity\DespachoGuia $despachoguium
+     */
+    public function removeDespachoguium(\Incentives\InventarioBundle\Entity\DespachoGuia $despachoguium)
+    {
+        $this->despachoguia->removeElement($despachoguium);
     }
 }

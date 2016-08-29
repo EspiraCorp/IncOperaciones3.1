@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Preciohistorico
  *
  * @ORM\Entity
+ * @ORM\Table(name="Preciohistorico")
  */
 class Preciohistorico
 {

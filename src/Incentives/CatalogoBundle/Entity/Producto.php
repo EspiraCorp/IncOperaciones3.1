@@ -124,6 +124,13 @@ class Producto
     /**
      * @var float
      *
+     * @ORM\Column(name="precio", type="float", nullable=true)
+     */
+    private $precio;
+
+    /**
+     * @var float
+     *
      * @ORM\Column(name="iva", type="float", nullable=true)
      */
     private $iva;
@@ -1175,5 +1182,29 @@ class Producto
     public function getUsuario()
     {
         return $this->usuario;
+    }
+
+    /**
+     * Set precio
+     *
+     * @param float $precio
+     *
+     * @return Producto
+     */
+    public function setPrecio($precio)
+    {
+        $this->precio = $precio;
+
+        return $this;
+    }
+
+    /**
+     * Get precio
+     *
+     * @return float
+     */
+    public function getPrecio()
+    {
+        return $this->precio;
     }
 }

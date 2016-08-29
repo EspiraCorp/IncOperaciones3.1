@@ -5,6 +5,7 @@ namespace Incentives\CatalogoBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -41,9 +42,19 @@ class ProgramanuevoType extends AbstractType
             'input'  => 'datetime',
             'widget' => 'single_text',
         ))
-            ->add('centrocostos', TextType::class, array('label' => 'Centro de Costos'))
             ->add('diasentrega', IntegerType::class, array('label' => 'Días de Entrega'))
         ;
+
+        $builder->add('centroCostos', EntityType::class, array(
+            'class' => 'IncentivesCatalogoBundle:CentroCostos',
+            'choice_label' => 'centrocostos',
+            //'empty_value' => 'Seleccione una opción',
+            'label' => 'Centro Costos',
+            'query_builder' => function (EntityRepository $er) {
+                return $er->createQueryBuilder('p')
+                    ->orderBy('p.centrocostos', 'ASC');
+            },
+        ));
 
         $builder->add('iva', ChoiceType::class, array(
             'choices'   => array(

@@ -14,6 +14,12 @@
     {{ form_errors(form) }}
     <fieldset>
         <div class="control-group">
+            {{ form_label(form.centroCostos, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.centroCostos, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        <div class="control-group">
             {{ form_label(form.tipo, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
             <div class="controls">
                 {{ form_widget(form.tipo, { 'attr': {'class': 'input-xlarge focused'} }) }}

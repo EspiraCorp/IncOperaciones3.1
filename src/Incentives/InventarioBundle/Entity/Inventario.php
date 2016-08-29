@@ -691,4 +691,52 @@ class Inventario
     {
         return $this->usuario;
     }
+
+    /**
+     * Add inventarioguium
+     *
+     * @param \Incentives\InventarioBundle\Entity\InventarioGuia $inventarioguium
+     *
+     * @return Inventario
+     */
+    public function addInventarioguium(\Incentives\InventarioBundle\Entity\InventarioGuia $inventarioguium)
+    {
+        $this->inventarioguia[] = $inventarioguium;
+
+        return $this;
+    }
+
+    /**
+     * Remove inventarioguium
+     *
+     * @param \Incentives\InventarioBundle\Entity\InventarioGuia $inventarioguium
+     */
+    public function removeInventarioguium(\Incentives\InventarioBundle\Entity\InventarioGuia $inventarioguium)
+    {
+        $this->inventarioguia->removeElement($inventarioguium);
+    }
+
+    /**
+     * Add guium
+     *
+     * @param \Incentives\RedencionesBundle\Entity\GuiaEnvio $guium
+     *
+     * @return Inventario
+     */
+    public function addGuium(\Incentives\RedencionesBundle\Entity\GuiaEnvio $guium)
+    {
+        $this->guia[] = $guium;
+
+        return $this;
+    }
+
+    /**
+     * Remove guium
+     *
+     * @param \Incentives\RedencionesBundle\Entity\GuiaEnvio $guium
+     */
+    public function removeGuium(\Incentives\RedencionesBundle\Entity\GuiaEnvio $guium)
+    {
+        $this->guia->removeElement($guium);
+    }
 }

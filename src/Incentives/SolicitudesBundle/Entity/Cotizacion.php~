@@ -9,6 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Cotizacion
  *
+ * @ORM\Table(name="Cotizacion")
  * @ORM\Entity
  */
 class Cotizacion
@@ -44,6 +45,14 @@ class Cotizacion
      * @ORM\Column(name="fechaCreacion", type="date", nullable=true)
      */
     private $fechaCreacion;
+    
+     /**
+     * 
+     * @ORM\ManyToOne(targetEntity="Incentives\FacturacionBundle\Entity\FacturaLogistica")
+     * @ORM\JoinColumn(name="facturaLogistica_id", referencedColumnName="id", nullable=true)
+     * 
+     */
+    protected $facturaLogistica;
 
     /**
      * @var \DateTime
@@ -440,5 +449,28 @@ class Cotizacion
     public function getEstado()
     {
         return $this->estado;
+    }
+    
+    /**
+     * Set facturaLogistica
+     *
+     * @param \Incentives\FacturacionBundle\Entity\FacturaLogistica $facturaLogistica
+     * @return Cotizacion
+     */
+    public function setFacturaLogistica(\Incentives\FacturacionBundle\Entity\FacturaLogistica $facturaLogistica = null)
+    {
+        $this->facturaLogistica = $facturaLogistica;
+    
+        return $this;
+    }
+
+    /**
+     * Get facturaLogistica
+     *
+     * @return \Incentives\FacturacionBundle\Entity\FacturaLogistica 
+     */
+    public function getFacturaLogistica()
+    {
+        return $this->facturaLogistica;
     }
 }

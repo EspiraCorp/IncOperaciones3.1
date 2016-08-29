@@ -10,6 +10,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * OrdenesCompra
  *
  * @ORM\Entity
+ * @ORM\Table(name="OrdenesCompra")
  */
 class OrdenesCompra
 {

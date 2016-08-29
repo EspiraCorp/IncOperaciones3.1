@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Regimen
  *
  * @ORM\Entity
+ * @ORM\Table(name="Regimen")
  */
 class Regimen
 {

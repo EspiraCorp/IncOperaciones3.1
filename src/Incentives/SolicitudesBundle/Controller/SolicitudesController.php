@@ -16,6 +16,8 @@ use Incentives\SolicitudesBundle\Entity\DespachoOrdenes;
 use Incentives\SolicitudesBundle\Form\Type\SolicitudesAsignarType;
 use Incentives\SolicitudesBundle\Form\Type\SolicitudesObservacionesType;
 use Incentives\OperacionesBundle\Entity\Excel;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -130,12 +132,12 @@ class SolicitudesController extends Controller
 
             $em = $this->getDoctrine()->getManager();
                     
-            $pro = $request->request->all();
-                
-            $tipo = $em->getRepository('IncentivesSolicitudesBundle:SolicitudTipo')->find($pro['cotizaciones']['tipo']);
+            $pro = $request->request->all()['solicitud'];
+
+            $tipo = $em->getRepository('IncentivesSolicitudesBundle:SolicitudTipo')->find($pro['tipo']);
             
             if(isset($pro["estado"])){
-                $estado = $em->getRepository('IncentivesSolicitudesBundle:SolicitudesEstado')->find($pro['cotizaciones']["estado"]);
+                $estado = $em->getRepository('IncentivesSolicitudesBundle:SolicitudesEstado')->find($pro["estado"]);
                 $solicitud->setEstado($estado);
             }
             
@@ -144,6 +146,8 @@ class SolicitudesController extends Controller
                 $solicitud->setSolicitante($solicitante);
             }
             
+            $centroCostos= $em->getRepository('IncentivesCatalogoBundle:CentroCostos')->find($pro["centroCostos"]);
+            $solicitud->setCentroCostos($centroCostos);
             $solicitud->setTitulo($pro["titulo"]);
             $solicitud->setDescripcion($pro["descripcion"]);
             $solicitud->setTipo($tipo);
@@ -338,9 +342,9 @@ class SolicitudesController extends Controller
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
                 
-                $pro = $request->request->all();
+                $pro = $request->request->all()['solicitudes_asignar'];
                 
-                $usuario = $em->getRepository('IncentivesBaseBundle:Usuario')->find($pro['responsable']['responsable']);
+                $usuario = $em->getRepository('IncentivesBaseBundle:Usuario')->find($pro['responsable']);
                 $solicitudEnt = $em->getRepository('IncentivesSolicitudesBundle:Solicitud')->find($solicitud);
                 $estado = $em->getRepository('IncentivesCatalogoBundle:Estados')->find(1);
 
@@ -651,11 +655,11 @@ class SolicitudesController extends Controller
 
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
-                $pro = $request->request->all();
-                
+                $pro = $request->request->all()['solicitudes_observaciones'];
+
                 $solicitudEnt = $em->getRepository('IncentivesSolicitudesBundle:Solicitud')->find($id);
                 $observacion->setSolicitud($solicitudEnt);
-                $observacion->setObservacion($pro['observacion']['observacion']);
+                $observacion->setObservacion($pro['observacion']);
 
                 $em->persist($observacion);
                 $em->flush();
@@ -679,7 +683,7 @@ class SolicitudesController extends Controller
         $form = $this->createFormBuilder($excelForm)
             ->setAction($this->generateUrl('solicitudes_cargardespachos'))
             ->setMethod('POST')
-            ->add('excel', 'file')
+            ->add('excel', FileType::class)
             ->add('cargar', SubmitType::class)
             ->getForm();
             
@@ -790,6 +794,66 @@ class SolicitudesController extends Controller
 
         return $this->render('IncentivesSolicitudesBundle:Solicitudes:cargardespachos.html.twig', array(
             'form' => $form->createView(), 'solicitud' => $solicitud));
+
+    }
+
+    public function exportarAction()
+    {         
+            $fp = fopen('php://temp','r+');
+
+            // Header
+            $row = array('Id','Centro Costos','Fecha Solicitud','Titulo','Descripción','Tipo','Solicitante','Estado');
+            
+            $em = $this->getDoctrine()->getManager();
+
+            $query = "SELECT s.id,s.titulo,s.descripcion,s.fecha_solicitud,s.fechaModificacion,c.centrocostos centroCostos,e.nombre estado,t.nombre tipo,u.nombre solicitante
+                    FROM Solicitud s
+                    LEFT JOIN CentroCostos c ON c.id=s.centroCostos_id
+                    LEFT JOIN OrdenesEstado e ON e.id=s.estado_id
+                    LEFT JOIN SolicitudTipo t ON t.id=s.tipo_id
+                    LEFT JOIN Usuarios u ON u.id=s.solicitante_id;";
+            
+            $conn = $this->get('database_connection'); 
+            $solicitudes = $conn->fetchAll($query, array(1));
+           
+            //echo "<pre>"; print_r($solicitudes); echo "</pre>";
+            //exit;
+                
+            $ir = 0;
+            foreach($solicitudes as $key => $value){              
+               
+               if($ir==0){
+                   
+                    fputcsv($fp,$row,';');
+                }
+               
+                $ir++;
+               
+                $row = array();
+                //Redencion, participante, producto
+                $row[] = $value['id'];//1
+                $row[] = $value['centroCostos'];//2
+                $row[] = $value['fecha_solicitud'];//3
+                $row[] = $value['titulo'];//4
+                $row[] = $value['descripcion'];//5
+                $row[] = $value['tipo'];//6
+                $row[] = $value['solicitante'];//6
+                $row[] = $value['estado'];//7
+                
+                fputcsv($fp,$row,';');
+            }
+
+            rewind($fp);
+            $csv = stream_get_contents($fp);
+            fclose($fp);
+            
+            $filename = 'Solicitudes.csv';
+            $response = new Response($csv);
+            
+            $response->headers->set('Content-Type', "text/csv");
+            $response->headers->set('Content-Disposition', sprintf('attachment; filename="%s"', $filename));            
+            
+            return $response;
 
     }
 

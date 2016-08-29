@@ -31,10 +31,10 @@ class Redenciones
 
     /**
      * @var string
-     * @ORM\ManyToOne(targetEntity="Incentives\CatalogoBundle\Entity\Productocatalogo", inversedBy="redencion")
-     * @ORM\JoinColumn(name="productocatalogo_id", referencedColumnName="id", nullable=true)
+     * @ORM\ManyToOne(targetEntity="Incentives\CatalogoBundle\Entity\Premios", inversedBy="redencion")
+     * @ORM\JoinColumn(name="premio_id", referencedColumnName="id", nullable=true)
      */
-    protected $productocatalogo;
+    protected $premio;
 
     /**
      * @var string
@@ -437,29 +437,6 @@ class Redenciones
     public function getParticipante()
     {
         return $this->participante;
-    }
-
-    /**
-     * Set productocatalogo
-     *
-     * @param \Incentives\CatalogoBundle\Entity\Productocatalogo $productocatalogo
-     * @return Redenciones
-     */
-    public function setProductocatalogo(\Incentives\CatalogoBundle\Entity\Productocatalogo $productocatalogo = null)
-    {
-        $this->productocatalogo = $productocatalogo;
-    
-        return $this;
-    }
-
-    /**
-     * Get productocatalogo
-     *
-     * @return \Incentives\CatalogoBundle\Entity\Productocatalogo 
-     */
-    public function getProductocatalogo()
-    {
-        return $this->productocatalogo;
     }
 
     /**
@@ -1198,5 +1175,29 @@ class Redenciones
     public function getDespacho()
     {
         return $this->despacho;
+    }
+
+    /**
+     * Set premio
+     *
+     * @param \Incentives\CatalogoBundle\Entity\Premios $premio
+     *
+     * @return Redenciones
+     */
+    public function setPremio(\Incentives\CatalogoBundle\Entity\Premios $premio = null)
+    {
+        $this->premio = $premio;
+
+        return $this;
+    }
+
+    /**
+     * Get premio
+     *
+     * @return \Incentives\CatalogoBundle\Entity\Premios
+     */
+    public function getPremio()
+    {
+        return $this->premio;
     }
 }
