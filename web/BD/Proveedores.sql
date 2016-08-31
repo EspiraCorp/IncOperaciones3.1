@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Servidor: localhost
--- Tiempo de generación: 28-08-2016 a las 20:54:43
+-- Tiempo de generación: 30-08-2016 a las 23:05:59
 -- Versión del servidor: 5.1.73
 -- Versión de PHP: 5.3.3
 
@@ -20,62 +20,10 @@ SET time_zone = "+00:00";
 -- Base de datos: `incmantis_operaciones`
 --
 
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `Proveedores`
---
-
-SET foreign_key_checks = 0;
-
-CREATE TABLE IF NOT EXISTS `Proveedores` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `tipodocumento_id` int(11) DEFAULT NULL,
-  `pais_id` int(11) DEFAULT NULL,
-  `ciudad_id` int(11) DEFAULT NULL,
-  `regimen_id` int(11) DEFAULT NULL,
-  `nombre` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `numero_documento` varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `sede_principal` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `direccion` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `correo` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `registro_camara` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `telefono` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `lineaAtencion` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `fax` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `sedes` tinyint(1) DEFAULT NULL,
-  `datos_sedes` longtext COLLATE utf8_unicode_ci,
-  `pagina` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `estado_id` int(11) DEFAULT NULL,
-  `fecha` date NOT NULL,
-  `categoria_id` int(11) DEFAULT NULL,
-  `codigo_postal` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `cobertura` longtext COLLATE utf8_unicode_ci,
-  `condiciones_comerciales` longtext COLLATE utf8_unicode_ci,
-  `tiempo_entrega` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `cupo_asignado` bigint(20) DEFAULT NULL,
-  `tipo_id` int(11) DEFAULT NULL,
-  `departamento_id` int(11) DEFAULT NULL,
-  `clasificacion_id` int(11) DEFAULT NULL,
-  `directo` int(11) DEFAULT NULL,
-  `usuario_id` int(11) DEFAULT NULL,
-  `fechaModificacion` datetime DEFAULT NULL,
-  `area_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `IDX_D327262E595373` (`tipodocumento_id`),
-  KEY `IDX_D32726C604D5C6` (`pais_id`),
-  KEY `IDX_D32726E8608214` (`ciudad_id`),
-  KEY `IDX_D3272664832107` (`regimen_id`),
-  KEY `IDX_D327263397707A` (`categoria_id`),
-  KEY `IDX_D32726A9276E6C` (`tipo_id`),
-  KEY `IDX_D327265A91C08D` (`departamento_id`),
-  KEY `IDX_D32726DB38439E` (`usuario_id`),
-  KEY `IDX_D327269F5A440B` (`estado_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=495 ;
-
 --
 -- Volcado de datos para la tabla `Proveedores`
 --
+SET foreign_key_checks = 0;
 
 INSERT INTO `Proveedores` (`id`, `tipodocumento_id`, `pais_id`, `ciudad_id`, `regimen_id`, `nombre`, `numero_documento`, `sede_principal`, `direccion`, `correo`, `registro_camara`, `telefono`, `lineaAtencion`, `fax`, `sedes`, `datos_sedes`, `pagina`, `estado_id`, `fecha`, `categoria_id`, `codigo_postal`, `cobertura`, `condiciones_comerciales`, `tiempo_entrega`, `cupo_asignado`, `tipo_id`, `departamento_id`, `clasificacion_id`, `directo`, `usuario_id`, `fechaModificacion`, `area_id`) VALUES
 (1, 2, 1, 149, 1, 'Demo', '80843348-59', 'probar', 'Ca 48 52 Sur 81', 'jrengifo@inc-group.co', '666667', '9999 9 ext 23', NULL, '24542462', 0, '', '', 1, '2014-02-18', 10, '2323', 'nacional', '20 dias', '20', 0, 1, NULL, 1, 0, NULL, NULL, 1),
@@ -108,7 +56,7 @@ INSERT INTO `Proveedores` (`id`, `tipodocumento_id`, `pais_id`, `ciudad_id`, `re
 (85, 3, 1, 149, 1, 'AUF 360 S.A.S', '900.574.939', 'Bogotá', 'Carrera 136A No. 145 - 31 Interior 110', 'auf360@gmail.com', 'RO41829870', '6625786', NULL, '', 1, 'NACIONAL', 'http://www.hoovers.com/company-information/cs/company-profile.AUF_360_S_A_S.ab5f5aad675c1d68.html', 2, '2014-04-28', 6, '', 'NACIONAL', '30 Dias', '20', 10000, 1, NULL, NULL, 0, NULL, NULL, NULL),
 (86, 3, 1, 149, 1, 'COMERCIALIZADORA ARTURO CALLE S.A.S', '900.342.297', 'BOGOTA', 'Av. Carrera 72 No. Av. Boyaca 152B - 62', 'auxrncbogota@arturocalle.com', 'RO46046034', '4115055', NULL, '4115055', 1, 'Bogotá, Cali, Popayan, Medellín, Pereira, Bucaramanga, Cartagena, Manizalez, Armenia, Ibague, Santa Marta, Villavicencio, Neiva, Cucúta, Valledupar, Barrancabermeja', 'http://www.arturocalle.com/', 1, '2014-04-28', 10, '', 'NACIONAL', '30 Dias', '7', 10000, 1, NULL, NULL, 0, NULL, NULL, NULL),
 (87, 3, 1, 149, 1, 'CENCOSUD COLOMBIA S.A. ', '900.155.107', 'BOGOTA', 'AV 9 # 125 - 30', 'Johanna.Valenzuela@cencosud.com.co,ingrit.farfan@cencosud.com.co', 'RO40345053', '7429800 Ext. 700324', NULL, '7429805', 1, 'Bogotá, Medellín, Chile, Argentina, Brasil, Peru y China', 'http://www.tiendasjumbo.co/', 1, '2014-04-28', 5, '', 'NACIONAL', '30 Dias', '20', 0, 1, NULL, 4, 1, NULL, NULL, 1),
-(88, 3, 1, 149, 1, 'INVERSIONES COMPARTAMOS S.A.S', '900873463-7', 'Cali-Valle del Cauca', 'Parcelacion la riverita mz 7 b ca c av del lago', 'lascon59@yahoo.com', '0816GX87I1', '3105898943-3167582819', '', '', 1, 'Cali', 'http://www.cicoralhome.com/', 1, '2014-04-28', 2, '', 'NACIONAL', '30 dias', '5', 5000000, 1, NULL, 4, 1, NULL, NULL, 1),
+(88, 3, 1, 149, 1, 'INVERSIONES COMPARTAMOS S.A.S', '900873463-7', 'Cali-Valle del Cauca', 'Parcelacion la riverita mz 7 b ca c av del lago', 'ventasicsas@hotmail.com, tesoreriaicsas@hotmail.com', '0816GX87I1', '3105898943-3167582819', '', '', 1, 'Cali', 'http://www.cicoralhome.com/', 1, '2014-04-28', 2, '', 'NACIONAL', '30 dias', '5', 5000000, 1, NULL, 4, 1, NULL, NULL, 1),
 (89, 3, 1, 149, 1, 'AVESCO S.A', '860.025.461', 'Bogotá', 'Calle 24f No. 94-51', 'nicolas.henao@conboca.com,amandarodriguez@avesco.com.co', '10019', '4100099', NULL, '', 1, 'NACIONAL', 'http://www.kokoriko.com.co/', 1, '2014-04-28', 10, '', 'NACIONAL', '30 dias', '8', 5000000, 1, NULL, NULL, 0, NULL, NULL, NULL),
 (90, 3, 1, 149, 1, 'BICICLETAS NAFER', '23532787-4', 'BOGOTA', 'Autopista  Sur No. 52 A- 14', 'bicicletas_nafer@hotmail.com, feespitiae@gmail.com', 'RO40485451', '2384494-7100499', NULL, '2708581', 0, 'BOGOTA', '', 1, '2014-04-28', 1, '', '', '30 dias', '3', 80000000, 1, NULL, 4, 1, NULL, NULL, 1),
 (91, 3, 1, 149, 1, 'COMERCIALIZADORA SANTANDER S.A', '816.004.998', 'BOGOTA ', 'Av Santander No. 11E-175  ', 'dlaverde@comersantander.com', '11767504', '3315200 cel 3146785351', NULL, '', 1, 'BOGOTA', 'http://www.homeelementweb.com/', 1, '2014-04-28', 2, '', 'NACIONAL', '60 dias', '8', 200000000, 1, NULL, 4, 1, NULL, NULL, 1),
@@ -408,22 +356,6 @@ INSERT INTO `Proveedores` (`id`, `tipodocumento_id`, `pais_id`, `ciudad_id`, `re
 (492, 3, 1, 149, 1, 'CHORI S.A.S', '900309613-6', 'Villeta-Cundinamarca', 'Km 69 Via Bogota a Medellin Vda el naranjal', 'elchorizodecarlos@yahoo.com', '', '3124485454', '', NULL, 0, '', '', 1, '2016-08-11', 23, NULL, NULL, NULL, NULL, NULL, 1, NULL, 3, 0, NULL, NULL, 1),
 (493, 3, 1, 149, 1, 'OPERACIÓN LOGÍSTICA ESTRATÉGICA S.A.S', '900654926-6', 'Bogotá D.C. ', 'Cl 83Bis # 24-91', 'airtonpolaniatamayo.ole@gmail.com', 'R050524515', '4884473-3163990658', '', NULL, 0, '', '', 1, '2016-08-11', 20, '', '', '', '', 0, 1, NULL, 3, 1, NULL, NULL, 1),
 (494, 3, 1, 149, 1, 'MOVIL INC INTEGRADORES DE SOLUCIONES MOVILES S.A.S', '900648071-1', 'Bogotá D.C. ', 'CL 103 # 69B 42', 'pgutierrez@movilinc.co,jmendez@movilinc.co, JMENDEZ@MOVILINC.CO', 'R050515652', '8003621-3183101010', '', NULL, 0, '', '', 1, '2016-08-12', 13, '', '', '', '0', 0, 1, NULL, 4, 1, NULL, NULL, 1);
-
---
--- Restricciones para tablas volcadas
---
-
---
--- Filtros para la tabla `Proveedores`
---
-ALTER TABLE `Proveedores`
-  ADD CONSTRAINT `FK_D327262E595373` FOREIGN KEY (`tipodocumento_id`) REFERENCES `Tipodocumento` (`id`),
-  ADD CONSTRAINT `FK_D327263397707A` FOREIGN KEY (`categoria_id`) REFERENCES `Categoria` (`id`),
-  ADD CONSTRAINT `FK_D327265A91C08D` FOREIGN KEY (`departamento_id`) REFERENCES `Departamento` (`id`),
-  ADD CONSTRAINT `FK_D3272664832107` FOREIGN KEY (`regimen_id`) REFERENCES `Regimen` (`id`),
-  ADD CONSTRAINT `FK_D32726A9276E6C` FOREIGN KEY (`tipo_id`) REFERENCES `ProveedoresTipo` (`id`),
-  ADD CONSTRAINT `FK_D32726C604D5C6` FOREIGN KEY (`pais_id`) REFERENCES `Pais` (`id`),
-  ADD CONSTRAINT `FK_D32726E8608214` FOREIGN KEY (`ciudad_id`) REFERENCES `Ciudad` (`id`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
