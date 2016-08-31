@@ -209,13 +209,13 @@ class OrdenesController extends Controller
         $cantCC = array();
 	    $tracking = array();
 
-        foreach($OrdenesProducto as $keyOP => $valueOP){
+        /*foreach($OrdenesProducto as $keyOP => $valueOP){
             //Determinar los CC
 
             $qb = $em->createQueryBuilder(); 
             $qb->select('r','oc','p','pr');
-            $qb->from('IncentivesRedencionesBundle:Redenciones','r');
-            $qb->leftJoin('r.productocatalogo', 'oc');
+            $qb->from('IncentivesRedencionesBundle:RedencionesProdcutos','rp');
+            $qb->leftJoin('rp.productocatalogo', 'oc');
             $qb->leftJoin('r.ordenesProducto', 'op');
             $qb->leftJoin('r.participante', 'p');
             $qb->leftJoin('p.programa', 'pr');
@@ -224,7 +224,7 @@ class OrdenesController extends Controller
             $qb->groupBy('r.productocatalogo');
             $ordenesProd = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY); 
             $totalCant = 0;
-
+            echo "<pre>"; print_r($ordenesProd); echo "</pre>"; exit;
             $datoCC = array();
 
             foreach ($ordenesProd as $keyOP2 => $valueOP2) {
@@ -256,24 +256,24 @@ class OrdenesController extends Controller
             //las cantidades sobrantes van para inventario
             //$cantidadOP = $valueOP->getCantidad() - $totalCant;
             //if($cantidadOP!=0) $datoCC .= "1002(".$cantidadOP.") ";
-	     //if($ordenesOP->getOrdenestipo()->getId()==1) $datoCC = $valueOP->getCentrocostos();
+	       //if($ordenesOP->getOrdenestipo()->getId()==1) $datoCC = $valueOP->getCentrocostos();
 
             //Determinar las cantidad
             $cantCC[$valueOP->getId()] = $datoCC;
 
-	    //consultar tracking cuando el proveedor es internacional
-	    $qb = $em->createQueryBuilder(); 
+	       //consultar tracking cuando el proveedor es internacional
+	       $qb = $em->createQueryBuilder(); 
             $qb->select('t');
             $qb->from('IncentivesOrdenesBundle:Tracking','t');
             $str_filtro = "t.ordenproducto=".$valueOP->getId();
             $qb->where($str_filtro);
             $trackingProd = $qb->getQuery()->getResult();
 
-	    if(isset($trackingProd)){
-		$tracking[$valueOP->getId()] = $trackingProd;
-	    }
+    	    if(isset($trackingProd)){
+    		  $tracking[$valueOP->getId()] = $trackingProd;
+    	    }
 
-        }
+        }*/
 
         $ordenes= $repository->find($id);
         $productos= $repository2->findBy(array('ordenesCompra' => $ordenes->getId(), 'estado' => 1));
@@ -357,6 +357,7 @@ class OrdenesController extends Controller
                 
                 $pro = $request->request->all()['ordenes_compra'];
                 $id = $request->request->all()['id'];
+
                 $orden = $em->getRepository('IncentivesOrdenesBundle:OrdenesCompra')->find($id);
                 $proveedor = $em->getRepository('IncentivesOperacionesBundle:Proveedores')->find($pro['proveedor']);
                 $orden->setProveedor($proveedor);
@@ -364,11 +365,11 @@ class OrdenesController extends Controller
                 //date_date_set($fecha,$pro["fechaVencimiento"]["year"], $pro["fechaVencimiento"]["month"], $pro["fechaVencimiento"]["day"]);
                 $orden->setFechaVencimiento($fecha);
                 $orden->setObservaciones($pro["observaciones"]);
-                $orden->setDescuento($pro["descuento"]);
-                $orden->setDomicilio($pro["domicilio"]);
-                $orden->setServicioLogistico($pro["servicioLogistico"]);
-                $orden->setComisionBancaria($pro["comisionBancaria"]);
-                $orden->setTrm($pro["trm"]);
+                $orden->setDescuento(($pro["descuento"]) ? $pro["descuento"] : 0 );
+                $orden->setDomicilio(($pro["domicilio"]) ? $pro["domicilio"] : 0);
+                $orden->setServicioLogistico(($pro["servicioLogistico"]) ? $pro["servicioLogistico"] : 0);
+                $orden->setComisionBancaria(($pro["comisionBancaria"]) ? $pro["comisionBancaria"] : 0);
+                $orden->setTrm(($pro["trm"]) ? $pro["trm"] : 0);
                 
                 if(isset($pro["aplicaIva"]) && $pro["aplicaIva"]==1) $aplicaIva = 1; else $aplicaIva = 0;
                 $orden->setAplicaIva($aplicaIva);
@@ -390,7 +391,7 @@ class OrdenesController extends Controller
                 $this->pdfAction($orden->getId());
                 $this->totalordenAction($orden->getId());
 
-                return $this->redirect($this->generateUrl('ordenes_datos').'/'.$id);
+                //return $this->redirect($this->generateUrl('ordenes_datos').'/'.$id);
             //}
         }
 

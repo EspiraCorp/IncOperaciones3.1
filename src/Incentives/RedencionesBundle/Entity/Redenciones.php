@@ -121,7 +121,14 @@ class Redenciones
      */
     private $logistica;
 
-     /**
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="valorVenta", type="float", nullable=true)
+     */
+    private $valorVenta;
+
+    /**
      * @var integer
      *
      * @ORM\Column(name="diasEntrega", type="integer", nullable=true)
@@ -234,6 +241,11 @@ class Redenciones
      * @ORM\OneToMany(targetEntity="Redencionesenvios", mappedBy="redencion", cascade={"persist"})
      */
     protected $redencionesenvios;
+
+    /**
+     * @ORM\OneToMany(targetEntity="RedencionesProductos", mappedBy="redencion", cascade={"persist"})
+     */
+    protected $redencionesProductos;
 
     /**
      * @ORM\OneToMany(targetEntity="Redencionesatributos", mappedBy="redencion", cascade={"persist"})
@@ -1230,5 +1242,63 @@ class Redenciones
     public function getPromocion()
     {
         return $this->promocion;
+    }
+
+    /**
+     * Set valorVenta
+     *
+     * @param float $valorVenta
+     *
+     * @return Redenciones
+     */
+    public function setValorVenta($valorVenta)
+    {
+        $this->valorVenta = $valorVenta;
+
+        return $this;
+    }
+
+    /**
+     * Get valorVenta
+     *
+     * @return float
+     */
+    public function getValorVenta()
+    {
+        return $this->valorVenta;
+    }
+
+    /**
+     * Add redencionesProducto
+     *
+     * @param \Incentives\RedencionesBundle\Entity\RedencionesProductos $redencionesProducto
+     *
+     * @return Redenciones
+     */
+    public function addRedencionesProducto(\Incentives\RedencionesBundle\Entity\RedencionesProductos $redencionesProducto)
+    {
+        $this->redencionesProductos[] = $redencionesProducto;
+
+        return $this;
+    }
+
+    /**
+     * Remove redencionesProducto
+     *
+     * @param \Incentives\RedencionesBundle\Entity\RedencionesProductos $redencionesProducto
+     */
+    public function removeRedencionesProducto(\Incentives\RedencionesBundle\Entity\RedencionesProductos $redencionesProducto)
+    {
+        $this->redencionesProductos->removeElement($redencionesProducto);
+    }
+
+    /**
+     * Get redencionesProductos
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getRedencionesProductos()
+    {
+        return $this->redencionesProductos;
     }
 }

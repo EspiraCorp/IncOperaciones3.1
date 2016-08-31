@@ -43,7 +43,7 @@
 
         <table class="table table-bordered table-striped">
           <tbody>
-            <tr><td>Programa</td><td>{{ redencion.productocatalogo.catalogos.programa.nombre }}</td></tr>
+            <tr><td>Programa</td><td>{{ redencion.participante.programa.nombre }}</td></tr>
             <tr><td>Participante</td><td>{{ redencion.participante.nombre }}</td></tr>
             <tr><td>Documento</td><td>{{ redencion.participante.documento }}</td></tr>
             <tr><td>Fecha de solicitud</td><td>{{ redencion.fecha | date("Y-m-d") }}</td></tr>
@@ -59,21 +59,23 @@
   <div class="box span6">
       <div class="box-content">
         <div class="box-header well">
-          <h2></i>Datos Producto</h2>
+          <h2></i>Datos Productos</h2>
         </div>
-        <table class="table table-bordered table-striped">
-          <tbody>
-            <tr><td colspan="2">
-              {% if imagen|length > 0 %}
-              <a href="../../../{{ imagen[0].path| slice (0) }}" target='_blank'><img src="../../../{{( imagen[0].path| slice (0))[:-4]}}_min.jpg"><a>
-              {% endif %}
+        {% for producto in redencion.premio.premiosproductos %} 
+          <table class="table table-bordered table-striped">
+            <tbody>
+              <tr><td colspan="2">
+                {% if producto.producto.imagenproducto|length > 0 %}
+                <a href="../../../{{ producto.producto.imagenproducto[0].path| slice (0) }}" target='_blank'><img src="../../../{{( producto.producto.imagenproducto[0].path| slice (0))[:-4]}}_min.jpg"><a>
+                {% endif %}
               </td></tr>
-            <tr><td>Sku</td><td>{{ redencion.productocatalogo.producto.codInc }}</td></tr>
-            <tr><td>Nombre</td><td>{{ redencion.productocatalogo.producto.nombre }}</td></tr>
-            <tr><td>Descripcion</td><td>{{ redencion.productocatalogo.producto.descripcion }}</td></tr>
-            <tr><td>Categoria</td><td>{{ redencion.productocatalogo.categoria.nombre }}</td></tr>
-          </tbody>
-        </table>
+              <tr><td>Sku</td><td>{{ producto.producto.codInc }}</td></tr>
+              <tr><td>Nombre</td><td>{{ producto.producto.nombre }}</td></tr>
+              <tr><td>Descripcion</td><td>{{ producto.producto.descripcion }}</td></tr>
+              <tr><td>Categoria</td><td>{{ producto.producto.nombre }}</td></tr>
+            </tbody>
+          </table>
+        {% endfor %}
     </div>
   </div>
 </div>

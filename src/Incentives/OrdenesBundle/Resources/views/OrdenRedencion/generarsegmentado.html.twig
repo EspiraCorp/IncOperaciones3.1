@@ -23,17 +23,15 @@
         {% set i=0 %}
         {% for categoria in redenciones %}
             {% set i=i+1 %}
-            <tr><td width="200px">{{ categoria[0].productocatalogo.catalogos.pais.nombre }}</td>
-                <td>{{ categoria[0].productocatalogo.producto.categoria.nombre }}</td>
-                <td>{{ categoria.total }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a id="{{ i }}" onClick="detalle('{{ i }}')" class="btn btn-success">+</a></td>
-                <td>
-                    <a class="btn btn-info" onClick="post('{{ path('ordenes_generarsegmentado') }}', {pais:{{ categoria[0].productocatalogo.catalogos.pais.id }}, categoria: {{ categoria[0].productocatalogo.producto.categoria.id }}})">Generar</a>
+            <tr><td width="200px">{{ categoria[0].redencion.premio.catalogos.pais.nombre }}</td>
+                <td>{{ categoria[0].producto.categoria.nombre }}</td>
+                <td><a id="{{ i }}" onClick="detalle('{{ i }}')" class="btn btn-success">+</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ categoria.total }}</td>
+                <td><a class="btn btn-info" onClick="post('{{ path('ordenes_generarsegmentado') }}', {pais:{{ categoria[0].redencion.premio.catalogos.pais.id }}, categoria: {{ categoria[0].producto.categoria.id }}})">Generar</a>
                 </td>
             </tr>
             <tr id="detalle_{{ i }}" class="hide">
-                <td></td>
-				<td colspan="3">
-                    <div>{{ render(controller('IncentivesOrdenesBundle:OrdenRedencion:detalleSegmentado', { 'categoria': categoria[0].productocatalogo.producto.categoria.id , 'pais': categoria[0].productocatalogo.catalogos.pais.id })) }}</div>
+				<td colspan="4">
+                    <div>{{ render(controller('IncentivesOrdenesBundle:OrdenRedencion:detalleSegmentado', { 'categoria': categoria[0].producto.categoria.id , 'pais': categoria[0].redencion.premio.catalogos.pais.id })) }}</div>
                 </td>
             </tr>
         {% endfor %}

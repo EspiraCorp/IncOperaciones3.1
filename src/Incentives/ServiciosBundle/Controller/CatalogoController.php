@@ -124,11 +124,11 @@ class CatalogoController extends Controller
                 $datosPremio = $valueP['premiosproductos'][0]['producto'];
 
             	$listado[$idP]['id'] = $valueP['id'];
-            	$listado[$idP]['nombre'] = $datosPremio['nombre'];
-            	$listado[$idP]['referencia'] = $datosPremio['referencia'];
-            	$listado[$idP]['marca'] = $datosPremio['marca'];
+            	$listado[$idP]['nombre'] = $valueP['nombre'];
+            	$listado[$idP]['referencia'] = $valueP['referencia'];
+            	$listado[$idP]['marca'] = $valueP['marca'];
             	$listado[$idP]['sku'] = $datosPremio['codInc'];
-            	$listado[$idP]['descripcion'] = $datosPremio['descripcion'];
+            	$listado[$idP]['descripcion'] = $valueP['descripcion'];
             	$listado[$idP]['puntos'] = $valueP['puntos'];
                 $listado[$idP]['categoria_id'] = $valueP['categoria']['id'];
                 $listado[$idP]['agotado'] = $valueP['agotado'];
@@ -144,7 +144,7 @@ class CatalogoController extends Controller
                     $listado[$idP]['datosPromocion']['fechaFin'] = $datosPromo['fechaFin']->format('Y-m-d H:i:s');
                     $listado[$idP]['datosPromocion']['cantidadTotal'] = $datosPromo['cantidad'];
                     $listado[$idP]['datosPromocion']['cantidadDisponible'] = $datosPromo['disponibles'];
-                    $listado[$idP]['puntos'] = $datosPromo['nombre'];
+                    $listado[$idP]['puntos'] = $datosPromo['puntos'];
                 }
             	
             	//Si el idioma es diferente a español consultar si el producto tiene traduccion

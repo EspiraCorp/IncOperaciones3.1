@@ -2075,22 +2075,22 @@ if(isset($value['tracking']['ordenproducto']['redencion'])) {
       $em = $this->getDoctrine()->getManager();
 
       $qb = $em->createQueryBuilder()
-                ->select('sum(CASE 
-             WHEN pp.proveedor=327 THEN 0
-             ELSE 1
-           END) total','r','p','pr','c','cat','pais')
-                ->from('IncentivesRedencionesBundle:Redenciones','r')
-                ->leftJoin('r.productocatalogo', 'p')
-                ->leftJoin('p.catalogos', 'cat')
+                //->select('sum(CASE WHEN pp.proveedor=327 THEN 0 ELSE 1END) total','r','pr','pd','c','cat','pais','rp')
+                ->select('rp','r','pd','pr','cat','pais','c','sum(CASE WHEN pp.proveedor=327 THEN 0 ELSE 1 END) total')
+                ->from('IncentivesRedencionesBundle:RedencionesProductos','rp')
+                ->Join('rp.redencion', 'r')
+                ->Join('r.premio', 'pr')
+                ->leftJoin('pr.catalogos', 'cat')
                 ->leftJoin('cat.pais', 'pais')
-                ->leftJoin('p.producto', 'pr')
-                ->leftJoin('pr.categoria', 'c')
-                ->leftJoin('pr.productoprecio', 'pp','WITH','pp.principal=1')
+                ->leftJoin('rp.producto', 'pd')
+                ->leftJoin('pd.categoria', 'c')
+                ->leftJoin('pd.productoprecio', 'pp','WITH','pp.principal=1')
                 ->leftJoin('pp.proveedor', 'prov')
-                ->where('r.redencionestado = 2')
-                ->groupby('pr.categoria','cat.pais');
+                ->where('rp.estado = 2')
+                ->groupby('pd.categoria','cat.pais');
       $Redenciones =  $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
-
+      
+      //echo "<pre>"; print_r($Redenciones); echo "</pre>"; exit;
       if ($request->isMethod('POST')) {
 
               $pais = intval($request->get('pais'));
@@ -2102,7 +2102,7 @@ if(isset($value['tracking']['ordenproducto']['redencion'])) {
 
                 //Consultar si hay inventario para las redenciones autorizadas
                 //Lista de redenciones autorizadas agrupadas por producto y pais
-                $qb = $em->createQueryBuilder()
+                /*$qb = $em->createQueryBuilder()
                      ->select('i')
                      ->from('IncentivesInventarioBundle:Inventario','i')
                      ->where('i.redencion IS NULL AND i.solicitud IS NULL AND i.salio IS NULL AND i.ingreso=1 AND i.planilla IS NULL');
@@ -2179,29 +2179,30 @@ if(isset($value['tracking']['ordenproducto']['redencion'])) {
                         $em->flush();
                         
                      }
-                }//cierra foreach inventario
+                }*///cierra foreach inventario
 
                 //Lista de redenciones autorizadas agrupadas por producto y pais
                 $qb = $em->createQueryBuilder()
-                     ->select('r')
-                     ->from('IncentivesRedencionesBundle:Redenciones','r')
-                     ->Join('r.productocatalogo', 'p')
-                     ->Join('p.producto', 'pr')
-                     ->Join('p.catalogos', 'c')
-                     ->Join('pr.productoprecio', 'pp')
+                     ->select('rp')
+                     ->from('IncentivesRedencionesBundle:RedencionesProductos','rp')
+                     ->Join('rp.redencion', 'r')
+                     ->Join('r.premio', 'pr')
+                     ->Join('pr.catalogos', 'c')
+                     ->Join('rp.producto', 'pd')
+                     ->Join('pd.productoprecio', 'pp')
                      ->Join('pp.proveedor', 'prov')
-                     ->where('r.redencionestado = :id AND prov.id != 327 AND c.pais='.$pais.' AND pr.categoria='.$categoria)
-                     ->groupby('p.producto')          
+                     ->where('rp.estado = :id AND prov.id != 327 AND c.pais='.$pais.' AND pd.categoria='.$categoria)
+                     ->groupby('rp.producto')          
                      ->setParameters(array(
                           'id'=> '2',                
                       ));
                 $ProductosR = $qb->getQuery()->getResult();
-
+                
                 $ProvProd = array();
 
                 //Buscar proveedores y armar un arreglo para luego asignar las ordenes
                 foreach($ProductosR as $keyP => $valueP){
-                  $id_producto = $valueP->getProductocatalogo()->getProducto()->getId();
+                  $id_producto = $valueP->getProducto()->getId();
 
                   //Buscar los proveedores para cada producto
                    $qb = $em->createQueryBuilder()
@@ -2221,7 +2222,7 @@ if(isset($value['tracking']['ordenproducto']['redencion'])) {
                     $ProvProd[$proveedor->getProveedor()->getId()][$proveedor->getProducto()->getId()] = $proveedor->getId();
                   }
 
-                }//Cierra foreach de prveedores
+                }//Cierra foreach de proveedores
 
                 foreach($ProvProd as $keyProv => $valueProv){
                   
@@ -2246,7 +2247,7 @@ if(isset($value['tracking']['ordenproducto']['redencion'])) {
 
                     $i = 0;
                     //Si no existe, crear una nueva
-                  if(!isset($orden)){
+                    if(!isset($orden)){
 
                       $prov = $em->getRepository('IncentivesOperacionesBundle:Proveedores')->find($id_prov);
                       $paisO = $em->getRepository('IncentivesOperacionesBundle:Pais')->find($pais);
@@ -2272,16 +2273,15 @@ if(isset($value['tracking']['ordenproducto']['redencion'])) {
                         $productos = new OrdenesProducto();  
                         
                         $qb = $em->createQueryBuilder()
-                           ->select('count(r.id)')
-                           ->from('IncentivesRedencionesBundle:Redenciones','r')
-                           ->Join('r.productocatalogo', 'p')
-                           ->Join('p.producto', 'pr')
-                           ->where('r.redencionestado = :id AND pr.id='.$keyProd)          
+                           ->select('count(rp.id)')
+                           ->from('IncentivesRedencionesBundle:RedencionesProductos','rp')
+                           ->Join('rp.producto', 'pd')
+                           ->where('rp.estado = :id AND pd.id='.$keyProd)          
                            ->setParameters(array(
                                 'id'=> '2',                
                             ));
 
-                        $cantidad = $qb->getQuery()->getSingleScalarResult();              
+                        $cantidad = $qb->getQuery()->getSingleScalarResult();       
 
                         $producto = $em->getRepository('IncentivesCatalogoBundle:Producto')->find($keyProd);
                         $productoPrec = $em->getRepository('IncentivesCatalogoBundle:Productoprecio')->find($valueProd); 
@@ -2301,23 +2301,21 @@ if(isset($value['tracking']['ordenproducto']['redencion'])) {
 
                         //Actualizar estado de redenciones
                         $qb = $em->createQueryBuilder()
-                             ->select('r')
-                             ->from('IncentivesRedencionesBundle:Redenciones','r')
-                             ->Join('r.productocatalogo', 'p')
-                             ->Join('p.producto', 'pr')
-                             ->where('r.redencionestado = 2 AND pr.id='.$keyProd);
+                             ->select('rp')
+                             ->from('IncentivesRedencionesBundle:RedencionesProductos','rp')
+                             ->Join('rp.producto', 'pd')
+                             ->where('rp.estado = 2 AND pd.id='.$keyProd);
 
-                        $redenciones = $qb->getQuery()->getResult();
-                        foreach ($redenciones as $keyRed => $valueRed) {
+                        $redencionesProductos = $qb->getQuery()->getResult();
+
+                        //echo "<pre>"; print_r($cantidad); echo "</pre>"; exit;  
+
+                        foreach ($redencionesProductos as $keyRed => $valueRed) {
                           //if ($valueRed->getRedencionestado()==$estadoredencion){
                             $valueRed->setOrdenesProducto($productos);
-                            $valueRed->setRedencionestado($estado);
+                            $valueRed->setEstado($estado);
                             $em->persist($valueRed);
                             $em->flush();
-                            
-                            //Almacenar Historico
-                            $redencionH = $this->get('incentives_redenciones');
-                            $redencionH->insertar($valueRed);
                           //}
                         }
                     }
@@ -2437,20 +2435,21 @@ if(isset($value['tracking']['ordenproducto']['redencion'])) {
       $em = $this->getDoctrine()->getManager();
 
       $qb = $em->createQueryBuilder()
-                ->select('r','p','pr','c','cat','pais','pt','pg','pp','prov')
-                ->from('IncentivesRedencionesBundle:Redenciones','r')
-                ->leftJoin('r.productocatalogo', 'p')
-                ->leftJoin('p.catalogos', 'cat')
+                ->select('r','pd','pr','rp','c','cat','pais','pt','pg','pp','prov')
+                ->from('IncentivesRedencionesBundle:RedencionesProductos','rp')
+                ->leftJoin('rp.redencion', 'r')
+                ->leftJoin('r.premio', 'pr')
+                ->leftJoin('pr.catalogos', 'cat')
                 ->leftJoin('cat.pais', 'pais')
-                ->leftJoin('p.producto', 'pr')
+                ->leftJoin('rp.producto', 'pd')
                 ->leftJoin('pr.categoria', 'c')
-                ->leftJoin('pr.productoprecio', 'pp')
+                ->leftJoin('pd.productoprecio', 'pp','WITH','pp.principal=1')
                 ->leftJoin('pp.proveedor', 'prov')
                 ->leftJoin('r.participante', 'pt')
                 ->leftJoin('pt.programa', 'pg')
                 ->orderBy('pp.id,pt.id');
-      $str = "r.redencionestado = 2";
-      $str .= " AND pr.categoria=".$categoria;
+      $str = "rp.estado = 2";
+      $str .= " AND pd.categoria=".$categoria;
       $str .= " AND cat.pais=".$pais;
       
       $qb->where($str);

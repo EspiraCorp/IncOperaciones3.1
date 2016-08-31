@@ -55,7 +55,6 @@ class PremiosProductos
 
     public function __construct()
     {
-        $this->redencion = new ArrayCollection();
     }
 
     /**

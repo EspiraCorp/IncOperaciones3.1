@@ -62,9 +62,9 @@
                                     <td>{{ redencion.codigoredencion }}</td>
                                     <td>{{ redencion.participante.nombre}}</td>
                                     <td>{{ redencion.participante.tipodocumento.nombre }} {{ redencion.participante.documento }}</a></td>
-                                    <td>{{ redencion.productocatalogo.producto.nombre }}</a></td>
+                                    <td>{{ redencion.premio.nombre }}</a></td>
                                     <td>{{ redencion.puntos }}</a></td>
-                                    <td>{{ redencion.productocatalogo.catalogos.nombre }}</a></td>
+                                    <td>{{ redencion.premio.catalogos.nombre }}</a></td>
                                     <td>{{ redencion.fecha | date("Y-m-d") }}</a></td>
                                     <td><input type="checkbox" id="redencion_{{ redencion.id }}" name="id" value="{{ redencion.id }}"></a></td>
                                   </tr>

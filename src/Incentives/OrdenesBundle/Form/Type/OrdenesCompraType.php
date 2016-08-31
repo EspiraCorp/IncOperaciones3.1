@@ -35,28 +35,15 @@ class OrdenesCompraType extends AbstractType
             'widget' => 'single_text',
         ));
 
-        $builder
-            ->add('descuento');
-
-        $builder
-            ->add('domicilio');
-            
-        $builder
-            ->add('servicioLogistico');
-        $builder
-            ->add('comisionBancaria');
-        $builder
-            ->add('trm');
-            
-        $builder
-            ->add('aplicaIva');
-        $builder
-            ->add('facturarCostos');
-
-        $builder
-            ->add('observaciones')
-            ->add('cancelado')
-        ;
+        $builder->add('descuento');
+        $builder->add('domicilio'); 
+        $builder->add('servicioLogistico');
+        $builder->add('comisionBancaria');
+        $builder->add('trm');
+        $builder->add('aplicaIva');
+        $builder->add('facturarCostos');
+        $builder->add('observaciones')
+                ->add('cancelado');
 
         $builder->add('proveedor', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:Proveedores',
@@ -104,13 +91,13 @@ class OrdenesCompraType extends AbstractType
             'label' => 'Estado'
         ));
 
-        $builder->add('ordenesProducto', Collectiontype::class, array(
+        /*$builder->add('ordenesProducto', CollectionType::class, array(
                 'entry_type'  => OrdenesProductoType::class,
                 'label'          => 'Productos',
                 'by_reference'   => false,
                 'allow_delete'   => true,
                 'allow_add'      => true
-        ));
+        ));*/
 
         $builder->add('Enviar', SubmitType::class);
     }

@@ -19,12 +19,10 @@ class OrdenesProductoType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('cantidad', IntegerType::class, array('attr' => array('step'=>'1',
+        $builder->add('cantidad', IntegerType::class, array('attr' => array('step'=>'1',
                 'min'=>'0',
                 'max'=>'100000')))
-	    ->add('centrocostos')
-        ;
+	           ->add('centrocostos');
 
         $builder->add('producto', EntityType::class, array(
             'class' => 'IncentivesCatalogoBundle:Producto',

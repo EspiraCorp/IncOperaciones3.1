@@ -138,6 +138,11 @@ class OrdenesProducto
      * @ORM\OneToMany(targetEntity="Incentives\RedencionesBundle\Entity\Redenciones", mappedBy="ordenesProducto")
      */
     protected $redenciones;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Incentives\RedencionesBundle\Entity\RedencionesProductos", mappedBy="ordenesProducto")
+     */
+    protected $redencionesProductos;
     
     /**
      * @ORM\OneToMany(targetEntity="Incentives\OrdenesBundle\Entity\OrdenesProductoHistorico", mappedBy="ordenproducto")
@@ -188,10 +193,11 @@ class OrdenesProducto
         $this->producto = new ArrayCollection();
     }
 
+
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -202,19 +208,20 @@ class OrdenesProducto
      * Set cantidad
      *
      * @param integer $cantidad
+     *
      * @return OrdenesProducto
      */
     public function setCantidad($cantidad)
     {
         $this->cantidad = $cantidad;
-    
+
         return $this;
     }
 
     /**
      * Get cantidad
      *
-     * @return integer 
+     * @return integer
      */
     public function getCantidad()
     {
@@ -225,19 +232,20 @@ class OrdenesProducto
      * Set cantidadrecibida
      *
      * @param integer $cantidadrecibida
+     *
      * @return OrdenesProducto
      */
     public function setCantidadrecibida($cantidadrecibida)
     {
         $this->cantidadrecibida = $cantidadrecibida;
-    
+
         return $this;
     }
 
     /**
      * Get cantidadrecibida
      *
-     * @return integer 
+     * @return integer
      */
     public function getCantidadrecibida()
     {
@@ -247,20 +255,21 @@ class OrdenesProducto
     /**
      * Set valorunidad
      *
-     * @param integer $valorunidad
+     * @param float $valorunidad
+     *
      * @return OrdenesProducto
      */
     public function setValorunidad($valorunidad)
     {
         $this->valorunidad = $valorunidad;
-    
+
         return $this;
     }
 
     /**
      * Get valorunidad
      *
-     * @return integer 
+     * @return float
      */
     public function getValorunidad()
     {
@@ -270,20 +279,21 @@ class OrdenesProducto
     /**
      * Set valortotal
      *
-     * @param integer $valortotal
+     * @param float $valortotal
+     *
      * @return OrdenesProducto
      */
     public function setValortotal($valortotal)
     {
         $this->valortotal = $valortotal;
-    
+
         return $this;
     }
 
     /**
      * Get valortotal
      *
-     * @return integer 
+     * @return float
      */
     public function getValortotal()
     {
@@ -291,61 +301,160 @@ class OrdenesProducto
     }
 
     /**
-     * Set producto
+     * Set descuento
      *
-     * @param \Incentives\CatalogoBundle\Entity\Producto $producto
+     * @param float $descuento
+     *
      * @return OrdenesProducto
      */
-    public function setProducto(\Incentives\CatalogoBundle\Entity\Producto $producto = null)
+    public function setDescuento($descuento)
     {
-        $this->producto = $producto;
-    
+        $this->descuento = $descuento;
+
         return $this;
     }
 
     /**
-     * Get producto
+     * Get descuento
      *
-     * @return \Incentives\CatalogoBundle\Entity\Producto 
+     * @return float
      */
-    public function getProducto()
+    public function getDescuento()
     {
-        return $this->producto;
+        return $this->descuento;
     }
 
     /**
-     * Set ordenesCompra
+     * Set precioCliente
      *
-     * @param \Incentives\OrdenesBundle\Entity\OrdenesCompra $ordenesCompra
+     * @param float $precioCliente
+     *
      * @return OrdenesProducto
      */
-    public function setOrdenesCompra(\Incentives\OrdenesBundle\Entity\OrdenesCompra $ordenesCompra = null)
+    public function setPrecioCliente($precioCliente)
     {
-        $this->ordenesCompra = $ordenesCompra;
-    
+        $this->precioCliente = $precioCliente;
+
         return $this;
     }
 
     /**
-     * Get ordenesCompra
+     * Get precioCliente
      *
-     * @return \Incentives\OrdenesBundle\Entity\OrdenesCompra 
+     * @return float
      */
-    public function getOrdenesCompra()
+    public function getPrecioCliente()
     {
-        return $this->ordenesCompra;
+        return $this->precioCliente;
+    }
+
+    /**
+     * Set incremento
+     *
+     * @param float $incremento
+     *
+     * @return OrdenesProducto
+     */
+    public function setIncremento($incremento)
+    {
+        $this->incremento = $incremento;
+
+        return $this;
+    }
+
+    /**
+     * Get incremento
+     *
+     * @return float
+     */
+    public function getIncremento()
+    {
+        return $this->incremento;
+    }
+
+    /**
+     * Set logistica
+     *
+     * @param float $logistica
+     *
+     * @return OrdenesProducto
+     */
+    public function setLogistica($logistica)
+    {
+        $this->logistica = $logistica;
+
+        return $this;
+    }
+
+    /**
+     * Get logistica
+     *
+     * @return float
+     */
+    public function getLogistica()
+    {
+        return $this->logistica;
+    }
+
+    /**
+     * Set centrocostos
+     *
+     * @param string $centrocostos
+     *
+     * @return OrdenesProducto
+     */
+    public function setCentrocostos($centrocostos)
+    {
+        $this->centrocostos = $centrocostos;
+
+        return $this;
+    }
+
+    /**
+     * Get centrocostos
+     *
+     * @return string
+     */
+    public function getCentrocostos()
+    {
+        return $this->centrocostos;
+    }
+
+    /**
+     * Set fechaModificacion
+     *
+     * @param \DateTime $fechaModificacion
+     *
+     * @return OrdenesProducto
+     */
+    public function setFechaModificacion($fechaModificacion)
+    {
+        $this->fechaModificacion = $fechaModificacion;
+
+        return $this;
+    }
+
+    /**
+     * Get fechaModificacion
+     *
+     * @return \DateTime
+     */
+    public function getFechaModificacion()
+    {
+        return $this->fechaModificacion;
     }
 
     /**
      * Add guiaEnvio
      *
      * @param \Incentives\RedencionesBundle\Entity\GuiaEnvio $guiaEnvio
+     *
      * @return OrdenesProducto
      */
     public function addGuiaEnvio(\Incentives\RedencionesBundle\Entity\GuiaEnvio $guiaEnvio)
     {
         $this->guiaEnvio[] = $guiaEnvio;
-    
+
         return $this;
     }
 
@@ -362,7 +471,7 @@ class OrdenesProducto
     /**
      * Get guiaEnvio
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getGuiaEnvio()
     {
@@ -370,32 +479,153 @@ class OrdenesProducto
     }
 
     /**
-     * Add redenciones
+     * Set producto
      *
-     * @param \Incentives\RedencionesBundle\Entity\Redenciones $redenciones
+     * @param \Incentives\CatalogoBundle\Entity\Producto $producto
+     *
      * @return OrdenesProducto
      */
-    public function addRedencione(\Incentives\RedencionesBundle\Entity\Redenciones $redenciones)
+    public function setProducto(\Incentives\CatalogoBundle\Entity\Producto $producto = null)
     {
-        $this->redenciones[] = $redenciones;
-    
+        $this->producto = $producto;
+
         return $this;
     }
 
     /**
-     * Remove redenciones
+     * Get producto
      *
-     * @param \Incentives\RedencionesBundle\Entity\Redenciones $redenciones
+     * @return \Incentives\CatalogoBundle\Entity\Producto
      */
-    public function removeRedencione(\Incentives\RedencionesBundle\Entity\Redenciones $redenciones)
+    public function getProducto()
     {
-        $this->redenciones->removeElement($redenciones);
+        return $this->producto;
+    }
+
+    /**
+     * Set ordenesCompra
+     *
+     * @param \Incentives\OrdenesBundle\Entity\OrdenesCompra $ordenesCompra
+     *
+     * @return OrdenesProducto
+     */
+    public function setOrdenesCompra(\Incentives\OrdenesBundle\Entity\OrdenesCompra $ordenesCompra = null)
+    {
+        $this->ordenesCompra = $ordenesCompra;
+
+        return $this;
+    }
+
+    /**
+     * Get ordenesCompra
+     *
+     * @return \Incentives\OrdenesBundle\Entity\OrdenesCompra
+     */
+    public function getOrdenesCompra()
+    {
+        return $this->ordenesCompra;
+    }
+
+    /**
+     * Set programa
+     *
+     * @param \Incentives\CatalogoBundle\Entity\Programa $programa
+     *
+     * @return OrdenesProducto
+     */
+    public function setPrograma(\Incentives\CatalogoBundle\Entity\Programa $programa = null)
+    {
+        $this->programa = $programa;
+
+        return $this;
+    }
+
+    /**
+     * Get programa
+     *
+     * @return \Incentives\CatalogoBundle\Entity\Programa
+     */
+    public function getPrograma()
+    {
+        return $this->programa;
+    }
+
+    /**
+     * Set productocotizacion
+     *
+     * @param \Incentives\SolicitudesBundle\Entity\CotizacionProducto $productocotizacion
+     *
+     * @return OrdenesProducto
+     */
+    public function setProductocotizacion(\Incentives\SolicitudesBundle\Entity\CotizacionProducto $productocotizacion = null)
+    {
+        $this->productocotizacion = $productocotizacion;
+
+        return $this;
+    }
+
+    /**
+     * Get productocotizacion
+     *
+     * @return \Incentives\SolicitudesBundle\Entity\CotizacionProducto
+     */
+    public function getProductocotizacion()
+    {
+        return $this->productocotizacion;
+    }
+
+    /**
+     * Set estado
+     *
+     * @param \Incentives\CatalogoBundle\Entity\Estados $estado
+     *
+     * @return OrdenesProducto
+     */
+    public function setEstado(\Incentives\CatalogoBundle\Entity\Estados $estado = null)
+    {
+        $this->estado = $estado;
+
+        return $this;
+    }
+
+    /**
+     * Get estado
+     *
+     * @return \Incentives\CatalogoBundle\Entity\Estados
+     */
+    public function getEstado()
+    {
+        return $this->estado;
+    }
+
+    /**
+     * Add redencione
+     *
+     * @param \Incentives\RedencionesBundle\Entity\Redenciones $redencione
+     *
+     * @return OrdenesProducto
+     */
+    public function addRedencione(\Incentives\RedencionesBundle\Entity\Redenciones $redencione)
+    {
+        $this->redenciones[] = $redencione;
+
+        return $this;
+    }
+
+    /**
+     * Remove redencione
+     *
+     * @param \Incentives\RedencionesBundle\Entity\Redenciones $redencione
+     */
+    public function removeRedencione(\Incentives\RedencionesBundle\Entity\Redenciones $redencione)
+    {
+        $this->redenciones->removeElement($redencione);
     }
 
     /**
      * Get redenciones
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getRedenciones()
     {
@@ -403,22 +633,57 @@ class OrdenesProducto
     }
 
     /**
+     * Add redencionesProducto
+     *
+     * @param \Incentives\RedencionesBundle\Entity\RedencionesProductos $redencionesProducto
+     *
+     * @return OrdenesProducto
+     */
+    public function addRedencionesProducto(\Incentives\RedencionesBundle\Entity\RedencionesProductos $redencionesProducto)
+    {
+        $this->redencionesProductos[] = $redencionesProducto;
+
+        return $this;
+    }
+
+    /**
+     * Remove redencionesProducto
+     *
+     * @param \Incentives\RedencionesBundle\Entity\RedencionesProductos $redencionesProducto
+     */
+    public function removeRedencionesProducto(\Incentives\RedencionesBundle\Entity\RedencionesProductos $redencionesProducto)
+    {
+        $this->redencionesProductos->removeElement($redencionesProducto);
+    }
+
+    /**
+     * Get redencionesProductos
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getRedencionesProductos()
+    {
+        return $this->redencionesProductos;
+    }
+
+    /**
      * Add ordenesproductohistorico
      *
      * @param \Incentives\OrdenesBundle\Entity\OrdenesProductoHistorico $ordenesproductohistorico
+     *
      * @return OrdenesProducto
      */
     public function addOrdenesproductohistorico(\Incentives\OrdenesBundle\Entity\OrdenesProductoHistorico $ordenesproductohistorico)
     {
         $this->ordenesproductohistorico[] = $ordenesproductohistorico;
-    
+
         return $this;
     }
 
     /**
      * Remove ordenesproductohistorico
      *
-     * @param \Incentives\OrdenessBundle\Entity\OrdenesProductoHistorico $ordenesproductohistorico
+     * @param \Incentives\OrdenesBundle\Entity\OrdenesProductoHistorico $ordenesproductohistorico
      */
     public function removeOrdenesproductohistorico(\Incentives\OrdenesBundle\Entity\OrdenesProductoHistorico $ordenesproductohistorico)
     {
@@ -428,7 +693,7 @@ class OrdenesProducto
     /**
      * Get ordenesproductohistorico
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getOrdenesproductohistorico()
     {
@@ -436,188 +701,16 @@ class OrdenesProducto
     }
 
     /**
-     * Set descuento
-     *
-     * @param integer $descuento
-     * @return OrdenesProducto
-     */
-    public function setDescuento($descuento)
-    {
-        $this->descuento = $descuento;
-    
-        return $this;
-    }
-
-    /**
-     * Get descuento
-     *
-     * @return integer 
-     */
-    public function getDescuento()
-    {
-        return $this->descuento;
-    }
-
-    /**
-     * Add tracking
-     *
-     * @param \Incentives\OrdenesBundle\Entity\Tracking $tracking
-     * @return OrdenesProducto
-     */
-    public function addTracking(\Incentives\OrdenesBundle\Entity\Tracking $tracking)
-    {
-        $this->tracking[] = $tracking;
-    
-        return $this;
-    }
-
-    /**
-     * Remove tracking
-     *
-     * @param \Incentives\OrdenesBundle\Entity\Tracking $tracking
-     */
-    public function removeTracking(\Incentives\OrdenesBundle\Entity\Tracking $tracking)
-    {
-        $this->tracking->removeElement($tracking);
-    }
-
-    /**
-     * Get tracking
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getTracking()
-    {
-        return $this->tracking;
-    }
-
-
-    /**
-     * Set centrocostos
-     *
-     * @param string $centrocostos
-     * @return OrdenesProducto
-     */
-    public function setCentrocostos($centrocostos)
-    {
-        $this->centrocostos = $centrocostos;
-    
-        return $this;
-    }
-
-    /**
-     * Get centrocostos
-     *
-     * @return string 
-     */
-    public function getCentrocostos()
-    {
-        return $this->centrocostos;
-    }
-
-
-    /**
-     * Set estado
-     *
-     * @param \Incentives\CatalogoBundle\Entity\Estados $estado
-     * @return OrdenesProducto
-     */
-    public function setEstado(\Incentives\CatalogoBundle\Entity\Estados $estado = null)
-    {
-        $this->estado = $estado;
-    
-        return $this;
-    }
-
-    /**
-     * Get estado
-     *
-     * @return \Incentives\CatalogoBundle\Entity\Estados 
-     */
-    public function getEstado()
-    {
-        return $this->estado;
-    }
-
-    /**
-     * Set programa
-     *
-     * @param \Incentives\CatalogoBundle\Entity\Programa $programa
-     * @return OrdenesProducto
-     */
-    public function setPrograma(\Incentives\CatalogoBundle\Entity\Programa $programa = null)
-    {
-        $this->programa = $programa;
-    
-        return $this;
-    }
-
-    /**
-     * Get programa
-     *
-     * @return \Incentives\CatalogoBundle\Entity\Programa 
-     */
-    public function getPrograma()
-    {
-        return $this->programa;
-    }
-
-    /**
-     * Set incremento
-     *
-     * @param integer $incremento
-     * @return OrdenesProducto
-     */
-    public function setIncremento($incremento)
-    {
-        $this->incremento = $incremento;
-    
-        return $this;
-    }
-
-    /**
-     * Get incremento
-     *
-     * @return integer 
-     */
-    public function getIncremento()
-    {
-        return $this->incremento;
-    }
-
-    /**
-     * Set logistica
-     *
-     * @param integer $logistica
-     * @return OrdenesProducto
-     */
-    public function setLogistica($logistica)
-    {
-        $this->logistica = $logistica;
-    
-        return $this;
-    }
-
-    /**
-     * Get logistica
-     *
-     * @return integer 
-     */
-    public function getLogistica()
-    {
-        return $this->logistica;
-    }
-
-    /**
      * Add inventario
      *
      * @param \Incentives\InventarioBundle\Entity\Inventario $inventario
+     *
      * @return OrdenesProducto
      */
     public function addInventario(\Incentives\InventarioBundle\Entity\Inventario $inventario)
     {
         $this->inventario[] = $inventario;
-    
+
         return $this;
     }
 
@@ -634,7 +727,7 @@ class OrdenesProducto
     /**
      * Get inventario
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getInventario()
     {
@@ -642,91 +735,57 @@ class OrdenesProducto
     }
 
     /**
-     * Set fechaModificacion
+     * Add tracking
      *
-     * @param \DateTime $fechaModificacion
+     * @param \Incentives\OrdenesBundle\Entity\Tracking $tracking
+     *
      * @return OrdenesProducto
      */
-    public function setFechaModificacion($fechaModificacion)
+    public function addTracking(\Incentives\OrdenesBundle\Entity\Tracking $tracking)
     {
-        $this->fechaModificacion = $fechaModificacion;
-    
+        $this->tracking[] = $tracking;
+
         return $this;
     }
 
     /**
-     * Get fechaModificacion
+     * Remove tracking
      *
-     * @return \DateTime 
+     * @param \Incentives\OrdenesBundle\Entity\Tracking $tracking
      */
-    public function getFechaModificacion()
+    public function removeTracking(\Incentives\OrdenesBundle\Entity\Tracking $tracking)
     {
-        return $this->fechaModificacion;
+        $this->tracking->removeElement($tracking);
     }
 
     /**
-     * Set usuario
+     * Get tracking
      *
-     * @param \Incentives\BaseBundle\Entity\Usuario $usuario
-     * @return OrdenesProducto
+     * @return \Doctrine\Common\Collections\Collection
      */
-    public function setUsuario(\Incentives\BaseBundle\Entity\Usuario $usuario = null)
+    public function getTracking()
     {
-        $this->usuario = $usuario;
-    
-        return $this;
-    }
-
-    /**
-     * Get usuario
-     *
-     * @return \Incentives\BaseBundle\Entity\Usuario 
-     */
-    public function getUsuario()
-    {
-        return $this->usuario;
-    }
-
-    /**
-     * Set productocotizacion
-     *
-     * @param \Incentives\SolicitudesBundle\Entity\CotizacionProducto $productocotizacion
-     * @return OrdenesProducto
-     */
-    public function setProductocotizacion(\Incentives\SolicitudesBundle\Entity\CotizacionProducto $productocotizacion = null)
-    {
-        $this->productocotizacion = $productocotizacion;
-    
-        return $this;
-    }
-
-    /**
-     * Get productocotizacion
-     *
-     * @return \Incentives\SolicitudesBundle\Entity\CotizacionProducto 
-     */
-    public function getProductocotizacion()
-    {
-        return $this->productocotizacion;
+        return $this->tracking;
     }
 
     /**
      * Set facturaProducto
      *
      * @param \Incentives\FacturacionBundle\Entity\FacturaProductos $facturaProducto
+     *
      * @return OrdenesProducto
      */
     public function setFacturaProducto(\Incentives\FacturacionBundle\Entity\FacturaProductos $facturaProducto = null)
     {
         $this->facturaProducto = $facturaProducto;
-    
+
         return $this;
     }
 
     /**
      * Get facturaProducto
      *
-     * @return \Incentives\FacturacionBundle\Entity\FacturaProductos 
+     * @return \Incentives\FacturacionBundle\Entity\FacturaProductos
      */
     public function getFacturaProducto()
     {
@@ -734,25 +793,26 @@ class OrdenesProducto
     }
 
     /**
-     * Set precioCliente
+     * Set usuario
      *
-     * @param float $precioCliente
+     * @param \Incentives\BaseBundle\Entity\Usuario $usuario
+     *
      * @return OrdenesProducto
      */
-    public function setPrecioCliente($precioCliente)
+    public function setUsuario(\Incentives\BaseBundle\Entity\Usuario $usuario = null)
     {
-        $this->precioCliente = $precioCliente;
-    
+        $this->usuario = $usuario;
+
         return $this;
     }
 
     /**
-     * Get precioCliente
+     * Get usuario
      *
-     * @return float 
+     * @return \Incentives\BaseBundle\Entity\Usuario
      */
-    public function getPrecioCliente()
+    public function getUsuario()
     {
-        return $this->precioCliente;
+        return $this->usuario;
     }
 }

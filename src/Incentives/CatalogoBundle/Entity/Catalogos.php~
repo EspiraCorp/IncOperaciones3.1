@@ -76,6 +76,12 @@ class Catalogos
      * 
      */
     protected $productocatalogo;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Premios", mappedBy="catalogos", cascade={"persist"})
+     * 
+     */
+    protected $premios;
     
      /**
      * @ORM\OneToMany(targetEntity="Intervalos", mappedBy="catalogos", cascade={"persist"})
@@ -456,5 +462,39 @@ class Catalogos
     public function getUsuario()
     {
         return $this->usuario;
+    }
+
+    /**
+     * Add premio
+     *
+     * @param \Incentives\CatalogoBundle\Entity\Premios $premio
+     *
+     * @return Catalogos
+     */
+    public function addPremio(\Incentives\CatalogoBundle\Entity\Premios $premio)
+    {
+        $this->premios[] = $premio;
+
+        return $this;
+    }
+
+    /**
+     * Remove premio
+     *
+     * @param \Incentives\CatalogoBundle\Entity\Premios $premio
+     */
+    public function removePremio(\Incentives\CatalogoBundle\Entity\Premios $premio)
+    {
+        $this->premios->removeElement($premio);
+    }
+
+    /**
+     * Get premios
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPremios()
+    {
+        return $this->premios;
     }
 }

@@ -11,28 +11,18 @@ use Incentives\RedencionesBundle\Entity\Redenciones;
 use Incentives\RedencionesBundle\Entity\RedencionesHistorico;
 use Incentives\RedencionesBundle\Entity\Redencionesenvios;
 use Incentives\RedencionesBundle\Entity\Redencionesatributos;
+use Incentives\RedencionesBundle\Entity\RedencionesProductos;
 
 use Symfony\Component\HttpFoundation\Response;
 
 class RedencionesController extends Controller
 {
-    /**
-     * @Route("/hello/{name}")
-     * @Template()
-     */
-    public function indexAction($name)
-    {
-        return array('name' => $name);
-    }
 
-    public function NuevaAction(Request $request)
+	public function NuevaAction(Request $request)
     {
 
     	$mensaje = "";
         
-    	// obtener el objeto de la petición
-		
-
 		// obtiene el valor de un parámetro $_GET
 		if(null !== $request->query->get('parametros')) {
 			$parametros = $request->query->get('parametros');
@@ -124,25 +114,23 @@ class RedencionesController extends Controller
 
 				//buscar producto redimido
 				$qb = $em->createQueryBuilder();            
-		        $qb->select('pr');
+		        $qb->select('pr', 'pp');
 		        $qb->from('IncentivesCatalogoBundle:Premios','pr');
-		        $qb->leftJoin('pr.premiosproductos', 'pp');
-		        $qb->leftJoin('pp.producto', 'p');
+		        $qb->Join('pr.premiosproductos', 'pp');
+		        $qb->Join('pp.producto', 'p');
 		        $str_filtro = 'pr.catalogos = :id_catalogo';
 		        $str_filtro .= ' AND (p.codInc LIKE :sku)';
-		        $str_filtro .= ' AND pr.activo=1 AND pr.aproboCliente=1';
-		        $qb->groupBy('pr.id');
+		        $str_filtro .= ' AND pr.estado=1 AND pr.aproboCliente=1';
+		        $qb->where($str_filtro);
 
 		        //Definicion de parametros para filtros
 		        $arrayParametros['sku'] = $sku;
 		        $arrayParametros['id_catalogo'] = $parametros->catalogo;
 		        $qb->setParameters($arrayParametros);
-		            
+		        $qb->setMaxResults(1);
 		        $premio = $qb->getQuery()->getOneOrNullResult();
 
-		        if(isset($producto)){//Si el producto existe almacenar y esta activo y aprobado
-
-			        $idproductoC = $producto->getId();
+		        if(isset($premio)){//Si el producto existe almacenar y esta activo y aprobado
 
 			        //Identificar atributos
 			        if(isset($productoR[4])){
@@ -177,8 +165,8 @@ class RedencionesController extends Controller
 							if(isset($puntos) && $puntos!="" && $puntos>0) {
 								$redencion->setPuntos($puntos);
 								$noNulo++;
-							}elseif($producto->getPuntos() != ""){
-								$redencion->setPuntos($producto->getPuntos());
+							}elseif($premio->getPuntos() != ""){
+								$redencion->setPuntos($premio->getPuntos());
 								$noNulo++;
 							}
 
@@ -187,6 +175,20 @@ class RedencionesController extends Controller
 								$exitoso++;
 
 								$em->persist($redencion);
+
+								//Productos redencion
+								$PremiosProductos = $em->getRepository('IncentivesCatalogoBundle:PremiosProductos')->findByPremio($premio->getId());
+								foreach ($PremiosProductos as $keyPP => $valuePP) {
+									
+									$RedencionesProductos = new RedencionesProductos();
+
+					                $RedencionesProductos->setRedencion($redencion);
+					                $RedencionesProductos->setProducto($valuePP->getProducto());
+					                $RedencionesProductos->setEstado($estado);
+					                $RedencionesProductos->setFecha(new \DateTime($parametros->redencion->fecha));
+
+					                $em->persist($RedencionesProductos);
+								}
 
 								//Almacenar Atributos
 								if(isset($atributos)){
@@ -236,11 +238,6 @@ class RedencionesController extends Controller
 
 								$em->flush();
 
-								//Almacenar Historico
-								$redencionH = $this->get('incentives_redenciones');
-								$redencionH->insertar($redencion);
-
-
 							}else{					
 								$mensaje .= " El producto: ".$productoR[0]."  no cuenta con puntos validos.";
 							}
@@ -278,9 +275,6 @@ class RedencionesController extends Controller
 
     	$mensaje = "";
         
-    	// obtener el objeto de la petición
-		
-
 		// obtiene el valor de un parámetro $_GET
 		if(null !== $request->query->get('parametros')) {
 			$parametros = $request->query->get('parametros');
@@ -372,26 +366,22 @@ class RedencionesController extends Controller
 
 				//buscar producto redimido
 				$qb = $em->createQueryBuilder();            
-		        $qb->select('pr');
+		        $qb->select('pr', 'pp');
 		        $qb->from('IncentivesCatalogoBundle:Premios','pr');
-		        $qb->leftJoin('pr.premiosproductos', 'pp');
-		        $qb->leftJoin('pp.producto', 'p');
-		        $str_filtro = 'pr.catalogos = :id_catalogo';
-		        $str_filtro .= ' AND (pr.id LIKE :idPremio)';
-		        $str_filtro .= ' AND pr.activo=1 AND pr.aproboCliente=1';
+		        $qb->Join('pr.premiosproductos', 'pp');
+		        $str_filtro = 'pr.catalogos = :idCatalogo';
+		        $str_filtro .= ' AND pr.id= :idPremio';
+		        $str_filtro .= ' AND pr.estado=1 AND pr.aproboCliente=1';
 		        $qb->where($str_filtro);
-		        $qb->groupBy('pr.id');
 
 		        //Definicion de parametros para filtros
 		        $arrayParametros['idPremio'] = $idPremio;
-		        $arrayParametros['id_catalogo'] = $parametros->catalogo;
+		        $arrayParametros['idCatalogo'] = $parametros->catalogo;
 		        $qb->setParameters($arrayParametros);
-		            
+		        $qb->setMaxResults(1);
 		        $premio = $qb->getQuery()->getOneOrNullResult();
 
-		        if(isset($producto)){//Si el producto existe almacenar y esta activo y aprobado
-
-			        $idproductoC = $producto->getId();
+		        if(isset($premio)){//Si el producto existe almacenar y esta activo y aprobado
 
 			        //Identificar atributos
 			        if(isset($productoR[4])){
@@ -426,8 +416,8 @@ class RedencionesController extends Controller
 							if(isset($puntos) && $puntos!="" && $puntos>0) {
 								$redencion->setPuntos($puntos);
 								$noNulo++;
-							}elseif($producto->getPuntos() != ""){
-								$redencion->setPuntos($producto->getPuntos());
+							}elseif($premio->getPuntos() != ""){
+								$redencion->setPuntos($premio->getPuntos());
 								$noNulo++;
 							}
 
@@ -436,6 +426,20 @@ class RedencionesController extends Controller
 								$exitoso++;
 
 								$em->persist($redencion);
+
+								//Productos redencion
+								$PremiosProductos = $em->getRepository('IncentivesCatalogoBundle:PremiosProductos')->findByPremio($premio->getId());
+								foreach ($PremiosProductos as $keyPP => $valuePP) {
+									
+									$RedencionesProductos = new RedencionesProductos();
+
+					                $RedencionesProductos->setRedencion($redencion);
+					                $RedencionesProductos->setProducto($valuePP->getProducto());
+					                $RedencionesProductos->setEstado($estado);
+					                $RedencionesProductos->setFecha(new \DateTime($parametros->redencion->fecha));
+
+					                $em->persist($RedencionesProductos);
+								}
 
 								//Almacenar Atributos
 								if(isset($atributos)){
@@ -485,11 +489,6 @@ class RedencionesController extends Controller
 
 								$em->flush();
 
-								//Almacenar Historico
-								$redencionH = $this->get('incentives_redenciones');
-								$redencionH->insertar($redencion);
-
-
 							}else{					
 								$mensaje .= " El producto: ".$productoR[0]."  no cuenta con puntos validos.";
 							}
@@ -521,7 +520,6 @@ class RedencionesController extends Controller
 		return $response->send();
     
     }
-
 
     public function AutorizadaAction(Request $request)
     {
@@ -872,8 +870,8 @@ class RedencionesController extends Controller
 	        	$redencionesP[$key]['cedula'] = $value->getParticipante()->getDocumento();
 	        	$redencionesP[$key]['participante'] = $value->getParticipante()->getParticipante();
 	        	$redencionesP[$key]['codigo'] = $value->getCodigoredencion();
-				$redencionesP[$key]['sku'] = $value->getProductocatalogo()->getProducto()->getCodinc();
-				$redencionesP[$key]['producto'] = $value->getProductocatalogo()->getProducto()->getNombre();
+				//$redencionesP[$key]['sku'] = $value->getProductocatalogo()->getProducto()->getCodinc();
+				$redencionesP[$key]['producto'] = $value->getPremio()->getNombre();
 				$redencionesP[$key]['fecha'] = $value->getFecha()->format('Y-m-d');
 				//if(isset($value->getFechaAutorizacion())) $redencionesP[$key]['fechaAutorizacion'] = $value->getFechaAutorizacion()->format('Y-m-d'); else $redencionesP[$key]['fechaAutorizacion'] = "";
 				//if(isset($value->getFechaDespacho())) $redencionesP[$key]['fechaDespacho'] = $value->getFechaDespacho()->format('Y-m-d'); else $redencionesP[$key]['fechaDespacho'] = "";
@@ -960,11 +958,10 @@ class RedencionesController extends Controller
 	        //Consultar puntos redimidos
 	        
 	        $qb1 = $em->createQueryBuilder();            
-            $qb1->select('r','pc','pd','pt','estado','d','dg','guia','envio');
+            $qb1->select('r','pr','pt','estado','d','dg','guia','envio');
 	        $qb1->from('IncentivesRedencionesBundle:Redenciones','r');
-            $qb1->leftJoin('r.productocatalogo', 'pc');
-            $qb1->leftJoin('pc.catalogos', 'c');
-            $qb1->leftJoin('pc.producto', 'pd');
+            $qb1->leftJoin('r.premio', 'pr');
+            $qb1->leftJoin('pr.catalogos', 'c');
             $qb1->leftJoin('r.participante', 'pt');
             $qb1->leftJoin('r.redencionestado', 'estado');
             $qb1->leftJoin('r.redencionesenvios', 'envio');
@@ -997,8 +994,8 @@ class RedencionesController extends Controller
 	        	$redencionesP[$key]['cedula'] = $value['participante']['documento'];
 	        	$redencionesP[$key]['participante'] = $value['participante']['participante'];
 	        	$redencionesP[$key]['codigo'] = $value['codigoredencion'];
-				$redencionesP[$key]['sku'] = $value['productocatalogo']['producto']['codInc'];
-				$redencionesP[$key]['producto'] = $value['productocatalogo']['producto']['nombre'];
+				//$redencionesP[$key]['sku'] = $value['productocatalogo']['producto']['codInc'];
+				$redencionesP[$key]['producto'] = $value['premio']['nombre'];
 				$redencionesP[$key]['fecha'] = $value['fecha']->format('Y-m-d');
 				if(isset($value['fechaAutorizacion'])) $redencionesP[$key]['fechaAutorizacion'] = $value['fechaAutorizacion']->format('Y-m-d'); else $redencionesP[$key]['fechaAutorizacion'] = "";
 				if(isset($value['fechaDespacho'])) $redencionesP[$key]['fechaDespacho'] = $value['fechaDespacho']->format('Y-m-d'); else $redencionesP[$key]['fechaDespacho'] = "";
