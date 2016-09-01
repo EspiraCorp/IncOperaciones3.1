@@ -36,10 +36,11 @@ class AutenticacionController extends Controller
 		//$user = $this->container->get('security.token_storage')->getToken()->getUser();
 		//$user1 = $this->getUser();
 		//echo $user->getId(); //
-		//if ($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) return $this->redirect($this->generateUrl('_inicio'));
-		//elseif ($this->get('security.authorization_checker')->isGranted('ROLE_PROV')) return $this->redirect($this->generateUrl('proveedores_datos'));
-		//elseif ($this->get('security.authorization_checker')->isGranted('ROLE_DIR')) return $this->redirect($this->generateUrl('proveedores'));
-		return $this->redirect($this->generateUrl('_inicio'));
+		if ($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) return $this->redirect($this->generateUrl('_inicio'));
+		elseif ($this->get('security.authorization_checker')->isGranted('ROLE_PROV')) return $this->redirect($this->generateUrl('proveedores_datos'));
+		elseif ($this->get('security.authorization_checker')->isGranted('ROLE_DIR')) return $this->redirect($this->generateUrl('proveedores'));
+		
+        return $this->redirect($this->generateUrl('_inicio'));
     }
 }
 

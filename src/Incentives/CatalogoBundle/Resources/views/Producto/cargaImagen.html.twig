@@ -12,7 +12,7 @@
                         </div>
                     </div>
 <div class="box-content">
-<form action="{{ path('producto_agregarimagen') }}" method="POST"  class="form-horizontal">
+<form action="{{ path('producto_agregarimagen') }}" method="POST"  enctype="multipart/form-data" class="form-horizontal">
     <input type='hidden' name='id' value={{ id }}>
     {{ form_errors(form) }}
     <fieldset>

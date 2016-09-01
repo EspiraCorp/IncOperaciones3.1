@@ -68,6 +68,12 @@ class Requisicion
     protected $cotizacionProducto;
 
     /**
+     * @ORM\ManyToOne(targetEntity="Incentives\SolicitudesBundle\Entity\CotizacionesEstado")
+     * @ORM\JoinColumn(name="estado_id", referencedColumnName="id", nullable=true)
+     */
+    protected $estado;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="fechaModificacion", type="datetime", nullable=true)
@@ -293,5 +299,29 @@ class Requisicion
     public function getUsuario()
     {
         return $this->usuario;
+    }
+
+    /**
+     * Set estado
+     *
+     * @param \Incentives\SolicitudesBundle\Entity\CotizacionesEstado $estado
+     *
+     * @return Requisicion
+     */
+    public function setEstado(\Incentives\SolicitudesBundle\Entity\CotizacionesEstado $estado = null)
+    {
+        $this->estado = $estado;
+
+        return $this;
+    }
+
+    /**
+     * Get estado
+     *
+     * @return \Incentives\SolicitudesBundle\Entity\CotizacionesEstado
+     */
+    public function getEstado()
+    {
+        return $this->estado;
     }
 }

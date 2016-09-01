@@ -1185,7 +1185,7 @@ class InventarioController extends Controller
 
         $arrayParametros = array();
         $qb = $em->createQueryBuilder();            
-        $qb->select('d', 'oc orden', 'p planilla', 'pr producto', 'r', 'pt', 'c', 'pg','op','dg','g');
+        $qb->select('d', 'oc orden', 'p planilla', 'pr producto', 'r', 'pt', 'c', 'pg','cc','op','dg','g');
         $qb->from('IncentivesInventarioBundle:Despachos','d');
         $qb->leftJoin('d.planilla','p');
         $qb->leftJoin('d.producto','pr');
@@ -1195,6 +1195,7 @@ class InventarioController extends Controller
         $qb->leftJoin('dg.guia','g');
         $qb->leftJoin('r.participante','pt');
         $qb->leftJoin('pt.programa','pg');
+        $qb->leftJoin('pg.centroCostos','cc');
         $qb->leftJoin('d.ordenproducto','op');
         $qb->leftJoin('op.ordenesCompra','oc');
         $str_filtro = ' d.planilla='.$id;
@@ -1253,7 +1254,7 @@ class InventarioController extends Controller
             					->setCellValue('J'.$fil, $value['producto']['codInc'])
             					->setCellValue('K'.$fil, $value['producto']['categoria']['nombre'])
             					->setCellValue('L'.$fil, $value['cantidad'])
-            					->setCellValue('M'.$fil, $value['redencion']['participante']['programa']['centrocostos'])
+            					->setCellValue('M'.$fil, $value['redencion']['participante']['programa']['centroCostos']['centrocostos'])
             					->setCellValue('N'.$fil, $value['redencion']['participante']['programa']['nombre'])//Programa
             					->setCellValue('P'.$fil, "")
             					->setCellValue('R'.$fil, $value['redencion']['participante']['documento'])

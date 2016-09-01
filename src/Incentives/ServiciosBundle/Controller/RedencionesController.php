@@ -870,8 +870,8 @@ class RedencionesController extends Controller
 	        	$redencionesP[$key]['cedula'] = $value->getParticipante()->getDocumento();
 	        	$redencionesP[$key]['participante'] = $value->getParticipante()->getParticipante();
 	        	$redencionesP[$key]['codigo'] = $value->getCodigoredencion();
-				//$redencionesP[$key]['sku'] = $value->getProductocatalogo()->getProducto()->getCodinc();
-				$redencionesP[$key]['producto'] = $value->getPremio()->getNombre();
+				$redencionesP[$key]['sku'] = $value->getRedencionesProductos()[0]->getProducto()->getCodinc();
+				$redencionesP[$key]['producto'] = $value->getRedencionesProductos()[0]->getProducto()->getNombre();
 				$redencionesP[$key]['fecha'] = $value->getFecha()->format('Y-m-d');
 				//if(isset($value->getFechaAutorizacion())) $redencionesP[$key]['fechaAutorizacion'] = $value->getFechaAutorizacion()->format('Y-m-d'); else $redencionesP[$key]['fechaAutorizacion'] = "";
 				//if(isset($value->getFechaDespacho())) $redencionesP[$key]['fechaDespacho'] = $value->getFechaDespacho()->format('Y-m-d'); else $redencionesP[$key]['fechaDespacho'] = "";

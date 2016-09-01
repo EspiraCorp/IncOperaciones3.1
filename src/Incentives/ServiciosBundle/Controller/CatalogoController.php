@@ -49,7 +49,7 @@ class CatalogoController extends Controller
             $qb->leftJoin('pr.categoria', 'ct');
             $qb->leftJoin('pr.promocion', 'promo');
            //Comprobar estado del producto y del producto en el catalogo
-            $str_filtro = 'pr.estado = 1 AND pr.aproboOperaciones = 1 AND pr.aproboComercial = 1 AND pr.aproboDirector = 1 AND pr.aproboCliente = 1 AND pr.catalogos = :id_catalogo';
+            $str_filtro = 'p.estado=1 AND pr.estado = 1 AND pr.aproboOperaciones = 1 AND pr.aproboComercial = 1 AND pr.aproboDirector = 1 AND pr.aproboCliente = 1 AND pr.catalogos = :id_catalogo';
 
             $str_filtro .= ' AND pr.puntos!=0 AND pr.puntos IS NOT NULL';
 
@@ -124,11 +124,11 @@ class CatalogoController extends Controller
                 $datosPremio = $valueP['premiosproductos'][0]['producto'];
 
             	$listado[$idP]['id'] = $valueP['id'];
-            	$listado[$idP]['nombre'] = $valueP['nombre'];
-            	$listado[$idP]['referencia'] = $valueP['referencia'];
-            	$listado[$idP]['marca'] = $valueP['marca'];
+            	$listado[$idP]['nombre'] = $datosPremio['nombre'];
+            	$listado[$idP]['referencia'] = $datosPremio['referencia'];
+            	$listado[$idP]['marca'] = $datosPremio['marca'];
             	$listado[$idP]['sku'] = $datosPremio['codInc'];
-            	$listado[$idP]['descripcion'] = $valueP['descripcion'];
+            	$listado[$idP]['descripcion'] = $datosPremio['descripcion'];
             	$listado[$idP]['puntos'] = $valueP['puntos'];
                 $listado[$idP]['categoria_id'] = $valueP['categoria']['id'];
                 $listado[$idP]['agotado'] = $valueP['agotado'];
@@ -180,7 +180,7 @@ class CatalogoController extends Controller
 
             	$im = 0;
             	foreach ($imagenes as $keyI => $valueI) {
-    				$cadena   = '/web';
+    				$cadena   = '/bundles';
     				$pos = strpos($valueI->getPath(), $cadena);
     				$ruta = substr($valueI->getPath(), $pos);
     				$ruta_min = substr($ruta, 0, -4)."_min".substr($ruta,-4);

@@ -44,7 +44,7 @@ class CotizacionesController extends Controller
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
 
-            if ($form->isValid()) {
+            //if ($form->isValid()) {
                 
                 $tipo = $em->getRepository('IncentivesOrdenesBundle:OrdenesTipo')->find("1");
                 $cotizacion->setEstado($estado);
@@ -63,7 +63,7 @@ class CotizacionesController extends Controller
                 $this->get('session')->getFlashBag()->add('notice', 'La cotizacion con consecutivo '.$cotizacion->getConsecutivo().' se creo correctamente');
 
                 return $this->redirect($this->generateUrl('cotizaciones_datos')."/".$cotizacion->getId());
-            }
+            //}
         }            
 
         return $this->render('IncentivesSolicitudesBundle:Cotizaciones:nueva.html.twig', array(
@@ -599,12 +599,17 @@ class CotizacionesController extends Controller
                     array('cotizacion' => $cotizacion, 'accion' => $accion)
                 )
             );
-        
-        //Send the message
-        if($mailer->send($message)) {
-            $this->get('session')->getFlashBag()->add('notice', 'El correo de alerta ha sido enviado correctamente');
-        }else{
-            $this->get('session')->getFlashBag()->add('notice', 'El correo de alerta no pudo ser enviado');
+
+        try{
+            //Send the message
+            if($mailer->send($message)) {
+                $this->get('session')->getFlashBag()->add('notice', 'El correo de alerta ha sido enviado correctamente');
+            }else{
+                $this->get('session')->getFlashBag()->add('notice', 'El correo de alerta no pudo ser enviado');
+            }
+        }catch(Swift_TransportException $e){
+            $mailer->getTransport()->stop();
+            sleep(10); // Just in case ;-)
         }
 
     }

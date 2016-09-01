@@ -178,6 +178,7 @@ simple_things_entity_audit:
         - Incentives\RedencionesBundle\Entity\Redencionesatributos
         - Incentives\RedencionesBundle\Entity\Redencionesenvios
         - Incentives\RedencionesBundle\Entity\Redencionesestado
+        - Incentives\RedencionesBundle\Entity\RedencionProductos
         - Incentives\OperacionesBundle\Entity\Regimen
         - Incentives\SolicitudesBundle\Entity\Requisicion
         - Incentives\SolicitudesBundle\Entity\RequisicionProducto

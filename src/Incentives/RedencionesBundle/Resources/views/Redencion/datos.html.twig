@@ -62,7 +62,7 @@
                                     <td>{{ redencion.codigoredencion }}</td>
                                     <td>{{ redencion.participante.nombre}}</td>
                                     <td>{{ redencion.participante.tipodocumento.nombre }} {{ redencion.participante.documento }}</a></td>
-                                    <td>{{ redencion.premio.nombre }}</a></td>
+                                    <td>{{ redencion.redencionesproductos[0].producto.nombre }}</a></td>
                                     <td>{{ redencion.puntos }}</a></td>
                                     <td>{{ redencion.premio.catalogos.nombre }}</a></td>
                                     <td>{{ redencion.fecha | date("Y-m-d") }}</a></td>

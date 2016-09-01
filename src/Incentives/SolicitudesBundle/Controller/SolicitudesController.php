@@ -601,7 +601,7 @@ class SolicitudesController extends Controller
         $solicitante = $solicitud->getSolicitante();
 
         $correos =  array('controloperaciones@inc-group.co');
-	array_push($correos, $solicitante->getEmail());
+	   array_push($correos, $solicitante->getEmail());
         
         $responsables = $em->getRepository('IncentivesSolicitudesBundle:SolicitudesAsignar')->findBySolicitud($idSolicitud);
         foreach($responsables as $key => $value){
@@ -634,12 +634,17 @@ class SolicitudesController extends Controller
                     array('solicitud' => $solicitud, 'accion' => $accion)
                 )
             );
-        
-        //Send the message
-        if($mailer->send($message)) {
-            $this->get('session')->getFlashBag()->add('notice', 'El correo de alerta ha sido enviado correctamente');
-        }else{
-            $this->get('session')->getFlashBag()->add('notice', 'El correo de alerta no pudo ser enviado');
+
+        try{
+            //Send the message
+            if($mailer->send($message)) {
+                $this->get('session')->getFlashBag()->add('notice', 'El correo de alerta ha sido enviado correctamente');
+            }else{
+                $this->get('session')->getFlashBag()->add('notice', 'El correo de alerta no pudo ser enviado');
+            }
+        }catch(Swift_TransportException $e){
+            $mailer->getTransport()->stop();
+            sleep(10); // Just in case ;-)
         }
 
     }
@@ -664,7 +669,7 @@ class SolicitudesController extends Controller
                 $em->persist($observacion);
                 $em->flush();
                 
-                $this->correoAction($solicitudEnt->getId(), 'comentada: <br>'.$pro['observacion']);
+                $this->correoAction($solicitudEnt->getId(), 'comentario: <br>'.$pro['observacion']);
                 
                 return $this->redirect($this->generateUrl('solicitudes_datos')."/".$id);
             }

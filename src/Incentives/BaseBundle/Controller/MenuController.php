@@ -15,7 +15,7 @@ class MenuController extends Controller
 	
 	public function menuPrincipalAction()
     {
-        /*if($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_REMEMBERED')){
+        if($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_REMEMBERED')){
         	$rol=array();
     		$userRoles =  $this->getUser()->getGrupos();
     		foreach ($userRoles as $clave => $valor) {
@@ -23,9 +23,9 @@ class MenuController extends Controller
     		}
     		
     		$rol = implode(",", $rol);
-        }else{*/
+        }else{
             $rol = "'ROLE_DIR'";
-        //}
+        }
 
         $em = $this->getDoctrine()->getManager();
         $qb = $em->createQueryBuilder()
@@ -48,7 +48,7 @@ class MenuController extends Controller
 
     public function menuPrincipalLteAction()
     {
-        /*if($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_REMEMBERED')){
+        if($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_REMEMBERED')){
             $rol=array();
             $userRoles =  $this->getUser()->getGrupos();
             foreach ($userRoles as $clave => $valor) {
@@ -56,9 +56,9 @@ class MenuController extends Controller
             }
             
             $rol = implode(",", $rol);
-        }else{*/
+        }else{
             $rol = "'ROLE_DIR'";
-        //}
+        }
 
         $em = $this->getDoctrine()->getManager();
         $qb = $em->createQueryBuilder()

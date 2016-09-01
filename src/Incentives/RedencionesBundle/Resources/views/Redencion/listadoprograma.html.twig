@@ -58,7 +58,7 @@
                             <td><a href="{{ path("redenciones_datosredencion") }}/{{redencion.id }}">{{ redencion.codigoredencion }}</a></td>
                             <td>{{ redencion.participante.nombre }}</a></td>
                             <td>{{ redencion.participante.documento }}</a></td>
-                            <td>{{ redencion.premio.nombre }}</td>
+                            <td>{{ redencion.redencionesproductos[0].producto.nombre }}</td>
                             <td>{{ redencion.puntos }}</a></td>
                             <td>{{ redencion.redencionestado.nombre }}</td>
                             <td>

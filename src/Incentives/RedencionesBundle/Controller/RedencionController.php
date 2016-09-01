@@ -1127,7 +1127,7 @@ class RedencionController extends Controller
                     	LEFT JOIN Factura f ON fp.factura_id=f.id";
 
             $str_filtro = ' WHERE pt.programa_id = '.$programa;
-            $str_filtro .= " AND r.redencionestado_id != 7";
+            //$str_filtro .= " AND r.redencionestado_id != 7";
             $str_filtro .= " GROUP BY rp.id  ORDER BY r.fecha ASC,rp.id ASC";
             
             $conn = $this->get('database_connection'); 
@@ -1241,12 +1241,14 @@ class RedencionController extends Controller
 							foreach ($otrosR as $keyR) {
 								//$iR++;
 								$valueR = explode(":", $keyR);
-								$row[] = eregi_replace("[\n|\r|\n\r]", '', utf8_decode($valueR[1]));
+
+								$row[] = eregi_replace("[\n|\r|\n\r]", '', utf8_decode((isset($valueR[1]))? $valueR[1] : ""));
 							}
 						}
-						 
+                        //print_r($row);
 						fputcsv($fp,$row,';');
             }
+            //exit;
 
 			rewind($fp);
 			$csv = stream_get_contents($fp);

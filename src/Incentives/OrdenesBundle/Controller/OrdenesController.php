@@ -105,7 +105,7 @@ class OrdenesController extends Controller
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
 
-            if ($form->isValid()) {
+            //if ($form->isValid()) {
                 // realiza alguna acción, tal como guardar la tarea en la base de datos
                 
                 $qb = $em->createQueryBuilder(); 
@@ -143,7 +143,7 @@ class OrdenesController extends Controller
                 $this->totalordenAction($orden->getId());
 
                 return $this->redirect($this->generateUrl('solicitudes_datos')."/".$solicitudId);
-            }
+            //}
         }            
 
         return $this->render('IncentivesOrdenesBundle:Ordenes:nuevaordensolicitud.html.twig', array(
@@ -294,10 +294,12 @@ class OrdenesController extends Controller
         }*/
 
         return $this->render('IncentivesOrdenesBundle:Ordenes:datos.html.twig', 
-            array('form' => $form->createView(), 'ordenes' => $ordenes, 
+            array('ordenes' => $ordenes, 
                 'productos' => $productos, 'precios' => $precios,
                 'cc' => $cantCC, 'tracking' => $tracking, 
         ));
+
+        echo "ok"; exit;
     }
 
     /**
@@ -1161,21 +1163,22 @@ class OrdenesController extends Controller
       $em = $this->getDoctrine()->getManager();
 
       $qb = $em->createQueryBuilder()
-                ->select('r','op','pt','pg','pc','p','pp','oc')
-                ->from('IncentivesRedencionesBundle:Redenciones','r')
-                ->leftJoin('r.ordenesProducto', 'op')
+                ->select('rp','r','op','pt','pg','pr','p','pp','oc')
+                ->from('IncentivesRedencionesBundle:RedencionesProductos','rp')
+                ->leftJoin('rp.redencion', 'r')
+                ->leftJoin('rp.ordenesProducto', 'op')
                 ->leftJoin('op.ordenesCompra', 'oc')
                 ->leftJoin('r.participante', 'pt')
                 ->leftJoin('pt.programa', 'pg')
-                ->leftJoin('r.productocatalogo', 'pc')
-                ->leftJoin('pc.producto', 'p')
+                ->leftJoin('r.premio', 'pr')
+                ->leftJoin('rp.producto', 'p')
                 ->leftJoin('p.productoprecio', 'pp');
       $str = "op.id=".$productoOrden;
 
       $qb->where($str);
       $Redenciones =  $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
 
-    //echo "<pre>"; print_r($Redenciones); echo "</pre>";
+     //echo "<pre>"; print_r($Redenciones); echo "</pre>";
 
       return $this->render('IncentivesOrdenesBundle:Ordenes:detalleproductoorden.html.twig', 
           array('redenciones' => $Redenciones,

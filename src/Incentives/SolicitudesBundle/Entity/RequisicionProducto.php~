@@ -83,6 +83,12 @@ class  RequisicionProducto
     protected $facturaProducto;
 
     /**
+     * @ORM\ManyToOne(targetEntity="Incentives\SolicitudesBundle\Entity\CotizacionesEstado")
+     * @ORM\JoinColumn(name="estado_id", referencedColumnName="id", nullable=true)
+     */
+    protected $estado;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="fechaModificacion", type="datetime", nullable=true)
