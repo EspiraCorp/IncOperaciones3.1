@@ -1328,17 +1328,18 @@ class InventarioController extends Controller
 
       $arrayParametros = array();
                 $qb = $em->createQueryBuilder();            
-                $qb->select('count(d) total','d','r','p','pr','pais','cat','c');
+                $qb->select('count(d) total','d','rp','r','p','pr','pais','cat','c','i');
                 $qb->from('IncentivesInventarioBundle:Despachos','d');
-                $qb->Join('d.redencion', 'r', 'WITH', 'r.redencionestado = 4');
-                $qb->Join('r.productocatalogo', 'p');
-                $qb->Join('r.inventario', 'i');
-                $qb->Join('p.producto', 'pr');
-                $qb->Join('p.catalogos', 'c');
-                $qb->Join('pr.categoria', 'cat');
+                $qb->Join('d.redencionesproductos', 'rp', 'WITH', 'rp.estado = 4');
+                $qb->Join('rp.inventario', 'i');
+                $qb->Join('rp.producto', 'p');
+                $qb->Join('rp.redencion', 'r');
+                $qb->Join('r.premio', 'pr');
+                $qb->Join('pr.catalogos', 'c');
+                $qb->Join('p.categoria', 'cat');
                 $qb->Join('c.pais', 'pais');
-                $str_filtro = ' d.redencion IS NOT NULL AND d.planilla is NULL';
-                
+                $str_filtro = ' d.redencionesproductos IS NOT NULL AND d.planilla is NULL';
+
                 //no mostrar premios de otros paisses a el operador logistico
                 if($this->get('security.authorization_checker')->isGranted('ROLE_BOD')){
                     $str_filtro .= ' AND c.pais=1';
@@ -1349,11 +1350,10 @@ class InventarioController extends Controller
 
       $despachos =  $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
 
-      //echo "<pre>"; print_r($Inventarios); echo "</pre>"; exit;
+      //echo "<pre>"; print_r($despachos); echo "</pre>"; exit;
       $form = $this->createForm(PlanillasGenerarType::class);
 
       if ($request->isMethod('POST')) {
-                // realiza alguna acción, tal como guardar la tarea en la base de datos
 
               $pais = intval($request->get('pais'));
               $categoria = intval($request->get('categoria'));
@@ -1374,14 +1374,17 @@ class InventarioController extends Controller
                 $qb = $em->createQueryBuilder();            
                 $qb->select('d','r','p','i');
                 $qb->from('IncentivesInventarioBundle:Despachos','d');
-                $qb->Join('d.redencion', 'r', 'WITH', 'r.redencionestado = 4');
-                $qb->Join('r.productocatalogo', 'p');
-                $qb->Join('p.producto', 'pr');
-                $qb->Join('r.inventario', 'i');
-                $qb->Join('p.catalogos', 'c');
-                $str_filtro = ' d.redencion IS NOT NULL AND d.planilla is NULL AND i.despacho=d.id';
+                $qb->Join('d.redencionesproductos', 'rp', 'WITH', 'rp.estado = 4');
+                $qb->Join('rp.inventario', 'i');
+                $qb->Join('rp.producto', 'p');
+                $qb->Join('rp.redencion', 'r');
+                $qb->Join('r.premio', 'pr');
+                $qb->Join('pr.catalogos', 'c');
+                $qb->Join('p.categoria', 'cat');
+                $qb->Join('c.pais', 'pais');
+                $str_filtro = ' d.redencionesproductos IS NOT NULL AND d.planilla is NULL AND i.despacho=d.id';
                 $str_filtro .= ' AND c.pais = '.$pais;
-                $str_filtro .= ' AND pr.categoria = '.$categoria;
+                $str_filtro .= ' AND p.categoria = '.$categoria;
                 $qb->where($str_filtro);
 
                 $despachos = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
@@ -1859,17 +1862,18 @@ public function planillaSolicitudAction(Request $request, $id){
 
         $arrayParametros = array();
         $qb = $em->createQueryBuilder();            
-        $qb->select('i','pl','r','pt','pg','pp');
+        $qb->select('i','pl','r','rp','pt','pg','pp');
         $qb->from('IncentivesInventarioBundle:Inventario','i');
         $qb->leftJoin('i.planilla','pl');
-        $qb->leftJoin('i.redencion','r');
+        $qb->leftJoin('i.redencionProducto','rp');
+        $qb->leftJoin('rp.redencion','r');
         $qb->leftJoin('r.participante','pt');
         $qb->leftJoin('pt.programa','pg');
         $qb->leftJoin('i.producto','pp');
         $str_filtro = ' r.justificacion IS NULL AND pl.id='.$id;
         $qb->where($str_filtro);
         $redencionesPlanilla = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
-//echo "<pre>"; print_r($redencionesPlanilla); echo "</pre>"; exit;
+        //echo "<pre>"; print_r($redencionesPlanilla); echo "</pre>"; exit;
 
         return $this->render('IncentivesInventarioBundle:Inventario:planilladatos.html.twig', array(
             'planilla' => $planilla, 'costoslogistica' => $costosLogistica, 'redencionesPlanilla' => $redencionesPlanilla

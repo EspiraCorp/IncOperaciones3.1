@@ -21,11 +21,11 @@
             <th></th>
         </tr>
         {% for categoria in despachos %}
-           <tr><td>{{ categoria[0].redencion.productocatalogo.catalogos.pais.nombre }}</td>
-                <td>{{ categoria[0].redencion.productocatalogo.producto.categoria.nombre }}</td>
+           <tr><td>{{ categoria[0].redencionesproductos.redencion.premio.catalogos.pais.nombre }}</td>
+                <td>{{ categoria[0].redencionesproductos.producto.categoria.nombre }}</td>
                 <td>{{ categoria.total }}</td>
                 <td>
-                    <a class="btn btn-info" onClick="post('{{ path('planillas_generarsegmentado') }}', {pais:{{ categoria[0].redencion.productocatalogo.catalogos.pais.id }}, categoria: {{ categoria[0].redencion.productocatalogo.producto.categoria.id }}})">Generar</a>
+                    <a class="btn btn-info" onClick="post('{{ path('planillas_generarsegmentado') }}', {pais:{{ categoria[0].redencionesproductos.redencion.premio.catalogos.pais.id }}, categoria: {{ categoria[0].redencionesproductos.producto.categoria.id }}})">Generar</a>
                 </td>
             </tr>
         {% endfor %}

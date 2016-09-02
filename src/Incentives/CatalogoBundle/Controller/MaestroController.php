@@ -8,15 +8,21 @@ use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Incentives\CatalogoBundle\Entity\Productocatalogo;
+use Incentives\CatalogoBundle\Entity\Premios;
+use Incentives\CatalogoBundle\Entity\PremiosProductos;
 use Incentives\CatalogoBundle\Entity\Catalogos;
 use Incentives\CatalogoBundle\Entity\Producto;
 use Incentives\CatalogoBundle\Entity\Productoprecio;
 use Incentives\CatalogoBundle\Form\Type\ProductocatalogoType;
 use Incentives\CatalogoBundle\Form\Type\ProductocatalogoProdType;
+use Incentives\CatalogoBundle\Form\Type\PremiosType;
 use Incentives\CatalogoBundle\Form\Type\FiltrosProductoType;
 use Incentives\CatalogoBundle\Form\Type\ProductoType;
 
-use Incentives\CatalogoBundle\Entity\Excel;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+
+use Incentives\OperacionesBundle\Entity\Excel;
 
 use PHPExcel;
 use PHPExcel_IOFactory;
@@ -28,6 +34,7 @@ use PHPExcel_Style_Fill;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
+ini_set('memory_limit','512M');
 
 class MaestroController extends Controller
 {
@@ -95,8 +102,9 @@ class MaestroController extends Controller
             
             $page = $request->get('page');
             if(!$page) $page= 1;
-            
-            if($pro = $request->request->all()['producto']){
+
+            if($request->request->all()){
+                $pro = $request->request->all()['producto'];
                 $page = 1;
                 $session->set('filtros_maestro', $pro);
             }
@@ -141,13 +149,14 @@ class MaestroController extends Controller
             $sqlFiltro = 'p.tipo=2 '.$sqlFiltro;
 
             $query = $em->createQueryBuilder()
-                ->select('p producto','pp precio', 'c categoria','e estado', 'pc', 'i','ct') 
+                ->select('p producto','pp precio', 'c categoria','e estado', 'ppr', 'i','pr','ct') 
                 ->from('IncentivesCatalogoBundle:Producto', 'p')
                 ->leftJoin('p.productoprecio','pp')
                 ->leftJoin('p.imagenproducto','i', "WITH", "i.estado=1")
                 ->leftJoin('p.categoria', 'c')
-                ->leftJoin('p.productocatalogo', 'pc')
-                ->leftJoin('pc.catalogos', 'ct')
+                ->leftJoin('p.premiosproductos', 'ppr')
+                ->leftJoin('ppr.premio', 'pr')
+                ->leftJoin('pr.catalogos', 'ct')
                 ->leftJoin('p.estado', 'e')
                 ->where($sqlFiltro);
             
@@ -458,7 +467,7 @@ class MaestroController extends Controller
         $form = $this->createFormBuilder($excelForm)
             ->setAction($this->generateUrl('proveedores_importar'))
             ->setMethod('POST')
-            ->add('excel', 'file')
+            ->add('excel', FileType::class)
             ->add('cargar', SubmitType::class)
             ->getForm();
 
@@ -543,37 +552,38 @@ class MaestroController extends Controller
                             $puntos = $this->calcularPuntos($precio, $incremento, $logistica, $puntaje, $id);
 
                             $qb = $em->createQueryBuilder();            
-                            $qb->select('pc');
-                            $qb->from('IncentivesCatalogoBundle:Productocatalogo','pc');
-                            $qb->where('pc.producto = :id_producto AND pc.catalogos = :id_catalogo');
+                            $qb->select('pp');
+                            $qb->from('IncentivesCatalogoBundle:Premios','pr');
+                            $qb->Join('pr.premiosproductos','pp');
+                            $qb->where('pp.producto = :id_producto AND pr.catalogos = :id_catalogo');
                             $qb->setParameter('id_producto', $producto->getId());
                             $qb->setParameter('id_catalogo', $id);
                             $qb->setMaxResults(1);
 
-                            if(!($productocatalogo = $qb->getQuery()->getOneOrNullResult())) $productocatalogo = new Productocatalogo();
+                            if(!($premio = $qb->getQuery()->getOneOrNullResult())) $premio = new Premios();
 
-                            $productocatalogo->setProducto($producto);
-                            $productocatalogo->setCatalogos($catalogo);
+                            //$productocatalogo->setProducto($producto);
+                            $premio->setCatalogos($catalogo);
                             $categoriaP = $em->getRepository('IncentivesOperacionesBundle:Categoria')->find($categoria);
-                            $productocatalogo->setCategoria($categoriaP);
-                            $productocatalogo->setActivo($estado);
-                            $productocatalogo->setPuntosTemporal($puntos);
-                            $productocatalogo->setPrecioTemporal($precio);
-                            $productocatalogo->setIncrementoTemporal($incremento);
-                            $productocatalogo->setLogisticaTemporal($logistica);
+                            $premio->setCategoria($categoriaP);
+                            $premio->setEStado($estado);
+                            $premio->setPuntosTemporal($puntos);
+                            $premio->setPrecioTemporal($precio);
+                            $premio->setIncrementoTemporal($incremento);
+                            $premio->setLogisticaTemporal($logistica);
                             //$productocatalogo->setActualizacion($tipo_actual);
 
                             //$productocatalogo->setAproboOperaciones(NULL);
                             //$productocatalogo->setAproboComercial(NULL);
                             //$productocatalogo->setAproboDirector(NULL);
                             //$productocatalogo->setAproboCliente(NULL);
-                            
-                            $productocatalogo->setEstadoAprobacion(NULL);
+                            $premio->setEstadoAprobacion(NULL);
+                            $em->persist($premio);
 
-                            $em->persist($productocatalogo);  
-                            
-                            $productocatalogoH = $this->get('incentives_catalogo');
-                            $productocatalogoH->historico($productocatalogo);
+                            $premioProducto = new PremiosProductos();
+                            $premioProducto->setPremio($premio);
+                            $premioProducto->setProducto($producto);
+                            $em->persist($premios);
                             
                             $em->flush();
 
@@ -621,9 +631,9 @@ class MaestroController extends Controller
             $qb->from('IncentivesOperacionesBundle:Categoria','c');
             $categorias = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
 
-            $arryaCategorias = array();
+            $arrayCategorias = array();
             foreach($categorias as $keyCat => $valueCat){
-                $arryaCategorias[] = $valueCat['id']." - ".$valueCat['nombre'];
+                $arrayCategorias[] = $valueCat['id']." - ".$valueCat['nombre'];
                 
             }
             
@@ -773,7 +783,7 @@ class MaestroController extends Controller
                         $objValidation->setError('Este valor no esta en la lista.');
                         $objValidation->setPromptTitle('Seleccione uno de la lista.');
                         $objValidation->setPrompt('Por favor seleccione uno de la lista.');
-                        $objValidation->setFormula1('"' . implode(",", $arryaCategorias) . '"');
+                        $objValidation->setFormula1('"' . implode(",", $arrayCategorias) . '"');
 
                         if(null == $value['producto']['categoria']) $Descarga->getActiveSheet()->setCellValue('F'.$fil, 'Nulo');
                         else $Descarga->getActiveSheet()->setCellValue('F'.$fil, $value['producto']['categoria']['id']." - ".$value['producto']['categoria']['nombre']);
@@ -824,13 +834,15 @@ class MaestroController extends Controller
             }
             
             $qb = $em->createQueryBuilder();
-            $qb->select('pc','p','pe','c','cat');
-            $qb->from('IncentivesCatalogoBundle:Productocatalogo','pc');
-            $qb->leftJoin('pc.producto','p');
-            $qb->leftJoin('pc.categoria','c');
+            $qb->select('pr','pp','p','pe','c','cat','epr');
+            $qb->from('IncentivesCatalogoBundle:Premios','pr');
+            $qb->leftJoin('pr.premiosproductos','pp');
+            $qb->leftJoin('pp.producto','p');
+            $qb->leftJoin('pr.categoria','c');
             $qb->leftJoin('p.categoria','cat');
             $qb->leftJoin('p.estado','pe');
-            $str_filtro = 'pc.catalogos = '.$id;   
+            $qb->leftJoin('pr.estado','epr');
+            $str_filtro = 'pr.catalogos = '.$id;   
             $qb->where($str_filtro);
             $productocatalogo = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
             
@@ -864,18 +876,18 @@ class MaestroController extends Controller
                     $Descarga->getActiveSheet()->getColumnDimension('L')->setWidth(10);
 
                     if($value['actualizacion'] == 1) $actual = "1 - Manual"; else  $actual = "0 - Automatica";
-                    if($value['activo'] == 1) $estad = "1 - Activo"; else  $estad = "0 - Inactivo";
+                    if($value['estado']['id'] == 1) $estad = "1 - Activo"; else  $estad = "0 - Inactivo";
 
 					$valorVenta = ($value['precio']/(1-$value['incremento']/100))+$value['logistica'];
 					$valorVentaTemp = ($value['precioTemporal']/(1-$value['incrementoTemporal']/100))+$value['logisticaTemporal'];
 
                     $Descarga->getActiveSheet()
-                            ->setCellValue('A'.$fil, $value['producto']['codInc'])
-                            ->setCellValue('B'.$fil, $value['producto']['nombre'])
-                            ->setCellValue('C'.$fil, $value['producto']['referencia'])
-                            ->setCellValue('D'.$fil, $value['producto']['marca'])
-                            ->setCellValue('E'.$fil, $value['producto']['descripcion'])
-                            ->setCellValue('G'.$fil, $value['producto']['estado']['id'])
+                            ->setCellValue('A'.$fil, $value['premiosproductos'][0]['producto']['codInc'])
+                            ->setCellValue('B'.$fil, $value['premiosproductos'][0]['producto']['nombre'])
+                            ->setCellValue('C'.$fil, $value['premiosproductos'][0]['producto']['referencia'])
+                            ->setCellValue('D'.$fil, $value['premiosproductos'][0]['producto']['marca'])
+                            ->setCellValue('E'.$fil, $value['premiosproductos'][0]['producto']['descripcion'])
+                            ->setCellValue('G'.$fil, $value['premiosproductos'][0]['producto']['estado']['id'])
                             ->setCellValue('H'.$fil, "")     //$fechact[0]);
                             ->setCellValue('I'.$fil, $estad)
                             ->setCellValue('J'.$fil, $actual)
@@ -935,8 +947,8 @@ class MaestroController extends Controller
                             if(null == $value['categoria']) $Descarga->getActiveSheet()->setCellValue('H'.$fil, 'Nulo');
                             else $Descarga->getActiveSheet()->setCellValue('H'.$fil, $value['categoria']['id']." - ".$value['categoria']['nombre']);
             
-                            if(null == $value['producto']['categoria']) $Descarga->getActiveSheet()->setCellValue('F'.$fil, 'Nulo');
-                            else $Descarga->getActiveSheet()->setCellValue('F'.$fil, $value['producto']['categoria']['id']." - ".$value['producto']['categoria']['nombre']);
+                            if(null == $value['premiosproductos'][0]['producto']['categoria']) $Descarga->getActiveSheet()->setCellValue('F'.$fil, 'Nulo');
+                            else $Descarga->getActiveSheet()->setCellValue('F'.$fil, $value['premiosproductos'][0]['producto']['categoria']['id']." - ".$value['premiosproductos'][0]['producto']['categoria']['nombre']);
             
 
                 $fil++;
@@ -1049,44 +1061,45 @@ class MaestroController extends Controller
     public function nuevoPremioAction(Request $request, $producto, $catalogo)
     {
         $em = $this->getDoctrine()->getManager();
-        $productocatalogo = new Productocatalogo();
+        $premios = new Premios();
 
         $datosProducto = $em->getRepository('IncentivesCatalogoBundle:Producto')->find($producto);
 
-        $form = $this->createForm(ProductocatalogoProdType::class, $productocatalogo);
+        $form = $this->createForm(PremiosType::class, $premios);
         
         if ($request->isMethod('POST')) {
            
                 $form->handleRequest($request);
                if ($form->isValid()) {
             
-                $pro = $request->request->all()['producto_catalogo'];
+                $pro = $request->request->all()['premios'];
                 $catalogoP = $em->getRepository('IncentivesCatalogoBundle:Catalogos')->find($catalogo);
                 $categoria = $em->getRepository('IncentivesOperacionesBundle:Categoria')->find($pro['categoria']);
                 // realiza alguna acción, tal como guardar la tarea en la base de datos
 
                 $puntos = $this->calcularPuntos($pro['precioTemporal'], $pro['incrementoTemporal'], $pro['logisticaTemporal'], $pro['puntosTemporal'], $catalogoP->getId());
 
-                $productocatalogo->setProducto($datosProducto);
-                $productocatalogo->setCatalogos($catalogoP);
-                $productocatalogo->setCategoria($categoria);
-                $productocatalogo->setPuntosTemporal($puntos);
-                $productocatalogo->setPrecioTemporal($pro['precioTemporal']);
-                $productocatalogo->setActivo(1);
-                $productocatalogo->setIncrementoTemporal($pro['incrementoTemporal']);
-                $productocatalogo->setLogisticaTemporal($pro['logisticaTemporal']);
+                //$premios->setProducto($datosProducto);
+                $premios->setCatalogos($catalogoP);
+                $premios->setCategoria($categoria);
+                $premios->setPuntosTemporal($puntos);
+                $premios->setPrecioTemporal($pro['precioTemporal']);
+                $estado = $em->getRepository('IncentivesCatalogoBundle:Estadocatalogo')->find("1");
+                $premios->setEstado($estado);
+                $premios->setIncrementoTemporal($pro['incrementoTemporal']);
+                $premios->setLogisticaTemporal($pro['logisticaTemporal']);
                 //$productocatalogo->setPrecio($pro['precioTemporal']);
                 //$productocatalogo->setIncremento($pro['incrementoTemporal']);
                 //$productocatalogo->setLogistica($pro['logisticaTemporal']);
 
                 if(isset($pro["agotado"]) && $pro["agotado"]==1) $agotado = 1; else $agotado = 0;
-                $productocatalogo->setAgotado($agotado);
+                $premios->setAgotado($agotado);
                   
-                $em->persist($productocatalogo);
-                
-                $productocatalogoH = $this->get('incentives_catalogo');
-                $productocatalogoH->historico($productocatalogo);
-                            
+                $premioProducto = new PremiosProductos();
+                $premioProducto->setPremio($premios);
+                $premioProducto->setProducto($datosProducto);
+
+                $em->persist($premios);
                 $em->flush();
                 //probar el redirect en la verison 2.3 y hacer el ajsutepara la 2.7
                    return $this->redirect($this->generateUrl('productocatalogo_maestro'));
@@ -1102,7 +1115,7 @@ class MaestroController extends Controller
     public function editarPremioAction(Request $request, $id)
     {
         $em = $this->getDoctrine()->getManager();
-        $productocatalogoEditar = $em->getRepository('IncentivesCatalogoBundle:Productocatalogo')->find($id);
+        $premiosEditar = $em->getRepository('IncentivesCatalogoBundle:Premios')->find($id);
         $datosProducto = $em->getRepository('IncentivesCatalogoBundle:Producto')->find($productocatalogoEditar->getProducto()->getId());
         $form = $this->createForm(ProductocatalogoProdType::class, $productocatalogoEditar);
 
@@ -1116,22 +1129,18 @@ class MaestroController extends Controller
                     
                     $puntos = $this->calcularPuntos($pro['precioTemporal'], $pro['incrementoTemporal'], $pro['logisticaTemporal'], $pro['puntosTemporal'], $idCatalogo);
                      
-                    $productocatalogoEditar->setPuntosTemporal($puntos);
-                    $productocatalogoEditar->setPrecioTemporal($pro['precioTemporal']);
-                    $productocatalogoEditar->setCategoria($categoria);
-                    $productocatalogoEditar->setIncrementoTemporal($pro['incrementoTemporal']);
-                    $productocatalogoEditar->setLogisticaTemporal($pro['logisticaTemporal']);
+                    $premiosEditar->setPuntosTemporal($puntos);
+                    $premiosEditar->setPrecioTemporal($pro['precioTemporal']);
+                    $premiosEditar->setCategoria($categoria);
+                    $premiosEditar->setIncrementoTemporal($pro['incrementoTemporal']);
+                    $premiosEditar->setLogisticaTemporal($pro['logisticaTemporal']);
 
 			if(isset($pro["agotado"]) && $pro["agotado"]==1) $agotado = 1; else $agotado = 0;	
-                    $productocatalogoEditar->setAgotado($agotado);
+                    $premiosEditar->setAgotado($agotado);
 
-                    $productocatalogoEditar->setEstadoAprobacion(NULL);
+                    $premiosEditar->setEstadoAprobacion(NULL);
                       
-                    $em->persist($productocatalogoEditar);
-                    
-                    $productocatalogoH = $this->get('incentives_catalogo');
-                    $productocatalogoH->historico($productocatalogoEditar);
-                            
+                    $em->persist($premiosEditar);                            
                     $em->flush();
                 //probar el redirect en la verison 2.3 y hacer el ajsutepara la 2.7
                    return $this->redirect($this->generateUrl('productocatalogo_maestro'));
@@ -1147,32 +1156,44 @@ class MaestroController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        $premio = $em->getRepository('IncentivesCatalogoBundle:Productocatalogo')->find($id);
+        $premio = $em->getRepository('IncentivesCatalogoBundle:Premios')->find($id);
 
-        if ($premio->getActivo()==1){
-            $premio->setActivo(0);
+        if ($premio->getEstado()->getId()==1){
+
+            $estado = $em->getRepository('IncentivesCatalogoBundle:Estadocatalogo')->find("2");
+            $premio->setEstado($estado);
             $premio->setEstadoAprobacion(NULL);
             $premio->setFechaInactivacion(new \DateTime("now"));
+        
         }else{
-            $premio->setActivo(1);
+
+            $estado = $em->getRepository('IncentivesCatalogoBundle:Estadocatalogo')->find("1");
+            $premio->setEstado($estado);
+
         }   
         $em->flush();
         
-        return $this->redirect($this->generateUrl('producto_datos', array('id' => $premio->getProducto()->getId())));
+        return $this->redirect($this->generateUrl('producto_datos', array('id' => $premio->getPremiosproductos()[0]->getProducto()->getId())));
     }
 
     public function estadoPremioMaestroAction($id)
     {
         $em = $this->getDoctrine()->getManager();
 
-        $premio = $em->getRepository('IncentivesCatalogoBundle:Productocatalogo')->find($id);
+        $premio = $em->getRepository('IncentivesCatalogoBundle:Premios')->find($id);
 
-        if ($premio->getActivo()==1){
-            $premio->setActivo(0);
+        if ($premio->getEstado()->getId()==1){
+
+            $estado = $em->getRepository('IncentivesCatalogoBundle:Estadocatalogo')->find("2");
+            $premio->setEstado($estado);
             $premio->setEstadoAprobacion(NULL);
             $premio->setFechaInactivacion(new \DateTime("now"));
+        
         }else{
-            $premio->setActivo(1);
+
+            $estado = $em->getRepository('IncentivesCatalogoBundle:Estadocatalogo')->find("1");
+            $premio->setEstado($estado);
+
         }   
         $em->flush();
         
@@ -1220,7 +1241,7 @@ class MaestroController extends Controller
 
         $em = $this->getDoctrine()->getManager();
 
-        $productoCatalogo = $em->getRepository('IncentivesCatalogoBundle:Productocatalogo')->findBy(array('catalogos' => $id));
+        $productoCatalogo = $em->getRepository('IncentivesCatalogoBundle:Premios')->findBy(array('catalogos' => $id));
 
 		foreach($productoCatalogo as $keyCat => $valueCat){
 			
@@ -1273,17 +1294,19 @@ class MaestroController extends Controller
             }
             
             $qb = $em->createQueryBuilder();
-            $qb->select('pc','p','pe','c','cat','ac','ad','ao','acom');
-            $qb->from('IncentivesCatalogoBundle:Productocatalogo','pc');
-            $qb->leftJoin('pc.producto','p');
-            $qb->leftJoin('pc.categoria','c');
+            $qb->select('pr','pp','p','pe','c','cat','ac','ad','ao','acom','epr');
+            $qb->from('IncentivesCatalogoBundle:Premios','pr');
+            $qb->leftJoin('pr.premiosproductos','pp');
+            $qb->leftJoin('pr.estado','epr');
+            $qb->leftJoin('pp.producto','p');
+            $qb->leftJoin('pr.categoria','c');
             $qb->leftJoin('p.categoria','cat');
             $qb->leftJoin('p.estado','pe');
-            $qb->leftJoin('pc.aproboCliente','ac');
-            $qb->leftJoin('pc.aproboDirector','ad');
-            $qb->leftJoin('pc.aproboOperaciones','ao');
-            $qb->leftJoin('pc.aproboComercial','acom');
-            $str_filtro = 'pc.catalogos = '.$id.' AND p.estado=1 AND pc.activo=1 AND pc.aproboDirector=1';   
+            $qb->leftJoin('pr.aproboCliente','ac');
+            $qb->leftJoin('pr.aproboDirector','ad');
+            $qb->leftJoin('pr.aproboOperaciones','ao');
+            $qb->leftJoin('pr.aproboComercial','acom');
+            $str_filtro = 'pr.catalogos = '.$id.' AND p.estado=1 AND pr.estado=1 AND pr.aproboDirector=1';   
             $qb->where($str_filtro);
             $productocatalogo = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
             
@@ -1309,7 +1332,7 @@ class MaestroController extends Controller
                     $Descarga->getActiveSheet()->getRowDimension($fil)->setRowHeight('45');     //->getColumnDimension('P')->setWidth(17.43); //original width of column A
                     $Descarga->getActiveSheet()->getColumnDimension('L')->setWidth(10);
 
-                    if($value['activo'] == 1 && $value['producto']['estado']['id'] == 1) $estad = "1 - Activo"; else  $estad = "0 - Inactivo";
+                    if($value['estado'] == 1 && $value['producto']['estado']['id'] == 1) $estad = "1 - Activo"; else  $estad = "0 - Inactivo";
                     //echo "<pre>"; print_r($value); echo "</pre>"; exit;
                     if($value['aproboCliente']['id'] == 1 && $value['aproboComercial']['id'] ==1 && $value['aproboOperaciones']['id'] == 1 && $value['aproboDirector']['id'] == 1){
                         $aprobacion = "Aprobado"; 
@@ -1354,12 +1377,12 @@ class MaestroController extends Controller
                     } 
 
                     $Descarga->getActiveSheet()
-                            ->setCellValue('A'.$fil, $value['producto']['codInc'])
-                            ->setCellValue('B'.$fil, $value['producto']['nombre'])
-                            ->setCellValue('C'.$fil, $value['producto']['referencia'])
-                            ->setCellValue('D'.$fil, $value['producto']['marca'])
-                            ->setCellValue('E'.$fil, $value['producto']['descripcion'])
-                            ->setCellValue('F'.$fil, $value['categoria']['nombre'])
+                            ->setCellValue('A'.$fil, $value['premiosproductos'][0]['producto']['codInc'])
+                            ->setCellValue('B'.$fil, $value['premiosproductos'][0]['producto']['nombre'])
+                            ->setCellValue('C'.$fil, $value['premiosproductos'][0]['producto']['referencia'])
+                            ->setCellValue('D'.$fil, $value['premiosproductos'][0]['producto']['marca'])
+                            ->setCellValue('E'.$fil, $value['premiosproductos'][0]['producto']['descripcion'])
+                            ->setCellValue('F'.$fil, $value['premiosproductos'][0]['categoria']['nombre'])
                             ->setCellValue('G'.$fil, $estad)
                             ->setCellValue('H'.$fil, $aprobacion)
                             ->setCellValue('I'.$fil, $precio)

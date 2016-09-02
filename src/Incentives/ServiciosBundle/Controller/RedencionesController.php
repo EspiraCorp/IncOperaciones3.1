@@ -15,6 +15,8 @@ use Incentives\RedencionesBundle\Entity\RedencionesProductos;
 
 use Symfony\Component\HttpFoundation\Response;
 
+ini_set('memory_limit','512M');
+
 class RedencionesController extends Controller
 {
 
@@ -1037,7 +1039,8 @@ class RedencionesController extends Controller
 				
 					foreach($otros as $keyO){
 						$camposO = explode(":", $keyO);
-							$redencionesP[$key][$camposO[0]] = utf8_encode($camposO[1]);
+							$redencionesP[$key][$camposO[0]] = utf8_encode((isset($camposO[1])? $camposO[1] : ""));
+
 					}
 				}
 

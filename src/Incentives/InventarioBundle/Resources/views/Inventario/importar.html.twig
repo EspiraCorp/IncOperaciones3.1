@@ -6,13 +6,10 @@
 <div class="row-fluid sortable ui-sortable">
 <div class="box span12">
 <div class="box-header well" data-original-title>
-                        <h2><i class="icon-edit"></i>Carga Masiva de Guias</h2>                        
-                        <div class="box-icon">
-                            <a href="{{ path('proveedores') }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
-                        </div>
+                        <h2><i class="icon-edit"></i>Carga Masiva de Guias</h2> 
                     </div>
 <div class="box-content">
-<form action="{{ path('inventario_cargarguias') }}" method="POST"  class="form-horizontal">
+<form action="{{ path('inventario_cargarguias') }}" method="POST" enctype="multipart/form-data" class="form-horizontal">
     {{ form_errors(form) }}
     <fieldset>
         <div class="control-group">

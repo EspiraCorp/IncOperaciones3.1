@@ -24,7 +24,7 @@ class RedencionesProductos
 
     /**
      * 
-     * @ORM\ManyToOne(targetEntity="Incentives\RedencionesBundle\Entity\Redenciones", inversedBy="redencionesPreoductos", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="Incentives\RedencionesBundle\Entity\Redenciones", inversedBy="redencionesProductos", cascade={"persist"})
      * @ORM\JoinColumn(name="redencion_id", referencedColumnName="id", nullable=true)
      * 
      */
@@ -103,13 +103,13 @@ class RedencionesProductos
     private $fechaEntrega;
 
     /**
-     * @ORM\OneToMany(targetEntity="Incentives\InventarioBundle\Entity\Inventario", mappedBy="redencion", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="Incentives\InventarioBundle\Entity\Inventario", mappedBy="redencionProducto", cascade={"persist"})
      * 
      */
     protected $inventario;
     
     /**
-     * @ORM\OneToMany(targetEntity="Incentives\InventarioBundle\Entity\Despachos", mappedBy="redencion", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="Incentives\InventarioBundle\Entity\Despachos", mappedBy="redencionProducto", cascade={"persist"})
      * 
      */
     protected $despacho;
@@ -159,7 +159,6 @@ class RedencionesProductos
     {
         return $this->id;
     }
-
 
     /**
      * Set precioLogistica
@@ -518,6 +517,30 @@ class RedencionesProductos
     }
 
     /**
+     * Set ordenesProducto
+     *
+     * @param \Incentives\OrdenesBundle\Entity\OrdenesProducto $ordenesProducto
+     *
+     * @return RedencionesProductos
+     */
+    public function setOrdenesProducto(\Incentives\OrdenesBundle\Entity\OrdenesProducto $ordenesProducto = null)
+    {
+        $this->ordenesProducto = $ordenesProducto;
+
+        return $this;
+    }
+
+    /**
+     * Get ordenesProducto
+     *
+     * @return \Incentives\OrdenesBundle\Entity\OrdenesProducto
+     */
+    public function getOrdenesProducto()
+    {
+        return $this->ordenesProducto;
+    }
+
+    /**
      * Set facturaProducto
      *
      * @param \Incentives\FacturacionBundle\Entity\FacturaProductos $facturaProducto
@@ -563,29 +586,5 @@ class RedencionesProductos
     public function getUsuario()
     {
         return $this->usuario;
-    }
-
-    /**
-     * Set ordenesProducto
-     *
-     * @param \Incentives\OrdenesBundle\Entity\OrdenesProducto $ordenesProducto
-     *
-     * @return RedencionesProductos
-     */
-    public function setOrdenesProducto(\Incentives\OrdenesBundle\Entity\OrdenesProducto $ordenesProducto = null)
-    {
-        $this->ordenesProducto = $ordenesProducto;
-
-        return $this;
-    }
-
-    /**
-     * Get ordenesProducto
-     *
-     * @return \Incentives\OrdenesBundle\Entity\OrdenesProducto
-     */
-    public function getOrdenesProducto()
-    {
-        return $this->ordenesProducto;
     }
 }

@@ -188,6 +188,12 @@ class Producto
      */
     protected $productocatalogo;
 
+    /**
+     * @ORM\OneToMany(targetEntity="PremiosProductos", mappedBy="producto", cascade={"persist"})
+     * 
+     */
+    protected $premiosproductos;
+
 
     /**
      * @ORM\OneToMany(targetEntity="\Incentives\FacturacionBundle\Entity\FacturaProductos", mappedBy="producto", cascade={"persist"})
@@ -1206,5 +1212,39 @@ class Producto
     public function getPrecio()
     {
         return $this->precio;
+    }
+
+    /**
+     * Add premiosproducto
+     *
+     * @param \Incentives\CatalogoBundle\Entity\PremiosProductos $premiosproducto
+     *
+     * @return Producto
+     */
+    public function addPremiosproducto(\Incentives\CatalogoBundle\Entity\PremiosProductos $premiosproducto)
+    {
+        $this->premiosproductos[] = $premiosproducto;
+
+        return $this;
+    }
+
+    /**
+     * Remove premiosproducto
+     *
+     * @param \Incentives\CatalogoBundle\Entity\PremiosProductos $premiosproducto
+     */
+    public function removePremiosproducto(\Incentives\CatalogoBundle\Entity\PremiosProductos $premiosproducto)
+    {
+        $this->premiosproductos->removeElement($premiosproducto);
+    }
+
+    /**
+     * Get premiosproductos
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPremiosproductos()
+    {
+        return $this->premiosproductos;
     }
 }

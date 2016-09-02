@@ -67,7 +67,7 @@
 				<tbody>
 					{% for imagenes in imagen %}		
 							<tr>
-								<td><a href="../../../{{imagenes.path| slice (0)}}" target='_blank'><img src="../../../{{(imagenes.path| slice (0))[:-4]}}_min.jpg"><a></td>
+								<td><a href="../../../{{imagenes.path| slice (7)}}" target='_blank'><img src="../../../{{(imagenes.path| slice (7))[:-4]}}_min.jpg"><a></td>
 								<td>{% if (imagenes.estado=='0') %}
 										<a class="btn btn-danger 1" onClick=confirmar('{{ url("producto_estadoimagen", {"id": imagenes.id}) }}') href="#">
 										Inactiva</a>
@@ -169,7 +169,16 @@
 							<td>{{ premio.premio.puntosTemporal }}</td>
 							<td>{{ premio.premio.precioTemporal }}</td>
 							<td>{{ premio.premio.incrementoTemporal }}</td>
-							<td>{{ premio.premio.logisticaTemporal }}</td>							
+							<td>{{ premio.premio.logisticaTemporal }}</td>
+							<td>{% if (premio.premio.estado.id==1) %}
+										<a class="btn btn-success 1" {% if is_granted('ROLE_ADMIN') or  is_granted('ROLE_DIR') %} onClick=confirmar('{{ url("producto_estadopremio", {"id": premio.premio.id}) }}') {% endif %} href="#">
+										Activo</a>
+									{% else %}
+										<a class="btn btn-danger 1" onClick=confirmar('{{ url("producto_estadopremio", {"id": premio.premio.id}) }}') href="#">
+										Inactivo</a>										
+									{% endif %}
+								</td>
+												
 						</tr>
 						{% endfor %}
 					</tbody>

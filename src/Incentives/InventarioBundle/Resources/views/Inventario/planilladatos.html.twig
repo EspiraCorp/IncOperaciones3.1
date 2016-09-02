@@ -5,8 +5,8 @@
 {% set pendientes = 0 %}
 {% if(planilla.planillatipo.id != 2) %}
 	{% for inventario in redencionesPlanilla %}
-			    		{% set diasMax = inventario.redencion.participante.programa.diasentrega - 3 %}
-			    		{% set diferencia = date(inventario.redencion.fecha).diff(date("now")) %}
+			    		{% set diasMax = inventario.redencionProducto.redencion.participante.programa.diasentrega - 3 %}
+			    		{% set diferencia = date(inventario.redencionProducto.redencion.fecha).diff(date("now")) %}
 						{% set dias = diferencia.days %}
 						{% if dias > diasMax %}{% set pendientes = pendientes + 1 %}{% endif %}		    		
 	{% endfor %}
@@ -97,18 +97,18 @@
 			    		</tr>
 			    	{% for inventario in redencionesPlanilla %}
 	
-			    		{% set diasMax = inventario.redencion.participante.programa.diasentrega - 3 %}
-			    		{% set diferencia = date(inventario.redencion.fecha).diff(date("now")) %}
+			    		{% set diasMax = inventario.redencionProducto.redencion.participante.programa.diasentrega - 3 %}
+			    		{% set diferencia = date(inventario.redencionProducto.redencion.fecha).diff(date("now")) %}
 						{% set dias = diferencia.days %}
 						{% if dias > diasMax %}
 						 	<tr>
-				    			<td>{{ inventario.redencion.codigoredencion }}</td>
+				    			<td>{{ inventario.redencionProducto.redencion.codigoredencion }}</td>
 				    			<td>{{ inventario.producto.nombre }}</td>
 				    			<td>{{ inventario.producto.referencia }}</td>
-				    			<td>{{ inventario.redencion.participante.programa.nombre }}</td>
-				    			<td>{{ inventario.redencion.fecha | date("Y-m-d") }}</td>
+				    			<td>{{ inventario.redencionProducto.redencion.participante.programa.nombre }}</td>
+				    			<td>{{ inventario.redencionProducto.redencion.fecha | date("Y-m-d") }}</td>
 				    			<td>{{ dias }}</td>
-				    			<td><a class="btn btn-success" href="{{ path('redenciones_justificacion') }}/{{ inventario.redencion.id }}/{{ planilla.id }}">Justificar</a></td>
+				    			<td><a class="btn btn-success" href="{{ path('redenciones_justificacion') }}/{{ inventario.redencionProducto.id }}/{{ planilla.id }}">Justificar</a></td>
 			    			</tr>
 						{% endif %}
 			    		

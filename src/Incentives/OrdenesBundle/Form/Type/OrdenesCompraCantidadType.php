@@ -18,13 +18,7 @@ class OrdenesCompraCantidadType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
 
-        $builder->add('ordenesProducto', Collectiontype::class, array(
-                'entry_type'  => OrdenesProductoType::class,
-                'label'          => 'Productos',
-                'by_reference'   => false,
-                'allow_delete'   => true,
-                'allow_add'      => true
-        ));
+        
 
         $builder->add('Enviar', SubmitType::class);
     }

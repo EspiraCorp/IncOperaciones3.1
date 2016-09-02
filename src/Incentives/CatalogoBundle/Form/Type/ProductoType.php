@@ -29,7 +29,8 @@ class ProductoType extends AbstractType
         $builder->add('categoria', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:Categoria',
             'choice_label' => 'nombre',
-            //'empty_value' => 'Seleccionar',
+            'empty_data' => null,
+            'placeholder' => 'Seleccionar'
         ));
         $builder->add('referencia');
         $builder->add('marca');
@@ -50,7 +51,7 @@ class ProductoType extends AbstractType
         $builder->add('tipo', EntityType::class, array(
             'class' => 'IncentivesCatalogoBundle:ProductoTipo',
             'choice_label' => 'nombre',
-            //'empty_value' => 'Seleccionar',
+            'placeholder' => 'Seleccionar',
         ));
         $builder->add('precio');
         $builder->add('iva');
@@ -75,14 +76,14 @@ class ProductoType extends AbstractType
         $builder->add('productoclasificacion', EntityType::class, array(
             'class' => 'IncentivesCatalogoBundle:Productoclasificacion',
             'choice_label' => 'nombre',
-            //'empty_value' => 'Seleccionar',
+            'placeholder' => 'Seleccionar',
             'label'  => 'Clasificación',
         ));
         
         $builder->add('estado', EntityType::class, array(
             'class' => 'IncentivesCatalogoBundle:Estados',
             'choice_label' => 'nombre',
-            //'empty_value' => 'Seleccionar',
+            'placeholder' => 'Seleccionar',
             'label'  => 'Estado',
         ));
 

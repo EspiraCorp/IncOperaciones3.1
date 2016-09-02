@@ -11,15 +11,15 @@
     </tr>
 {% for redencion in redenciones %}
     <tr>
-        <td>{{ redencion.codigoredencion }}</td>
-        <td>{{ redencion.participante.programa.nombre }}</td>
-        <td>{{ redencion.participante.nombre }}</td>
-        <td>{{ redencion.participante.documento }}</td>
-        <td>{{ redencion.fecha | date("Y-m-d") }}</td>
+        <td>{{ redencion.redencion.codigoredencion }}</td>
+        <td>{{ redencion.redencion.participante.programa.nombre }}</td>
+        <td>{{ redencion.redencion.participante.nombre }}</td>
+        <td>{{ redencion.redencion.participante.documento }}</td>
+        <td>{{ redencion.redencion.fecha | date("Y-m-d") }}</td>
         {% set rentabilidad = 0 %}
         {% set valorventa = 0 %}
-        {% if (redencion.productocatalogo.precio!=0 and redencion.productocatalogo.incremento!=0) %}
-            {% set valorventa = redencion.productocatalogo.precio/(1-(redencion.productocatalogo.incremento/100)) %}
+        {% if (redencion.redencion.premio.precio!=0 and redencion.redencion.premio.incremento!=0) %}
+            {% set valorventa = redencion.redencion.premio.precio/(1-(redencion.redencion.premio.incremento/100)) %}
             {% set rentabilidad = (1-(redencion.ordenesProducto.valorunidad/valorventa))*100 %}
         {% endif %}
         <td>${{ valorventa |number_format(2, ',', '.') }}</td>

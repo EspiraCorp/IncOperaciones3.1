@@ -53,7 +53,8 @@ class CatalogosController extends Controller
                     $id=$catalogo->getPrograma()->getId();
                 }
 
-                $pro = $request->request->all()['catalogos'];
+                $pro = $request->request->all()['catalogosnuevo'];
+
                 $programa = $em->getRepository('IncentivesCatalogoBundle:Programa')->find($id);
                 $catalogo->setPrograma($programa);
                 $estado = $em->getRepository('IncentivesCatalogoBundle:Estados')->find(1);
@@ -284,19 +285,20 @@ class CatalogosController extends Controller
         $catalogo = $em->getRepository('IncentivesCatalogoBundle:Catalogos')->find($id);
 
         $query = $em->createQueryBuilder()
-                ->select('c.nombre','count(pc) as total') 
-                ->addSelect("SUM(CASE WHEN (pc.activo = 1 AND (pc.estadoAprobacion IS NULL OR pc.estadoAprobacion=0)) THEN 1 ELSE 0 END) AS operaciones")
-                ->addSelect("SUM(CASE WHEN (pc.activo = 1 AND pc.estadoAprobacion=1) THEN 1 ELSE 0 END) AS comercial")
-                ->addSelect("SUM(CASE WHEN (pc.activo = 1 AND pc.estadoAprobacion=2) THEN 1 ELSE 0 END) AS director")
-                ->addSelect("SUM(CASE WHEN (pc.activo = 1 AND pc.estadoAprobacion=3) THEN 1 ELSE 0 END) AS cliente")
-                ->addSelect("SUM(CASE WHEN (pc.activo = 1 AND pc.estadoAprobacion=4) THEN 1 ELSE 0 END) AS visibles")
-                ->addSelect("SUM(CASE WHEN (pc.activo != 1 OR p.estado!=1 OR pc.activo is NULL OR p.estado IS NULL OR pc.aproboOperaciones=2 OR pc.aproboComercial=2 OR pc.aproboDirector=2 OR pc.aproboCliente=2) THEN 1 ELSE 0 END) AS inactivos")
-                ->from('IncentivesCatalogoBundle:Productocatalogo', 'pc')
-                ->leftJoin('pc.categoria','c')
-                ->leftJoin('pc.producto','p')
+                ->select('c.nombre','count(pr) as total') 
+                ->addSelect("SUM(CASE WHEN (pr.estado = 1 AND (pr.estadoAprobacion IS NULL OR pr.estadoAprobacion=0)) THEN 1 ELSE 0 END) AS operaciones")
+                ->addSelect("SUM(CASE WHEN (pr.estado = 1 AND pr.estadoAprobacion=1) THEN 1 ELSE 0 END) AS comercial")
+                ->addSelect("SUM(CASE WHEN (pr.estado = 1 AND pr.estadoAprobacion=2) THEN 1 ELSE 0 END) AS director")
+                ->addSelect("SUM(CASE WHEN (pr.estado = 1 AND pr.estadoAprobacion=3) THEN 1 ELSE 0 END) AS cliente")
+                ->addSelect("SUM(CASE WHEN (pr.estado = 1 AND pr.estadoAprobacion=4) THEN 1 ELSE 0 END) AS visibles")
+                ->addSelect("SUM(CASE WHEN (pr.estado != 1 OR p.estado!=1 OR pr.estado is NULL OR p.estado IS NULL OR pr.aproboOperaciones=2 OR pr.aproboComercial=2 OR pr.aproboDirector=2 OR pr.aproboCliente=2) THEN 1 ELSE 0 END) AS inactivos")
+                ->from('IncentivesCatalogoBundle:Premios', 'pr')
+                ->leftJoin('pr.categoria','c')
+                ->leftJoin('pr.premiosproductos','pp')
+                ->leftJoin('pp.producto','p')
                 ->orderBy("c.nombre")
                 ->groupBy("c.id")
-                ->where("pc.catalogos=".$id);
+                ->where("pr.catalogos=".$id);
 
         $categorias = $query->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
 
@@ -348,34 +350,35 @@ class CatalogosController extends Controller
          }
 
         $query = $em->createQueryBuilder()
-                ->select('pc','p','i','c') 
-                ->from('IncentivesCatalogoBundle:Productocatalogo', 'pc')
-                ->leftJoin('pc.producto','p')
-                ->leftJoin('pc.categoria','c')
+                ->select('pr','pp','p','i','c') 
+                ->from('IncentivesCatalogoBundle:Premios', 'pr')
+                ->leftJoin('pr.premiosproductos','pp')
+                ->leftJoin('pp.producto','p')
+                ->leftJoin('pr.categoria','c')
                 ->leftJoin('p.imagenproducto','i','WITH','i.estado=1')
-                ->orderBy("pc.puntos");
+                ->orderBy("pr.puntos");
 
-        $condiciones = "pc.catalogos=".$id." AND pc.activo = 1 AND p.estado=1";
+        $condiciones = "pr.catalogos=".$id." AND pr.estado = 1 AND p.estado=1";
 
         if($idVista = $session->get('filtros_galeria_vista')){
             if ($idVista==1) {
-                $condiciones .= " AND (pc.aproboCliente=1 AND pc.aproboOperaciones=1 AND pc.aproboComercial=1 AND pc.aproboDirector=1)";
+                $condiciones .= " AND (pr.aproboCliente=1 AND pr.aproboOperaciones=1 AND pr.aproboComercial=1 AND pr.aproboDirector=1)";
             }
 
             if ($idVista==2) {
-                $condiciones .= " AND (pc.estadoAprobacion=3 AND pc.aproboOperaciones=1 AND pc.aproboComercial=1 AND pc.aproboDirector=1)";
+                $condiciones .= " AND (pr.estadoAprobacion=3 AND pr.aproboOperaciones=1 AND pr.aproboComercial=1 AND pr.aproboDirector=1)";
             }
             
             if ($idVista==3) {
-                $condiciones .= " AND (pc.estadoAprobacion=2 AND pc.aproboOperaciones=1 AND pc.aproboComercial=1)";
+                $condiciones .= " AND (pr.estadoAprobacion=2 AND pr.aproboOperaciones=1 AND pr.aproboComercial=1)";
             }
 
             if ($idVista==4) {
-                $condiciones .= " AND (pc.estadoAprobacion=1 AND pc.aproboOperaciones=1)";
+                $condiciones .= " AND (pr.estadoAprobacion=1 AND pr.aproboOperaciones=1)";
             }
 
             if ($idVista==5) {
-                $condiciones .= " AND ((pc.aproboOperaciones=0 OR pc.aproboOperaciones IS NULL) AND (pc.estadoAprobacion IS NULL OR pc.estadoAprobacion=0))";
+                $condiciones .= " AND ((pr.aproboOperaciones=0 OR pr.aproboOperaciones IS NULL) AND (pr.estadoAprobacion IS NULL OR pr.estadoAprobacion=0))";
             }
 
             if ($idVista==0) {
@@ -389,7 +392,7 @@ class CatalogosController extends Controller
         
         $precioVenta=0;
         if ($this->get('security.authorization_checker')->isGranted('ROLE_CLI')) {
-           $condiciones .= " AND (pc.aproboCliente=1 AND pc.aproboOperaciones=1 AND pc.aproboComercial=1 AND pc.aproboDirector=1)";
+           $condiciones .= " AND (pr.aproboCliente=1 AND pr.aproboOperaciones=1 AND pr.aproboComercial=1 AND pr.aproboDirector=1)";
 		   $cliente =  $this->getUser()->getCliente()->getId();      
            if($cliente==28) $precioVenta = 1;
         }
@@ -459,34 +462,35 @@ class CatalogosController extends Controller
          }
 
         $query = $em->createQueryBuilder()
-                ->select('pc','p','i','c') 
-                ->from('IncentivesCatalogoBundle:Productocatalogo', 'pc')
-                ->leftJoin('pc.producto','p')
-                ->leftJoin('pc.categoria','c')
+                ->select('pr','pp','p','i','c') 
+                ->from('IncentivesCatalogoBundle:Premios', 'pr')
+                ->leftJoin('pr.premiosproductos','pp')
+                ->leftJoin('pp.producto','p')
+                ->leftJoin('pr.categoria','c')
                 ->leftJoin('p.imagenproducto','i','WITH','i.estado=1')
-                ->orderBy("pc.puntos");
+                ->orderBy("pr.puntos");
 
         if ($this->get('security.authorization_checker')->isGranted('ROLE_EJEC')) {
-            $condiciones = "pc.catalogos=".$id." AND pc.estadoAprobacion=1 ";
+            $condiciones = "pr.catalogos=".$id." AND pr.estadoAprobacion=1 ";
         }
 
         if ($this->get('security.authorization_checker')->isGranted('ROLE_COM')) {
-            $condiciones = "pc.catalogos=".$id." AND pc.estadoAprobacion=2 ";
+            $condiciones = "pr.catalogos=".$id." AND pr.estadoAprobacion=2 ";
         }
 
         if ($this->get('security.authorization_checker')->isGranted('ROLE_CLI')) {
-            $condiciones = "pc.catalogos=".$id." AND pc.estadoAprobacion=3 ";
+            $condiciones = "pr.catalogos=".$id." AND pr.estadoAprobacion=3 ";
         }
 
         if ($this->get('security.authorization_checker')->isGranted('ROLE_DIR') || $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN') || $this->get('security.authorization_checker')->isGranted('ROLE_CAT')) {
-            $condiciones = "pc.catalogos=".$id." AND (pc.estadoAprobacion=0 OR pc.estadoAprobacion IS NULL)";
+            $condiciones = "pr.catalogos=".$id." AND (pr.estadoAprobacion=0 OR pr.estadoAprobacion IS NULL)";
         }
 
         if($request->get('sort')){
             $query->orderBy($request->get('sort'), $request->get('direction'));    
         }
 
-        $condiciones .= " AND pc.activo=1 ";
+        $condiciones .= " AND pr.estado=1 ";
         
         $query->where($condiciones.$condicionesFiltro);
         $productos = $query->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
@@ -571,7 +575,7 @@ class CatalogosController extends Controller
         $arreglo=explode(",",$id);
         foreach ($arreglo as $key => $value) {
             if ($value!=""){
-                $productos = $em->getRepository('IncentivesCatalogoBundle:Productocatalogo')->find($value);
+                $productos = $em->getRepository('IncentivesCatalogoBundle:Premios')->find($value);
                 if ($accion=='autorizar'){
                     $estado = $em->getRepository('IncentivesCatalogoBundle:Estadocatalogo')->find("1");
                 }elseif($accion=='cancelar'){
@@ -766,14 +770,15 @@ class CatalogosController extends Controller
          }
 
         $query = $em->createQueryBuilder()
-                ->select('pc','p','i','c') 
-                ->from('IncentivesCatalogoBundle:Productocatalogo', 'pc')
-                ->leftJoin('pc.producto','p')
-                ->leftJoin('pc.categoria','c')
+                ->select('pr','pp','p','i','c') 
+                ->from('IncentivesCatalogoBundle:Premios', 'pr')
+                ->leftJoin('pr.premiosproductos','pp')
+                ->leftJoin('pp.producto','p')
+                ->leftJoin('pr.categoria','c')
                 ->leftJoin('p.imagenproducto','i','WITH','i.estado=1')
-                ->orderBy("pc.puntos");
+                ->orderBy("pr.puntos");
 
-        $condiciones = "pc.catalogos=".$catalogo." AND pc.activo=1 AND pc.aproboCliente=1";
+        $condiciones = "pr.catalogos=".$catalogo." AND pr.estado=1";
 
         if($request->get('sort')){
             $query->orderBy($request->get('sort'), $request->get('direction'));    
@@ -781,6 +786,7 @@ class CatalogosController extends Controller
 
         $query->where($condiciones.$condicionesFiltro);
         $productos = $query->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
+        //echo "<pre>"; print_r($productos); echo "</pre>"; exit;
         $paginator  = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
             $productos,
@@ -802,26 +808,27 @@ class CatalogosController extends Controller
         $catalogo = $em->getRepository('IncentivesCatalogoBundle:Catalogos')->find($id);
 
         $query = $em->createQueryBuilder()
-                ->select('pc','p','i','c') 
-                ->from('IncentivesCatalogoBundle:Productocatalogo', 'pc')
-                ->leftJoin('pc.producto','p')
-                ->leftJoin('pc.categoria','c')
+                ->select('pr','pp','p','i','c') 
+                ->from('IncentivesCatalogoBundle:Premios', 'pr')
+                ->leftJoin('pr.premiosproductos','pp')
+                ->leftJoin('pp.producto','p')
+                ->leftJoin('pr.categoria','c')
                 ->leftJoin('p.imagenproducto','i','WITH','i.estado=1')
-                ->orderBy("pc.puntos");
+                ->orderBy("pr.puntos");
 
-        $strFilter = "pc.catalogos=".$id." AND pc.activo=1 AND pc.aproboCliente=1";
+        $strFilter = "pr.catalogos=".$id." AND pr.estado=1";
 
         if(isset($productos)){
             $productos = substr($productos, 0, -1);
-            $strFilter .= " AND pc.id IN (".$productos.")";
+            $strFilter .= " AND pr.id IN (".$productos.")";
         }
         
         $query->where($strFilter);
         $productos = $query->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
         $files = array();
-
+        //echo "<pre>"; print_r($productos); echo "</pre>"; exit;
         foreach ($productos as $keyp => $valueP) {
-            foreach ($valueP['producto']['imagenproducto'] as $keyI => $imagen) {
+            foreach ($valueP['premiosproductos'][0]['producto']['imagenproducto'] as $keyI => $imagen) {
                 array_push($files, $imagen['path']);             
             }
         }

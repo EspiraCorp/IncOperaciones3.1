@@ -988,9 +988,9 @@ class OrdenRedencionController extends Controller
       $orden->setOrdenesEstado($estado);
 
       $qb = $em->createQueryBuilder();            
-      $qb->select('r');
-      $qb->from('IncentivesRedencionesBundle:Redenciones','r');
-      $qb->leftJoin('r.ordenesProducto', 'op');
+      $qb->select('rp');
+      $qb->from('IncentivesRedencionesBundle:RedencionesProductos','rp');
+      $qb->leftJoin('rp.ordenesProducto', 'op');
       $str_filtro = 'op.ordenesCompra = :orden';
       $qb->where($str_filtro);
 
@@ -1002,25 +1002,19 @@ class OrdenRedencionController extends Controller
 
       $i=0;
       foreach ($redenciones as $keyR => $valueR) {
-            $redencion[$i] = $em->getRepository('IncentivesRedencionesBundle:Redenciones')->find($valueR->getId());
+            $redencionProducto[$i] = $em->getRepository('IncentivesRedencionesBundle:RedencionesProductos')->find($valueR->getId());
+            $redencion = $em->getRepository('IncentivesRedencionesBundle:Redenciones')->find($redencionProducto[$i]->getRedencion()->getId());
             $estado = $em->getRepository('IncentivesRedencionesBundle:RedencionesEstado')->find('2');
-            $redencion[$i]->setRedencionestado($estado);
-            $redencion[$i]->setOrdenesProducto(null);
-            $em->persist($redencion[$i]);
+            $redencionProducto[$i]->setEstado($estado);
+            $redencionProducto[$i]->setOrdenesProducto(null);
+            $redencion->setRedencionestado($estado);
+            $em->persist($redencionProducto[$i]);
+            $em->persist($redencion);
             $i++;
       }
 
       $em->persist($orden);
       $em->flush();
-
-      //Guardar historicos
-      $i=0;
-      foreach ($redenciones as $keyR => $valueR) {
-            $observacion = "";
-            $redencionH = $this->get('incentives_redenciones');
-            $redencionH->insertar($valueR);
-            //$this->historicoAction($valueR->getId(),$observacion);
-      }
 
       if($estadoactual>=2){
         $this->correoAction($id, "cancelar");
@@ -1063,29 +1057,32 @@ class OrdenRedencionController extends Controller
             for($id=1;$id<=$diferencia;$id++){
               $arrayParametros = array();
                 $qb = $em->createQueryBuilder();            
-                $qb->select('r');
-                $qb->from('IncentivesRedencionesBundle:Redenciones','r');
-                $qb->leftJoin('r.productocatalogo', 'pc');
-                $qb->leftJoin('r.ordenesProducto', 'op');
+                $qb->select('rp');
+                $qb->from('IncentivesRedencionesBundle:RedencionesProductos','rp');
+                $qb->leftJoin('rp.producto', 'p');
+                $qb->leftJoin('rp.ordenesProducto', 'op');
                 $str_filtro = 'op.ordenesCompra = :orden';
-                $str_filtro .= ' AND pc.producto= :producto';
-                $str_filtro .= ' AND r.redencionestado = 3';
+                $str_filtro .= ' AND p.id = :producto';
+                $str_filtro .= ' AND rp.estado = 3';
                 $qb->where($str_filtro);
-                $qb->orderBy('r.fecha', 'desc');
+                $qb->orderBy('rp.fecha', 'desc');
 
                 //Definicion de parametros para filtros
                 $arrayParametros['orden'] = $orden->getId();
                 $arrayParametros['producto'] = $valueO->getProducto();
                 $qb->setParameters($arrayParametros);
                 $qb->setMaxResults(1);
-                $redencion = $qb->getQuery()->getOneOrNullResult();
+                $redencionProducto = $qb->getQuery()->getOneOrNullResult();
 
-                if(isset($redencion)){
-                  $redencion->setOrdenesProducto(null);
+                if(isset($redencionProducto)){
+                  $redencionProducto->setOrdenesProducto(null);
                   $estadoredencion = $em->getRepository('IncentivesRedencionesBundle:Redencionesestado')->find('2');
-                  $redencion->setRedencionestado($estadoredencion);
+                  $redencionProducto->setEstado($estadoredencion);
 
+                  $redencion = $em->getRepository('IncentivesRedencionesBundle:Redenciones')->find($redencionProducto->getRedencion()->getId());
+                  $redencion->setRedencionestado($estadoredencion);
                   $em->persist($redencion);
+                  $em->persist($redencionProducto);
                   $em->flush();
                 }
 
@@ -1109,7 +1106,7 @@ class OrdenRedencionController extends Controller
         $productos = $em->getRepository('IncentivesOrdenesBundle:OrdenesProducto')->findByOrdenesCompra($orden->getId());
         $destino = $em->getRepository('IncentivesOperacionesBundle:Proveedores')->find($orden->getProveedor()->getId());
         $this->pdfAction($id);      
-	$correos=  explode(',',$destino->getCorreo());
+	     $correos=  explode(',',$destino->getCorreo());
 
         // Create the Transport
         $transport = \Swift_SmtpTransport::newInstance('smtp.office365.com', 25, 'tls')
@@ -1981,18 +1978,19 @@ if(isset($value['tracking']['ordenproducto']['redencion'])) {
         $estadoProducto = $em->getRepository('IncentivesCatalogoBundle:Estados')->find('2');
         $estado = $em->getRepository('IncentivesRedencionesBundle:RedencionesEstado')->find('2');
 
-        $redenciones = $em->getRepository('IncentivesRedencionesBundle:Redenciones')->findByOrdenesProducto($producto->getId());
+        $redencionesProductos = $em->getRepository('IncentivesRedencionesBundle:RedencionesProductos')->findByOrdenesProducto($producto->getId());
         $i=0;
-        foreach ($redenciones as $keyR => $valueR) {
+        foreach ($redencionesProductos as $keyR => $valueRP) {
           
-            $valueR->setRedencionestado($estado);
-            $valueR->setOrdenesProducto(null);
-            $em->persist($valueR);
-            $i++;
+            $valueRP->setEstado($estado);
+            $valueRP->setOrdenesProducto(null);
+            $em->persist($valueRP);
 
-            //Almacenar Historico
-            $redencionH = $this->get('incentives_redenciones');
-            $redencionH->insertar($valueR);
+            $redenciones = $em->getRepository('IncentivesRedencionesBundle:Redenciones')->find($valueRP->getRedencion()->getId());
+            $redenciones->setRedencionestado($estado);
+            $em->persist($redenciones);
+
+            $i++;
         }
       
         $producto->setEstado($estadoProducto); 
@@ -2023,34 +2021,40 @@ if(isset($value['tracking']['ordenproducto']['redencion'])) {
     {
       $em = $this->getDoctrine()->getManager();
        
-      $redencion = $em->getRepository('IncentivesRedencionesBundle:Redenciones')->find($id);
+      $redencionProducto = $em->getRepository('IncentivesRedencionesBundle:RedencionesProductos')->find($id);
+      $redencion = $em->getRepository('IncentivesRedencionesBundle:Redenciones')->find($redencionProducto->getRedencion()->getId());
 
-      $idOrden = $redencion->getOrdenesProducto()->getOrdenesCompra()->getId();
+      $idOrden = $redencionProducto->getOrdenesProducto()->getOrdenesCompra()->getId();
       
       $estado = $em->getRepository('IncentivesRedencionesBundle:RedencionesEstado')->find('2');
       
-      $producto = $em->getRepository('IncentivesOrdenesBundle:Ordenesproducto')->find($redencion->getOrdenesProducto()->getId());
+      $producto = $em->getRepository('IncentivesOrdenesBundle:Ordenesproducto')->find($redencionProducto->getOrdenesProducto()->getId());
       
+      $redencionProducto->setEstado($estado);
+      $redencionProducto->setOrdenesProducto(null);
+
       $redencion->setRedencionestado($estado);
-      $redencion->setOrdenesProducto(null);
+      $em->persist($redencionProducto);
       $em->persist($redencion);
+      $em->flush();
 
       if($producto){
 
         //Actualizar cantidades
         
         $qb = $em->createQueryBuilder();
-        $qb->select('COUNT(r) total');
-        $qb->from('IncentivesRedencionesBundle:Redenciones','r');
-        $str_filtro = "r.ordenesProducto=".$producto->getId();
+        $qb->select('COUNT(rp) total');
+        $qb->from('IncentivesRedencionesBundle:RedencionesProductos','rp');
+        $str_filtro = "rp.ordenesProducto=".$producto->getId();
         $qb->where($str_filtro);
         $CantidadProductos = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);;
+
         $CantidadProducto = $CantidadProductos[0]['total'];
         
         $producto->setCantidad($CantidadProducto);
         $producto->setValortotal($CantidadProducto * $producto->getValorunidad());
 
-        $redenciones = $em->getRepository('IncentivesRedencionesBundle:Redenciones')->findByOrdenesProducto($producto->getId());
+        $redenciones = $em->getRepository('IncentivesRedencionesBundle:RedencionesProductos')->findByOrdenesProducto($producto->getId());
         
         if($CantidadProducto==0){
           $estadoProducto = $em->getRepository('IncentivesCatalogoBundle:Estados')->find('2');      
@@ -2102,34 +2106,36 @@ if(isset($value['tracking']['ordenproducto']['redencion'])) {
 
                 //Consultar si hay inventario para las redenciones autorizadas
                 //Lista de redenciones autorizadas agrupadas por producto y pais
-                /*$qb = $em->createQueryBuilder()
+                $qb = $em->createQueryBuilder()
                      ->select('i')
                      ->from('IncentivesInventarioBundle:Inventario','i')
-                     ->where('i.redencion IS NULL AND i.solicitud IS NULL AND i.salio IS NULL AND i.ingreso=1 AND i.planilla IS NULL');
+                     ->where('i.redencionProducto IS NULL AND i.solicitud IS NULL AND i.salio IS NULL AND i.ingreso=1 AND i.planilla IS NULL');
                 $InventarioD = $qb->getQuery()->getResult();
                 
                 //Si hay productos en inventario asignarlos y dejarlos listos para despachar
                 foreach($InventarioD as $keyD => $valueD){
                   
                   $qb = $em->createQueryBuilder()
-                     ->select('r')
-                     ->from('IncentivesRedencionesBundle:Redenciones','r')
-                     ->Join('r.productocatalogo', 'p')
-                     ->Join('p.producto', 'pr')
-                     ->where('r.redencionestado = 2 AND pr.id='.$valueD->getProducto()->getId())
+                     ->select('rp')
+                     ->from('IncentivesRedencionesBundle:RedencionesProductos','rp')
+                     ->Join('rp.producto', 'p')
+                     ->where('rp.estado = 2 AND p.id='.$valueD->getProducto()->getId())
                      ->setMaxResults(1);
                      
-                     $RedencionD = $qb->getQuery()->getOneOrNullResult();
+                     $RedencionP = $qb->getQuery()->getOneOrNullResult();
                      
                      if(isset($RedencionD)){
                        
                         $estado = $em->getRepository('IncentivesRedencionesBundle:Redencionesestado')->find('4'); 
                         $inventario = $em->getRepository('IncentivesInventarioBundle:Inventario')->find($valueD->getId());
-                        $redencion = $em->getRepository('IncentivesRedencionesBundle:Redenciones')->find($RedencionD->getId());
+                        $redencionProducto = $em->getRepository('IncentivesRedencionesBundle:RedencionesProductos')->find($RedencionD->getId());
+
+                        $redencion = $em->getRepository('IncentivesRedencionesBundle:Redenciones')->find($RedencionD->getRedencion()->getId());
                         
+                        $redencionProducto->setEstado($estado);
+                        $redencionProducto->setPreciocompra($inventario->getValorcompra());
                         $redencion->setRedencionestado($estado);
-                        $redencion->setValororden($inventario->getValorcompra());
-                        $inventario->setRedencion($redencion);
+                        $inventario->setRedencionProducto($redencionProducto);
                         
                         //traer los datos de envio para el despacho
                             $despacho = new Despachos();
@@ -2168,18 +2174,13 @@ if(isset($value['tracking']['ordenproducto']['redencion'])) {
                         
                         $inventario->setDespacho($despacho);
                         $em->persist($inventario);
+                        $em->persist($redencionProducto);
                         $em->persist($redencion);
-                        
-                        $redencionH = $this->get('incentives_redenciones');
-                        $redencionH->insertar($redencion);
-                        
-                        $inventarioH = $this->get('incentives_inventario');
-                        $inventarioH->insertar($inventario);
                         
                         $em->flush();
                         
                      }
-                }*///cierra foreach inventario
+                }//cierra foreach inventario
 
                 //Lista de redenciones autorizadas agrupadas por producto y pais
                 $qb = $em->createQueryBuilder()
@@ -2310,12 +2311,20 @@ if(isset($value['tracking']['ordenproducto']['redencion'])) {
 
                         //echo "<pre>"; print_r($cantidad); echo "</pre>"; exit;  
 
-                        foreach ($redencionesProductos as $keyRed => $valueRed) {
+                        foreach ($redencionesProductos as $keyRedProd => $valueRedProd) {
                           //if ($valueRed->getRedencionestado()==$estadoredencion){
-                            $valueRed->setOrdenesProducto($productos);
-                            $valueRed->setEstado($estado);
-                            $em->persist($valueRed);
+                            $valueRedProd->setOrdenesProducto($productos);
+                            $valueRedProd->setEstado($estado);
+
+                            //actualizar estado redencion
+                            $RedencionBase = $em->getRepository('IncentivesRedencionesBundle:Redenciones')->find($valueRedProd->getRedencion());
+                            $RedencionBase->setRedencionestado($estado);
+                            $em->persist($RedencionBase);
+
+                            $em->persist($valueRedProd);
                             $em->flush();
+
+
                           //}
                         }
                     }
@@ -2326,11 +2335,10 @@ if(isset($value['tracking']['ordenproducto']['redencion'])) {
                     foreach($valueProv as $keyProd => $valueProd){
                         
                         $qb = $em->createQueryBuilder()
-                           ->select('count(r.id)')
-                           ->from('IncentivesRedencionesBundle:Redenciones','r')
-                           ->Join('r.productocatalogo', 'p')
-                           ->Join('p.producto', 'pr')
-                           ->where('r.redencionestado = :id AND pr.id='.$keyProd)          
+                           ->select('count(rp.id)')
+                           ->from('IncentivesRedencionesBundle:RedencionesProductos','rp')
+                           ->Join('rp.producto', 'p')
+                           ->where('rp.estado = :id AND p.id='.$keyProd)          
                            ->setParameters(array(
                                 'id'=> '2',                
                             ));
@@ -2379,24 +2387,29 @@ if(isset($value['tracking']['ordenproducto']['redencion'])) {
 
                         //Actualizar estado de redenciones
                         $qb = $em->createQueryBuilder()
-                             ->select('r')
-                             ->from('IncentivesRedencionesBundle:Redenciones','r')
-                             ->Join('r.productocatalogo', 'p')
-                             ->Join('p.producto', 'pr')
-                             ->where('r.redencionestado = 2 AND pr.id='.$keyProd);
+                             ->select('rp')
+                             ->from('IncentivesRedencionesBundle:RedencionesProductos','rp')
+                             ->Join('rp.producto', 'pd')
+                             ->where('rp.estado = 2 AND pd.id='.$keyProd);
 
-                        $redenciones = $qb->getQuery()->getResult();
-                        foreach ($redenciones as $keyRed => $valueRed) {
+                        $redencionesProductos = $qb->getQuery()->getResult();
+
+                        //echo "<pre>"; print_r($cantidad); echo "</pre>"; exit;  
+
+                        foreach ($redencionesProductos as $keyRedProd => $valueRedProd) {
                           //if ($valueRed->getRedencionestado()==$estadoredencion){
-                            $valueRed->setOrdenesProducto($productos);
-                            $valueRed->setRedencionestado($estado);
-                            $em->persist($valueRed);
+                            $valueRedProd->setOrdenesProducto($productos);
+                            $valueRedProd->setEstado($estado);
+
+                            //actualizar estado redencion
+                            $RedencionBase = $em->getRepository('IncentivesRedencionesBundle:Redenciones')->find($valueRedProd->getRedencion());
+                            $RedencionBase->setRedencionestado($estado);
+                            $em->persist($RedencionBase);
+
+                            $em->persist($valueRedProd);
                             $em->flush();
 
-                            //Almacenar Historico
-                            $redencionH = $this->get('incentives_redenciones');
-                            $redencionH->insertar($valueRed);
-                            //$this->historicoAction($valueRed->getId());
+
                           //}
                         }
                     }

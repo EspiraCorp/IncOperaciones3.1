@@ -165,6 +165,12 @@ class Despachos
      * @ORM\JoinColumn(name="redencion_id", referencedColumnName="id", nullable=true)
      */
     protected $redencion;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Incentives\RedencionesBundle\Entity\RedencionesProductos", inversedBy="despacho")
+     * @ORM\JoinColumn(name="redencionProducto_id", referencedColumnName="id", nullable=true)
+     */
+    protected $redencionesproductos;
     
     /**
      * 
@@ -912,5 +918,29 @@ class Despachos
     public function removeDespachoguium(\Incentives\InventarioBundle\Entity\DespachoGuia $despachoguium)
     {
         $this->despachoguia->removeElement($despachoguium);
+    }
+
+    /**
+     * Set redencionesproductos
+     *
+     * @param \Incentives\RedencionesBundle\Entity\RedencionesProductos $redencionesproductos
+     *
+     * @return Despachos
+     */
+    public function setRedencionesproductos(\Incentives\RedencionesBundle\Entity\RedencionesProductos $redencionesproductos = null)
+    {
+        $this->redencionesproductos = $redencionesproductos;
+
+        return $this;
+    }
+
+    /**
+     * Get redencionesproductos
+     *
+     * @return \Incentives\RedencionesBundle\Entity\RedencionesProductos
+     */
+    public function getRedencionesproductos()
+    {
+        return $this->redencionesproductos;
     }
 }

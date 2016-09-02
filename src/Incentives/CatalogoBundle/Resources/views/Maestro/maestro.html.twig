@@ -79,8 +79,8 @@
                                        {% for imagen in producto.producto.imagenproducto %}
                                         {% if i<1 %}                  
                                           <li id="imagen-{{imagen.id}}" class="thumbnail" style="widht: 100px">
-                                              <a class="cboxElement" href="../../../{{ imagen.path | slice (0)}}" title="{{ producto.producto.codInc }}" style="background:url(../../../{{(imagen.path| slice (0))[:-4]}}_min.jpg)">
-                                                <img class="grayscale" src="../../../{{ imagen.path | slice(0)[:-4]}}_min.jpg" style="display: block;">
+                                              <a class="cboxElement" href="../../../{{ imagen.path | slice (7)}}" title="{{ producto.producto.codInc }}" style="background:url(../../../{{(imagen.path| slice (7))[:-4]}}_min.jpg)">
+                                                <img class="grayscale" src="../../../{{ imagen.path | slice(7)[:-4]}}_min.jpg" style="display: block;">
                                               </a>
                                             </li>
                                           {% set i=i+1 %}

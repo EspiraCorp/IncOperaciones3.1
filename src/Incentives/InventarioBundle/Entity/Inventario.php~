@@ -38,6 +38,12 @@ class Inventario
      * @ORM\JoinColumn(name="redencion_id", referencedColumnName="id", nullable=true)
      */
     protected $redencion;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Incentives\RedencionesBundle\Entity\RedencionesProductos", inversedBy="inventario")
+     * @ORM\JoinColumn(name="redencionProducto_id", referencedColumnName="id", nullable=true)
+     */
+    protected $redencionProducto;
     
     /**
      * 
@@ -738,5 +744,29 @@ class Inventario
     public function removeGuium(\Incentives\RedencionesBundle\Entity\GuiaEnvio $guium)
     {
         $this->guia->removeElement($guium);
+    }
+
+    /**
+     * Set redencionProducto
+     *
+     * @param \Incentives\RedencionesBundle\Entity\RedencionesProductos $redencionProducto
+     *
+     * @return Inventario
+     */
+    public function setRedencionProducto(\Incentives\RedencionesBundle\Entity\RedencionesProductos $redencionProducto = null)
+    {
+        $this->redencionProducto = $redencionProducto;
+
+        return $this;
+    }
+
+    /**
+     * Get redencionProducto
+     *
+     * @return \Incentives\RedencionesBundle\Entity\RedencionesProductos
+     */
+    public function getRedencionProducto()
+    {
+        return $this->redencionProducto;
     }
 }

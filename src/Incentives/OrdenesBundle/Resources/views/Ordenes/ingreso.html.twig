@@ -88,7 +88,7 @@
 							{% for productoOrden in productos %}
 								{% set j=j+1 %}
 								{% set form1 = matriz[productoOrden.id] %}
-								<form action="{{ path("ordenes_procesarvalores") }}" method="POST" {{ form_enctype(form1) }} id="item{{ productoOrden.id }}" class="form-horizontal">
+								<form action="{{ path("ordenes_procesarvalores") }}" method="POST" id="item{{ productoOrden.id }}" class="form-horizontal">
 									<tr>
 										<td>{{ productoOrden.producto.referencia }}</td>
 										<td>{{ productoOrden.producto.codEAN  }}</td>	

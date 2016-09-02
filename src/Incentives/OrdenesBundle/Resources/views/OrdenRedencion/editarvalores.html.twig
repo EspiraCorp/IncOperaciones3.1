@@ -67,15 +67,7 @@
 				</a>
 					Productos
 				</h2>
-			</div>			
-
-			<form action="{{ path("ordenredencion_valores", {"id": ordenes.id}) }}" method="POST"  class="form-horizontal" novalidate>
-			    <div class="ordenesProducto" data-prototype="{{ form_widget(form.ordenesProducto.vars.prototype)|e }}">
-			    </div>
-			    {{ form_errors(form) }}
-				{{ form_widget(form._token) }}
-			</form>
-
+			</div>
 
 			{% if productos | length!=0 %}
 			<table class="table table-bordered table-striped">

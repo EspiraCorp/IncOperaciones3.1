@@ -80,6 +80,13 @@ class Premios
     private $descripcion;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="actualizacion", type="boolean", nullable=true)
+     */
+    private $actualizacion;
+
+    /**
      * @ORM\OneToMany(targetEntity="Incentives\RedencionesBundle\Entity\Redenciones", mappedBy="premio")
      */
     protected $redencion;
@@ -1024,5 +1031,29 @@ class Premios
     public function getDescripcion()
     {
         return $this->descripcion;
+    }
+
+    /**
+     * Set actualizacion
+     *
+     * @param boolean $actualizacion
+     *
+     * @return Premios
+     */
+    public function setActualizacion($actualizacion)
+    {
+        $this->actualizacion = $actualizacion;
+
+        return $this;
+    }
+
+    /**
+     * Get actualizacion
+     *
+     * @return boolean
+     */
+    public function getActualizacion()
+    {
+        return $this->actualizacion;
     }
 }

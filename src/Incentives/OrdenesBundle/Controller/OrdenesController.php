@@ -804,7 +804,7 @@ class OrdenesController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $id_prod = $request->request->all()['producto'];
-        $OrdenesP = $request->request->all()['ordenesproducto'];
+        $OrdenesP = $request->request->all()['ordenes_producto_cantidad'];
         $cantidadR = $OrdenesP['cantidadrecibida'];
 
         $ordenesProducto = $em->getRepository('IncentivesOrdenesBundle:OrdenesProducto')->find($id_prod);
@@ -852,22 +852,26 @@ class OrdenesController extends Controller
 
                     //Buscar la redencion mas antigua o prioritaria en estado de compra
                     $qb = $em->createQueryBuilder();            
-                    $qb->select('r');
-                    $qb->from('IncentivesRedencionesBundle:Redenciones','r');
-                    $qb->leftJoin('r.ordenesProducto', 'op');
+                    $qb->select('rp');
+                    $qb->from('IncentivesRedencionesBundle:RedencionesProductos','rp');
+                    $qb->leftJoin('rp.ordenesProducto', 'op');
                     $str_filtro = 'op.id = '.$id_prod;
-                    $str_filtro .= ' AND r.redencionestado = 3';
+                    $str_filtro .= ' AND rp.estado = 3';
                     $qb->where($str_filtro);
-                    $qb->orderBy('r.fecha', 'asc');
+                    $qb->orderBy('rp.fecha', 'asc');
                     $qb->setMaxResults(1);
-                    $redencion = $qb->getQuery()->getOneOrNullResult();
+                    $RedencionesProductos = $qb->getQuery()->getOneOrNullResult();
 
-                    if(isset($redencion)){
+                    if(isset($RedencionesProductos)){
 
-                            $redencionA = $em->getRepository('IncentivesRedencionesBundle:Redenciones')->find($redencion->getId());
+                            $redencionProducto = $em->getRepository('IncentivesRedencionesBundle:RedencionesProductos')->find($RedencionesProductos->getId());
                             $estado = $em->getRepository('IncentivesRedencionesBundle:Redencionesestado')->find('4');
-                            $redencionA->setRedencionestado($estado);
-                            $em->persist($redencionA);
+                            $redencionProducto->setEstado($estado);
+                            $em->persist($redencionProducto);
+
+                            $redencion = $em->getRepository('IncentivesRedencionesBundle:Redenciones')->find($redencionProducto->getRedencion()->getId());
+                            $redencion->setRedencionestado($estado);
+                            $em->persist($redencionProducto);
                             
                             //traer los datos de envio para el despacho
                             $despacho = new Despachos();
@@ -876,7 +880,7 @@ class OrdenesController extends Controller
                             $qb = $em->createQueryBuilder();            
                             $qb->select('e');
                             $qb->from('IncentivesRedencionesBundle:RedencionesEnvios','e');
-                            $str_filtro = 'e.redencion ='.$redencionA->getId();
+                            $str_filtro = 'e.redencion ='.$redencion->getId();
                             $qb->where($str_filtro);
                             $qb->orderBy('e.id', 'DESC');
                             $qb->setMaxResults(1);
@@ -899,29 +903,21 @@ class OrdenesController extends Controller
                             $despacho->setTelefonoContacto($datosEnvio['telefonoContacto']);
                             $despacho->setCelularContacto($datosEnvio['celularContacto']);
                             $despacho->setDepartamentoContacto($datosEnvio['departamentoContacto']);
-                            $despacho->setRedencion($redencionA);
+                            $despacho->setRedencionesProductos($redencionProducto);
                             $despacho->setProducto($ordenesProducto->getProducto());
                             $despacho->setOrdenProducto($ordenesProducto);
                             $despacho->setCantidad(1);
                             $em->persist($despacho);
 
-                            //Almacenar Historico
-                            $redencionH = $this->get('incentives_redenciones');
-                            $redencionH->insertar($redencionA);
-
                             $codInventario = time().$redencion->getId();
-                            $inventarioP->setRedencion($redencionA);
+                            $inventarioP->setRedencionProducto($redencionProducto);
                             $inventarioP->setDespacho($despacho);
                             $inventarioP->setCodigo($codInventario);
                             
                             $em->flush();
                     }
 
-                    $em->persist( $inventarioP );
-                    
-                    $inventarioH = $this->get('incentives_inventario');
-                    $inventarioH->insertar($inventarioP);
-                    
+                    $em->persist($inventarioP);                    
                     $em->flush();
 
                 }
@@ -1192,13 +1188,14 @@ class OrdenesController extends Controller
       $em = $this->getDoctrine()->getManager();
 
       $qb = $em->createQueryBuilder()
-                ->select('r','op','pt','pg','pc','p','pp')
-                ->from('IncentivesRedencionesBundle:Redenciones','r')
-                ->leftJoin('r.ordenesProducto', 'op')
+                ->select('rp','r','op','pt','pg','p','pp','pr')
+                ->from('IncentivesRedencionesBundle:RedencionesProductos','rp')
+                ->leftJoin('rp.ordenesProducto', 'op')
+                ->leftJoin('rp.redencion', 'r')
+                ->leftJoin('r.premio', 'pr')
                 ->leftJoin('r.participante', 'pt')
                 ->leftJoin('pt.programa', 'pg')
-                ->leftJoin('r.productocatalogo', 'pc')
-                ->leftJoin('pc.producto', 'p')
+                ->leftJoin('rp.producto', 'p')
                 ->leftJoin('p.productoprecio', 'pp');
       $str = "op.id=".$productoOrden;
 
@@ -1307,15 +1304,16 @@ class OrdenesController extends Controller
       $em = $this->getDoctrine()->getManager();
 
       $qb = $em->createQueryBuilder()
-                ->select('r','op','pt','pg','pc','p','pp','e')
-                ->from('IncentivesRedencionesBundle:Redenciones','r')
-                ->leftJoin('r.ordenesProducto', 'op')
+                ->select('rp','r','op','pt','pg','rp','p','pp','e','pr')
+                ->from('IncentivesRedencionesBundle:RedencionesProductos','rp')
+                ->leftJoin('rp.ordenesProducto', 'op')
+                ->leftJoin('rp.redencion', 'r')
+                ->leftJoin('r.premio', 'pr')
                 ->leftJoin('r.participante', 'pt')
                 ->leftJoin('pt.programa', 'pg')
-                ->leftJoin('r.productocatalogo', 'pc')
-                ->leftJoin('pc.producto', 'p')
+                ->leftJoin('rp.producto', 'p')
                 ->leftJoin('p.productoprecio', 'pp')
-                ->leftJoin('r.redencionestado', 'e');
+                ->leftJoin('rp.estado', 'e');
       $str = "op.id=".$productoOrden;
 
       $qb->where($str);
@@ -1353,15 +1351,17 @@ class OrdenesController extends Controller
   }
 
   
-  public function ingresoRedencionAction($redencion) {
+  public function ingresoRedencionAction(Request $request, $redencion) {
         
         $em = $this->getDoctrine()->getManager();
+
+        print_r($request->request->all()); exit;
 
         $id_prod = $request->request->all()['producto'];
         $OrdenesP = $request->request->all()['ordenesproducto'];
         $cantidadR = 1;
 
-        $redencion = $em->getRepository('IncentivesRedencionesBundle:Redenciones')->find($redencion);
+        $redencionProducto = $em->getRepository('IncentivesRedencionesBundle:RedencionesProductos')->find($redencion);
         $ordenesProducto = $em->getRepository('IncentivesOrdenesBundle:OrdenesProducto')->find($redencion->getOrdenesProducto()->getId());
       
         if(isset($ordenesProducto)){
