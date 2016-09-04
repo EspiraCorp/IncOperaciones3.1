@@ -30,19 +30,19 @@ class ParticipanteType extends AbstractType
         $builder->add('tipodocumento', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:Tipodocumento',
             'choice_label' => 'nombre',
-            //'empty_value' => 'Seleccione una opcion',
+            'placeholder' => 'Seleccionar',
         ));
 
         $builder->add('ciudad', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:Ciudad',
             'choice_label' => 'nombre',
-            //'empty_value' => 'Seleccione una opcion',
+            'placeholder' => 'Seleccionar',
         ));
 
         $builder->add('programa', EntityType::class, array(
             'class' => 'IncentivesCatalogoBundle:Programa',
             'choice_label' => 'nombre',
-            //'empty_value' => 'Seleccione una opcion',
+            'placeholder' => 'Seleccionar',
         ));
 
 

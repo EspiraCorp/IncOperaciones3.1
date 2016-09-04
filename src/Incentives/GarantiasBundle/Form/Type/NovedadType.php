@@ -25,19 +25,19 @@ class NovedadType extends AbstractType
         $builder->add('estado', EntityType::class, array(
             'class' => 'IncentivesGarantiasBundle:Novedadesestado',
             'choice_label' => 'nombre',
-            //'empty_value' => 'Seleccione una opcion',
+            'placeholder' => 'Seleccionar',
         ));
 
         $builder->add('tipo', EntityType::class, array(
             'class' => 'IncentivesGarantiasBundle:Novedadestipo',
             'choice_label' => 'nombre',
-            //'empty_value' => 'Seleccione una opcion',
+            'placeholder' => 'Seleccionar',
         ));
         
         $builder->add('devolucionTipo', EntityType::class, array(
             'class' => 'IncentivesGarantiasBundle:NovedadesDevolucionTipo',
             'choice_label' => 'nombre',
-            //'empty_value' => 'Seleccione una opcion',
+            'placeholder' => 'Seleccionar',
         ));
 
 

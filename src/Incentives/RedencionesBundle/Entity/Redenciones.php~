@@ -59,14 +59,6 @@ class Redenciones
     protected $ordenesProducto;
 
     /**
-     * 
-     * @ORM\ManyToOne(targetEntity="Incentives\FacturacionBundle\Entity\FacturaProductos", inversedBy="redenciones", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="facturaProducto_id", referencedColumnName="id", nullable=true)
-     * 
-     */
-    protected $facturaProducto;
-
-    /**
      * @ORM\OneToMany(targetEntity="Incentives\FacturacionBundle\Entity\FacturaDetalle", mappedBy="redencion", cascade={"persist"})
      * 
      */
@@ -226,12 +218,6 @@ class Redenciones
     protected $despacho;
 
     /**
-     * @ORM\OneToMany(targetEntity="RedencionesHistorico", mappedBy="redencion", cascade={"persist"})
-     * 
-     */
-    protected $historico;
-
-    /**
      * @ORM\OneToMany(targetEntity="Incentives\GarantiasBundle\Entity\Novedades", mappedBy="redencion", cascade={"persist"})
      * 
      */
@@ -283,7 +269,6 @@ class Redenciones
     public function __construct()
     {
         $this->inventario = new ArrayCollection();
-        $this->historico = new ArrayCollection();
     }
 
 
@@ -482,39 +467,6 @@ class Redenciones
     }
 
     /**
-     * Add guiaEnvio
-     *
-     * @param \Incentives\RedencionesBundle\Entity\GuiaEnvio $guiaEnvio
-     * @return Redenciones
-     */
-    public function addGuiaEnvio(\Incentives\RedencionesBundle\Entity\GuiaEnvio $guiaEnvio)
-    {
-        $this->guiaEnvio[] = $guiaEnvio;
-    
-        return $this;
-    }
-
-    /**
-     * Remove guiaEnvio
-     *
-     * @param \Incentives\RedencionesBundle\Entity\GuiaEnvio $guiaEnvio
-     */
-    public function removeGuiaEnvio(\Incentives\RedencionesBundle\Entity\GuiaEnvio $guiaEnvio)
-    {
-        $this->guiaEnvio->removeElement($guiaEnvio);
-    }
-
-    /**
-     * Get guiaEnvio
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getGuiaEnvio()
-    {
-        return $this->guiaEnvio;
-    }
-
-    /**
      * Add inventario
      *
      * @param \Incentives\InventarioBundle\Entity\Inventario $inventario
@@ -545,39 +497,6 @@ class Redenciones
     public function getInventario()
     {
         return $this->inventario;
-    }
-
-    /**
-     * Add historico
-     *
-     * @param \Incentives\RedencionesBundle\Entity\RedencionesHistorico $historico
-     * @return Redenciones
-     */
-    public function addHistorico(\Incentives\RedencionesBundle\Entity\RedencionesHistorico $historico)
-    {
-        $this->historico[] = $historico;
-    
-        return $this;
-    }
-
-    /**
-     * Remove historico
-     *
-     * @param \Incentives\RedencionesBundle\Entity\RedencionesHistorico $historico
-     */
-    public function removeHistorico(\Incentives\RedencionesBundle\Entity\RedencionesHistorico $historico)
-    {
-        $this->historico->removeElement($historico);
-    }
-
-    /**
-     * Get historico
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getHistorico()
-    {
-        return $this->historico;
     }
 
     /**
@@ -886,29 +805,6 @@ class Redenciones
         return $this->fechaDespacho;
     }
 
-    /**
-     * Set facturaProducto
-     *
-     * @param \Incentives\FacturacionBundle\Entity\FacturaProductos $facturaProducto
-     * @return Redenciones
-     */
-    public function setFacturaProducto(\Incentives\FacturacionBundle\Entity\FacturaProductos $facturaProducto = null)
-    {
-        $this->facturaProducto = $facturaProducto;
-    
-        return $this;
-    }
-
-    /**
-     * Get facturaProducto
-     *
-     * @return \Incentives\FacturacionBundle\Entity\FacturaProductos 
-     */
-    public function getFacturaProducto()
-    {
-        return $this->facturaProducto;
-    }
-   
     /**
      * Set usuario
      *

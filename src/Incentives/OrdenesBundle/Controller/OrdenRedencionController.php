@@ -1240,12 +1240,12 @@ class OrdenRedencionController extends Controller
 
                 $totalCant += $cantidadOP;
 
-                $datoCC .= $valueOP2->getParticipante()->getPrograma()->getCentrocostos()."(".$cantidadOP.") ";
+                $datoCC .= $valueOP2->getParticipante()->getPrograma()->getCentroCostos()->getCentrocostos()."(".$cantidadOP.") ";
             }
 
             $cantidadOP = $valueOP->getCantidad() - $totalCant;
              if($cantidadOP!=0) $datoCC .= "1002(".$cantidadOP.") ";
-	     if($ordenesOP->getOrdenestipo()->getId()==1) $datoCC = $valueOP->getCentrocostos();
+	     if($ordenesOP->getOrdenestipo()->getId()==1) $datoCC = $valueOP->getCentroCostos()->getCentrocostos();
 
             //Determinar las cantidad
             $cantCC[$valueOP->getId()] = $datoCC;
@@ -1526,11 +1526,11 @@ class OrdenRedencionController extends Controller
                     
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
-            $valores = $request->get('ordenesproducto');
+            $valores = $request->request->all()['ordenes_producto_cantidad'];
 
             if ($form->isValid()) {
                 $id = $request->request->all()['id'];
-                $ordenes = $request->request->all()['ordenesproducto'];
+                
                 $productos = $em->getRepository('IncentivesOrdenesBundle:OrdenesProducto')->find($id);
                 $cantidad_inicial = $productos ->getCantidad();
                 $orden = $em->getRepository('IncentivesOrdenesBundle:OrdenesCompra')->find($productos->getOrdenesCompra()->getId());
@@ -1542,7 +1542,7 @@ class OrdenRedencionController extends Controller
                 $productos->setCantidad($valores['cantidad']);
                 $productos->setValorunidad($valores['valorunidad']);
                 $productos->setValortotal($valores['valorunidad']*$valores['cantidad']);
-                $productos->setDescuento($valores['descuento']);
+                $productos->setDescuento(($valores['descuento']) ? $valores['descuento'] : 0);
                 $em->persist($productos);
                 $em->flush();
 
@@ -1554,29 +1554,36 @@ class OrdenRedencionController extends Controller
                   for($id=1;$id<=$diferencia;$id++){
                     $arrayParametros = array();
                       $qb = $em->createQueryBuilder();            
-                      $qb->select('r');
-                      $qb->from('IncentivesRedencionesBundle:Redenciones','r');
-                      $qb->leftJoin('r.productocatalogo', 'pc');
-                      $qb->leftJoin('r.ordenesProducto', 'op');
+                      $qb->select('rp');
+                      $qb->from('IncentivesRedencionesBundle:RedencionesProductos','rp');
+                      $qb->leftJoin('rp.ordenesProducto', 'op');
                       $str_filtro = 'op.ordenesCompra = :orden';
-                      $str_filtro .= ' AND pc.producto= :producto';
-                      $str_filtro .= ' AND r.redencionestado = 3';
+                      $str_filtro .= ' AND rp.producto= :producto';
+                      $str_filtro .= ' AND rp.estado = 3';
                       $qb->where($str_filtro);
-                      $qb->orderBy('r.fecha', 'desc');
+                      $qb->orderBy('rp.fecha', 'desc');
 
                       //Definicion de parametros para filtros
                       $arrayParametros['orden'] = $orden->getId();
                       $arrayParametros['producto'] = $producto->getId();
                       $qb->setParameters($arrayParametros);
                       $qb->setMaxResults(1);
-                      $redencion = $qb->getQuery()->getOneOrNullResult();
-                      
-                      if(isset($redencion)){
+                      $redencionProducto = $qb->getQuery()->getOneOrNullResult();
+                      //echo "<pre>"; print_r($redencionProducto); echo "</pre>"; exit;
+                      if(isset($redencionProducto)){
+                        $redencion = $em->getRepository('IncentivesRedencionesBundle:Redenciones')->find($redencionProducto->getRedencion()->getId());
                         $estadoredencion = $em->getRepository('IncentivesRedencionesBundle:Redencionesestado')->find('2');
+
+                        $redencionProducto->setEstado($estadoredencion);
+                        $redencionProducto->setOrdenesProducto(null);
+
                         $redencion->setRedencionestado($estadoredencion);
                         $redencion->setOrdenesProducto(null);
+
+                        $em->persist($redencionProducto);
+                        $em->persist($redencion);
                       }
-                      $em->persist($redencion);
+
                       $em->flush();
 
                   }

@@ -28,7 +28,7 @@ class PremiosType extends AbstractType
         $builder->add('catalogos', EntityType::class, array(
             'class' => 'IncentivesCatalogoBundle:Catalogos',
             'choice_label' => 'nombre',
-            //'empty_value' => 'Seleccione una opcion',
+            'placeholder' => 'Seleccionar',
             'query_builder' => function(\Doctrine\ORM\EntityRepository $er) { 
                 return $er->createQueryBuilder('u')->orderBy('u.nombre', 'ASC')
                     ->where('u.estado = :id')->setParameter('id', '1')
@@ -39,7 +39,7 @@ class PremiosType extends AbstractType
          $builder->add('categoria', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:Categoria',
             'choice_label' => 'nombre',
-            //'empty_value' => 'Seleccione una opcion',
+            'placeholder' => 'Seleccionar',
             'label' => 'Subcategoria',
         ));
 

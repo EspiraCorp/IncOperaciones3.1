@@ -273,19 +273,20 @@ class RedencionController extends Controller
         $sqlFiltro = "pt.programa=".$programa." AND r.redencionestado!=7 ".$sqlFiltro;
 
         $query = $em->createQueryBuilder()
-            ->select('r','pt', 'pr', 'e', 'i', 'g', 'dg','d') 
+            ->select('r','pt', 'pr', 'e', 'i', 'rp','g', 'dg','d') 
             ->from('IncentivesRedencionesBundle:Redenciones', 'r')
             ->leftJoin('r.participante','pt')
 		    ->leftJoin('r.premio', 'pr')
 		    ->leftJoin('r.redencionestado', 'e')
-		    ->leftJoin('r.inventario', 'i')
-		    ->leftJoin('r.despacho', 'd')
+		    ->leftJoin('r.redencionesProductos', 'rp')
+            ->leftJoin('rp.inventario', 'i')
+            ->leftJoin('rp.despacho', 'd')
 		    ->leftJoin('d.despachoguia', 'dg')
             ->leftJoin('dg.guia', 'g')
 		    ->where($sqlFiltro);
 		    
-		//$resultado = $query->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
-		//    echo "<pre>"; print_r($resultado); echo "</pre>"; exit;
+		$resultado = $query->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
+		//echo "<pre>"; print_r($resultado); echo "</pre>"; exit;
 		    
 		if($request->get('sort')){
 		    $query->orderBy($request->get('sort'), $request->get('direction'));    
@@ -1100,7 +1101,7 @@ class RedencionController extends Controller
 	 //print_r($redenciones); exit;       
 			//fputcsv($fp,$row);
             
-            $query = "SELECT r.id,r.fecha,r.fechaModificacion,r.redimidopor,r.codigoredencion,r.puntos,r.valor,r.fechaAutorizacion,r.fechaDespacho,
+            $query = "SELECT rp.id,r.fecha,r.fechaModificacion,r.redimidopor,r.codigoredencion,r.puntos,r.valor,r.fechaAutorizacion,r.fechaDespacho,
                             r.fechaEntrega, r.redencionestado_id estado_id,r.valorCompra,r.incremento,r.logistica,
                             envio.nombre nombre_envio,envio.documento documento_envio,envio.nombreContacto,envio.telefonoContacto,envio.direccionContacto,envio.documentoContacto,
                             envio.telefono,envio.barrio,envio.direccion,envio.celular,envio.departamentoNombre,envio.ciudadNombre,rp.id idPremio,
@@ -1204,7 +1205,7 @@ class RedencionController extends Controller
                         	JOIN Despachos as d ON dg.despacho_id=d.id
                         	JOIN GuiaEnvio as g ON g.id=dg.guia_id";
     
-                        $str_filtro = ' WHERE d.redencion_id = '.$value['id'];
+                        $str_filtro = ' WHERE d.redencionproducto_id = '.$value['id'];
                         
                         $conn = $this->get('database_connection'); 
                         $guiasResult = $conn->fetchAll($query.$str_filtro);

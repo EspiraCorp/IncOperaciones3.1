@@ -1,0 +1,85 @@
+{# app/Resources/views/base.html.twig #}
+<!DOCTYPE html>
+    <html>
+        <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Plataforma Operaciones IncGroup">
+        <meta name="author" content="Sinaptika">
+        <title>{% block title %}Operaciones ::{% endblock %}</title>
+        {% block stylesheet %}
+
+            <!-- The styles -->
+            <style type="text/css">
+              body {
+                padding-bottom: 40px;
+              }
+              .sidebar-nav {
+                padding: 9px 0;
+              }
+            </style>
+
+            <link rel="stylesheet" href="{{ asset('templates/AdminLTE/bootstrap/css/bootstrap.min.css') }}">
+            <link rel="stylesheet" href="{{ asset('templates/AdminLTE/dist/css/AdminLTE.css') }}">
+            <link href="{{ asset('css/colorbox.css') }}" rel='stylesheet'>
+           
+        {% endblock %}
+        </head>
+        <body>
+
+        <!-- topbar starts -->
+        
+
+        <div class="container-fluid">
+        <div class="row-fluid">
+            
+            <div id="contenido" style="margin-left:20px;">
+
+            <div id="content" class="span10">
+                
+                <noscript>
+                    <div class="alert alert-block span10">
+                        <h4 class="alert-heading">Warning!</h4>
+                        <p>You need to have <a href="http://en.wikipedia.org/wiki/JavaScript" target="_blank">JavaScript</a> enabled to use this site.</p>
+                    </div>
+                </noscript>
+
+                {% for flashMessage in app.session.flashbag.get('notice') %}
+                     <div class="alert alert-success">
+                            <button type="button" class="close" data-dismiss="alert">×</button>
+                            {{ flashMessage }}
+                    </div>       
+                {% endfor %}
+
+                {% for flashMessage in app.session.flashbag.get('notice') %}
+                     <div class="alert alert-error">
+                            <button type="button" class="close" data-dismiss="alert">×</button>
+                            {{ flashMessage }}
+                    </div>       
+                {% endfor %}
+                
+                {% for flashMessage in app.session.flashbag.get('warning') %}
+                     <div class="alert alert-error">
+                            <button type="button" class="close" data-dismiss="alert">×</button>
+                            {{ flashMessage }}
+                    </div>       
+                {% endfor %}
+
+                
+                {% block content %}
+
+
+            
+                {% endblock %}
+            </div>
+        </div>
+        </div>
+
+
+        {% block javascript %}
+
+		</script>
+
+        {% endblock %}
+    </body>
+</html>

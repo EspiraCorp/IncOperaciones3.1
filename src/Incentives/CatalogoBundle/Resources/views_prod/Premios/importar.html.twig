@@ -1,0 +1,37 @@
+{% extends '::base.html.twig' %}
+{% block title %}Cargar Catalogo{% endblock %}
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+<div class="box span12">
+<div class="box-header well" data-original-title>
+                        <h2><i class="icon-edit"></i>Carga Masiva Catalogo</h2>
+                        <a class="btn btn-mini btn-success" style="margin-left: 20px" href="{{ path('productocatalogo_formato') }}">
+                            <i class="icon-zoom-in icon-white"></i>
+                            Formato
+                        </a>
+                        
+                        <div class="box-icon">
+                            <a href="{{ path('catalogo_datos',  {"id": id}) }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+                        </div>
+                    </div>
+<div class="box-content">
+<form action="{{ path('productocatalogo_importar', {"id": id}) }}" method="POST"  class="form-horizontal">
+    {{ form_errors(form) }}
+    <fieldset>
+        <div class="control-group">
+            {{ form_label(form.excel, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.excel, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+    </fieldset>
+    
+<div class="form-actions">
+    {{ form_widget(form.cargar, { 'attr': {'class': 'btn btn-primary'} }) }}
+</div>
+{{ form_widget(form._token) }}
+</form>
+</div>
+</div>
+ </div>
+{% endblock %}

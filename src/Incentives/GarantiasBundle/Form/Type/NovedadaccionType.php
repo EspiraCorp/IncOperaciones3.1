@@ -24,13 +24,13 @@ class NovedadaccionType extends AbstractType
         /*$builder->add('estado', EntityType::class, array(
             'class' => 'IncentivesGarantiasBundle:Novedadesestado',
             'choice_label' => 'nombre',
-            //'empty_value' => 'Seleccione una opcion',
+            'placeholder' => 'Seleccionar',
         ));*/
 
         $builder->add('accion', EntityType::class, array(
             'class' => 'IncentivesGarantiasBundle:Novedadesaccion',
             'choice_label' => 'nombre',
-            //'empty_value' => 'Seleccione una opcion',
+            'placeholder' => 'Seleccionar',
         ));
 
 

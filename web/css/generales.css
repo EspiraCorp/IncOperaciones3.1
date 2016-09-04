@@ -7,7 +7,7 @@
 	
 body{
 	background-image:url(../img/img_login.png);
-	background-repeat: repeat-y, repeat-x;
+	background-repeat: repeat-y, repeat-x !important;
 }
 	
 section{

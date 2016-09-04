@@ -75,7 +75,7 @@ class FacturaType extends AbstractType
         $builder->add('periodo', EntityType::class, array(
             'class' => 'IncentivesFacturacionBundle:Periodos',
             'choice_label' => 'periodo',
-            //'empty_value' => 'Seleccione una opcion',
+            'placeholder' => 'Seleccionar',
             'label' => 'Periodo'
         ));
 

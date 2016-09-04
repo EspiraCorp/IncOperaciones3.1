@@ -16,7 +16,7 @@ class ConvocatoriasProveedorType extends AbstractType
 		$builder->add('proveedor', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:Proveedores',
             'choice_label' => 'nombre',
-            //'empty_value' => 'Seleccione una opcion',
+            'placeholder' => 'Seleccionar',
             'required' => false
         ));
     }

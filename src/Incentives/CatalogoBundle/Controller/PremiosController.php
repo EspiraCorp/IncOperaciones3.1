@@ -872,7 +872,7 @@ class PremiosController extends Controller
 
                 $premio->setCatalogos($catalogo);
                 $premio->setCategoria($categoria);
-                $premio->setPuntosTemporal($puntos);
+                $premio->setPuntosTemporal(($puntos) ? $puntos : 0 );
                 $premio->setPrecioTemporal($pro['precioTemporal']);
                 $premio->setEstado($estado);
                 $premio->setIncrementoTemporal($pro['incrementoTemporal']);

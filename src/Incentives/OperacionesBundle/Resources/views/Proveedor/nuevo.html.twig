@@ -1,166 +1,168 @@
-{# src/Sinaptica/ProveedoresBundle/Resources/views/Default/new.html.twig #}
-{% extends '::base.html.twig' %}
-{% block title %}Nuevo proveedor{% endblock %}
-{% block cuerpo %}
-<div class="row-fluid sortable ui-sortable">
-<div class="box span12">
-<div class="box-header well" data-original-title>
-                        <h2><i class="icon-edit"></i>Nuevo Proveedor</h2>
-                        <div class="box-icon">
-                            <a href="{{ path('proveedores') }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
-                        </div>
+{% extends '::baseLte.html.twig' %}
+
+{% block title %}{{ parent() }}::Proveedor Nuevo{% endblock %}
+{% block sectiontitle %}<h1>Proveedores<small>Nuevo</small></h1>{% endblock %}
+{% block breadcum %} <li><a href="{{ path('proveedores') }}"><i class="fa fa-hand-o-right"></i>Proveedores</a></li><li class="active">Nuevo</li>{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-10">
+        <!-- Horizontal Form -->
+        <div class="box box-warning">
+            <div class="box-header">
+              <h3 class="box-title"><i class="icon-edit"></i>Nuevo Proveedor</h3>
+            </div>
+            <!-- /.box-header -->
+            <!-- form start -->
+            <form action="{{ path('proveedores_nuevo') }}" method="POST" class="form-horizontal">
+              <div class="box-body">
+                <div class="form-group">
+                    *{{ form_label(form.nombre, label|default(null), { 'label_attr': { 'class': 'col-sm-2 control-label' } }) }}
+                    <div class="col-sm-8">
+                        {{ form_widget(form.nombre, { 'attr': {'class': 'form-control'} }) }}
                     </div>
-<div class="box-content">
-{{ form_start(form) }}
-<form action="{{ path('proveedores_nuevo') }}" method="POST" class="form-horizontal">
-    {{ form_errors(form) }}
-    <fieldset>
-        <div class="control-group">
-            *{{ form_label(form.nombre, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
-            <div class="controls">
-                {{ form_widget(form.nombre, { 'attr': {'class': 'input-xlarge focused'} }) }}
-            </div>
-        </div>
-        <div class="control-group">
-            *{{ form_label(form.tipodocumento, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
-            <div class="controls">
-                {{ form_widget(form.tipodocumento, { 'attr': {'class': 'input-xlarge focused'} }) }}
-            </div>
-        </div>
-        <div class="control-group">
-            *{{ form_label(form.numero_documento, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
-            <div class="controls">
-                {{ form_widget(form.numero_documento, { 'attr': {'class': 'input-xlarge focused'} }) }}
-                <div id="resultado_doc"></div>
-            </div>
-        </div>
-        <div class="control-group">
-            *{{ form_label(form.correo, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
-            <div class="controls">
-                {{ form_widget(form.correo, { 'attr': {'class': 'input-xlarge focused'} }) }}
-                <div id="resultado_correo"></div>
-            </div>
-        </div>
-        <div class="control-group">
-            *{{ form_label(form.proveedortipo, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
-            <div class="controls">
-                {{ form_widget(form.proveedortipo, { 'attr': {'class': 'input-xlarge focused'} }) }}
-            </div>
-        </div>  
+                </div>
+                <div class="form-group">
+                                    *{{ form_label(form.tipodocumento, label|default(null), { 'label_attr': { 'class': 'col-sm-2 control-label' } }) }}
+                    <div class="col-sm-8">
+                        {{ form_widget(form.tipodocumento, { 'attr': {'class': 'form-control'} }) }}
+                    </div>
+                </div>
+                <div class="form-group">
+                                    *{{ form_label(form.numero_documento, label|default(null), { 'label_attr': { 'class': 'col-sm-2 control-label' } }) }}
+                                    <div class="col-sm-8">
+                                        {{ form_widget(form.numero_documento, { 'attr': {'class': 'form-control'} }) }}
+                                        <div id="resultado_doc"></div>
+                                    </div>
+                                </div>
+<div class="form-group">
+                                    *{{ form_label(form.correo, label|default(null), { 'label_attr': { 'class': 'col-sm-2 control-label' } }) }}
+                                    <div class="col-sm-8">
+                                        {{ form_widget(form.correo, { 'attr': {'class': 'form-control'} }) }}
+                                        <div id="resultado_correo"></div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    *{{ form_label(form.proveedortipo, label|default(null), { 'label_attr': { 'class': 'col-sm-2 control-label' } }) }}
+                                    <div class="col-sm-8">
+                                        {{ form_widget(form.proveedortipo, { 'attr': {'class': 'form-control'} }) }}
+                                    </div>
+                                </div>  
 
-        <div class="control-group">
-            *{{ form_label(form.categoria, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
-            <div class="controls">
-                {{ form_widget(form.categoria, { 'attr': {'class': 'input-xlarge focused'} }) }}
-            </div>
-        </div>
+                                <div class="form-group">
+                                    *{{ form_label(form.categoria, label|default(null), { 'label_attr': { 'class': 'col-sm-2 control-label' } }) }}
+                                    <div class="col-sm-8">
+                                        {{ form_widget(form.categoria, { 'attr': {'class': 'form-control'} }) }}
+                                    </div>
+                                </div>
 
-        <div class="control-group">
-            *{{ form_label(form.proveedorclasificacion, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
-            <div class="controls">
-                {{ form_widget(form.proveedorclasificacion, { 'attr': {'class': 'input-xlarge focused'} }) }}
-            </div>
-        </div>
-        
-        <div class="control-group">
-            *{{ form_label(form.proveedorarea, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
-            <div class="controls">
-                {{ form_widget(form.proveedorarea, { 'attr': {'class': 'input-xlarge focused'} }) }}
-            </div>
-        </div>
+                                <div class="form-group">
+                                    *{{ form_label(form.proveedorclasificacion, label|default(null), { 'label_attr': { 'class': 'col-sm-2 control-label' } }) }}
+                                    <div class="col-sm-8">
+                                        {{ form_widget(form.proveedorclasificacion, { 'attr': {'class': 'form-control'} }) }}
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    *{{ form_label(form.proveedorarea, label|default(null), { 'label_attr': { 'class': 'col-sm-2 control-label' } }) }}
+                                    <div class="col-sm-8">
+                                        {{ form_widget(form.proveedorarea, { 'attr': {'class': 'form-control'} }) }}
+                                    </div>
+                                </div>
 
-         <div class="control-group">
-             {{ form_label(form.directo, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
-            <div class="controls">
-                {{ form_widget(form.directo, { 'attr': {'class': 'input-xlarge focused'} }) }}
-            </div>
-        </div>   
-        
-        <div class="control-group">
-            {{ form_label(form.registro_camara, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
-            <div class="controls">
-                {{ form_widget(form.registro_camara, { 'attr': {'class': 'input-xlarge focused'} }) }}
-            </div>
+                                 <div class="form-group">
+                                     {{ form_label(form.directo, label|default(null), { 'label_attr': { 'class': 'col-sm-2 control-label' } }) }}
+                                    <div class="col-sm-8">
+                                        {{ form_widget(form.directo, { 'attr': {'class': 'form-control'} }) }}
+                                    </div>
+                                </div>   
+                                
+                                <div class="form-group">
+                                    {{ form_label(form.registro_camara, label|default(null), { 'label_attr': { 'class': 'col-sm-2 control-label' } }) }}
+                                    <div class="col-sm-8">
+                                        {{ form_widget(form.registro_camara, { 'attr': {'class': 'form-control'} }) }}
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    {{ form_label(form.regimen, label|default(null), { 'label_attr': { 'class': 'col-sm-2 control-label' } }) }}
+                                    <div class="col-sm-8">
+                                        {{ form_widget(form.regimen, { 'attr': {'class': 'form-control'} }) }}
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    {{ form_label(form.sede_principal, label|default(null), { 'label_attr': { 'class': 'col-sm-2 control-label' } }) }}
+                                    <div class="col-sm-8">
+                                        {{ form_widget(form.sede_principal, { 'attr': {'class': 'form-control'} }) }}
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    {{ form_label(form.pais, label|default(null), { 'label_attr': { 'class': 'col-sm-2 control-label' } }) }}
+                                    <div class="col-sm-8">
+                                        {{ form_widget(form.pais, { 'attr': {'class': 'form-control'} }) }}
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    {{ form_label(form.ciudad, label|default(null), { 'label_attr': { 'class': 'col-sm-2 control-label' } }) }}
+                                    <div id="select_ciudad" class="col-sm-8">
+                                        {{ form_widget(form.ciudad, { 'attr': {'class': 'form-control'} }) }}
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    {{ form_label(form.direccion, label|default(null), { 'label_attr': { 'class': 'col-sm-2 control-label' } }) }}
+                                    <div class="col-sm-8">
+                                        {{ form_widget(form.direccion, { 'attr': {'class': 'form-control'} }) }}
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    {{ form_label(form.telefono, label|default(null), { 'label_attr': { 'class': 'col-sm-2 control-label' } }) }}
+                                    <div class="col-sm-8">
+                                        {{ form_widget(form.telefono, { 'attr': {'class': 'form-control'} }) }}
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    {{ form_label(form.lineaAtencion, label|default(null), { 'label_attr': { 'class': 'col-sm-2 control-label' } }) }}
+                                    <div class="col-sm-8">
+                                        {{ form_widget(form.lineaAtencion, { 'attr': {'class': 'form-control'} }) }} días
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    {{ form_label(form.tiempo_entrega, label|default(null), { 'label_attr': { 'class': 'col-sm-2 control-label' } }) }}
+                                    <div class="col-sm-8">
+                                        {{ form_widget(form.tiempo_entrega, { 'attr': {'class': 'form-control'} }) }} días
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    {{ form_label(form.pagina, label|default(null), { 'label_attr': { 'class': 'col-sm-2 control-label' } }) }}
+                                    <div class="col-sm-8">
+                                        {{ form_widget(form.pagina, { 'attr': {'class': 'form-control'} }) }}
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    {{ form_label(form.sedes, label|default(null), { 'label_attr': { 'class': 'col-sm-2 control-label' } }) }}
+                                    <div class="col-sm-8">
+                                        {{ form_widget(form.sedes, { 'attr': {'class': 'form-control'} }) }}
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    {{ form_label(form.datos_sedes, label|default(null), { 'label_attr': { 'class': 'col-sm-2 control-label' } }) }}
+                                    <div class="col-sm-8">
+                                        {{ form_widget(form.datos_sedes, { 'attr': {'class': 'form-control'} }) }}
+                                    </div>
+                                </div>
+                <!-- /.box-body -->
+                <div class="box-footer">
+                    {{ form_widget(form.Enviar, { 'attr': {'class': 'btn btn-info pull-right'} }) }}
+                </div>
+                {{ form_widget(form._token) }}
+                <!-- /.box-footer -->
+            </form>
+          <!-- /.box -->
         </div>
-        <div class="control-group">
-            {{ form_label(form.regimen, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
-            <div class="controls">
-                {{ form_widget(form.regimen, { 'attr': {'class': 'input-xlarge focused'} }) }}
-            </div>
-        </div>
-        <div class="control-group">
-            {{ form_label(form.sede_principal, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
-            <div class="controls">
-                {{ form_widget(form.sede_principal, { 'attr': {'class': 'input-xlarge focused'} }) }}
-            </div>
-        </div>
-        <div class="control-group">
-            {{ form_label(form.pais, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
-            <div class="controls">
-                {{ form_widget(form.pais, { 'attr': {'class': 'input-xlarge focused'} }) }}
-            </div>
-        </div>
-        <div class="control-group">
-            {{ form_label(form.ciudad, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
-            <div id="select_ciudad" class="controls">
-                {{ form_widget(form.ciudad, { 'attr': {'class': 'input-xlarge focused'} }) }}
-            </div>
-        </div>
-        <div class="control-group">
-            {{ form_label(form.direccion, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
-            <div class="controls">
-                {{ form_widget(form.direccion, { 'attr': {'class': 'input-xlarge focused'} }) }}
-            </div>
-        </div>
-        <div class="control-group">
-            {{ form_label(form.telefono, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
-            <div class="controls">
-                {{ form_widget(form.telefono, { 'attr': {'class': 'input-xlarge focused'} }) }}
-            </div>
-        </div>
-        <div class="control-group">
-            {{ form_label(form.lineaAtencion, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
-            <div class="controls">
-                {{ form_widget(form.lineaAtencion, { 'attr': {'class': 'input-xlarge focused'} }) }} días
-            </div>
-        </div>
-        <div class="control-group">
-            {{ form_label(form.tiempo_entrega, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
-            <div class="controls">
-                {{ form_widget(form.tiempo_entrega, { 'attr': {'class': 'input-xlarge focused'} }) }} días
-            </div>
-        </div>
-        <div class="control-group">
-            {{ form_label(form.pagina, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
-            <div class="controls">
-                {{ form_widget(form.pagina, { 'attr': {'class': 'input-xlarge focused'} }) }}
-            </div>
-        </div>
-        <div class="control-group">
-            {{ form_label(form.sedes, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
-            <div class="controls">
-                {{ form_widget(form.sedes, { 'attr': {'class': 'input-xlarge focused'} }) }}
-            </div>
-        </div>
-        <div class="control-group">
-            {{ form_label(form.datos_sedes, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
-            <div class="controls">
-                {{ form_widget(form.datos_sedes, { 'attr': {'class': 'input-xlarge focused'} }) }}
-            </div>
-        </div>
-    </fieldset>
-    <div id="destino"></div>  
-<div class="form-actions">
-    {{ form_widget(form.Enviar, { 'attr': {'class': 'btn btn-primary'} }) }}
+    </div>
 </div>
-{{ form_widget(form._token) }}
-</form>
-</div>
-</div>
- </div>
 {% endblock %}
 
-{% block javascripts %}
+{% block javascript %}
     {{ parent() }}
     
     <script src="{{ asset('js/autocompleter-jqueryui.js') }}"></script>

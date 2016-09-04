@@ -66,14 +66,14 @@ class ProveedoresFiltroType extends AbstractType
         $builder->add('categoria', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:Categoria',
             'choice_label' => 'nombre',
-            ////'empty_value' => 'Seleccione una opcion',
+            'placeholder' => 'Seleccionar',
             'required' => false
         ));
 
         $builder->add('proveedortipo', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:ProveedoresTipo',
             'choice_label' => 'nombre',
-            ////'empty_value' => 'Seleccione una opcion',
+            'placeholder' => 'Seleccionar',
             'label' => 'Tipo'
         ));
 

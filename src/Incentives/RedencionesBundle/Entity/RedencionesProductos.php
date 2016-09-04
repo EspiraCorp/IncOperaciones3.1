@@ -109,7 +109,7 @@ class RedencionesProductos
     protected $inventario;
     
     /**
-     * @ORM\OneToMany(targetEntity="Incentives\InventarioBundle\Entity\Despachos", mappedBy="redencionProducto", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="Incentives\InventarioBundle\Entity\Despachos", mappedBy="redencionesproductos", cascade={"persist"})
      * 
      */
     protected $despacho;

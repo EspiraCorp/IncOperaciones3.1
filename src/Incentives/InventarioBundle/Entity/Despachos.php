@@ -193,7 +193,12 @@ class Despachos
      */
     protected $ordendespacho;
     
-    
+    /**
+     * @ORM\OneToMany(targetEntity="Incentives\InventarioBundle\Entity\Inventario", mappedBy="despacho", cascade={"persist"})
+     * 
+     */
+    protected $inventario;
+
     /**
      * @ORM\OneToMany(targetEntity="Incentives\InventarioBundle\Entity\DespachoGuia", mappedBy="despacho", cascade={"persist"})
      * 
@@ -222,6 +227,13 @@ class Despachos
     protected $usuario;
 
 
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->despachoguia = new \Doctrine\Common\Collections\ArrayCollection();
+    }
     
 
     /**
@@ -232,14 +244,6 @@ class Despachos
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->despachoguia = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -942,5 +946,39 @@ class Despachos
     public function getRedencionesproductos()
     {
         return $this->redencionesproductos;
+    }
+
+    /**
+     * Add inventario
+     *
+     * @param \Incentives\InventarioBundle\Entity\Inventario $inventario
+     *
+     * @return Despachos
+     */
+    public function addInventario(\Incentives\InventarioBundle\Entity\Inventario $inventario)
+    {
+        $this->inventario[] = $inventario;
+
+        return $this;
+    }
+
+    /**
+     * Remove inventario
+     *
+     * @param \Incentives\InventarioBundle\Entity\Inventario $inventario
+     */
+    public function removeInventario(\Incentives\InventarioBundle\Entity\Inventario $inventario)
+    {
+        $this->inventario->removeElement($inventario);
+    }
+
+    /**
+     * Get inventario
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getInventario()
+    {
+        return $this->inventario;
     }
 }

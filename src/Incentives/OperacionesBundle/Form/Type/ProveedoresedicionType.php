@@ -30,44 +30,44 @@ class ProveedoresedicionType extends AbstractType
         $builder->add('tipodocumento', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:Tipodocumento',
             'choice_label' => 'nombre',
-            //'empty_value' => 'Seleccione una opcion',
+            'placeholder' => 'Seleccionar',
         ));
         $builder->add('numero_documento'); 
         $builder->add('registro_camara', TextType::class, array('required' => false)); 
         $builder->add('regimen', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:Regimen',
             'choice_label' => 'nombre',
-            //'empty_value' => 'Seleccione una opcion',
+            'placeholder' => 'Seleccionar',
         ));
         $builder->add('sede_principal'); 
         $builder->add('pais', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:Pais',
             'choice_label' => 'nombre',
-            //'empty_value' => 'Seleccione una opcion',
+            'placeholder' => 'Seleccionar',
             'required' => false
         ));
         $builder->add('ciudad', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:Ciudad',
             'choice_label' => 'nombre',
-            //'empty_value' => 'Seleccione una opcion',
+            'placeholder' => 'Seleccionar',
             'required' => false
         ));
         $builder->add('categoria', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:Categoria',
             'choice_label' => 'nombre',
-            //'empty_value' => 'Seleccione una opcion',
+            'placeholder' => 'Seleccionar',
         ));
 
         $builder->add('proveedorclasificacion', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:ProveedoresClasificacion',
             'choice_label' => 'nombre',
-            //'empty_value' => 'Seleccione una opcion',
+            'placeholder' => 'Seleccionar',
             'label' => 'Clasificacion'
         ));
         $builder->add('proveedorarea', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:ProveedoresArea',
             'choice_label' => 'nombre',
-            //'empty_value' => 'Seleccione una opcion',
+            'placeholder' => 'Seleccionar',
             'label' => 'Area'
         ));
 		$builder->add('directo');

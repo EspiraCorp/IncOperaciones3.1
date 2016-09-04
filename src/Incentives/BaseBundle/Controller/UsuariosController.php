@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Incentives\BaseBundle\Form\Type\UserType;
 // use Incentives\BaseBundle\Form\Model\Registration;
 use Incentives\BaseBundle\Entity\Usuario;
+use Incentives\BaseBundle\Form\Type\PassType;
 
 use Symfony\Component\Security\Core\SecurityContext;
 
@@ -156,18 +157,18 @@ class UsuariosController extends Controller
     {
         $session = $request->getSession();
 
-        $email = $request->get('email');
         $error="";
 
-        if($email){
+        if($request->request->all()){
+
+          $email = $request->request->all()['email'];
 
           $em = $this->getDoctrine()->getManager();
 
           $qb = $em->createQueryBuilder();
           $qb->select('u');
           $qb->from('IncentivesBaseBundle:Usuario','u');
-          $qb->where('u.email = :email');
-          $qb->setParameter('email', $email);
+          $qb->where("u.email LIKE '".$email."'");
 
           $usuario = $qb->getQuery()->getOneOrNullResult();
 
@@ -226,11 +227,67 @@ class UsuariosController extends Controller
       
       // Send the message
       if($mailer->send($message)) {
-        $this->get('session')->getFlashBag()->add('notice', 'El correo para ingresar ha sido enviado correctamente');
+        $this->get('session')->getFlashBag()->add('notice', 'El enlace para cambio de contraseña ha sido enviado correctamente.');
       }else{
-        $this->get('session')->getFlashBag()->add('notice', 'El mensaje no pudo ser enviado');
+        $this->get('session')->getFlashBag()->add('notice', 'El mensaje no pudo ser enviado.');
       }
 
     }
+
+    public function actualizarpasswordAction(Request $request, $id, $token)
+    {
+      $em = $this->getDoctrine()->getManager();
+
+      $form = $this->createForm(PassType::class);
+      
+      $error = array();
+
+      if (isset($id)){
+        $usuario = $em->getRepository('IncentivesBaseBundle:Usuario')->find($id);
+       
+        if (isset($usuario)){
+          $error['message'] = "";
+
+          if ($usuario->getPassword()!=$token){
+            $error['message'] = 'Error en el token recibido';
+          }
+        }
+
+      }else{
+        $error['message'] = 'No se encontro el usuario';
+      }
+
+      if (isset($id) && $request->isMethod('POST')) {
+        
+        $form->handleRequest($request);
+
+          $pro = $request->request->all()['pass'];
+          $id = $request->request->all()['id'];
+
+          $password = $pro['password'];
+          
+          //print_r(sha1($pro['password']['first'].'{'.$usuario->getSalt().'}')); exit;
+
+          if ($password['first']==$password['second']){
+
+            $usuario->setPassword($password['first']);
+            
+            $em->persist($usuario);
+            $em->flush();
+
+            $this->get('session')->getFlashBag()->add('notice', 'La contraseña se actualizo correctamente.');
+
+            return $this->redirect($this->generateUrl('login'));
+
+          }else{
+
+            $error['message'] = 'Las contraseñas no coinciden.';
+          }         
+      }
+
+      return $this->render('IncentivesBaseBundle:Usuarios:pass.html.twig', array(
+                'form' => $form->createView(), 'id' => $id, 'token' => $token, 'error' => $error
+            ));
+  }
 
 }

@@ -25,6 +25,18 @@ usuario_nombre:
    path:  /usuario/nombre/
    defaults: { _controller: IncentivesBaseBundle:Usuarios:nombre }
 
+usuario_correo_ingreso:
+    path:  /usuario/correoingreso/{id}
+    defaults: { _controller: IncentivesBaseBundle:Usuarios:correoingreso, id: null }
+    requirements:
+        id:  \d+
+
+usuario_actualizarpassword:
+    path:  /pass/{id}/{token}
+    defaults: { _controller: IncentivesBaseBundle:Usuarios:actualizarpassword, id: null, token: null }
+    requirements:
+        id:  \d+
+
 campos_ciudad:
    path:  /campos/ciudad/{id}
    defaults: { _controller: IncentivesBaseBundle:Campos:ciudad, id: null }

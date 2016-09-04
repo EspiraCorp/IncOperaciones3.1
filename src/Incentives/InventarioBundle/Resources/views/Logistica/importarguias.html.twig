@@ -12,7 +12,7 @@
                         </div>
                     </div>
 <div class="box-content">
-<form action="{{ path('logistica_importar_guias') }}" method="POST"  class="form-horizontal">
+<form action="{{ path('logistica_importar_guias') }}" method="POST" enctype="multipart/form-data" class="form-horizontal">
     {{ form_errors(form) }}
     <fieldset>
         <div class="control-group">

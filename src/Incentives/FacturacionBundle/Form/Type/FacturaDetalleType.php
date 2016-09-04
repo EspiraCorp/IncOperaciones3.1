@@ -24,14 +24,14 @@ class FacturaDetalleType extends AbstractType
         $builder->add('area', EntityType::class, array(
             'class' => 'IncentivesFacturacionBundle:Areas',
             'choice_label' => 'nombre',
-            //'empty_value' => 'Seleccione una opcion',
+            'placeholder' => 'Seleccionar',
             'label' => 'Area'
         ));
 
         $builder->add('tipo', EntityType::class, array(
             'class' => 'IncentivesFacturacionBundle:Tipocostos',
             'choice_label' => 'nombre',
-            //'empty_value' => 'Seleccione una opcion',
+            'placeholder' => 'Seleccionar',
             'label' => 'Tipo'
         ));
 

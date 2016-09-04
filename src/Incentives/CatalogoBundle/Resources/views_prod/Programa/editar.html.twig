@@ -1,0 +1,86 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}IncentivesCatalogoBundle:Producto:nuevo{% endblock %}
+
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+<div class="box span12">
+<div class="box-header well" data-original-title>
+                        <h2><i class="icon-edit"></i>Editar Programa</h2>
+                        <div class="box-icon">
+                            <a href="{{ path('programa_datos', {'id': id}) }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+                        </div>
+                    </div>
+<div class="box-content">
+<form action="{{ path('programa_editar') }}" method="POST"  class="form-horizontal">
+    {{ form_errors(form) }}
+    <input type='hidden' name='id' value={{ id }}>
+    <fieldset>
+        <div class="control-group">
+            * {{ form_label(form.nombre, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.nombre, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            * {{ form_label(form.descripcion, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.descripcion, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            * {{ form_label(form.fechainicio, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.fechainicio, { 'id': 'fechaInicio' }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            * {{ form_label(form.fechafin, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.fechafin, { 'id': 'fechaFin' }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            * {{ form_label(form.iva, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                Si {{ form_widget(form.iva[0]) }}
+                No {{ form_widget(form.iva[1]) }}
+             </div>
+        </div> 
+        <div class="control-group">
+            * {{ form_label(form.centroCostos, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.centroCostos, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div> 
+        <div class="control-group">
+            * {{ form_label(form.diasentrega, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.diasentrega, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>  
+
+    </fieldset>
+    <div class="row-fluid sortable ui-sortable">
+
+    </div>  
+<div class="form-actions">
+    {{ form_widget(form.Enviar, { 'attr': {'class': 'btn btn-primary'} }) }}
+</div>
+{{ form_widget(form._token) }}
+</form>
+</div>
+</div>
+ </div>
+{% endblock %}
+
+{% block javascripts %}
+    
+    {{ parent() }}
+
+    <script>
+        $( "#fechaInicio" ).datepicker({ dateFormat: 'yy-mm-dd' });
+        $( "#fechaFin" ).datepicker({ dateFormat: 'yy-mm-dd' });
+    </script>
+
+{% endblock %}

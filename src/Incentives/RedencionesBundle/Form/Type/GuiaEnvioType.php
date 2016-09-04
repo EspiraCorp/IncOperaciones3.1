@@ -24,13 +24,13 @@ class GuiaEnvioType extends AbstractType
         $builder->add('ordenProducto', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:OrdenesProducto',
             'choice_label' => 'id',
-            //'empty_value' => 'Seleccione una opcion',
+            'placeholder' => 'Seleccionar',
         ));
 
         $builder->add('courier', EntityType::class, array(
             'class' => 'IncentivesInventarioBundle:Courier',
             'choice_label' => 'nombre',
-            //'empty_value' => 'Seleccione una opcion',
+            'placeholder' => 'Seleccionar',
         ));
 
         $builder->add('Enviar', SubmitType::class);

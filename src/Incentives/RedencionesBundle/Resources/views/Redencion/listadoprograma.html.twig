@@ -62,7 +62,7 @@
                             <td>{{ redencion.puntos }}</a></td>
                             <td>{{ redencion.redencionestado.nombre }}</td>
                             <td>
-                                  {% for despacho in redencion.despacho %}
+                                  {% for despacho in redencion.redencionesproductos[0].despacho %}
                                       {% for despachoguia in despacho.despachoguia %}
                                         {% for guia in despacho.despachoguia %}
                                           {{ guia.guia.guia }} - 

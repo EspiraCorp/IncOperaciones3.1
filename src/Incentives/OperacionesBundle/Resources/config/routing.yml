@@ -60,18 +60,6 @@ proveedores_estado:
     path:  /proveedores/estado/{id}
     defaults: { _controller: IncentivesOperacionesBundle:Proveedor:estado, id: null}
 
-proveedores_correo_ingreso:
-    path:  /proveedores/correoingreso/{id}
-    defaults: { _controller: IncentivesOperacionesBundle:Proveedor:correoingreso, id: null }
-    requirements:
-        id:  \d+
-
-proveedores_actualizarpassword:
-    path:  /proveedores/pass/{id}/{pass}
-    defaults: { _controller: IncentivesOperacionesBundle:Proveedor:actualizarpassword, id: null, pass: null }
-    requirements:
-        id:  \d+
-
 proveedores_contactos:
     path:  /proveedor/contactos/{id}
     defaults: { _controller: IncentivesOperacionesBundle:Contacto:listado, id: null }

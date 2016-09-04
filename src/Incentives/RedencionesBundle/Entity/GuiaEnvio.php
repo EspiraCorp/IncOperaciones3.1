@@ -81,14 +81,6 @@ class GuiaEnvio
      */
     protected $facturalogistica;
 
-     /**
-     * 
-     * @ORM\ManyToOne(targetEntity="Incentives\InventarioBundle\Entity\Inventario", inversedBy="guia", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="inventario_id", referencedColumnName="id", nullable=true)
-     * 
-     */
-    protected $inventario;
-
     /**
      * 
      * @ORM\ManyToOne(targetEntity="Incentives\RedencionesBundle\Entity\Redencionesenvios", inversedBy="guia", cascade={"persist", "remove"})
@@ -96,12 +88,7 @@ class GuiaEnvio
      * 
      */
     protected $redencionenvio;
-    
-    /**
-     * @ORM\OneToMany(targetEntity="Incentives\InventarioBundle\Entity\InventarioGuia", mappedBy="guia", cascade={"persist"})
-     * 
-     */
-    protected $inventarioguia;
+
 
     /**
      * @var \DateTime
@@ -139,19 +126,20 @@ class GuiaEnvio
      * Set guia
      *
      * @param string $guia
+     *
      * @return GuiaEnvio
      */
     public function setGuia($guia)
     {
         $this->guia = $guia;
-    
+
         return $this;
     }
 
     /**
      * Get guia
      *
-     * @return string 
+     * @return string
      */
     public function getGuia()
     {
@@ -159,22 +147,71 @@ class GuiaEnvio
     }
 
     /**
+     * Set operador
+     *
+     * @param string $operador
+     *
+     * @return GuiaEnvio
+     */
+    public function setOperador($operador)
+    {
+        $this->operador = $operador;
+
+        return $this;
+    }
+
+    /**
+     * Get operador
+     *
+     * @return string
+     */
+    public function getOperador()
+    {
+        return $this->operador;
+    }
+
+    /**
+     * Set valor
+     *
+     * @param integer $valor
+     *
+     * @return GuiaEnvio
+     */
+    public function setValor($valor)
+    {
+        $this->valor = $valor;
+
+        return $this;
+    }
+
+    /**
+     * Get valor
+     *
+     * @return integer
+     */
+    public function getValor()
+    {
+        return $this->valor;
+    }
+
+    /**
      * Set estado
      *
      * @param integer $estado
+     *
      * @return GuiaEnvio
      */
     public function setEstado($estado)
     {
         $this->estado = $estado;
-    
+
         return $this;
     }
 
     /**
      * Get estado
      *
-     * @return integer 
+     * @return integer
      */
     public function getEstado()
     {
@@ -185,19 +222,20 @@ class GuiaEnvio
      * Set fecha
      *
      * @param \DateTime $fecha
+     *
      * @return GuiaEnvio
      */
     public function setFecha($fecha)
     {
         $this->fecha = $fecha;
-    
+
         return $this;
     }
 
     /**
      * Get fecha
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getFecha()
     {
@@ -205,240 +243,23 @@ class GuiaEnvio
     }
 
     /**
-     * Set redencion
-     *
-     * @param \Incentives\RedencionesBundle\Entity\Redenciones $redencion
-     * @return GuiaEnvio
-     */
-    public function setRedencion(\Incentives\RedencionesBundle\Entity\Redenciones $redencion = null)
-    {
-        $this->redencion = $redencion;
-    
-        return $this;
-    }
-
-    /**
-     * Get redencion
-     *
-     * @return \Incentives\RedencionesBundle\Entity\Redenciones 
-     */
-    public function getRedencion()
-    {
-        return $this->redencion;
-    }
-
-    /**
-     * Set courier
-     *
-     * @param \Incentives\InventarioBundle\Entity\Courier $courier
-     * @return GuiaEnvio
-     */
-    public function setCourier(\Incentives\InventarioBundle\Entity\Courier $courier = null)
-    {
-        $this->courier = $courier;
-    
-        return $this;
-    }
-
-    /**
-     * Get courier
-     *
-     * @return \Incentives\InventarioBundle\Entity\Courier 
-     */
-    public function getCourier()
-    {
-        return $this->courier;
-    }
-
-    /**
-     * Set valor
-     *
-     * @param integer $valor
-     * @return GuiaEnvio
-     */
-    public function setValor($valor)
-    {
-        $this->valor = $valor;
-    
-        return $this;
-    }
-
-    /**
-     * Get valor
-     *
-     * @return integer 
-     */
-    public function getValor()
-    {
-        return $this->valor;
-    }
-
-    /**
-     * Set ordenProducto
-     *
-     * @param \Incentives\OrdenesBundle\Entity\OrdenesProducto $ordenProducto
-     * @return GuiaEnvio
-     */
-    public function setOrdenProducto(\Incentives\OrdenesBundle\Entity\OrdenesProducto $ordenProducto = null)
-    {
-        $this->ordenProducto = $ordenProducto;
-    
-        return $this;
-    }
-
-    /**
-     * Get ordenProducto
-     *
-     * @return \Incentives\OrdenesBundle\Entity\OrdenesProducto 
-     */
-    public function getOrdenProducto()
-    {
-        return $this->ordenProducto;
-    }
-
-    /**
-     * Set inventario
-     *
-     * @param \Incentives\InventarioBundle\Entity\Inventario $inventario
-     * @return GuiaEnvio
-     */
-    public function setInventario(\Incentives\InventarioBundle\Entity\Inventario $inventario = null)
-    {
-        $this->inventario = $inventario;
-    
-        return $this;
-    }
-
-    /**
-     * Get inventario
-     *
-     * @return \Incentives\InventarioBundle\Entity\Inventario
-     */
-    public function getInventario()
-    {
-        return $this->inventario;
-    }
-
-    
-    /**
-     * Set redencionenvio
-     *
-     * @param \Incentives\RedencionesBundle\Entity\Redencionesenvios $redencionenvio
-     * @return GuiaEnvio
-     */
-    public function setRedencionenvio(\Incentives\RedencionesBundle\Entity\Redencionesenvios $redencionenvio = null)
-    {
-        $this->redencionenvio = $redencionenvio;
-    
-        return $this;
-    }
-
-    /**
-     * Get redencionenvio
-     *
-     * @return \Incentives\RedencionesBundle\Entity\Redencionesenvios 
-     */
-    public function getRedencionenvio()
-    {
-        return $this->redencionenvio;
-    }
-
-    /**
-     * Set operador
-     *
-     * @param string $operador
-     * @return GuiaEnvio
-     */
-    public function setOperador($operador)
-    {
-        $this->operador = $operador;
-    
-        return $this;
-    }
-
-    /**
-     * Get operador
-     *
-     * @return string 
-     */
-    public function getOperador()
-    {
-        return $this->operador;
-    }
-
-    /**
-     * Set facturalogistica
-     *
-     * @param \Incentives\FacturacionBundle\Entity\FacturaLogistica $facturalogistica
-     * @return GuiaEnvio
-     */
-    public function setFacturalogistica(\Incentives\FacturacionBundle\Entity\FacturaLogistica $facturalogistica = null)
-    {
-        $this->facturalogistica = $facturalogistica;
-    
-        return $this;
-    }
-
-    /**
-     * Get facturalogistica
-     *
-     * @return \Incentives\FacturacionBundle\Entity\FacturaLogistica 
-     */
-    public function getFacturalogistica()
-    {
-        return $this->facturalogistica;
-    }
-
-    /**
-     * Add inventarioguia
-     *
-     * @param \Incentives\InventarioBundle\Entity\InventarioGuia $inventarioguia
-     * @return GuiaEnvio
-     */
-    public function addInventarioguia(\Incentives\InventarioBundle\Entity\InventarioGuia $inventarioguia)
-    {
-        $this->inventarioguia[] = $inventarioguia;
-    
-        return $this;
-    }
-
-    /**
-     * Remove inventarioguia
-     *
-     * @param \Incentives\InventarioBundle\Entity\InventarioGuia $inventarioguia
-     */
-    public function removeInventarioguia(\Incentives\InventarioBundle\Entity\InventarioGuia $inventarioguia)
-    {
-        $this->inventarioguia->removeElement($inventarioguia);
-    }
-
-    /**
-     * Get inventarioguia
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getInventarioguia()
-    {
-        return $this->inventarioguia;
-    }
-
-    /**
      * Set fechaModificacion
      *
      * @param \DateTime $fechaModificacion
+     *
      * @return GuiaEnvio
      */
     public function setFechaModificacion($fechaModificacion)
     {
         $this->fechaModificacion = $fechaModificacion;
-    
+
         return $this;
     }
 
     /**
      * Get fechaModificacion
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getFechaModificacion()
     {
@@ -446,49 +267,122 @@ class GuiaEnvio
     }
 
     /**
+     * Set ordenProducto
+     *
+     * @param \Incentives\OrdenesBundle\Entity\OrdenesProducto $ordenProducto
+     *
+     * @return GuiaEnvio
+     */
+    public function setOrdenProducto(\Incentives\OrdenesBundle\Entity\OrdenesProducto $ordenProducto = null)
+    {
+        $this->ordenProducto = $ordenProducto;
+
+        return $this;
+    }
+
+    /**
+     * Get ordenProducto
+     *
+     * @return \Incentives\OrdenesBundle\Entity\OrdenesProducto
+     */
+    public function getOrdenProducto()
+    {
+        return $this->ordenProducto;
+    }
+
+    /**
+     * Set courier
+     *
+     * @param \Incentives\InventarioBundle\Entity\Courier $courier
+     *
+     * @return GuiaEnvio
+     */
+    public function setCourier(\Incentives\InventarioBundle\Entity\Courier $courier = null)
+    {
+        $this->courier = $courier;
+
+        return $this;
+    }
+
+    /**
+     * Get courier
+     *
+     * @return \Incentives\InventarioBundle\Entity\Courier
+     */
+    public function getCourier()
+    {
+        return $this->courier;
+    }
+
+    /**
+     * Set facturalogistica
+     *
+     * @param \Incentives\FacturacionBundle\Entity\FacturaLogistica $facturalogistica
+     *
+     * @return GuiaEnvio
+     */
+    public function setFacturalogistica(\Incentives\FacturacionBundle\Entity\FacturaLogistica $facturalogistica = null)
+    {
+        $this->facturalogistica = $facturalogistica;
+
+        return $this;
+    }
+
+    /**
+     * Get facturalogistica
+     *
+     * @return \Incentives\FacturacionBundle\Entity\FacturaLogistica
+     */
+    public function getFacturalogistica()
+    {
+        return $this->facturalogistica;
+    }
+
+    /**
+     * Set redencionenvio
+     *
+     * @param \Incentives\RedencionesBundle\Entity\Redencionesenvios $redencionenvio
+     *
+     * @return GuiaEnvio
+     */
+    public function setRedencionenvio(\Incentives\RedencionesBundle\Entity\Redencionesenvios $redencionenvio = null)
+    {
+        $this->redencionenvio = $redencionenvio;
+
+        return $this;
+    }
+
+    /**
+     * Get redencionenvio
+     *
+     * @return \Incentives\RedencionesBundle\Entity\Redencionesenvios
+     */
+    public function getRedencionenvio()
+    {
+        return $this->redencionenvio;
+    }
+
+    /**
      * Set usuario
      *
      * @param \Incentives\BaseBundle\Entity\Usuario $usuario
+     *
      * @return GuiaEnvio
      */
     public function setUsuario(\Incentives\BaseBundle\Entity\Usuario $usuario = null)
     {
         $this->usuario = $usuario;
-    
+
         return $this;
     }
 
     /**
      * Get usuario
      *
-     * @return \Incentives\BaseBundle\Entity\Usuario 
+     * @return \Incentives\BaseBundle\Entity\Usuario
      */
     public function getUsuario()
     {
         return $this->usuario;
-    }
-
-    /**
-     * Add inventarioguium
-     *
-     * @param \Incentives\InventarioBundle\Entity\InventarioGuia $inventarioguium
-     *
-     * @return GuiaEnvio
-     */
-    public function addInventarioguium(\Incentives\InventarioBundle\Entity\InventarioGuia $inventarioguium)
-    {
-        $this->inventarioguia[] = $inventarioguium;
-
-        return $this;
-    }
-
-    /**
-     * Remove inventarioguium
-     *
-     * @param \Incentives\InventarioBundle\Entity\InventarioGuia $inventarioguium
-     */
-    public function removeInventarioguium(\Incentives\InventarioBundle\Entity\InventarioGuia $inventarioguium)
-    {
-        $this->inventarioguia->removeElement($inventarioguium);
     }
 }

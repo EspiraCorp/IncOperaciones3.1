@@ -46,7 +46,7 @@ class Premios
     
     /**
      * @var string
-     * @ORM\ManyToOne(targetEntity="Incentives\OperacionesBundle\Entity\Categoria", inversedBy="premio")
+     * @ORM\ManyToOne(targetEntity="Incentives\OperacionesBundle\Entity\Categoria")
      * @ORM\JoinColumn(name="categoria_id", referencedColumnName="id", nullable=true)
      */
     protected $categoria;
@@ -147,7 +147,7 @@ class Premios
     
     /**
      * @var string
-     * @ORM\ManyToOne(targetEntity="EstadoCatalogo", inversedBy="premio", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="EstadoCatalogo")
      * @ORM\JoinColumn(name="estado_id", referencedColumnName="id", nullable=true)
      */
     protected $estado;

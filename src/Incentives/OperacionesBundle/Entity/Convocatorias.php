@@ -92,12 +92,6 @@ class Convocatorias
      * 
      */
     protected $solicitud;
-    
-    /**
-     * @ORM\OneToMany(targetEntity="Incentives\OperacionesBundle\Entity\ConvocatoriasHistorico", mappedBy="convocatoria")
-     * 
-     */
-    protected $convocatoriashistorico;
 
     /**
      * @var \DateTime
@@ -117,7 +111,6 @@ class Convocatorias
     public function __construct()
     {
         $this->convocatoriasproveedores = new ArrayCollection();
-        $this->convocatoriashistorico = new ArrayCollection();
         $this->inventario = new ArrayCollection();
         $this->estado='1';
     }
@@ -358,39 +351,6 @@ class Convocatorias
     public function getRuta()
     {
         return $this->ruta;
-    }
-
-    /**
-     * Add convocatoriashistorico
-     *
-     * @param \Incentives\OperacionesBundle\Entity\Convocatoriashistorico $convocatoriashistorico
-     * @return Convocatorias
-     */
-    public function addConvocatoriashistorico(\Incentives\OperacionesBundle\Entity\Convocatoriashistorico $convocatoriashistorico)
-    {
-        $this->convocatoriashistorico[] = $convocatoriashistorico;
-    
-        return $this;
-    }
-
-    /**
-     * Remove convocatoriashistorico
-     *
-     * @param \Incentives\OperacionesBundle\Entity\Convocatoriashistorico $convocatoriashistorico
-     */
-    public function removeConvocatoriashistorico(\Incentives\OperacionesBundle\Entity\Convocatoriashistorico $convocatoriashistorico)
-    {
-        $this->convocatoriashistorico->removeElement($convocatoriashistorico);
-    }
-
-    /**
-     * Get convocatoriashistorico
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getConvocatoriashistorico()
-    {
-        return $this->convocatoriashistorico;
     }
 
     /**

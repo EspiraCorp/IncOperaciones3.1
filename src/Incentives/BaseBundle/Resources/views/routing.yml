@@ -9,8 +9,6 @@ usuarios:
    pattern:  /usuarios
    defaults: { _controller: IncentivesBaseBundle:Usuarios:listado }
 
-
-
 usuarios_nuevo:
    pattern:  /usuarios/nuevo
    defaults: { _controller: IncentivesBaseBundle:Usuarios:nuevo }
@@ -36,3 +34,7 @@ campos_departamento:
    defaults: { _controller: IncentivesBaseBundle:Campos:departamento, id: null }
    requirements:
         id:  \d+
+
+menu:
+   pattern:  /menu
+   defaults: { _controller: IncentivesBaseBundle:Menu:menuPrincipal }

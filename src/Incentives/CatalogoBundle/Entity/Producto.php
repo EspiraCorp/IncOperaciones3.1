@@ -4,6 +4,7 @@ namespace Incentives\CatalogoBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Producto
@@ -24,7 +25,7 @@ class Producto
 
     /**
      * @var string
-     *
+     * @Assert\NotNull(message="Debe escribir un valor.")
      * @ORM\Column(name="nombre", type="string", length=255, nullable=true)
      */
     private $nombre;
@@ -38,28 +39,28 @@ class Producto
 
     /**
      * @var string
-     *
+     * @Assert\NotNull(message="Debe escribir un valor.")
      * @ORM\Column(name="referencia", type="string", length=255, nullable=true)
      */
     private $referencia;
 
     /**
      * @var string
-     *
+     * @Assert\NotNull(message="Debe escribir un valor.")
      * @ORM\Column(name="marca", type="string", length=255, nullable=true)
      */
     private $marca;
 
     /**
      * @var string
-     *
+     * @Assert\NotNull(message="Debe escribir un valor.")
      * @ORM\Column(name="descripcion", type="text", nullable=true)
      */
     private $descripcion;
 
     /**
      * @var string
-     *
+     * @Assert\NotNull(message="Debe escribir un valor.")
      * @ORM\Column(name="codEAN", type="string", length=255, nullable=true)
      */
     private $codEAN;
@@ -123,14 +124,14 @@ class Producto
 
     /**
      * @var float
-     *
+     * @Assert\NotNull(message="Debe escribir un valor.")
      * @ORM\Column(name="precio", type="float", nullable=true)
      */
     private $precio;
 
     /**
      * @var float
-     *
+     * @Assert\NotNull(message="Debe escribir un valor.")
      * @ORM\Column(name="iva", type="float", nullable=true)
      */
     private $iva;
@@ -144,14 +145,14 @@ class Producto
 
     /**
      * @var float
-     *
+     * @Assert\NotNull(message="Debe escribir un valor.")
      * @ORM\Column(name="logistica", type="float", nullable=true)
      */
     private $logistica;
 
      /**
      * @var float
-     *
+     * @Assert\NotNull(message="Debe escribir un valor.")
      * @ORM\Column(name="incremento", type="float", nullable=true)
      */
     private $incremento;
@@ -181,12 +182,6 @@ class Producto
      * 
      */
     protected $productoprecio;
-
-    /**
-     * @ORM\OneToMany(targetEntity="Productocatalogo", mappedBy="producto", cascade={"persist"})
-     * 
-     */
-    protected $productocatalogo;
 
     /**
      * @ORM\OneToMany(targetEntity="PremiosProductos", mappedBy="producto", cascade={"persist"})
@@ -273,8 +268,7 @@ class Producto
         $this->fechacreacion = new \DateTime("now");
         $this->fechaactualizacion = new \DateTime("now");
         $this->imagenproducto = new ArrayCollection();
-        $this->productoprecio = new ArrayCollection();    
-        $this->productocatalogo = new ArrayCollection();
+        $this->productoprecio = new ArrayCollection();
         $this->ordenesproducto = new ArrayCollection();
         $this->inventario = new ArrayCollection();   
     }
@@ -678,42 +672,7 @@ class Producto
     {
         return $this->productoprecio;
     }
-
-
-
-    /**
-     * Add productocatalogo
-     *
-     * @param \Incentives\CatalogoBundle\Entity\Productocatalogo $productocatalogo
-     * @return Producto
-     */
-    public function addProductocatalogo(\Incentives\CatalogoBundle\Entity\Productocatalogo $productocatalogo)
-    {
-        $this->productocatalogo[] = $productocatalogo;
     
-        return $this;
-    }
-
-    /**
-     * Remove productocatalogo
-     *
-     * @param \Incentives\CatalogoBundle\Entity\Productocatalogo $productocatalogo
-     */
-    public function removeProductocatalogo(\Incentives\CatalogoBundle\Entity\Productocatalogo $productocatalogo)
-    {
-        $this->productocatalogo->removeElement($productocatalogo);
-    }
-
-    /**
-     * Get productocatalogo
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getProductocatalogo()
-    {
-        return $this->productocatalogo;
-    }
-
     /**
      * Add ordenesproducto
      *

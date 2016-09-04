@@ -1,0 +1,65 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}IncentivesCatalogoBundle:Catalogo:nuevo{% endblock %}
+
+{% block cuerpo %}
+
+<div style="background: white; width: 200px; float: left;" class="box">
+    <div class="box-header well"><h2>PRODUCTOS</h2></div>
+    {% for productos in producto %}
+         <div style="height: 240px; width: 180px;" class="box span3">
+            <div data-original-title="" class="box-header well">
+                {{ productos.nombre }}
+            </div>
+             <div class="box-content">
+                <div style="height: 100px; width: 100px;">
+                    {% set i=0 %}
+                    {% for imagenes in imagen%}
+                        {% if imagenes.producto.id == productos.id and i<1 %}
+                            <img src="{{(imagenes.path| slice (8))[:-4]}}_min.jpg" height="100">
+                            {% set i=i+1 %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <div>
+                    <strong>Referencia:</strong> {{ productos.referencia }}<br>
+                    <strong>Marca:</strong> {{ productos.referencia }}<br>
+                    <strong>Categoria:</strong> {{ productos.referencia }}<br>
+                    <a id="enlaceajax15" class="btn btn-success" href="/operaciones/web/app_dev.php/proveedores/estado/15">Activo</a>
+                </div>      
+            </div>       
+        </div>
+    {% endfor %}
+</div>
+
+<div id="tabs" style="background: white; width: 800px; float: left;">
+<ul>
+{% for catalogos in catalogo %}
+    <li><a href="#catalogo{{ catalogos.id }}"><span>{{ catalogos.nombre }}</span></a></li>
+{% endfor %}
+</ul>
+{% for catalogos in catalogo %}
+    <div id="catalogo{{ catalogos.id }}" >
+        {% for productos in producto %}
+            <div class="row-fluid">
+                <div class="span10 well" style="height: 240px; background-color: #EDEDED;">
+                {% for elementos in matrizv[productos.id][catalogos.id] %}
+                    {{ form_row(elementos) }}
+                {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endfor %}
+
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<script>
+$( "#tabs" ).tabs();
+</script>
+{% endblock %}

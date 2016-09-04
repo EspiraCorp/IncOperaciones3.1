@@ -143,12 +143,6 @@ class OrdenesProducto
      * @ORM\OneToMany(targetEntity="Incentives\RedencionesBundle\Entity\RedencionesProductos", mappedBy="ordenesProducto")
      */
     protected $redencionesProductos;
-    
-    /**
-     * @ORM\OneToMany(targetEntity="Incentives\OrdenesBundle\Entity\OrdenesProductoHistorico", mappedBy="ordenproducto")
-     * 
-     */
-    protected $ordenesproductohistorico;
 
     /**
      * @ORM\OneToMany(targetEntity="Incentives\InventarioBundle\Entity\Inventario", mappedBy="ordenproducto")
@@ -664,40 +658,6 @@ class OrdenesProducto
     public function getRedencionesProductos()
     {
         return $this->redencionesProductos;
-    }
-
-    /**
-     * Add ordenesproductohistorico
-     *
-     * @param \Incentives\OrdenesBundle\Entity\OrdenesProductoHistorico $ordenesproductohistorico
-     *
-     * @return OrdenesProducto
-     */
-    public function addOrdenesproductohistorico(\Incentives\OrdenesBundle\Entity\OrdenesProductoHistorico $ordenesproductohistorico)
-    {
-        $this->ordenesproductohistorico[] = $ordenesproductohistorico;
-
-        return $this;
-    }
-
-    /**
-     * Remove ordenesproductohistorico
-     *
-     * @param \Incentives\OrdenesBundle\Entity\OrdenesProductoHistorico $ordenesproductohistorico
-     */
-    public function removeOrdenesproductohistorico(\Incentives\OrdenesBundle\Entity\OrdenesProductoHistorico $ordenesproductohistorico)
-    {
-        $this->ordenesproductohistorico->removeElement($ordenesproductohistorico);
-    }
-
-    /**
-     * Get ordenesproductohistorico
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getOrdenesproductohistorico()
-    {
-        return $this->ordenesproductohistorico;
     }
 
     /**

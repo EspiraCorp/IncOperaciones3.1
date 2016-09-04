@@ -20,7 +20,6 @@ use Incentives\OperacionesBundle\Form\Type\AeconomicaType;
 use Incentives\OperacionesBundle\Entity\Country;
 use Incentives\OperacionesBundle\Entity\City;
 use Incentives\OperacionesBundle\Form\Type\LocationType;
-use Incentives\OperacionesBundle\Form\Type\PassType;
 use Incentives\BaseBundle\Entity\Usuario;
 use Incentives\OperacionesBundle\Entity\Excel;
 use Incentives\OperacionesBundle\Entity\ProveedoresCalificacion;
@@ -660,79 +659,6 @@ class ProveedorController extends Controller
 
 	    return $this->redirect($this->generateUrl('proveedores_datos').'/'.$id);
     }
-
-    public function actualizarpasswordAction(Request $request, $id, $pass)
-    {
-    	$em = $this->getDoctrine()->getManager();
-    	if (isset($id)){
-	        $usuario = $em->getRepository('IncentivesBaseBundle:Usuario')->find($id);
-	        $form = $this->createForm(PassType::class, $usuario);
-	    	if ($usuario->getPassword()==$pass)
-	    	{
-	    		return $this->render('IncentivesOperacionesBundle:Proveedor:pass.html.twig', array(
-	            	'form' => $form->createView(), 'id'=>$id, 'pass'=>$pass
-	        	));
-	    	}else{
-		    	throw $this->createNotFoundException(
-			            'Error en el token recibido'
-		        );
-		    }
-	    }else{
-	    	$form = $this->createForm(PassType::class);
-	    	$usuario = new Usuario();
-	    }
-
-	    if (!$usuario){
-			throw $this->createNotFoundException(
-	            'No se encontro el proveedor'
-	        );
-		}
-
-
-
-    	if ($request->isMethod('POST')) {
-			$form->handleRequest($request);
-
-			if ($form->isValid()) {
-				$pro = $request->request->all()['password'];
-				$id = $request->request->all()['id'];
-				$pass = $request->request->all()['pass'];
-				$usuario = $em->getRepository('IncentivesBaseBundle:Usuario')->find($id);
-
-				if ($usuario->getPassword()!=$pass)
-			    {
-			    	throw $this->createNotFoundException(
-				            'Error en el token recibido'
-			        );
-			    }
-
-				if ($pro['password']['first']==$pro['password']['second']){
-					$query = $em->createQuery(
-					    'UPDATE IncentivesBaseBundle:Usuario p 
-					    SET p.password=:password
-					    WHERE p.id=:id'
-					);
-					$query->setParameters(array(
-					    'password' => sha1($pro['password']['first'].'{'.$usuario->getSalt().'}'),
-					    'id' => $id,
-					));
-					$query->getResult();
-				
-					return $this->redirect($this->generateUrl('login'));
-				}else{
-					throw $this->createNotFoundException(
-			            'Claves no coinciden, vuelva a iniciar el proceso.'
-			        );
-				}
-					
-			}
-		}
-
-
-    }
-    
-    
-    
     
     public function importarAction(Request $request)
     {

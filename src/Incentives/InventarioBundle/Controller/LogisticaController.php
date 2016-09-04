@@ -217,7 +217,6 @@ class LogisticaController extends Controller
             $error = 0;
             foreach ($sheetData as $row) {
                 $errorFecha = 0;
-                
                 if($fila > 1 && $row['AC']!="" && $row['O']!=""){
                     
                     $errorFecha = 0;
@@ -228,16 +227,16 @@ class LogisticaController extends Controller
                         
                         $fechaEntrega=$objPHPExcel->getActiveSheet()->getCell("AA".$fila)->getFormattedValue();
                         
-			if (strpos($fechaEntrega, '-') !== FALSE){
-				$fechaEntrega = explode("-", $fechaEntrega);
-			}elseif(strpos($fechaEntrega, '/') !== FALSE){
-				$fechaEntrega = explode("/", $fechaEntrega);
-			}
+            			if (strpos($fechaEntrega, '-') !== FALSE){
+            				$fechaEntrega = explode("-", $fechaEntrega);
+            			}elseif(strpos($fechaEntrega, '/') !== FALSE){
+            				$fechaEntrega = explode("/", $fechaEntrega);
+            			}
 
                         if(count($fechaEntrega)==3){
-			    if(strlen($fechaEntrega[2])<=2) $fechaEntrega[2] = '20'.$fechaEntrega[2];//complementar la fecha
+                            if(strlen($fechaEntrega[2])<=2) $fechaEntrega[2] = '20'.$fechaEntrega[2];//complementar la fecha
 			
- 			    $fechaEntrega = $fechaEntrega[0]."/".$fechaEntrega[1]."/".$fechaEntrega[2];
+ 			                $fechaEntrega = $fechaEntrega[0]."/".$fechaEntrega[1]."/".$fechaEntrega[2];
                             $fechaEntrega = date("Y-m-d", strtotime($fechaEntrega));
                             $fechaBase = date('Y-m-d', strtotime("01/01/2010"));
 
@@ -321,8 +320,10 @@ class LogisticaController extends Controller
                             } 
                             
                             //Verificar si tiene redencion asociadas
-                            if($despacho->getRedencion() !== null){
-                                $redencion = $em->getRepository('IncentivesRedencionesBundle:Redenciones')->find($despacho->getRedencion()->getId());
+                            if($despacho->getRedencionesproductos() !== null){
+                                $redencionProducto = $em->getRepository('IncentivesRedencionesBundle:RedencionesProductos')->find($despacho->getRedencionesproductos()->getId());
+                                $redencion = $em->getRepository('IncentivesRedencionesBundle:Redenciones')->find($redencionProducto->getRedencion()->getId());
+                                
                                 if(isset($fechaEntrega)){
                                     $idEstado = 6;
                                 }else{
@@ -330,9 +331,16 @@ class LogisticaController extends Controller
                                 } 
                                 
                                 $estado = $em->getRepository('IncentivesRedencionesBundle:Redencionesestado')->find($idEstado);
-                                if(isset($fechaEntrega)) $redencion->setfechaEntrega(new \DateTime($fechaEntrega));
+
+                                if(isset($fechaEntrega)){
+                                    $redencionProducto->setfechaEntrega(new \DateTime($fechaEntrega));
+                                    $redencion->setfechaEntrega(new \DateTime($fechaEntrega));
+                                } 
+                                
+                                $redencionProducto->setEstado($estado);
                                 $redencion->setRedencionestado($estado);
-            
+
+                                $em->persist($redencionProducto);
                                 $em->persist($redencion);
                             }
                             

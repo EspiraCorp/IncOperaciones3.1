@@ -31,7 +31,7 @@ class OrdenesProductoType extends AbstractType
 					->where('u.estado = :id')->setParameter('id', '1');
             },
             'choice_label' => 'label',
-            //'empty_value' => 'Seleccione una opcion',
+            'placeholder' => 'Seleccionar',
             'label' => 'Producto'
         ));
     }

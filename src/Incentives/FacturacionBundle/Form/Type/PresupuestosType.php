@@ -24,7 +24,7 @@ class PresupuestosType extends AbstractType
         /*$builder->add('tipo', EntityType::class, array(
             'class' => 'IncentivesFacturacionBundle:Tipocostos',
             'choice_label' => 'nombre',
-            //'empty_value' => 'Seleccione una opcion',
+            'placeholder' => 'Seleccionar',
             'label' => 'Tipo'
         ));*/
 

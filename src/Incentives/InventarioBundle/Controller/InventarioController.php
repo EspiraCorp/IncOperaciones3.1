@@ -1185,12 +1185,13 @@ class InventarioController extends Controller
 
         $arrayParametros = array();
         $qb = $em->createQueryBuilder();            
-        $qb->select('d', 'oc orden', 'p planilla', 'pr producto', 'r', 'pt', 'c', 'pg','cc','op','dg','g');
+        $qb->select('d', 'oc orden', 'p planilla', 'pr producto', 'rp', 'r', 'pt', 'c', 'pg','cc','op','dg','g');
         $qb->from('IncentivesInventarioBundle:Despachos','d');
         $qb->leftJoin('d.planilla','p');
         $qb->leftJoin('d.producto','pr');
         $qb->leftJoin('pr.categoria','c');
-        $qb->leftJoin('d.redencion','r');
+        $qb->leftJoin('d.redencionesproductos','rp');
+        $qb->leftJoin('rp.redencion','r');
         $qb->leftJoin('d.despachoguia','dg');
         $qb->leftJoin('dg.guia','g');
         $qb->leftJoin('r.participante','pt');
@@ -1249,18 +1250,18 @@ class InventarioController extends Controller
             {
 
             				$objPHPExcel->getActiveSheet()
-                                ->setCellValue('A'.$fil, $value['redencion']['participante']['nombre'])
+                                ->setCellValue('A'.$fil, $value['redencionesproductos']['redencion']['participante']['nombre'])
             					->setCellValue('I'.$fil, $value['producto']['nombre'])
             					->setCellValue('J'.$fil, $value['producto']['codInc'])
             					->setCellValue('K'.$fil, $value['producto']['categoria']['nombre'])
             					->setCellValue('L'.$fil, $value['cantidad'])
-            					->setCellValue('M'.$fil, $value['redencion']['participante']['programa']['centroCostos']['centrocostos'])
-            					->setCellValue('N'.$fil, $value['redencion']['participante']['programa']['nombre'])//Programa
+            					->setCellValue('M'.$fil, $value['redencionesproductos']['redencion']['participante']['programa']['centroCostos']['centrocostos'])
+            					->setCellValue('N'.$fil, $value['redencionesproductos']['redencion']['participante']['programa']['nombre'])//Programa
             					->setCellValue('P'.$fil, "")
-            					->setCellValue('R'.$fil, $value['redencion']['participante']['documento'])
+            					->setCellValue('R'.$fil, $value['redencionesproductos']['redencion']['participante']['documento'])
             					->setCellValue('S'.$fil, $value['id'])
-            					->setCellValue('T'.$fil, $value['redencion']['participante']['id'])
-            					->setCellValue('U'.$fil, $value['redencion']['codigoredencion']);
+            					->setCellValue('T'.$fil, $value['redencionesproductos']['redencion']['participante']['id'])
+            					->setCellValue('U'.$fil, $value['redencionesproductos']['redencion']['codigoredencion']);
 
                                 $objPHPExcel->getActiveSheet()
                                             ->setCellValue('B'.$fil, $value['nombreContacto'])
@@ -1287,9 +1288,9 @@ class InventarioController extends Controller
                                             ->setCellValue('AB'.$fil, $guias);
                             }
             				
-            				if($value['redencion']!= Null){
+            				if($value['redencionesproductos']['redencion']!= Null){
             					$objPHPExcel->getActiveSheet()
-            						    ->setCellValue('Y'.$fil, $value['redencion']['id']);
+            						    ->setCellValue('Y'.$fil, $value['redencionesproductos']['redencion']['id']);
             				}
 
                             $objPHPExcel->getActiveSheet()

@@ -1,73 +1,81 @@
-{% extends "::base.html.twig" %}
+{% extends '::baseLte.html.twig' %}
 
-{% block title %}Productos{% endblock %}
-{% block sidebar %}
-{{ parent() }}
-{% endblock %}
-{% block cuerpo %}
-<div class="row-fluid sortable ui-sortable">
-	<div class="box span12">
-		<div class="box-header well">
-			<h2><i class="icon-th-list"></i>Productos Catalogo</h2>
-      <div class="box-icon"> 
-              <a href="{{ path('producto_editar_mas') }}" title="Edicion Masiva" class="btn btn-round"><i class="icon-edit"></i></a>
-              <a href="{{ path('producto_importar') }}" title="Carga Masiva" class="btn btn-round"><i class="icon-upload"></i></a>
-              <a href="{{ path('producto_exportar') }}" title="Descargar" class="btn btn-round"><i class="icon-download"></i></a>
-              <a href="{{ path('producto_nuevo') }}" class="btn btn-round" title="Agregar"><i class="icon-plus"></i></a>
-      </div>
-		</div>
-		<div class="box-content">
-			<div id="dashboard">
-                   
-                    <div id="tabla" class="table table-bordered table-striped" cellspacing="0" width="100%">
-                      <table id="productos" class="display">
-                        {{ form_start(form, { attr: {novalidate: 'novalidate'} }) }}
-                          <form action="{{ path('producto') }}" method="POST"  class="form-horizontal">
-                            <div class="box-icon">{{ form_widget(form.Enviar, { 'attr': {'class': 'btn btn-primary'} }) }}</div>
-                        <thead style="display:table-row-group;">
-                          <tr>
-			                      <th>{{ knp_pagination_sortable(productos, 'Id', 'p.id') }}</th>
-                            <th>{{ knp_pagination_sortable(productos, 'Nombre', 'p.nombre') }}</th>
-                            <th>{{ knp_pagination_sortable(productos, 'Categoria', 'c.nombre') }}</th>
-                            <th>{{ knp_pagination_sortable(productos, 'Referencia', 'p.referencia') }}</th>
-                            <th>{{ knp_pagination_sortable(productos, 'Marca', 'p.marca') }}</th>
-                            <th>{{ knp_pagination_sortable(productos, 'EAN', 'p.codEAN') }}</th>
-                            <th>{{ knp_pagination_sortable(productos, 'SKU', 'p.codInc') }}</th>
-                            <th>{{ knp_pagination_sortable(productos, 'Precio', 'pp.precio') }}</th>
-                            <th>Catalogos</th>
-                            <th>{{ knp_pagination_sortable(productos, 'Estado', 'e.nombre') }}</th>
-                          </tr>
-                          <tr>
-                            <th><input type="text" id="producto_id" name="producto[id]" style="width: 40px"></th>
-			                      <th>{{ form_widget(form.nombre, { 'attr': { 'style' : 'width:150px' }} ) }}</th>
-                            <th>{{ form_widget(form.categoria, { 'attr': { 'style' : 'width:150px' }} ) }}</th>
-                            <th>{{ form_widget(form.referencia, { 'attr': { 'style' : 'width:150px' }} ) }}</th>
-                            <th>{{ form_widget(form.marca, { 'attr': { 'style' : 'width:100px' }} ) }}</th>
-                            <th>{{ form_widget(form.codEAN, { 'attr': { 'style' : 'width:100px' }} ) }}</th>
-                            <th>{{ form_widget(form.codInc, { 'attr': { 'style' : 'width:100px' }} ) }}</th>
-                            <th style="width: 300px">Min<input type="text" id="precio_min" name="producto[precio_min]" style="width: 60px">
-                            Max<input type="text" id="precio_max" name="producto[precio_max]" style="width: 60px"></th>
-                            <th></th>
-                            <th>{{ form_widget(form.estado, { 'attr': { 'style' : 'width:80px' }} ) }}</th>
-                          </tr>
+{% block title %}{{ parent() }}::Productos Catálogo{% endblock %}
+{% block sectiontitle %}<h1>Catálogo<small>Listado de Productos</small></h1>{% endblock %}
+{% block breadcum %} <li><a href=""><i class="fa fa-star-o"></i>Productos</a></li><li class="active"></li>{% endblock %}
+
+{% block content %}
+  <div class="row">
+        <div class="col-xs-12">
+          <div class="box box-warning">
+        		<div class="box-header bg-black">
+        			<h3 class="box-title">Productos Catálogo</h3> 
+              <div class="box-tools pull-right"> 
+                      <a href="{{ path('producto_editar_mas') }}" title="Edicion Masiva" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i></a>
+                      <a href="{{ path('producto_importar') }}" title="Carga Masiva" class="btn btn-info btn-sm"><i class="fa fa-upload"></i></a>
+                      <a href="{{ path('producto_exportar') }}" title="Descargar" class="btn btn-info btn-sm"><i class="fa fa-download"></i></a>
+                      <a href="{{ path('producto_nuevo') }}" class="btn btn-success btn-sm" title="Agregar"><i class="fa fa-plus"></i></a>
+              </div>
+        		</div>
+        		<div class="box-body no-padding">
+              <div class="dataTables_wrapper form-inline dt-bootstrap">
+                <div class="row">
+                  <div class="col-sm-12">
+                    <table class="table table-bordered table-striped table-condensed dataTable" id="productos" role="grid">
+                        <thead>
+                          {{ form_start(form, { attr: {novalidate: 'novalidate', class: 'form-horizontal'} }) }}
+                            <tr>
+                                <th class="sorting" tabindex="0" rowspan="1" colspan="1">{{ knp_pagination_sortable(productos, 'Id', 'p.id') }}</th>
+                                <th class="sorting" tabindex="0" rowspan="1" colspan="1">{{ knp_pagination_sortable(productos, 'Nombre', 'p.nombre') }}</th>
+                                <th class="sorting" tabindex="0" rowspan="1" colspan="1">{{ knp_pagination_sortable(productos, 'Categoria', 'c.nombre') }}</th>
+                                <th class="sorting" tabindex="0" rowspan="1" colspan="1">{{ knp_pagination_sortable(productos, 'Referencia', 'p.referencia') }}</th>
+                                <th class="sorting" tabindex="0" rowspan="1" colspan="1">{{ knp_pagination_sortable(productos, 'Marca', 'p.marca') }}</th>
+                                <th class="sorting" tabindex="0" rowspan="1" colspan="1">{{ knp_pagination_sortable(productos, 'EAN', 'p.codEAN') }}</th>
+                                <th class="sorting" tabindex="0" rowspan="1" colspan="1">{{ knp_pagination_sortable(productos, 'SKU', 'p.codInc') }}</th>
+                                <th class="sorting" tabindex="0" rowspan="1" colspan="2">{{ knp_pagination_sortable(productos, 'Precio', 'pp.precio') }}</th>
+                                <th class="sorting" tabindex="0" rowspan="1" colspan="1">Catalogos</th>
+                                <th class="sorting" tabindex="0" rowspan="1" colspan="1">{{ knp_pagination_sortable(productos, 'Estado', 'e.nombre') }}</th>
+                                <th colspan="2"></th>
+                            </tr>
+                            <tr>
+                                <th><input type="text" id="producto_id" name="producto[id]" style="width: 40px" value="{%if filtros.id is defined %}{{ filtros.id }}{% endif %}" class="form-control input-sm"></th>
+                                <th>{{ form_widget(form.nombre, { 'attr': { 'class' : 'form-control input-sm' }, 'value': filtros.nombre | default("") } ) }}</th>
+                                <th>{{ form_widget(form.categoria, { 'attr': { 'class' : 'form-control input-sm' }, 'value': filtros.categoria | default("") } ) }}</th>
+                                <th>{{ form_widget(form.referencia, { 'attr': { 'class' : 'form-control input-sm' }, 'value': filtros.referencia | default("") } ) }}</th>
+                                <th>{{ form_widget(form.marca, { 'attr': { 'class' : 'form-control input-sm' }, 'value': filtros.marca | default("") } ) }}</th>
+                                <th>{{ form_widget(form.codEAN, { 'attr': { 'class' : 'form-control input-sm' }, 'value': filtros.codEAN | default("") } ) }}</th>
+                                <th>{{ form_widget(form.codInc, { 'attr': { 'class' : 'form-control input-sm', 'style' : "width: 100px" }, 'value': filtros.codInc | default("") } ) }}</th>
+                                <th>Min<input type="text" id="precio_min" name="producto[precio_min]" style="width: 60px" value="{%if filtros.precio_min is defined %}{{ filtros.precio_min }}{% endif %}" class="form-control input-sm">
+                                </th> 
+                                <th>Max<input type="text" id="precio_max" name="producto[precio_max]" style="width: 60px" value="{%if filtros.precio_max is defined %}{{ filtros.precio_max }}{% endif %}"  class="form-control input-sm"></th>
+                                <th></th>
+                                <th>{{ form_widget(form.estado, { 'attr': { 'class' : 'form-control input-sm'}, 'value': filtros.estado | default(1) } ) }}</th>
+                                <th>
+                                  {{ form_widget(form.Enviar, { 'attr': {'class': 'btn btn-primary btn-xs'}, 'label': 'Buscar' }) }}
+                                
+                                  <a class="btn btn-danger btn-xs" title="Limpiar" id="borrar"><i class="fa fa-trash"></i></a>
+                                </th>
+                            </tr>
+                          </form>
                         </thead>
-                        </form>
                         <tbody>
                           {% for producto in productos %}
-                            <tr>
-  			                      <td>{{ producto.producto.id }}</td>
-                              <td><a href="{{ path("producto_datos", {"id": producto.producto.id}) }}">{{ producto.producto.nombre }}</a></td>
+                            <tr role="row">
+                              <td><a href="{{ path("producto_datos", {"id": producto.producto.id}) }}">{{ producto.producto.id }}</a></td>
+                              <td>{{ producto.producto.nombre }}</td>
                               <td>{% if (producto.producto.categoria) %}{{ producto.producto.categoria.nombre }}{% endif %}</td>
                               <td>{{ producto.producto.referencia }}</td>
                               <td>{{ producto.producto.marca }}</td>
                               <td>{{ producto.producto.codEAN }}</td>
-                              <td>{{ producto.producto.codInc }}</td>
-                              <td>{% if producto.producto.productoprecio %}{{ producto.producto.productoprecio[0].precio|number_format(0, ',', '.') }}{% endif %}</td>
-                              <td><div data-toggle="tooltip">{{ producto.producto.productocatalogo|length }}</div></td>
+                              <td class="text-right">{{ producto.producto.codInc }}</td>
+                              <td class="text-right" colspan="2">{% if producto.producto.productoprecio %}{{ producto.producto.productoprecio[0].precio|number_format(0, ',', '.') }}{% endif %}</td>
+                              <td><div data-toggle="tooltip">{{ producto.producto.premiosproductos|length }}</div></td>
                               <td>
                                 {% if (producto.producto.estado) %}
-                                  {% if (producto.producto.estado.id!=1) %}<a class="btn btn-danger 1" onClick="confirmar('{{ url("producto_estado", {"id": producto.producto.id}) }}')" href="#">Inactivo</a>
-                                  {% else %}<a class="btn btn-success 1" onClick="confirmar('{{ url("producto_estado", {"id": producto.producto.id}) }}')" href="#">Activo</a>
+                                  {% if (producto.producto.estado.id!=1) %}
+                                    <a class="btn btn-danger 1" onClick="confirmar('{{ url("producto_estado", {"id": producto.producto.id}) }}')" href="#">Inactivo</a>
+                                  {% else %}
+                                    <a class="btn btn-success 1" onClick="confirmar('{{ url("producto_estado", {"id": producto.producto.id}) }}')" href="#">Activo</a>
                                   {% endif %}
                                 {% endif %}
                               </td>
@@ -75,24 +83,21 @@
                           {% endfor %}
                         </tbody>
                       </table>
-                    </div>   
+                </div>   
+              </div>
+          		<div class="row">
+                <div class="col-sm-5"><div class="dataTables_info" role="status" aria-live="polite">Mostrando {{ productos.getItemNumberPerPage*(productos.getCurrentPageNumber-1)+1  }} a {{ productos.getItemNumberPerPage*productos.getCurrentPageNumber }} de {{ productos.getTotalItemCount }}   Productos</div></div>
+
+                <div class="col-sm-7"><div class="dataTables_paginate paging_simple_numbers">
+                {{ knp_pagination_render(productos) }}</div></div>
+              </div>
             </div>
-		</div>
-		
-		<div class="box span11">
-        <div class="box-content">
-                <div class="dataTables_info">Mostrando {{ productos.getItemNumberPerPage*(productos.getCurrentPageNumber-1)+1  }} a {{ productos.getItemNumberPerPage*productos.getCurrentPageNumber }} de {{ productos.getTotalItemCount }}   Productos
-                </div>
-                <div class="pagination pagination-centered">
-                        {{ knp_pagination_render(productos) }}                    
-                </div>
         </div>
-    </div>
-	</div>
-</div>
+  	</div>
+  </div>
 {% endblock %}
 
-{% block javascripts %}
+{% block javascript %}
 
 {{ parent() }}
 
@@ -109,9 +114,33 @@
       }
  
     $(document).ready(function(){
-        $('[data-toggle="tooltip"]').tooltip();   
+        $('[data-toggle="tooltip"]').tooltip();  
+    });
+
+
+
+    $(function(){
+        $('#borrar').on('click', function(e){
+            e.preventDefault(); // prevent the default form submit actio
+            var form = document.forms['producto'];
+            var input = document.createElement( "input" );
+            input.setAttribute( "name", "limpiar" );
+            input.setAttribute( "value", "1" );
+            form.appendChild( input );
+            form.submit();
+        });
     });
 </script>
+
+{% endblock %}
+
+{% block stylesheet %}
+  {{ parent() }}
+  <style>
+    body {
+        width: 130%;
+    }
+  </style>
 
 {% endblock %}
 

@@ -155,12 +155,6 @@ class OrdenesCompra
      */
     protected $ordenesEstado;
 
-	/**
-     * @ORM\OneToMany(targetEntity="Incentives\OrdenesBundle\Entity\OrdenesCompraHistorico", mappedBy="ordencompra")
-     * 
-     */
-    protected $ordeneshistorico;
-
     /**
      * @var float
      *
@@ -255,7 +249,6 @@ class OrdenesCompra
         $this->cancelado = false;
         $this->ordenesEstado = 1;
         $this->ordenesProducto = new ArrayCollection();
-        $this->ordeneshistorico = new ArrayCollection();
     }
 
     /**
@@ -587,40 +580,7 @@ class OrdenesCompra
     {
         return $this->inventario;
     }
-
-    /**
-     * Add ordeneshistorico
-     *
-     * @param \Incentives\OrdenesBundle\Entity\OrdenesCompraHistorico $ordeneshistorico
-     * @return OrdenesCompra
-     */
-    public function addOrdeneshistorico(\Incentives\OrdenesBundle\Entity\OrdenesCompraHistorico $ordeneshistorico)
-    {
-        $this->ordeneshistorico[] = $ordeneshistorico;
     
-        return $this;
-    }
-
-    /**
-     * Remove ordeneshistorico
-     *
-     * @param \Incentives\OrdenesBundle\Entity\OrdenesCompraHistorico $ordeneshistorico
-     */
-    public function removeOrdeneshistorico(\Incentives\OrdenesBundle\Entity\OrdenesCompraHistorico $ordeneshistorico)
-    {
-        $this->ordeneshistorico->removeElement($ordeneshistorico);
-    }
-
-    /**
-     * Get ordeneshistorico
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getOrdeneshistorico()
-    {
-        return $this->ordeneshistorico;
-    }
-
     /**
      * Set proveedor
      *

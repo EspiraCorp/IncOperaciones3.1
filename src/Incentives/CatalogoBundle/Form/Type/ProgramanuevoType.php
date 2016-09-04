@@ -29,7 +29,7 @@ class ProgramanuevoType extends AbstractType
         $builder->add('cliente', EntityType::class, array(
             'class' => 'IncentivesCatalogoBundle:Cliente',
             'choice_label' => 'nombre',
-            //'empty_value' => 'Seleccione una opcion',
+            'placeholder' => 'Seleccionar',
         ));
         $builder
             ->add('nombre')

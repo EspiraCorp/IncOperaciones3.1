@@ -66,7 +66,7 @@
             <tbody>
               <tr><td colspan="2">
                 {% if producto.producto.imagenproducto|length > 0 %}
-                <a href="../../../{{ producto.producto.imagenproducto[0].path| slice (0) }}" target='_blank'><img src="../../../{{( producto.producto.imagenproducto[0].path| slice (0))[:-4]}}_min.jpg"><a>
+                <a href="../../../{{ producto.producto.imagenproducto[0].path| slice (7) }}" target='_blank'><img src="../../../{{( producto.producto.imagenproducto[0].path| slice (7))[:-4]}}_min.jpg"><a>
                 {% endif %}
               </td></tr>
               <tr><td>Sku</td><td>{{ producto.producto.codInc }}</td></tr>

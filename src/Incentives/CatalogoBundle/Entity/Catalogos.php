@@ -72,12 +72,6 @@ class Catalogos
     protected $catalogotipo;
 
     /**
-     * @ORM\OneToMany(targetEntity="Productocatalogo", mappedBy="catalogos", cascade={"persist"})
-     * 
-     */
-    protected $productocatalogo;
-
-    /**
      * @ORM\OneToMany(targetEntity="Premios", mappedBy="catalogos", cascade={"persist"})
      * 
      */
@@ -119,7 +113,6 @@ class Catalogos
 
     public function __construct()
     {   
-        $this->productocatalogo = new ArrayCollection(); 
     }
 
     /**
@@ -247,41 +240,7 @@ class Catalogos
     {
         return $this->programa;
     }
-
-
-    /**
-     * Add productocatalogo
-     *
-     * @param \Incentives\CatalogoBundle\Entity\Productocatalogo $productocatalogo
-     * @return Catalogos
-     */
-    public function addProductocatalogo(\Incentives\CatalogoBundle\Entity\Productocatalogo $productocatalogo)
-    {
-        $this->productocatalogo[] = $productocatalogo;
     
-        return $this;
-    }
-
-    /**
-     * Remove productocatalogo
-     *
-     * @param \Incentives\CatalogoBundle\Entity\Productocatalogo $productocatalogo
-     */
-    public function removeProductocatalogo(\Incentives\CatalogoBundle\Entity\Productocatalogo $productocatalogo)
-    {
-        $this->productocatalogo->removeElement($productocatalogo);
-    }
-
-    /**
-     * Get productocatalogo
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getProductocatalogo()
-    {
-        return $this->productocatalogo;
-    }
-
     /**
      * Add calificacion
      *

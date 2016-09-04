@@ -960,8 +960,10 @@ class RedencionesController extends Controller
 	        //Consultar puntos redimidos
 	        
 	        $qb1 = $em->createQueryBuilder();            
-            $qb1->select('r','pr','pt','estado','d','dg','guia','envio');
+            $qb1->select('r','pr','rp','p','pt','estado','d','dg','guia','envio');
 	        $qb1->from('IncentivesRedencionesBundle:Redenciones','r');
+	        $qb1->leftJoin('r.redencionesProductos', 'rp');
+	        $qb1->leftJoin('rp.producto', 'p');
             $qb1->leftJoin('r.premio', 'pr');
             $qb1->leftJoin('pr.catalogos', 'c');
             $qb1->leftJoin('r.participante', 'pt');
@@ -996,8 +998,9 @@ class RedencionesController extends Controller
 	        	$redencionesP[$key]['cedula'] = $value['participante']['documento'];
 	        	$redencionesP[$key]['participante'] = $value['participante']['participante'];
 	        	$redencionesP[$key]['codigo'] = $value['codigoredencion'];
-				//$redencionesP[$key]['sku'] = $value['productocatalogo']['producto']['codInc'];
-				$redencionesP[$key]['producto'] = $value['premio']['nombre'];
+				$redencionesP[$key]['sku'] = $value['redencionesProductos'][0]['producto']['codInc'];
+				//$redencionesP[$key]['producto'] = $value['premio']['nombre'];
+				$redencionesP[$key]['producto'] = $value['redencionesProductos'][0]['producto']['nombre'];
 				$redencionesP[$key]['fecha'] = $value['fecha']->format('Y-m-d');
 				if(isset($value['fechaAutorizacion'])) $redencionesP[$key]['fechaAutorizacion'] = $value['fechaAutorizacion']->format('Y-m-d'); else $redencionesP[$key]['fechaAutorizacion'] = "";
 				if(isset($value['fechaDespacho'])) $redencionesP[$key]['fechaDespacho'] = $value['fechaDespacho']->format('Y-m-d'); else $redencionesP[$key]['fechaDespacho'] = "";

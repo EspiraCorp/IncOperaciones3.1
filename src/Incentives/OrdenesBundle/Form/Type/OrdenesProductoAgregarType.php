@@ -40,14 +40,14 @@ class OrdenesProductoAgregarType extends AbstractType
 					->orderBy('u.codInc', 'ASC');
             },
             'choice_label' => 'nombreId',
-            //'empty_value' => 'Seleccione una opcion',
+            'placeholder' => 'Seleccionar',
             'label' => 'Producto'
         ));
 
         $builder->add('programa', EntityType::class, array(
             'class' => 'IncentivesCatalogoBundle:Programa',
             'choice_label' => 'nombre',
-            //'empty_value' => 'Seleccione una opcion',
+            'placeholder' => 'Seleccionar',
             'label' => 'Programa'
         ));
 

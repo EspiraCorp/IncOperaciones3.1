@@ -37,7 +37,7 @@ class RequisicionProductoAgregarType extends AbstractType
 					->orderBy('p.codInc', 'ASC');
             },
             'choice_label' => 'nombreId',
-            //'empty_value' => 'Seleccione una opcion',
+            'placeholder' => 'Seleccionar',
             'label' => 'Producto'
         ));
 

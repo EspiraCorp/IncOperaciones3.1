@@ -45,11 +45,6 @@ class Categoria
      * @ORM\OneToMany(targetEntity="Incentives\CatalogoBundle\Entity\Producto", mappedBy="categoria")
      */
     protected $producto;
-    
-    /**
-     * @ORM\OneToMany(targetEntity="Incentives\CatalogoBundle\Entity\Productocatalogo", mappedBy="categoria")
-     */
-    protected $productocatalogo;
 
     /**
      * @ORM\OneToMany(targetEntity="Incentives\OrdenesBundle\Entity\OrdenesCompra", mappedBy="categoria")
@@ -202,39 +197,6 @@ class Categoria
     public function getAbreviatura()
     {
         return $this->abreviatura;
-    }
-
-    /**
-     * Add productocatalogo
-     *
-     * @param \Incentives\CatalogoBundle\Entity\Productocatalogo $productocatalogo
-     * @return Categoria
-     */
-    public function addProductocatalogo(\Incentives\CatalogoBundle\Entity\Productocatalogo $productocatalogo)
-    {
-        $this->productocatalogo[] = $productocatalogo;
-    
-        return $this;
-    }
-
-    /**
-     * Remove productocatalogo
-     *
-     * @param \Incentives\CatalogoBundle\Entity\Productocatalogo $productocatalogo
-     */
-    public function removeProductocatalogo(\Incentives\CatalogoBundle\Entity\Productocatalogo $productocatalogo)
-    {
-        $this->productocatalogo->removeElement($productocatalogo);
-    }
-
-    /**
-     * Get productocatalogo
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getProductocatalogo()
-    {
-        return $this->productocatalogo;
     }
 
     /**

@@ -36,6 +36,7 @@ class CatalogosController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $catalogo = new Catalogos();
+
         if (isset($id)){
             $programa = $em->getRepository('IncentivesCatalogoBundle:Programa')->find($id);
             $form = $this->createForm(CatalogosType::class, $catalogo);
@@ -45,21 +46,27 @@ class CatalogosController extends Controller
         }        
                     
         if ($request->isMethod('POST')) {
-            $form->handleRequest($request);
+            //$form->handleRequest($request);
 
             //if ($form->isValid()) {
                 $id = $request->request->all()['id'];
-                if ($id==0){
-                    $id=$catalogo->getPrograma()->getId();
-                }
+                
+                $pro = $request->request->all();
 
-                $pro = $request->request->all()['catalogosnuevo'];
+                if(isset($pro['catalogosnuevo'])){
+                    $pro = $request->request->all()['catalogosnuevo'];
+                }else{
+                    $pro = $request->request->all()['catalogos'];
+                }
+                
+                if ($id==0){
+                    $id = $pro['programa'];
+                }
 
                 $programa = $em->getRepository('IncentivesCatalogoBundle:Programa')->find($id);
                 $catalogo->setPrograma($programa);
                 $estado = $em->getRepository('IncentivesCatalogoBundle:Estados')->find(1);
                 $catalogo->setEstado($estado);
-                $catalogo = $em->getRepository('IncentivesCatalogoBundle:Catalogos')->find($id);
                 $catalogo->setNombre($pro["nombre"]);
                 $catalogo->setDescripcion($pro["descripcion"]);
                 $catalogo->setValorpunto($pro["valorPunto"]);

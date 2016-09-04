@@ -37,10 +37,10 @@ class ProductoType extends AbstractType
         $builder->add('descripcion');
         $builder->add('codEAN',TextType::class,array('label'  => 'EAN', 'required' => false));
         $builder->add('codInc');
-        $builder->add('alto',IntegerType::class,array('label'  => 'Alto (cm)',));
-        $builder->add('largo',IntegerType::class,array('label'  => 'Largo (cm)',));
-        $builder->add('ancho',IntegerType::class,array('label'  => 'Ancho (cm)',));
-        $builder->add('peso',IntegerType::class,array('label'  => 'Peso (Kg)',));
+        $builder->add('alto',IntegerType::class,array('label'  => 'Alto (cm)'));
+        $builder->add('largo',IntegerType::class,array('label'  => 'Largo (cm)'));
+        $builder->add('ancho',IntegerType::class,array('label'  => 'Ancho (cm)'));
+        $builder->add('peso',IntegerType::class,array('label'  => 'Peso (Kg)'));
         $builder->add('estadoIva', ChoiceType::class, array(
             'choices'   => array(
                 'Si' => 1,
@@ -54,8 +54,8 @@ class ProductoType extends AbstractType
             'placeholder' => 'Seleccionar',
         ));
         $builder->add('precio');
-        $builder->add('iva');
-        $builder->add('incremento');
+        $builder->add('iva',IntegerType::class,array('label'  => 'Iva (%)'));
+        $builder->add('incremento',IntegerType::class,array('label'  => 'Incremento (%)'));
         $builder->add('logistica');
         //$builder->addEventSubscriber(new AddImagenproductoFieldSubscriber());
         // $builder->add('imagenproducto', 'collection', array(

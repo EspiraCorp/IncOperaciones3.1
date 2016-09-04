@@ -28,11 +28,6 @@ class EstadoCatalogo
      * @ORM\Column(name="nombre", type="string", length=255, nullable=true)
      */
     private $nombre;
-    
-     /**
-     * @ORM\OneToMany(targetEntity="Productocatalogo", mappedBy="estado")
-     */
-    protected $productocatalogo;
 
     /**
      * @var \DateTime
@@ -88,39 +83,6 @@ class EstadoCatalogo
     public function getNombre()
     {
         return $this->nombre;
-    }
-
-    /**
-     * Add productocatalogo
-     *
-     * @param \Incentives\CatalogoBundle\Entity\Productocatalogo $productocatalogo
-     * @return EstadoCatalogo
-     */
-    public function addProductocatalogo(\Incentives\CatalogoBundle\Entity\Productocatalogo $productocatalogo)
-    {
-        $this->productocatalogo[] = $productocatalogo;
-    
-        return $this;
-    }
-
-    /**
-     * Remove productocatalogo
-     *
-     * @param \Incentives\CatalogoBundle\Entity\Productocatalogo $productocatalogo
-     */
-    public function removeProductocatalogo(\Incentives\CatalogoBundle\Entity\Productocatalogo $productocatalogo)
-    {
-        $this->productocatalogo->removeElement($productocatalogo);
-    }
-
-    /**
-     * Get productocatalogo
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getProductocatalogo()
-    {
-        return $this->productocatalogo;
     }
 
     /**

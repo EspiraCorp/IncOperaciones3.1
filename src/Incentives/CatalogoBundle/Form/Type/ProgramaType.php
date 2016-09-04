@@ -39,7 +39,7 @@ class ProgramaType extends AbstractType
         $builder->add('centroCostos', EntityType::class, array(
             'class' => 'IncentivesCatalogoBundle:CentroCostos',
             'choice_label' => 'centrocostos',
-            //'empty_value' => 'Seleccione una opcion',
+            'placeholder' => 'Seleccionar',
         ));
 
          $builder->add('iva', ChoiceType::class, array(

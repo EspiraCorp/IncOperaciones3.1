@@ -1,0 +1,147 @@
+{% extends app.request.isXmlHttpRequest ? "MDWDemoBundle::layout_ajax.html.twig" : "::base.html.twig" %}
+{% block title %}Datos Programa{% endblock %}
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+<div class="box">
+    <div class="box-header well" data-original-title="">
+        Programa
+        <div class="box-icon">
+				<div class="box-icon">
+                    <a href="{{ path('programa') }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+                </div>
+    	</div>
+    </div>
+</div>
+    <div class="box span6">
+	    <div class="box-content">
+	    	<div class="box-header well">
+				<h2>
+				<a href="{{ path('programa_editar',  {"id": programa.id}) }}">
+					<button class="btn btn-primary">
+						<i class="icon-edit icon-white"></i>
+					</button>
+				</a>
+				</i>Datos Programa</h2>
+			</div>
+
+				<table class="table table-bordered table-striped">
+					<tbody>
+						<tr><td>Nombre</td><td>{{ programa.nombre }}</td></tr>
+						<tr><td>Cliente</td><td>{{ programa.cliente.nombre}}</td></tr>
+						<tr><td>Descripcion</td><td>{{ programa.descripcion }}</td></tr>
+						<tr><td>Fecha inicio</td><td>{{ programa.fechainicio | date("Y-m-d") }}</td></tr>
+						<tr><td>Fecha fin</td><td>{{ programa.fechafin | date("Y-m-d") }}</td></tr>
+						<tr><td>Iva</td><td>{{ programa.iva }}</td></tr>
+						<tr><td>Centro Costos</td><td>{{ programa.centroCostos.centrocostos }}</td></tr>
+						<tr><td>Días de entrega</td><td>{{ programa.diasentrega }}</td></tr>
+					</tbody>
+				</table>
+		</div>
+	</div>
+
+	<div class="box span5">
+		<div class="box-content">
+		    <div class="box-header well">
+				<h2>
+					<a href="{{ path('catalogo_nuevo',  {"id": programa.id}) }}">
+						<button class="btn btn-small btn-success">
+							<i class="icon-plus icon-white"></i>
+						</button>
+					</a>
+					Catalogos
+				</h2>
+			</div>
+			<table class="table table-bordered table-striped">
+				<thead>
+					<tr>
+						<th>Nombre</th>
+						<th>Descripcion</th>
+						<th>Estado</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for catalogo in catalogos %}		
+							<tr>
+								<td>{{ catalogo.nombre }}</td>
+								<td>{{ catalogo.descripcion }}</td>
+								<td>{% if (catalogo.estado=='0') %}
+										<a class="btn btn-danger 1" onClick=confirmar('{{ url("catalogo_estado", {"id": catalogo.id}) }}') href="#">
+										Inactiva</a>
+									{% else %}
+										<a class="btn btn-success 1" onClick=confirmar('{{ url("catalogo_estado", {"id": catalogo.id}) }}') href="#">
+										Activa</a>
+									{% endif %}
+								</td>
+							</tr>			
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+	
+
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script>
+
+	function confirmar(ruta)
+	{
+	  if (confirm("Cambiar estado")==true){
+	  	self.location=ruta;
+	  }else{
+	  	alert("OK");
+	  }
+	  
+	}
+
+        var x;
+		x=$(document);
+		x.ready(inicializarEventos);
+
+		function inicializarEventos()
+		{
+		 var x;
+		 x=$("div.estado a");
+		 x.each(resaltarParrafos);
+		}
+
+		// function resaltarParrafos()
+		// {
+		//  var x=$(this);
+		//  var parrafo=(x.attr('id'));
+		//  parrafo=parseInt(parrafo);
+		//  alert(parrafo);
+		//  $("#"+parrafo).click(function(evento){
+		//                evento.preventDefault();
+		//                $("#destino").load("{{ url('proveedores_estado', {'id':"+parrafo+"}) }}"),	
+		// 					function() {
+		// 						alert( "Actualizacion realizada." );
+		// 					} );
+		//        });
+		// }
+
+        // x=$("div.estado a");
+        // x.each(mostrar);
+
+        // function mostrar()
+        // {
+        // 	var x=$(this);
+        // 	alert (x.attr('id'));
+        // }
+
+  //       function resaltarParrafos(){
+  //       	var x=$(this);
+		// 	var parrafo=(x.attr('id'));
+		// 	alert(parrafo);
+		// 	$('div.estado').click(function(evento){
+		// 		evento.preventDefault();
+		// 		$("#destino").load("{{ url('proveedores_estado', {'id':"+parrafo+"}) }}",	
+		// 			function() {
+		// 				alert( "Actualizacion realizada." );
+		// 			} );
+		// 	});
+		// })
+	</script>
+{% endblock %}

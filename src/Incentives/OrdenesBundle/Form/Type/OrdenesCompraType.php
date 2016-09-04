@@ -52,42 +52,42 @@ class OrdenesCompraType extends AbstractType
 					->where('u.estado = :id')->setParameter('id', '1');
             },
             'choice_label' => 'nombre',
-            //'empty_value' => 'Seleccione una opcion',
+            'placeholder' => 'Seleccionar',
             'label' => 'Proveedor'
         ));
 
         $builder->add('pais', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:Pais',
             'choice_label' => 'nombre',
-            //'empty_value' => 'Seleccione una opcion',
+            'placeholder' => 'Seleccionar',
             'label' => 'Pais'
         ));
         
         $builder->add('categoria', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:Categoria',
             'choice_label' => 'nombre',
-            //'empty_value' => 'Seleccione una opcion',
+            'placeholder' => 'Seleccionar',
             'label' => 'Categoria'
         ));
         
         $builder->add('programa', EntityType::class, array(
             'class' => 'IncentivesCatalogoBundle:Programa',
             'choice_label' => 'nombre',
-            //'empty_value' => 'Seleccione una opcion',
+            'placeholder' => 'Seleccionar',
             'label' => 'Programa'
         ));
         
         $builder->add('monedaTipo', EntityType::class, array(
             'class' => 'IncentivesOrdenesBundle:MonedaTipo',
             'choice_label' => 'nombre',
-            //'empty_value' => 'Seleccione una opcion',
+            'placeholder' => 'Seleccionar',
             'label' => 'Tipo de Moneda'
         ));
 
         $builder->add('ordenesEstado', EntityType::class, array(
             'class' => 'IncentivesOrdenesBundle:OrdenesEstado',
             'choice_label' => 'nombre',
-            //'empty_value' => 'Seleccione una opcion',
+            'placeholder' => 'Seleccionar',
             'label' => 'Estado'
         ));
 

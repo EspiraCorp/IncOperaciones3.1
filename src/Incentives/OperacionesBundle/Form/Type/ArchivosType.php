@@ -19,7 +19,7 @@ class ArchivosType extends AbstractType
         $builder->add('Tipoarchivo', EntityType::class, array(
     	    'class' => 'IncentivesOperacionesBundle:Tipoarchivo',
     	    'choice_label'=>'nombre',
-          //'empty_value' => 'Seleccione una opcion',
+          'placeholder' => 'Seleccionar',
   	     ));
         
         $builder->add('archivo', FileType::class);

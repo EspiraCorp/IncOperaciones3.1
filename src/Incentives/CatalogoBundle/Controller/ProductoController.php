@@ -34,6 +34,7 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 define ("MAX_SIZE","1500");
 ini_set('max_execution_time', 300); 
+ini_set('memory_limit','512M');
 
 class ProductoController extends Controller
 {
@@ -44,8 +45,6 @@ class ProductoController extends Controller
     public function nuevoAction(Request $request)
     {
         $producto = new Producto();
-        $imagen = new Imagenproducto();
-        $precio = new Productoprecio();
 
         $form = $this->createForm(ProductoType::class, $producto);
                     
@@ -72,111 +71,28 @@ class ProductoController extends Controller
                 $producto->setCodInc($cod.$num);
                 $estado = $em->getRepository('IncentivesCatalogoBundle:Estados')->find(1);
                 $producto->setEstado($estado);
-                if (0 != count($producto->getProductoprecio())) {
-                    foreach ($producto->getProductoprecio() as $precio) {
-
-                        $precio->setProducto($producto);
-                        $producto->addProductoprecio($precio);
-                        $em->persist($precio);
-                    }
-                }   
-                if (0 != count($producto->getImagenproducto())) {
-                    $conteo=1;
-                    define (MAX_SIZE,1500);
-                    foreach ($producto->getImagenproducto() as $imagen) {
-                        $imagen->setProducto($producto);
-                        $file = $imagen->getPath();
-                        //Tamaño de imagen
-                        $original_info = getimagesize($file);
-                        $original_w = $original_info[0];
-                        $original_h = $original_info[1];
-                        list($width,$height)=getimagesize($file);
-                        $extension = $file->guessExtension();
-                        if (($extension != "jpg") && ($extension != "jpeg") && ($extension != "png") && ($extension != "gif")) {
-                          echo 'Extensión invalida.';
-                        } else {
-                       
-                          $size=filesize($file);
-             
-                          if ($size > MAX_SIZE*5120)
-                          {
-                            echo "Supero limite de tamaño de archivo.";
-                            $errors=1;
-                          } else {
-                            if($extension=="jpg" || $extension=="jpeg" )
-                            {
-                              $original_img = imagecreatefromjpeg($file);
-                            }
-                            else if($extension=="png")
-                            {
-                              $original_img = imagecreatefrompng($file);
-                            }
-                            else
-                            {
-                              $original_img = imagecreatefromgif($file);
-                            }
-
-                            $newwidth=300;
-                            $newheight=($original_h/$original_w)*$newwidth;                           
-                            $tmp=imagecreatetruecolor($newwidth,$newheight);
-
-                            imagecopyresampled($tmp,$original_img,0,0,0,0,$newwidth,$newheight,$width,$height);
-                            imagejpeg($tmp,$file,100);
-
-                            $uploadDir='../web/bundles/CatalogoBundle/Archivos/'.$value->getCodInc().'/';
-			    //dirname($this->container->getParameter('kernel.root_dir')).'/web/bundles/CatalogoBundle/Archivos/'.$producto->getCodInc().'/';
-                            $imagenes=$em->getRepository('IncentivesCatalogoBundle:Imagenproducto')->findByProducto($producto->getId());
-                            $num=str_pad(count($imagenes)+$conteo, 4, '0', STR_PAD_LEFT);
-                            $conteo++;
-                            $nombreArchivo = $producto->getCodInc().'_'.$num.'.jpg';            //.'.$extension
-                            $nombreArchivo2 = $producto->getCodInc().'_'.$num.'_min.jpg';            //.$extension;
-
-                            $file->move($uploadDir,$nombreArchivo);
-                            copy($uploadDir.$nombreArchivo,$uploadDir.$nombreArchivo2);
-                            $file2=$uploadDir.$nombreArchivo2;
-                            list($width2,$height2)=getimagesize($file2);
-                            $ext = explode(".", $file2);
-                            $extension2 = $ext[1];
-                            $original_info2 = getimagesize($file2);
-                            $original_w2 = $original_info2[0];
-                            $original_h2 = $original_info2[1];
-                            $original_img2 = imagecreatefromjpeg($file2);
-                            $newwidth2=200;
-                            $newheight2=($original_h/$original_w)*$newwidth2;
-                            $tmp2=imagecreatetruecolor($newwidth2,$newheight2);
-                            imagecopyresampled($tmp2,$original_img2,0,0,0,0,$newwidth2,$newheight2,$width2,$height2);               
-                            imagejpeg($tmp2,$file2,100);
-
-                            $imagen->setNombre($nombreArchivo);
-                            $imagen->setPath($uploadDir.$nombreArchivo);
-                            $producto->addImagenproducto($imagen);
-                            $em->persist($imagen);
-                          }
-                        }                        
-                    }
-                }  
+                   
                 $em->persist($producto);
 
                 try {
                     $em->flush();
-
-                    if (0 != count($producto->getProductoprecio())) {
-                        foreach ($producto->getProductoprecio() as $precio) {
-                            $this->historico($precio->getId());
-                        }
-                    }
                    
                     $this->get('session')->getFlashBag()->add('notice', 'Se creo el producto con SKU: '.$producto->getCodInc());
                     return $this->redirect($this->generateUrl('producto'));
          
                 } catch(\Exception $e){
-                    //throw new \Exception('Ya existe un producto con el código EAN dado.');
-                    //$this->get('session')->getFlashBag()->add('warning', 'Ya existe un producto con el código EAN dado.');
 
                     echo($e); exit;
                 }
 
+            }else
+            {
+                // get a ConstraintViolationList
+                
+//$errors = $form->getErrors(true);
+                
             }
+            print_r($errors);
         }            
 
         return $this->render('IncentivesCatalogoBundle:Producto:nuevo.html.twig', array(
@@ -219,7 +135,7 @@ class ProductoController extends Controller
                 $producto->setLargo($pro["largo"]);
                 $producto->setAncho($pro["ancho"]);
                 $producto->setPeso($pro["peso"]);
-                $producto->setPrecio($pro["precio"]);
+                //$producto->setPrecio($pro["precio"]);
                 $producto->setIva($pro["iva"]);
                 $producto->setestadoIva($pro["estadoIva"]);
                 $producto->setLogistica($pro["logistica"]);
@@ -245,156 +161,166 @@ class ProductoController extends Controller
         ));
     }
 
-    /**
-     * @Route("/producto")
-     * @Template()
-     */
     public function listadoAction(Request $request)
     {
-            $form = $this->createForm(ProductoType::class);
+        $form = $this->createForm(ProductoType::class);   
+        $em = $this->getDoctrine()->getManager();
+        $session = $this->get('session');
             
-            $em = $this->getDoctrine()->getManager();
+        $page = $request->get('page');
+        if(!$page) $page= 1;
             
-            $session = $this->get('session');
-            
-            $page = $request->get('page');
-            if(!$page) $page= 1;
-            
-            $pro = $request->request->all();
+        $pro = $request->request->all();
 
-            if(isset($pro['producto'])){
-                $page = 1;
-                $session->set('filtros_productos', $pro['producto']);
-            }
+        if(isset($pro['producto'])){
+            $page = 1;
+            $session->set('filtros_productos', $pro['producto']);
+        }
 
-            $sqlFiltro = " 1=1 ";
+        if(isset($pro['limpiar']) && $pro['limpiar']==1){
+            //limmpiar filtros
+            $session->set('filtros_productos', array()  );
+        }
 
-            if($filtros = $session->get('filtros_productos')){
+        $sqlFiltro = " 1=1 ";
 
-               foreach($filtros as $Filtro => $valueF){
+        if($filtros = $session->get('filtros_productos')){
+
+           foreach($filtros as $Filtro => $valueF){
                    
-                   if($valueF!=""){
-                       if($Filtro=="categoria"){
-                            $sqlFiltro .= " AND c.id=".$valueF."";
-                       }elseif($Filtro=="estado"){
-                            $sqlFiltro .= " AND e.id=".$valueF."";
-                       }elseif($Filtro=="precio_min"){
-                            $sqlFiltro .= " AND pp.precio>=".$valueF."";
-                       }elseif($Filtro=="precio_max"){
-                            $sqlFiltro .= " AND pp.precio<=".$valueF."";
-                       }else{
-                            $sqlFiltro .= " AND p.".$Filtro." LIKE '%".$valueF."%'";
-                       }
+               if($valueF!=""){
+                   if($Filtro=="categoria"){
+                        $sqlFiltro .= " AND c.id=".$valueF."";
+                   }elseif($Filtro=="estado"){
+                        $sqlFiltro .= " AND e.id=".$valueF."";
+                   }elseif($Filtro=="precio_min"){
+                        $sqlFiltro .= " AND pp.precio>=".$valueF."";
+                   }elseif($Filtro=="precio_max"){
+                        $sqlFiltro .= " AND pp.precio<=".$valueF."";
+                   }else{
+                        $sqlFiltro .= " AND p.".$Filtro." LIKE '%".$valueF."%'";
+                   }
                        
-                   };
-               } 
+               };
+           } 
                 
-            }else{
-                $session->set('filtros_productos', array('estado' => 1));
-                $filtros = $session->get('filtros_productos');
-                $sqlFiltro .= " AND p.estado=1";
-            }
+        }else{
+            $session->set('filtros_productos', array('estado' => 1));
+            $filtros = $session->get('filtros_productos');
+            $sqlFiltro .= " AND p.estado=1";
+        }
 
-            if(!isset($filtros['estado']) || $filtros['estado']==""){
-                $sqlFiltro .= " AND p.estado=1";
-            }
+        if(!isset($filtros['estado']) || $filtros['estado']==""){
+            $sqlFiltro .= " AND p.estado=1";
+        }
 
-            $sqlFiltro .= ' AND p.tipo=2 ';
+        $sqlFiltro .= ' AND p.tipo=2 ';
 
-            $query = $em->createQueryBuilder()
-                ->select('p producto','pp precio', 'c categoria','e estado', 'ct') 
+        $query = $em->createQueryBuilder()
+                ->select('p producto','pp precio', 'c categoria','e estado', 'prp', 'pr') 
                 ->from('IncentivesCatalogoBundle:Producto', 'p')
                 ->leftJoin('p.productoprecio','pp', "WITH", "pp.principal=1")
                 ->leftJoin('p.categoria', 'c')
-                ->leftJoin('p.productocatalogo', 'ct', "WITH", "ct.activo=1")
+                ->leftJoin('p.premiosproductos', 'prp')
+                ->leftJoin('prp.premio', 'pr', "WITH", "pr.estado=1")
                 ->leftJoin('p.estado', 'e')
                 ->where($sqlFiltro);
             
-            if($request->get('sort')){
-                $query->orderBy($request->get('sort'), $request->get('direction'));    
-            }
+        if($request->get('sort')){
+            $query->orderBy($request->get('sort'), $request->get('direction'));    
+        }
             
-            $productos = $query->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
+        $productos = $query->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
             /*echo "<pre>"; print_r($productos); echo "</pre>"; exit;*/
             
-            $paginator  = $this->get('knp_paginator');
-            $pagination = $paginator->paginate(
-                $productos,
-                $page/*page number*/,
-                50 /*limit per page*/
-            );
+        $paginator  = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $productos,
+            $page/*page number*/,
+            50 /*limit per page*/
+        );
             
-//echo "<pre>"; print_r($productos); echo "</pre>"; exit;
+        //echo "<pre>"; print_r($productos); echo "</pre>"; exit;
         return $this->render('IncentivesCatalogoBundle:Producto:listado.html.twig', 
             array('productos' => $pagination, 'form' => $form->createView(), 'filtros' => $filtros));
     }
     
-        /**
-     * @Route("/producto")
-     * @Template()
-     */
     public function listadouniversalAction(Request $request)
     {
-            $form = $this->createForm(ProductoType::class);
+        $form = $this->createForm(ProductoType::class);   
+        $em = $this->getDoctrine()->getManager();
+        $session = $this->get('session');
             
-            $em = $this->getDoctrine()->getManager();
+        $page = $request->get('page');
+        if(!$page) $page= 1;
             
-            $session = $this->get('session');
-            
-            $page = $request->get('page');
-            if(!$page) $page= 1;
-            
-            if($pro = $request->request->get('producto')){
-                $page = 1;
-                $session->set('filtros_productos', $pro);
-            }
+        $pro = $request->request->all();
 
-            $sqlFiltro = "";
+        if(isset($pro['producto'])){
+            $page = 1;
+            $session->set('filtros_productos', $pro['producto']);
+        }
 
-            if($filtros = $session->get('filtros_productos')){
-               
-               foreach($filtros as $Filtro => $valueF){
+        if(isset($pro['limpiar']) && $pro['limpiar']==1){
+            //limmpiar filtros
+            $session->set('filtros_productos', array()  );
+        }
+
+        $sqlFiltro = " 1=1 ";
+
+        if($filtros = $session->get('filtros_productos')){
+
+           foreach($filtros as $Filtro => $valueF){
                    
-                   if($valueF!=""){
-                       if($Filtro=="categoria"){
-                            $sqlFiltro .= " AND c.id=".$valueF."";
-                       }elseif($Filtro=="estado"){
-                            $sqlFiltro .= " AND e.id=".$valueF."";
-                       }else{
-                            $sqlFiltro .= " AND p.".$Filtro." LIKE '%".$valueF."%'";
-                       }
+               if($valueF!=""){
+                   if($Filtro=="categoria"){
+                        $sqlFiltro .= " AND c.id=".$valueF."";
+                   }elseif($Filtro=="estado"){
+                        $sqlFiltro .= " AND e.id=".$valueF."";
+                   }elseif($Filtro=="precio_min"){
+                        $sqlFiltro .= " AND pp.precio>=".$valueF."";
+                   }elseif($Filtro=="precio_max"){
+                        $sqlFiltro .= " AND pp.precio<=".$valueF."";
+                   }else{
+                        $sqlFiltro .= " AND p.".$Filtro." LIKE '%".$valueF."%'";
+                   }
                        
-                   };
-               } 
+               };
+           } 
                 
-            }
+        }else{
+            $session->set('filtros_productos', array('estado' => 1));
+            $filtros = $session->get('filtros_productos');
+            $sqlFiltro .= " AND p.estado=1";
+        }
 
-            $sqlFiltro = ' 1=1 '.$sqlFiltro;
+        $query = $em->createQueryBuilder()
+                ->select('p producto','pp precio', 'c categoria','e estado', 'prp', 'pr') 
+                ->from('IncentivesCatalogoBundle:Producto', 'p')
+                ->leftJoin('p.productoprecio','pp', "WITH", "pp.principal=1")
+                ->leftJoin('p.categoria', 'c')
+                ->leftJoin('p.premiosproductos', 'prp')
+                ->leftJoin('prp.premio', 'pr', "WITH", "pr.estado=1")
+                ->leftJoin('p.estado', 'e')
+                ->where($sqlFiltro);
+            
+        if($request->get('sort')){
+            $query->orderBy($request->get('sort'), $request->get('direction'));    
+        }
+            
+        $productos = $query->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
+        //echo "<pre>"; print_r($productos); echo "</pre>"; exit;
+            
+        $paginator  = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $productos,
+            $page/*page number*/,
+            50 /*limit per page*/
+        );            
 
-           $query = $em->createQueryBuilder()
-            ->select('p producto','pp precio', 'c categoria','e estado') 
-            ->from('IncentivesCatalogoBundle:Producto', 'p')
-            ->leftJoin('p.productoprecio','pp')
-            ->leftJoin('p.categoria', 'c')
-            ->leftJoin('p.estado', 'e')
-            ->where($sqlFiltro);
-            
-            if($request->get('sort')){
-                $query->orderBy($request->get('sort'), $request->get('direction'));    
-            }
-            
-            //$productos = $query->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
-
-            $paginator  = $this->get('knp_paginator');
-            $pagination = $paginator->paginate(
-                $query,
-                $page/*page number*/,
-                50 /*limit per page*/
-            );
-            
-//echo "<pre>"; print_r($productos); echo "</pre>"; exit;
+        //echo "<pre>"; print_r($productos); echo "</pre>"; exit;
         return $this->render('IncentivesCatalogoBundle:Producto:listadouniversal.html.twig', 
-            array('productos' => $pagination, 'form' => $form->createView()));
+            array('productos' => $pagination, 'form' => $form->createView(), 'filtros' => $filtros));
     }
     
     /**
@@ -474,11 +400,14 @@ class ProductoController extends Controller
         $producto = $em->getRepository('IncentivesCatalogoBundle:Producto')->find($id);
 
         if ($producto->getEstado()->getId() == 1){
+            
             $estado = $em->getRepository('IncentivesCatalogoBundle:Estados')->find(2);
             $producto->setEstado($estado);
+
+            $this->get('session')->getFlashBag()->add('warning', 'Se inactivo el producto:'.$producto->getCodInc());
             
             //inhabilitar de todos los catalogos
-            /*$repositorypc = $this->getDoctrine()->getRepository('IncentivesCatalogoBundle:Productocatalogo');
+            /*$repositorypc = $this->getDoctrine()->getRepository('IncentivesCatalogoBundle:Premios');
             $productocatalogo= $repositorypc->findByProducto($id);
             
             foreach($productocatalogo as $keyP => $valueP){
@@ -491,6 +420,8 @@ class ProductoController extends Controller
         }else{
             $estado = $em->getRepository('IncentivesCatalogoBundle:Estados')->find(1);
             $producto->setEstado($estado);
+
+            $this->get('session')->getFlashBag()->add('warning', 'Se activo el producto:'.$producto->getCodInc());
         }       
         $em->flush();
         
@@ -548,6 +479,7 @@ class ProductoController extends Controller
                 $original_h = $original_info[1];
                 list($width,$height)=getimagesize($file);
                 $extension = $file->guessExtension();
+                //echo $file->getPath(); exit;
                 if (($extension != "jpg") && ($extension != "jpeg") && ($extension != "png") && ($extension != "gif")) {
                   echo 'Extensión invalida.';
                 } else {
@@ -577,7 +509,7 @@ class ProductoController extends Controller
                     $tmp=imagecreatetruecolor($newwidth,$newheight);
 
                     imagecopyresampled($tmp,$original_img,0,0,0,0,$newwidth,$newheight,$width,$height);
-                    imagejpeg($tmp,$file,100);
+                    imagejpeg($tmp,$file->getPath()."/".$file->getClientOriginalName(),100);
 
                     $uploadDir='../web/bundles/CatalogoBundle/Archivos/'.$producto->getCodInc().'/';
                     $imagenes=$em->getRepository('IncentivesCatalogoBundle:Imagenproducto')->findByProducto($producto->getId());
@@ -596,12 +528,12 @@ class ProductoController extends Controller
                     $original_info2 = getimagesize($file2);
                     $original_w2 = $original_info2[0];
                     $original_h2 = $original_info2[1];
-                    $original_img2 = imagecreatefromjpeg($file2);
+                    //$original_img2 = imagecreatefromjpeg($file2);
                     $newwidth2=200;
                     $newheight2=($original_h/$original_w)*$newwidth2;
                     $tmp2=imagecreatetruecolor($newwidth2,$newheight2);
-                    imagecopyresampled($tmp2,$original_img2,0,0,0,0,$newwidth2,$newheight2,$width2,$height2);               
-                    imagejpeg($tmp2,$file2,100);
+                    imagecopyresampled($tmp2,$original_img,0,0,0,0,$newwidth2,$newheight2,$original_w2,$original_h2);               
+                    //imagejpeg($tmp2,$file2,100);
 
                     $imagen->setNombre($nombreArchivo);
                     $imagen->setPath($uploadDir.$nombreArchivo);

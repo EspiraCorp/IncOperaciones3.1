@@ -626,13 +626,13 @@ class OrdenesController extends Controller
 
                 $totalCant += $cantidadOP;
                 
-                $datoCC .= $valueOP2->getParticipante()->getPrograma()->getCentrocostos()."(".$cantidadOP.") ";
+                $datoCC .= $valueOP2->getParticipante()->getPrograma()->getCentroCostos()->getCentrocostos()."(".$cantidadOP.") ";
             }
 
             //las cantidades sobrantes van para inventario
             $cantidadOP = $valueOP->getCantidad() - $totalCant;
              if($cantidadOP!=0) $datoCC .= "1002(".$cantidadOP.") ";
-	     if($ordenesOP->getOrdenestipo()->getId()==1) $datoCC = $valueOP->getCentrocostos();
+	     if($ordenesOP->getOrdenestipo()->getId()==1) $datoCC = $valueOP->getCentroCostos()->getCentrocostos();
 
             //Determinar las cantidad
             $cantCC[$valueOP->getId()] = $datoCC;
@@ -1333,11 +1333,12 @@ class OrdenesController extends Controller
       $em = $this->getDoctrine()->getManager();
 
       $qb = $em->createQueryBuilder()
-                ->select('op','p','oc','s','pr')
+                ->select('op','p','oc','s','pr','cc')
                 ->from('IncentivesOrdenesBundle:OrdenesProducto','op')
                 ->leftJoin('op.producto', 'p')
                 ->leftJoin('op.ordenesCompra', 'oc')
                 ->leftJoin('oc.solicitud', 's')
+                ->leftJoin('s.centroCostos', 'cc')
                 ->leftJoin('s.programa', 'pr');
       $str = "op.id=".$productoOrden;
 

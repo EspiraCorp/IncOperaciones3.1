@@ -63,12 +63,6 @@ class Presupuestos
      */
     protected $tipo;
 
-     /**
-     * @ORM\OneToMany(targetEntity="Incentives\FacturacionBundle\Entity\Presupuestoshistorico", mappedBy="presupuesto", cascade={"persist"})
-     * 
-     */
-    protected $historico;
-
     /**
      * @var \DateTime
      *
@@ -169,43 +163,9 @@ class Presupuestos
      */
     public function __construct()
     {
-        $this->historico = new \Doctrine\Common\Collections\ArrayCollection();
     }
     
-    /**
-     * Add historico
-     *
-     * @param \Incentives\FacturacionBundle\Entity\Presupuestoshistorico $historico
-     * @return Presupuestos
-     */
-    public function addHistorico(\Incentives\FacturacionBundle\Entity\Presupuestoshistorico $historico)
-    {
-        $this->historico[] = $historico;
-    
-        return $this;
-    }
-
-    /**
-     * Remove historico
-     *
-     * @param \Incentives\FacturacionBundle\Entity\Presupuestoshistorico $historico
-     */
-    public function removeHistorico(\Incentives\FacturacionBundle\Entity\Presupuestoshistorico $historico)
-    {
-        $this->historico->removeElement($historico);
-    }
-
-    /**
-     * Get historico
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getHistorico()
-    {
-        return $this->historico;
-    }
-
-    /**
+        /**
      * Set descripcion
      *
      * @param string $descripcion

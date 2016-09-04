@@ -239,12 +239,6 @@ class Proveedores
      */
     protected $proveedorcalificacion;
 
-	/**
-     * @ORM\OneToMany(targetEntity="Incentives\OperacionesBundle\Entity\ProveedoresHistorico", mappedBy="proveedor")
-     * 
-     */
-    protected $proveedorhistorico;
-
      /**
      * 
      * @ORM\ManyToOne(targetEntity="ProveedoresTipo", inversedBy="proveedores", cascade={"persist", "remove"})
@@ -312,7 +306,6 @@ class Proveedores
         $this->convocatoriasproveedores = new ArrayCollection();
         $this->ordenescompra = new ArrayCollection();
         $this->proveedorcalificacion = new ArrayCollection();
-        $this->proveedorhistorico = new ArrayCollection();
         $this->productoprecio = new ArrayCollection();
     }
  
@@ -1145,40 +1138,6 @@ class Proveedores
     public function getDepartamento()
     {
         return $this->departamento;
-    }
-
-
-    /**
-     * Add proveedorhistorico
-     *
-     * @param \Incentives\OperacionesBundle\Entity\ProveedoresHistorico $proveedorhistorico
-     * @return Proveedores
-     */
-    public function addProveedorhistorico(\Incentives\OperacionesBundle\Entity\ProveedoresHistorico $proveedorhistorico)
-    {
-        $this->proveedorhistorico[] = $proveedorhistorico;
-    
-        return $this;
-    }
-
-    /**
-     * Remove proveedorhistorico
-     *
-     * @param \Incentives\OperacionesBundle\Entity\ProveedoresHistorico $proveedorhistorico
-     */
-    public function removeProveedorhistorico(\Incentives\OperacionesBundle\Entity\ProveedoresHistorico $proveedorhistorico)
-    {
-        $this->proveedorhistorico->removeElement($proveedorhistorico);
-    }
-
-    /**
-     * Get proveedorhistorico
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getProveedorhistorico()
-    {
-        return $this->proveedorhistorico;
     }
 
     /**

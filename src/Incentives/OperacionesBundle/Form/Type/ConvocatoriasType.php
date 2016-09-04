@@ -35,7 +35,7 @@ class ConvocatoriasType extends AbstractType
         $builder->add('estado', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:ConvocatoriasEstado',
             'choice_label' => 'nombre',
-            //'empty_value' => 'Seleccione una opcion',
+            'placeholder' => 'Seleccionar',
         ));
             
         $builder->add('archivo', FileType::class);

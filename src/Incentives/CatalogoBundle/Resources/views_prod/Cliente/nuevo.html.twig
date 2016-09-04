@@ -1,0 +1,135 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Nuevo Cliente{% endblock %}
+
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+<div class="box span12">
+<div class="box-header well" data-original-title>
+                        <h2><i class="icon-edit"></i>Nuevo Cliente</h2>
+                        <div class="box-icon">
+                            <a href="{{ path('cliente') }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+                        </div>
+                    </div>
+<div class="box-content">
+<form action="{{ path('cliente_nuevo') }}" method="POST"  class="form-horizontal">
+    {{ form_errors(form) }}
+    <fieldset>
+        <div class="control-group">
+            * {{ form_label(form.nombre, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.nombre, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            * {{ form_label(form.tipodocumento, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.tipodocumento, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            * {{ form_label(form.numero_documento, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.numero_documento, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            * {{ form_label(form.direccion, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.direccion, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            * {{ form_label(form.telefono, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.telefono, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            * {{ form_label(form.correo, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.correo, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+
+    </fieldset>
+    <div class="row-fluid sortable ui-sortable">
+        <div class="programa box span10" data-prototype="{{ form_widget(form.programa.vars.prototype)|e }}">
+            <div class="box-header well" data-original-title>
+                <h2><i class="icon-user"></i>Programa</h2>
+            </div>
+         </div> 
+    </div>  
+<div class="form-actions">
+    {{ form_widget(form.Enviar, { 'attr': {'class': 'btn btn-primary'} }) }}
+</div>
+{{ form_widget(form._token) }}
+</form>
+</div>
+</div>
+ </div>
+{% endblock %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        // Get the div that holds the collection of addresses
+        var collectionHolder = $('div.programa');
+
+        var Holder = $('button.btn-primary');
+
+        // setup an "add a address" link
+        var $newLinkLi = $('<button class="btn"><a href="#">Agregar un programa</a></button>');
+
+        $(function(){
+
+            // add the "add a address" anchor and li to the addresses div
+            Holder.parent().append($newLinkLi);
+
+            // count the current form inputs we have (e.g. 2), use that as the new
+            // index when inserting a new item (e.g. 2)
+            collectionHolder.data('index', collectionHolder.find(':input').length);
+
+            $newLinkLi.on('click', function(e) {
+                // prevent the link from creating a "#" on the URL
+                e.preventDefault();
+
+                // add a new address form (see next code block)
+                addTagForm(collectionHolder);
+            });
+
+        });
+
+
+        function addTagForm(collectionHolder) {
+            // Get the data-prototype explained earlier
+            var titulo=$('<div class="box-header well" data-original-title="">Agregar programa</div>;');
+            var prototype = collectionHolder.data('prototype');
+
+            // get the new index
+            var index = collectionHolder.data('index');
+
+            // Replace '__name__' in the prototype's HTML to
+            // instead be a number based on how many items we have
+            var newForm = prototype.replace(/__name__/g, index);
+
+            // increase the index with one for the next item
+            collectionHolder.data('index', index + 1);
+
+            // Display the form in the page in an li, before the "Add a address" link li
+            var $newFormLi = $('<div class="box span4" id="programa'+ index +'"><div class="box-header well" data-original-title="">Agregar programa<div class="box-icon"><a class="btn btn-closer btn-round"  id="closeprograma'+ index +'" href="#"><i class="icon-remove"></i></a></div></div></div>').append(newForm);
+            collectionHolder.append($newFormLi);
+
+            var $Closer = $('#closeprograma'+ index);
+
+             $Closer.on('click', function(e) {
+                // prevent the link from creating a "#" on the URL
+                e.preventDefault();
+
+                $( "div" ).remove( "#programa"+ index );
+            });
+        }
+    </script>
+
+{% endblock %}

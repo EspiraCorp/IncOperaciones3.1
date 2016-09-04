@@ -21,7 +21,7 @@ class IngresoType extends AbstractType
         /*$builder->add('producto', EntityType::class, array(
             'class' => 'IncentivesCatalogoBundle:Producto',
             'choice_label' => 'nombreid',
-            //'empty_value' => 'Seleccione una opcion',
+            'placeholder' => 'Seleccionar',
         ));*/
         $builder->add('cantidad', IntegerType::class, array(
                 'mapped' => false,

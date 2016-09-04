@@ -120,6 +120,7 @@ VERSIÓN 3
 	 		{% set totaliva = 0 %}
 	 		{% set totalPago = 0 %}
 	 		{% set descuento = 0 %}
+	 		{% set descuento = descuento + orden.descuento %}
 	 		{% for producto in productos %}
 	 		<tr>
 	 			<td>{{ producto.producto.referencia }}</td>

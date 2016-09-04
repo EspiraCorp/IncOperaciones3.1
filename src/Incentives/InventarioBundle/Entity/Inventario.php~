@@ -76,18 +76,6 @@ class Inventario
      * @ORM\JoinColumn(name="despacho_id", referencedColumnName="id", nullable=true)
      */
     protected $despacho;
-    
-     /**
-     * @ORM\OneToMany(targetEntity="Incentives\InventarioBundle\Entity\InventarioGuia", mappedBy="inventario", cascade={"persist"})
-     * 
-     */
-    protected $inventarioguia;
-
-    /**
-     * @ORM\OneToMany(targetEntity="Incentives\RedencionesBundle\Entity\GuiaEnvio", mappedBy="inventario", cascade={"persist"})
-     * 
-     */
-    protected $guia;
 
     /**
      * @var boolean
@@ -125,12 +113,6 @@ class Inventario
     private $observacion;
 
     /**
-     * @ORM\OneToMany(targetEntity="InventarioHistorico", mappedBy="inventario", cascade={"persist"})
-     * 
-     */
-    protected $historico;
-
-    /**
      * @var string
      *
      * @ORM\Column(name="codigo", type="string", length=255, nullable=true)
@@ -166,6 +148,14 @@ class Inventario
     protected $usuario;
 
     /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->guia = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
      * Get id
      *
      * @return integer 
@@ -174,34 +164,26 @@ class Inventario
     {
         return $this->id;
     }
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->inventarioguia = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->guia = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->historico = new \Doctrine\Common\Collections\ArrayCollection();
-    }
     
+
     /**
      * Set ingreso
      *
      * @param boolean $ingreso
+     *
      * @return Inventario
      */
     public function setIngreso($ingreso)
     {
         $this->ingreso = $ingreso;
-    
+
         return $this;
     }
 
     /**
      * Get ingreso
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getIngreso()
     {
@@ -212,19 +194,20 @@ class Inventario
      * Set salio
      *
      * @param boolean $salio
+     *
      * @return Inventario
      */
     public function setSalio($salio)
     {
         $this->salio = $salio;
-    
+
         return $this;
     }
 
     /**
      * Get salio
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getSalio()
     {
@@ -235,19 +218,20 @@ class Inventario
      * Set fechaEntrada
      *
      * @param \DateTime $fechaEntrada
+     *
      * @return Inventario
      */
     public function setFechaEntrada($fechaEntrada)
     {
         $this->fechaEntrada = $fechaEntrada;
-    
+
         return $this;
     }
 
     /**
      * Get fechaEntrada
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getFechaEntrada()
     {
@@ -258,19 +242,20 @@ class Inventario
      * Set fechaSalida
      *
      * @param \DateTime $fechaSalida
+     *
      * @return Inventario
      */
     public function setFechaSalida($fechaSalida)
     {
         $this->fechaSalida = $fechaSalida;
-    
+
         return $this;
     }
 
     /**
      * Get fechaSalida
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getFechaSalida()
     {
@@ -281,19 +266,20 @@ class Inventario
      * Set observacion
      *
      * @param string $observacion
+     *
      * @return Inventario
      */
     public function setObservacion($observacion)
     {
         $this->observacion = $observacion;
-    
+
         return $this;
     }
 
     /**
      * Get observacion
      *
-     * @return string 
+     * @return string
      */
     public function getObservacion()
     {
@@ -304,19 +290,20 @@ class Inventario
      * Set codigo
      *
      * @param string $codigo
+     *
      * @return Inventario
      */
     public function setCodigo($codigo)
     {
         $this->codigo = $codigo;
-    
+
         return $this;
     }
 
     /**
      * Get codigo
      *
-     * @return string 
+     * @return string
      */
     public function getCodigo()
     {
@@ -327,19 +314,20 @@ class Inventario
      * Set valorCompra
      *
      * @param float $valorCompra
+     *
      * @return Inventario
      */
     public function setValorCompra($valorCompra)
     {
         $this->valorCompra = $valorCompra;
-    
+
         return $this;
     }
 
     /**
      * Get valorCompra
      *
-     * @return float 
+     * @return float
      */
     public function getValorCompra()
     {
@@ -350,19 +338,20 @@ class Inventario
      * Set fechaModificacion
      *
      * @param \DateTime $fechaModificacion
+     *
      * @return Inventario
      */
     public function setFechaModificacion($fechaModificacion)
     {
         $this->fechaModificacion = $fechaModificacion;
-    
+
         return $this;
     }
 
     /**
      * Get fechaModificacion
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getFechaModificacion()
     {
@@ -373,19 +362,20 @@ class Inventario
      * Set producto
      *
      * @param \Incentives\CatalogoBundle\Entity\Producto $producto
+     *
      * @return Inventario
      */
     public function setProducto(\Incentives\CatalogoBundle\Entity\Producto $producto = null)
     {
         $this->producto = $producto;
-    
+
         return $this;
     }
 
     /**
      * Get producto
      *
-     * @return \Incentives\CatalogoBundle\Entity\Producto 
+     * @return \Incentives\CatalogoBundle\Entity\Producto
      */
     public function getProducto()
     {
@@ -396,19 +386,20 @@ class Inventario
      * Set convocatoria
      *
      * @param \Incentives\OperacionesBundle\Entity\Convocatorias $convocatoria
+     *
      * @return Inventario
      */
     public function setConvocatoria(\Incentives\OperacionesBundle\Entity\Convocatorias $convocatoria = null)
     {
         $this->convocatoria = $convocatoria;
-    
+
         return $this;
     }
 
     /**
      * Get convocatoria
      *
-     * @return \Incentives\OperacionesBundle\Entity\Convocatorias 
+     * @return \Incentives\OperacionesBundle\Entity\Convocatorias
      */
     public function getConvocatoria()
     {
@@ -419,19 +410,20 @@ class Inventario
      * Set redencion
      *
      * @param \Incentives\RedencionesBundle\Entity\Redenciones $redencion
+     *
      * @return Inventario
      */
     public function setRedencion(\Incentives\RedencionesBundle\Entity\Redenciones $redencion = null)
     {
         $this->redencion = $redencion;
-    
+
         return $this;
     }
 
     /**
      * Get redencion
      *
-     * @return \Incentives\RedencionesBundle\Entity\Redenciones 
+     * @return \Incentives\RedencionesBundle\Entity\Redenciones
      */
     public function getRedencion()
     {
@@ -439,22 +431,47 @@ class Inventario
     }
 
     /**
+     * Set redencionProducto
+     *
+     * @param \Incentives\RedencionesBundle\Entity\RedencionesProductos $redencionProducto
+     *
+     * @return Inventario
+     */
+    public function setRedencionProducto(\Incentives\RedencionesBundle\Entity\RedencionesProductos $redencionProducto = null)
+    {
+        $this->redencionProducto = $redencionProducto;
+
+        return $this;
+    }
+
+    /**
+     * Get redencionProducto
+     *
+     * @return \Incentives\RedencionesBundle\Entity\RedencionesProductos
+     */
+    public function getRedencionProducto()
+    {
+        return $this->redencionProducto;
+    }
+
+    /**
      * Set solicitud
      *
      * @param \Incentives\SolicitudesBundle\Entity\Solicitud $solicitud
+     *
      * @return Inventario
      */
     public function setSolicitud(\Incentives\SolicitudesBundle\Entity\Solicitud $solicitud = null)
     {
         $this->solicitud = $solicitud;
-    
+
         return $this;
     }
 
     /**
      * Get solicitud
      *
-     * @return \Incentives\SolicitudesBundle\Entity\Solicitud 
+     * @return \Incentives\SolicitudesBundle\Entity\Solicitud
      */
     public function getSolicitud()
     {
@@ -465,19 +482,20 @@ class Inventario
      * Set planilla
      *
      * @param \Incentives\InventarioBundle\Entity\Planilla $planilla
+     *
      * @return Inventario
      */
     public function setPlanilla(\Incentives\InventarioBundle\Entity\Planilla $planilla = null)
     {
         $this->planilla = $planilla;
-    
+
         return $this;
     }
 
     /**
      * Get planilla
      *
-     * @return \Incentives\InventarioBundle\Entity\Planilla 
+     * @return \Incentives\InventarioBundle\Entity\Planilla
      */
     public function getPlanilla()
     {
@@ -488,19 +506,20 @@ class Inventario
      * Set orden
      *
      * @param \Incentives\OrdenesBundle\Entity\OrdenesCompra $orden
+     *
      * @return Inventario
      */
     public function setOrden(\Incentives\OrdenesBundle\Entity\OrdenesCompra $orden = null)
     {
         $this->orden = $orden;
-    
+
         return $this;
     }
 
     /**
      * Get orden
      *
-     * @return \Incentives\OrdenesBundle\Entity\OrdenesCompra 
+     * @return \Incentives\OrdenesBundle\Entity\OrdenesCompra
      */
     public function getOrden()
     {
@@ -511,19 +530,20 @@ class Inventario
      * Set ordenproducto
      *
      * @param \Incentives\OrdenesBundle\Entity\OrdenesProducto $ordenproducto
+     *
      * @return Inventario
      */
     public function setOrdenproducto(\Incentives\OrdenesBundle\Entity\OrdenesProducto $ordenproducto = null)
     {
         $this->ordenproducto = $ordenproducto;
-    
+
         return $this;
     }
 
     /**
      * Get ordenproducto
      *
-     * @return \Incentives\OrdenesBundle\Entity\OrdenesProducto 
+     * @return \Incentives\OrdenesBundle\Entity\OrdenesProducto
      */
     public function getOrdenproducto()
     {
@@ -534,192 +554,24 @@ class Inventario
      * Set despacho
      *
      * @param \Incentives\InventarioBundle\Entity\Despachos $despacho
+     *
      * @return Inventario
      */
     public function setDespacho(\Incentives\InventarioBundle\Entity\Despachos $despacho = null)
     {
         $this->despacho = $despacho;
-    
+
         return $this;
     }
 
     /**
      * Get despacho
      *
-     * @return \Incentives\InventarioBundle\Entity\Despachos 
+     * @return \Incentives\InventarioBundle\Entity\Despachos
      */
     public function getDespacho()
     {
         return $this->despacho;
-    }
-
-    /**
-     * Add inventarioguia
-     *
-     * @param \Incentives\InventarioBundle\Entity\InventarioGuia $inventarioguia
-     * @return Inventario
-     */
-    public function addInventarioguia(\Incentives\InventarioBundle\Entity\InventarioGuia $inventarioguia)
-    {
-        $this->inventarioguia[] = $inventarioguia;
-    
-        return $this;
-    }
-
-    /**
-     * Remove inventarioguia
-     *
-     * @param \Incentives\InventarioBundle\Entity\InventarioGuia $inventarioguia
-     */
-    public function removeInventarioguia(\Incentives\InventarioBundle\Entity\InventarioGuia $inventarioguia)
-    {
-        $this->inventarioguia->removeElement($inventarioguia);
-    }
-
-    /**
-     * Get inventarioguia
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getInventarioguia()
-    {
-        return $this->inventarioguia;
-    }
-
-    /**
-     * Add guia
-     *
-     * @param \Incentives\RedencionesBundle\Entity\GuiaEnvio $guia
-     * @return Inventario
-     */
-    public function addGuia(\Incentives\RedencionesBundle\Entity\GuiaEnvio $guia)
-    {
-        $this->guia[] = $guia;
-    
-        return $this;
-    }
-
-    /**
-     * Remove guia
-     *
-     * @param \Incentives\RedencionesBundle\Entity\GuiaEnvio $guia
-     */
-    public function removeGuia(\Incentives\RedencionesBundle\Entity\GuiaEnvio $guia)
-    {
-        $this->guia->removeElement($guia);
-    }
-
-    /**
-     * Get guia
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getGuia()
-    {
-        return $this->guia;
-    }
-
-    /**
-     * Add historico
-     *
-     * @param \Incentives\InventarioBundle\Entity\InventarioHistorico $historico
-     * @return Inventario
-     */
-    public function addHistorico(\Incentives\InventarioBundle\Entity\InventarioHistorico $historico)
-    {
-        $this->historico[] = $historico;
-    
-        return $this;
-    }
-
-    /**
-     * Remove historico
-     *
-     * @param \Incentives\InventarioBundle\Entity\InventarioHistorico $historico
-     */
-    public function removeHistorico(\Incentives\InventarioBundle\Entity\InventarioHistorico $historico)
-    {
-        $this->historico->removeElement($historico);
-    }
-
-    /**
-     * Get historico
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getHistorico()
-    {
-        return $this->historico;
-    }
-
-    /**
-     * Set requisicionesesenvios
-     *
-     * @param \Incentives\InventarioBundle\Entity\Requisicionesenvios $requisicionesesenvios
-     * @return Inventario
-     */
-    public function setRequisicionesesenvios(\Incentives\InventarioBundle\Entity\Requisicionesenvios $requisicionesesenvios = null)
-    {
-        $this->requisicionesesenvios = $requisicionesesenvios;
-    
-        return $this;
-    }
-
-    /**
-     * Get requisicionesesenvios
-     *
-     * @return \Incentives\InventarioBundle\Entity\Requisicionesenvios 
-     */
-    public function getRequisicionesesenvios()
-    {
-        return $this->requisicionesesenvios;
-    }
-
-    /**
-     * Set usuario
-     *
-     * @param \Incentives\BaseBundle\Entity\Usuario $usuario
-     * @return Inventario
-     */
-    public function setUsuario(\Incentives\BaseBundle\Entity\Usuario $usuario = null)
-    {
-        $this->usuario = $usuario;
-    
-        return $this;
-    }
-
-    /**
-     * Get usuario
-     *
-     * @return \Incentives\BaseBundle\Entity\Usuario 
-     */
-    public function getUsuario()
-    {
-        return $this->usuario;
-    }
-
-    /**
-     * Add inventarioguium
-     *
-     * @param \Incentives\InventarioBundle\Entity\InventarioGuia $inventarioguium
-     *
-     * @return Inventario
-     */
-    public function addInventarioguium(\Incentives\InventarioBundle\Entity\InventarioGuia $inventarioguium)
-    {
-        $this->inventarioguia[] = $inventarioguium;
-
-        return $this;
-    }
-
-    /**
-     * Remove inventarioguium
-     *
-     * @param \Incentives\InventarioBundle\Entity\InventarioGuia $inventarioguium
-     */
-    public function removeInventarioguium(\Incentives\InventarioBundle\Entity\InventarioGuia $inventarioguium)
-    {
-        $this->inventarioguia->removeElement($inventarioguium);
     }
 
     /**
@@ -747,26 +599,60 @@ class Inventario
     }
 
     /**
-     * Set redencionProducto
+     * Get guia
      *
-     * @param \Incentives\RedencionesBundle\Entity\RedencionesProductos $redencionProducto
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getGuia()
+    {
+        return $this->guia;
+    }
+
+    /**
+     * Set requisicionesesenvios
+     *
+     * @param \Incentives\InventarioBundle\Entity\Requisicionesenvios $requisicionesesenvios
      *
      * @return Inventario
      */
-    public function setRedencionProducto(\Incentives\RedencionesBundle\Entity\RedencionesProductos $redencionProducto = null)
+    public function setRequisicionesesenvios(\Incentives\InventarioBundle\Entity\Requisicionesenvios $requisicionesesenvios = null)
     {
-        $this->redencionProducto = $redencionProducto;
+        $this->requisicionesesenvios = $requisicionesesenvios;
 
         return $this;
     }
 
     /**
-     * Get redencionProducto
+     * Get requisicionesesenvios
      *
-     * @return \Incentives\RedencionesBundle\Entity\RedencionesProductos
+     * @return \Incentives\InventarioBundle\Entity\Requisicionesenvios
      */
-    public function getRedencionProducto()
+    public function getRequisicionesesenvios()
     {
-        return $this->redencionProducto;
+        return $this->requisicionesesenvios;
+    }
+
+    /**
+     * Set usuario
+     *
+     * @param \Incentives\BaseBundle\Entity\Usuario $usuario
+     *
+     * @return Inventario
+     */
+    public function setUsuario(\Incentives\BaseBundle\Entity\Usuario $usuario = null)
+    {
+        $this->usuario = $usuario;
+
+        return $this;
+    }
+
+    /**
+     * Get usuario
+     *
+     * @return \Incentives\BaseBundle\Entity\Usuario
+     */
+    public function getUsuario()
+    {
+        return $this->usuario;
     }
 }

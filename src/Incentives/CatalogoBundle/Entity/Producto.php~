@@ -183,12 +183,6 @@ class Producto
     protected $productoprecio;
 
     /**
-     * @ORM\OneToMany(targetEntity="Productocatalogo", mappedBy="producto", cascade={"persist"})
-     * 
-     */
-    protected $productocatalogo;
-
-    /**
      * @ORM\OneToMany(targetEntity="PremiosProductos", mappedBy="producto", cascade={"persist"})
      * 
      */
@@ -273,8 +267,7 @@ class Producto
         $this->fechacreacion = new \DateTime("now");
         $this->fechaactualizacion = new \DateTime("now");
         $this->imagenproducto = new ArrayCollection();
-        $this->productoprecio = new ArrayCollection();    
-        $this->productocatalogo = new ArrayCollection();
+        $this->productoprecio = new ArrayCollection();
         $this->ordenesproducto = new ArrayCollection();
         $this->inventario = new ArrayCollection();   
     }
@@ -678,42 +671,7 @@ class Producto
     {
         return $this->productoprecio;
     }
-
-
-
-    /**
-     * Add productocatalogo
-     *
-     * @param \Incentives\CatalogoBundle\Entity\Productocatalogo $productocatalogo
-     * @return Producto
-     */
-    public function addProductocatalogo(\Incentives\CatalogoBundle\Entity\Productocatalogo $productocatalogo)
-    {
-        $this->productocatalogo[] = $productocatalogo;
     
-        return $this;
-    }
-
-    /**
-     * Remove productocatalogo
-     *
-     * @param \Incentives\CatalogoBundle\Entity\Productocatalogo $productocatalogo
-     */
-    public function removeProductocatalogo(\Incentives\CatalogoBundle\Entity\Productocatalogo $productocatalogo)
-    {
-        $this->productocatalogo->removeElement($productocatalogo);
-    }
-
-    /**
-     * Get productocatalogo
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getProductocatalogo()
-    {
-        return $this->productocatalogo;
-    }
-
     /**
      * Add ordenesproducto
      *

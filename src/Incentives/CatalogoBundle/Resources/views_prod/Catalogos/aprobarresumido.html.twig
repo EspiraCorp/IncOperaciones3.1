@@ -1,0 +1,163 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Catalogo{% endblock %}
+{% block sidebar %}
+{{ parent() }}
+{% endblock %}
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+	<div class="box span12">
+		<div class="box-header well">
+			<h2><i class="icon-th-list"></i>Catalogo</h2>
+        <a class="btn btn-primary" href="{{ path('catalogo_aprobar',  {"id": id, 'resumido': 0}) }}">
+          Completo
+        </a>
+      <div class="box-icon">
+          <a href="{{ path('catalogo_datos', {"id": id}) }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+      </div>
+		</div>
+		<div class="box-content">
+      {{ form_start(form, { attr: {novalidate: 'novalidate'} }) }}
+                          <form action="{{ path('producto') }}" method="POST"  class="form-horizontal">
+
+                            <table class="table table-bordered table-striped">
+                            <tr>
+                              <th>Catálogo</th><th colspan="2">{{ catalogo.nombre }}</th>
+                              <th>Programa</th><th colspan="2">{{ catalogo.programa.nombre }}</th>
+                              <th><div class="box-icon">{{ form_widget(form.Enviar, { 'attr': {'class': 'btn btn-primary'} }) }}</</th>
+                            </tr>
+                            <tr>
+                              <th>{{ knp_pagination_sortable(productos, 'Nombre', 'p.nombre') }}</th>
+                              <th>{{ knp_pagination_sortable(productos, 'Categoria', 'c.nombre') }}</th>
+                              <th>{{ knp_pagination_sortable(productos, 'Referencia', 'p.referencia') }}</th>
+                              <th>{{ knp_pagination_sortable(productos, 'Marca', 'p.marca') }}</th>
+                              <th>{{ knp_pagination_sortable(productos, 'SKU', 'p.codInc') }}</th>
+                              <th>{{ knp_pagination_sortable(productos, 'Estado', 'pc.activo') }}</th>
+                              <th>{{ knp_pagination_sortable(productos, 'Valor', 'pc.precio') }}</th>
+                            </tr>
+                            <tr>
+                              <th>{{ form_widget(form.nombre, { 'attr': { 'style' : 'width:150px' }} ) }}</th>
+                              <th>{{ form_widget(form.categoria, { 'attr': { 'style' : 'width:150px' }} ) }}</th>
+                              <th>{{ form_widget(form.referencia, { 'attr': { 'style' : 'width:150px' }} ) }}</th>
+                              <th>{{ form_widget(form.marca, { 'attr': { 'style' : 'width:100px' }} ) }}</th>
+                              <th>{{ form_widget(form.codInc, { 'attr': { 'style' : 'width:100px' }} ) }}</th>
+                              <th>{{ form_widget(form.estado, { 'attr': { 'style' : 'width:80px' }} ) }}</th>
+                              <th><input type="text" style="width:150px" maxlength="255" name="producto[precio]" id="producto_precio"></th>
+                              </tr>
+                          </table>
+                        </form>
+		  <div align="rigth">Todos<input id="checktodos" name="checktodos" type="checkbox" /></div>
+      <br>
+        {% for producto in productos %}
+        {% set i=0 %}
+          <div class="box span" style="height: 330px; width:230px">
+            <div class="box-header well" data-original-title="">
+              <h2>{{ producto.premiosproductos[0].producto.codInc }}</h2>
+            </div>
+            <div class="box-content">
+                  <ul class="thumbnails gallery">
+                    {% if(producto.premiosproductos[0].producto.imagenproducto) %}
+                    <li id="imagen-{{producto.premiosproductos[0].producto.imagenproducto[0].id}}" class="thumbnail" style="widht: 100px">
+                      <a class="cboxElement" href="../../../../{{ producto.premiosproductos[0].producto.imagenproducto[0].path | slice (0)}}" style="background:url(../../../../{{(producto.premiosproductos[0].producto.imagenproducto[0].path| slice (0))[:-4]}}_min.jpg)">
+                        <img alt="{{ producto.premiosproductos[0].producto.codInc }}" src="../../../{{(producto.premiosproductos[0].producto.imagenproducto[0].path| slice (0))[:-4]}}_min.jpg" style="display: block;">
+                      </a>
+                    </li>
+                    {% endif %}
+                  </ul>
+              <table class="table">
+                <tbody>
+                  <tr>
+                    <td>{{ producto.premiosproductos[0].producto.nombre }}</td>
+                  </tr>
+                  <tr>
+                    <td>Puntos: {{ producto.puntosTemporal }}</td>
+                  </tr>
+                  {% if is_granted('ROLE_ADMIN') or  is_granted('ROLE_DIR') or is_granted('ROLE_ASISCOMP') or is_granted('ROLE_LOGIS') or is_granted('ROLE_CAT') or is_granted('ROLE_EJEC') or is_granted('ROLE_COM') or is_granted('ROLE_CLI') %}
+                   <tr>
+                     {% set valorventa =  producto.precioTemporal/(1-(producto.incrementoTemporal/100)) + producto.logisticaTemporal %}
+                    <td>Precio de Venta: $ {{ (valorventa |round(2, 'ceil'))|number_format(2, ',', '.') }}</td>
+                  </tr>
+                  {% endif %}
+                  <tr align="center">
+                    <td align="center">Aprobar <input type="checkbox" id="producto_{{ producto.id }}" name="id" value="{{ producto.id }}"></a></td>
+                  </tr>
+                </tbody>
+              </table>     
+              
+            </div>
+          </div>       
+        {% endfor %}	
+        
+
+		</div>
+
+   <div class="box span11">
+        <div class="box-content">
+                <div style="padding-left: 400px">
+                    <input type="submit" value="Autorizar" class="btn btn-success" onclick='check_value("{{ path("catalogo_estadoaprobar", {"accion": "autorizar"}) }}")'>
+                    <input type="submit" value="Rechazar" class="btn btn-danger" onclick='check_value("{{ path("catalogo_estadoaprobar", {"accion": "cancelar" }) }}")'>
+                </div>
+                <div class="dataTables_info">Mostrando {{ productos.getItemNumberPerPage*(productos.getCurrentPageNumber-1)+1  }} a {{ productos.getItemNumberPerPage*productos.getCurrentPageNumber }} de {{ productos.getTotalItemCount }}   Productos
+                </div>
+                <div class="pagination pagination-centered">
+                        {{ knp_pagination_render(productos) }}                    
+                </div>
+        </div>
+    </div>
+
+	</div>
+
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+  <script>
+  
+  $(document).ready(function(){
+ 
+  //Checkbox
+  $("#checktodos").change(function(){
+    $(':checkbox').each( function(indice, elemento) {
+        if($("#checktodos").is(":checked")){
+          $(this).attr("checked",true);
+  	$(this).parent().addClass("checked");
+        } else {
+          $(this).attr("checked",false);
+  	$(this).parent().removeClass("checked");
+        }
+      });
+    });
+   
+  });
+
+    function check_value(ruta)
+    { 
+      var arreglo="";
+      var chk=document.getElementsByName('id');
+        for (var i = 0; i < chk.length; i++) {
+            if(chk[i].checked){
+              arreglo=arreglo+chk[i].value+",";
+              //self.location=ruta+"/"+chk[i].value;
+            }
+        }
+        
+        if(arreglo.length==0){
+			alert("Seleccione algún premio para aprobar.");
+			return false;
+        }
+        
+        self.location=ruta+"/"+arreglo+"/"+{{ id }}+"/1";
+    }
+
+      function confirmar(ruta)
+      {
+        if (confirm("Desea aprobar")==true){
+            self.location=ruta;
+        }else{
+            alert("OK");
+        }
+        
+      }
+  </script>
+{% endblock %}

@@ -44,7 +44,7 @@ class CotizacionType extends AbstractType
          $builder->add('estado', EntityType::class, array(
             'class' => 'IncentivesSolicitudesBundle:CotizacionesEstado',
             'choice_label' => 'nombre',
-            //'empty_value' => 'Seleccione una opcion',
+            'placeholder' => 'Seleccionar',
             'label' => 'Estado'
         ));
 

@@ -1,0 +1,156 @@
+{% extends app.request.isXmlHttpRequest ? "MDWDemoBundle::layout_ajax.html.twig" : "::base.html.twig" %}
+{% block title %}Datos Cliente{% endblock %}
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+<div class="box">
+    <div class="box-header well" data-original-title="">
+        Cliente
+        <div class="box-icon">
+				<div class="box-icon">
+                    <a href="{{ path('cliente') }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+                </div>
+    	</div>
+    </div>
+</div>
+    <div class="box span6">
+	    <div class="box-content">
+	    	<div class="box-header well">
+				<h2>
+				<a href="{{ path('cliente_editar',  {"id": cliente.id}) }}">
+					<button class="btn btn-primary">
+						<i class="icon-edit icon-white"></i>
+					</button>
+				</a>
+				</i>Datos Cliente</h2>
+			</div>
+
+				<table class="table table-bordered table-striped">
+					<tbody>
+						<tr><td>Nombre</td><td>{{ cliente.nombre }}</td></tr>
+						<tr><td>Documento</td><td>{{ cliente.tipodocumento.nombre}} {{ cliente.numerodocumento }}</td></tr>
+						<tr><td>Direccion</td><td>{{ cliente.direccion }}</td></tr>
+						<tr><td>Telefono</td><td>{{ cliente.telefono }}</td></tr>
+						<tr><td>Correo</td><td>{{ cliente.correo }}</td></tr>
+					</tbody>
+				</table>
+		</div>
+	</div>
+
+	<div class="box span5">
+		<div class="box-content">
+		    <div class="box-header well">
+				<h2>
+					<a href="{{ path('programa_nuevo',  {"id": cliente.id}) }}">
+						<button class="btn btn-small btn-success">
+							<i class="icon-plus icon-white"></i>
+						</button>
+					</a>
+					Programas
+				</h2>
+			</div>
+			{% if programa | length!=0 %}
+			<table class="table table-bordered table-striped">
+				<thead>
+					<tr>
+						<th>Nombre</th>
+						<th>Fecha de inicio</th>
+						<th>Fecha finalizacion</th>
+						<th>Estado</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for programas in programa %}		
+							<tr>
+								<td>{{ programas.nombre }}</td>
+								<td>{{ programas.fechainicio | date("d-m-Y") }}</td>
+								<td>{{ programas.fechafin | date("d-m-Y") }}</td>
+								<td>{% if (programas.estado=='0') %}
+										<a class="btn btn-danger 1" onClick=confirmar('{{ url("programa_estado", {"id": programas.id}) }}') href="#">
+										Inactiva</a>
+									{% else %}
+										<a class="btn btn-success 1" onClick=confirmar('{{ url("programa_estado", {"id": programas.id}) }}') href="#">
+										Activa</a>
+									{% endif %}
+								</td>
+							</tr>			
+					{% endfor %}
+				</tbody>
+			</table>
+			{% endif %}
+		</div>
+	</div>
+
+	<div class="box span6">
+		<div class="box-content">
+		    <div class="box-header well">
+				<h2>
+					<a href="{{ path('catalogo') }}">
+						<button class="btn btn-small btn-success">
+							<i class="icon-th-list icon-white"></i>
+						</button>
+					</a>	
+					Catalogos
+				</h2>
+			</div>
+			{% if catalogos | length!=0 %}
+			<table class="table table-bordered table-striped">
+					<thead>
+						<tr>
+							<th>Nombre</th>
+							<th>Programa</th>
+							<th>Descripcion</th>
+							<th>Estado</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for catalogo in catalogos %}
+						<tr>
+							<td>{{catalogo.nombre}}</td>
+							<td>{{catalogo.programa.nombre}}</td>
+							<td>{{catalogo.descripcion}}</td>							
+							<td>{% if (catalogo.estado=='0') %}
+										<a class="btn btn-danger 1" onClick=confirmar('{{ url("catalogo_estado", {"id": catalogo.id}) }}') href="#">
+										Inactivo</a>
+									{% else %}
+										<a class="btn btn-success 1" onClick=confirmar('{{ url("catalogo_estado", {"id": catalogo.id}) }}') href="#">
+										Activo</a>
+									{% endif %}
+								</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+				{% endif %}
+		</div>
+	</div>
+	
+
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script>
+
+	function confirmar(ruta)
+	{
+	  if (confirm("Cambiar estado")==true){
+	  	self.location=ruta;
+	  }else{
+	  	alert("OK");
+	  }
+	  
+	}
+
+        var x;
+		x=$(document);
+		x.ready(inicializarEventos);
+
+		function inicializarEventos()
+		{
+		 var x;
+		 x=$("div.estado a");
+		 x.each(resaltarParrafos);
+		}
+
+	</script>
+{% endblock %}

@@ -26,7 +26,7 @@ class CourierType extends AbstractType
         $builder->add('tipodocumento', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:Tipodocumento',
             'choice_label' => 'nombre',
-            //'empty_value' => 'Seleccione una opcion',
+            'placeholder' => 'Seleccionar',
         ));
 
         $builder->add('Enviar', SubmitType::class);

@@ -25,7 +25,7 @@ class FiltrosProductoType extends AbstractType
         $builder->add('categoria', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:Categoria',
             'choice_label' => 'nombre',
-            //'empty_value' => 'Seleccione una opcion',
+            'placeholder' => 'Seleccionar',
             'required' => false
         ));
         $builder->add('referencia', TextType::class, array('required' => false));
@@ -35,7 +35,7 @@ class FiltrosProductoType extends AbstractType
         $builder->add('productoclasificacion', EntityType::class, array(
             'class' => 'IncentivesCatalogoBundle:Productoclasificacion',
             'choice_label' => 'nombre',
-            //'empty_value' => 'Seleccione una opcion',
+            'placeholder' => 'Seleccionar',
             'required' => false
         ));
 

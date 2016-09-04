@@ -27,13 +27,13 @@ class CatalogosType extends AbstractType
         $builder->add('pais', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:Pais',
             'choice_label' => 'nombre',
-            //'empty_value' => 'Seleccione una opcion',
+            'placeholder' => 'Seleccionar',
         ));
         
         $builder->add('catalogotipo', EntityType::class, array(
             'class' => 'IncentivesCatalogoBundle:CatalogoTipo',
             'choice_label' => 'nombre',
-            //'empty_value' => 'Seleccione una opcion',
+            'placeholder' => 'Seleccionar',
         ));
 
         $builder->add('Enviar', SubmitType::class);

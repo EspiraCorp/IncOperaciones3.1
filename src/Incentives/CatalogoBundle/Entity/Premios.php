@@ -2,6 +2,7 @@
 
 namespace Incentives\CatalogoBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -46,7 +47,7 @@ class Premios
     
     /**
      * @var string
-     * @ORM\ManyToOne(targetEntity="Incentives\OperacionesBundle\Entity\Categoria", inversedBy="premio")
+     * @ORM\ManyToOne(targetEntity="Incentives\OperacionesBundle\Entity\Categoria")
      * @ORM\JoinColumn(name="categoria_id", referencedColumnName="id", nullable=true)
      */
     protected $categoria;
@@ -105,7 +106,7 @@ class Premios
     
      /**
      * @var float
-     *
+     * @Assert\NotNull(message="Debe escribir un valor.")
      * @ORM\Column(name="precioTemporal", type="float", nullable=true)
      */
     private $precioTemporal;
@@ -119,14 +120,14 @@ class Premios
 
     /**
      * @var float
-     *
+     * @Assert\NotNull(message="Debe escribir un valor.")
      * @ORM\Column(name="incrementoTemporal", type="float", nullable=true)
      */
     private $incrementoTemporal;
     
     /**
      * @var float
-     *
+     * @Assert\NotNull(message="Debe escribir un valor.")
      * @ORM\Column(name="logisticaTemporal", type="float", nullable=true)
      */
     private $logisticaTemporal;
@@ -147,7 +148,7 @@ class Premios
     
     /**
      * @var string
-     * @ORM\ManyToOne(targetEntity="EstadoCatalogo", inversedBy="premio", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="EstadoCatalogo")
      * @ORM\JoinColumn(name="estado_id", referencedColumnName="id", nullable=true)
      */
     protected $estado;

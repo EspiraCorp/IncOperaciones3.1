@@ -65,9 +65,9 @@ class FacturaProductos
     protected $factura;
     
      /**
-     * @ORM\OneToMany(targetEntity="Incentives\RedencionesBundle\Entity\Redenciones", mappedBy="facturaProducto", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="Incentives\RedencionesBundle\Entity\RedencionesProductos", mappedBy="facturaProducto", cascade={"persist"})
      */
-    protected $redenciones;
+    protected $redencionesProductos;
 
     /**
      * @var \DateTime
@@ -238,7 +238,6 @@ class FacturaProductos
      */
     public function __construct()
     {
-        $this->redenciones = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -287,36 +286,38 @@ class FacturaProductos
         return $this->usuario;
     }
 
+
     /**
-     * Add redenciones
+     * Add redencionesProducto
      *
-     * @param \Incentives\RedencionesBundle\Entity\Redenciones $redenciones
+     * @param \Incentives\RedencionesBundle\Entity\RedencionesProductos $redencionesProducto
+     *
      * @return FacturaProductos
      */
-    public function addRedencione(\Incentives\RedencionesBundle\Entity\Redenciones $redenciones)
+    public function addRedencionesProducto(\Incentives\RedencionesBundle\Entity\RedencionesProductos $redencionesProducto)
     {
-        $this->redenciones[] = $redenciones;
-    
+        $this->redencionesProductos[] = $redencionesProducto;
+
         return $this;
     }
 
     /**
-     * Remove redenciones
+     * Remove redencionesProducto
      *
-     * @param \Incentives\RedencionesBundle\Entity\Redenciones $redenciones
+     * @param \Incentives\RedencionesBundle\Entity\RedencionesProductos $redencionesProducto
      */
-    public function removeRedencione(\Incentives\RedencionesBundle\Entity\Redenciones $redenciones)
+    public function removeRedencionesProducto(\Incentives\RedencionesBundle\Entity\RedencionesProductos $redencionesProducto)
     {
-        $this->redenciones->removeElement($redenciones);
+        $this->redencionesProductos->removeElement($redencionesProducto);
     }
 
     /**
-     * Get redenciones
+     * Get redencionesProductos
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
-    public function getRedenciones()
+    public function getRedencionesProductos()
     {
-        return $this->redenciones;
+        return $this->redencionesProductos;
     }
 }
