@@ -49,7 +49,7 @@ class CatalogosController extends Controller
             //$form->handleRequest($request);
 
             //if ($form->isValid()) {
-                $id = $request->request->all()['id'];
+                //$id = $request->request->all()['id'];
                 
                 $pro = $request->request->all();
 
@@ -69,7 +69,7 @@ class CatalogosController extends Controller
                 $catalogo->setEstado($estado);
                 $catalogo->setNombre($pro["nombre"]);
                 $catalogo->setDescripcion($pro["descripcion"]);
-                $catalogo->setValorpunto($pro["valorPunto"]);
+                $catalogo->setValorpunto(($pro["valorPunto"]) ? $pro["valorPunto"]: 0);
                 $pais = $em->getRepository('IncentivesOperacionesBundle:Pais')->find($pro["pais"]);
                 $catalogo->setPais($pais);
                 $tipo = $em->getRepository('IncentivesCatalogoBundle:Catalogotipo')->find($pro["catalogotipo"]);
@@ -78,15 +78,15 @@ class CatalogosController extends Controller
 
                 $em->flush();
                 
-                return $this->redirect($this->generateUrl('programa_datos').'/'.$id);
+                return $this->redirect($this->generateUrl('catalogo_datos').'/'.$catalogo->getId());
             //}
         }          
         if ($id!=0){
-            return $this->render('IncentivesCatalogoBundle:Catalogos:nuevo.html.twig', array(
+            return $this->render('IncentivesCatalogoBundle:Catalogos:nuevoDesdePrograma.html.twig', array(
                 'form' => $form->createView(), 'id'=>$id
             ));
         }else{
-            return $this->render('IncentivesCatalogoBundle:Catalogos:nuevo1.html.twig', array(
+            return $this->render('IncentivesCatalogoBundle:Catalogos:nuevo.html.twig', array(
                 'form' => $form->createView(), 'id'=>$id
             ));
         }
@@ -100,13 +100,9 @@ class CatalogosController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        if (isset($id)){
-            $catalogo = $em->getRepository('IncentivesCatalogoBundle:Catalogos')->find($id);
-            $form = $this->createForm(CatalogosType::class, $catalogo);
-        }else{
-            $form = $this->createForm(CatalogosType::class);
-            $catalogo = new Catalogos();
-        }
+        $catalogo = $em->getRepository('IncentivesCatalogoBundle:Catalogos')->find($id);
+        $form = $this->createForm(CatalogosnuevoType::class, $catalogo);
+        
 
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
@@ -125,10 +121,6 @@ class CatalogosController extends Controller
 
                 $em->persist($catalogo);   
                 $em->flush();
-
-                //$conn = $this->get('database_connection'); 
-
-                //$excelcar = $conn->insert('Programa', array('fechainicio' => date($pro["fechainicio"]["year"]."-". $pro["fechainicio"]["month"]."-".$pro["fechainicio"]["day"])));
 
                 return $this->redirect($this->generateUrl('catalogo_datos').'/'.$id);
             }
@@ -170,21 +162,62 @@ class CatalogosController extends Controller
      * @Route("/catalogo")
      * @Template()
      */
-    public function listadoAction()
+    public function listadoAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
+        $form = $this->createForm(CatalogosnuevoType::class); 
+        $session = $this->get('session');
+            
+        $page = $request->get('page');
+        if(!$page) $page= 1;
+            
+        $pro = $request->request->all();
 
-        $repository = $this->getDoctrine()
-            ->getRepository('IncentivesCatalogoBundle:Catalogos');
+        if(isset($pro['catalogosnuevo'])){
+            $page = 1;
+            $session->set('filtros_catalogos', $pro['catalogosnuevo']);
+        }
 
-        $listado= $repository->findAll();
+        if(isset($pro['limpiar']) && $pro['limpiar']==1){
+            //limmpiar filtros
+            $session->set('filtros_catalogos', array() );
+        }
+
+        $sqlFiltro = " 1=1 ";
+
+        if($filtros = $session->get('filtros_catalogos')){
+
+           foreach($filtros as $Filtro => $valueF){
+                   
+               if($valueF!=""){
+                   if($Filtro=="estado"){
+                        $sqlFiltro .= " AND e.id=".$valueF."";
+                   }elseif($Filtro=="programa"){
+                        $sqlFiltro .= " AND p.id=".$valueF."";
+                   }elseif($Filtro=="cliente"){
+                        $sqlFiltro .= " AND c.id=".$valueF."";
+                   }elseif($Filtro=="catalogotipo"){
+                        $sqlFiltro .= " AND c.catalogotipo=".$valueF."";
+                   }elseif($Filtro=="pais"){
+                        $sqlFiltro .= " AND ps.id=".$valueF."";
+                   }else{
+                        $sqlFiltro .= " AND c.".$Filtro." LIKE '%".$valueF."%'";
+                   }
+                       
+               };
+           } 
+                
+        }
 
         $query = $em->createQueryBuilder()
-                ->select('c','p','cl') 
+                ->select('c','p','cl','ps','e','ct') 
                 ->from('IncentivesCatalogoBundle:Catalogos', 'c')
                 ->leftJoin('c.programa','p')
+                ->leftJoin('c.pais','ps')
+                ->leftJoin('c.estado','e')
+                ->leftJoin('c.catalogotipo','ct')
                 ->leftJoin('p.cliente','cl')
-                ->orderBy("c.id");
+                ->where($sqlFiltro);
 
         if ($this->get('security.authorization_checker')->isGranted('ROLE_CLI')) {
             $cliente =  $this->getUser()->getCliente()->getId();
@@ -192,10 +225,25 @@ class CatalogosController extends Controller
             $query->where($condicion);
         }
 
-        $listado = $query->getQuery()->getResult();
+        if($request->get('sort')){
+            $query->orderBy($request->get('sort'), $request->get('direction'));    
+        }else{
+            $query->orderBy("c.estado")
+                ->addOrderBy("c.nombre");
+        }
+            
+        $catalogos = $query->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
+            /*echo "<pre>"; print_r($productos); echo "</pre>"; exit;*/
+            
+        $paginator  = $this->get('knp_paginator');
+        $catalogos = $paginator->paginate(
+            $catalogos,
+            $page/*page number*/,
+            20 /*limit per page*/
+        );
 
         return $this->render('IncentivesCatalogoBundle:Catalogos:listado.html.twig', 
-            array('listado' => $listado));
+            array('catalogos' => $catalogos, 'form' => $form->createView(), 'filtros' => $filtros));
     }
 
     /**
@@ -587,7 +635,7 @@ class CatalogosController extends Controller
                     $estado = $em->getRepository('IncentivesCatalogoBundle:Estadocatalogo')->find("1");
                 }elseif($accion=='cancelar'){
                     $estado = $em->getRepository('IncentivesCatalogoBundle:Estadocatalogo')->find("2");
-		    $productos->setActivo(0);
+		            $productos->setEstado($estado);
                 }     
 
                 $usuario = $this->get('security.token_storage')->getToken()->getUser();

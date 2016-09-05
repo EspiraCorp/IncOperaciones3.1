@@ -16,6 +16,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 use Dompdf\Dompdf;
 
+ini_set('memory_limit','512M');
+
 class CotizacionesController extends Controller
 {
      /**

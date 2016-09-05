@@ -28,7 +28,7 @@ class DespachoGuia
     protected $despacho;
     
     /**
-     * @ORM\ManyToOne(targetEntity="Incentives\RedencionesBundle\Entity\GuiaEnvio", inversedBy="inventarioguia", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="Incentives\RedencionesBundle\Entity\GuiaEnvio", inversedBy="despachoguia", cascade={"persist"})
      * @ORM\JoinColumn(name="guia_id", referencedColumnName="id", nullable=true)
      */
     protected $guia;

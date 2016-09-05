@@ -78,21 +78,14 @@ class ProductoController extends Controller
                     $em->flush();
                    
                     $this->get('session')->getFlashBag()->add('notice', 'Se creo el producto con SKU: '.$producto->getCodInc());
-                    return $this->redirect($this->generateUrl('producto'));
+                    return $this->redirect($this->generateUrl('producto_datos').'/'.$producto->getId());
          
                 } catch(\Exception $e){
 
                     echo($e); exit;
                 }
 
-            }else
-            {
-                // get a ConstraintViolationList
-                
-//$errors = $form->getErrors(true);
-                
             }
-            print_r($errors);
         }            
 
         return $this->render('IncentivesCatalogoBundle:Producto:nuevo.html.twig', array(
@@ -324,35 +317,6 @@ class ProductoController extends Controller
     }
     
     /**
-     * @Route("/producto")
-     * @Template()
-     */
-    /*public function listadouniversalAction()
-    {
-         $em = $this->getDoctrine()->getManager();
-
-        $query = $em->createQueryBuilder()
-            ->select('p producto','pp precio', 'c categoria','e estado') 
-            ->from('IncentivesCatalogoBundle:Producto', 'p')
-            ->leftJoin('p.productoprecio','pp')
-            ->leftJoin('p.categoria', 'c')
-            ->leftJoin('p.estado', 'e');
-                
-            
-        $productos = $query->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
-
-        $paginator  = $this->get('knp_paginator');
-        $pagination = $paginator->paginate(
-            $productos,
-            $request->query->get('page', 1),
-            50 
-        );
-//echo "<pre>"; print_r($productos); echo "</pre>"; exit;
-        return $this->render('IncentivesCatalogoBundle:Producto:listadouniversal.html.twig', 
-            array('productos' => $pagination));
-    }*/
-
-    /**
      * @Route("/producto/datos/{id}")
      * @Template()
      */
@@ -370,17 +334,18 @@ class ProductoController extends Controller
             ->getRepository('IncentivesCatalogoBundle:Productoprecio');
         
         $qb = $em->createQueryBuilder()
-                ->select('p premio','pp premiosproductos','e estado','c catalogo', 'ct categoria','pg','cl') 
-                ->from('IncentivesCatalogoBundle:Premios', 'p')
-                ->Join('p.premiosproductos','pp')
-                ->Join('p.estado','e')
-                ->Join('p.categoria','ct')
-                ->Join('p.catalogos','c')
-                ->Join('c.programa','pg')
-                ->Join('pg.cliente','cl')
-                ->where('pp.producto='.$id);
+                ->select('pr premio','pp premiosproductos','e estado','c catalogo', 'ct categoria','pg','p','cl') 
+                ->from('IncentivesCatalogoBundle:Premios', 'pr')
+                ->leftJoin('pr.premiosproductos','pp')
+                ->leftJoin('pp.producto','p')
+                ->leftJoin('pr.estado','e')
+                ->leftJoin('pr.categoria','ct')
+                ->leftJoin('pr.catalogos','c')
+                ->leftJoin('c.programa','pg')
+                ->leftJoin('pg.cliente','cl')
+                ->where('p.id='.$id);
         $premios = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
-        //echo "<pre>"; print_r($premios); echo "</pre>"; exit;
+        
         $producto= $repositoryp->find($id);
         $imagen= $repositoryi->findByProducto($id);
         $productoprecio= $repositorypp->findByProducto($id);      
@@ -1187,8 +1152,8 @@ class ProductoController extends Controller
                 $id = $request->request->all()['id'];
                 $precio = $em->getRepository('IncentivesCatalogoBundle:Productoprecio')->find($id);
                 $proveedor = $em->getRepository('IncentivesOperacionesBundle:Proveedores')->find($pro["proveedor"]);
-                $precio->setPrecio($pro["precio"]);
-                $precio->setPrecioDolares($pro["precioDolares"]);
+                $precio->setPrecio(($pro["precio"]) ? $pro["precio"]: 0);
+                $precio->setPrecioDolares(($pro["precioDolares"]) ? $pro["precioDolares"]: 0);
                 $precio->setProveedor($proveedor);
                 if (isset($pro["principal"])){
                     //quitar la marca de principal a los demas

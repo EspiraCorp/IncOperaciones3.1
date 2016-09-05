@@ -4,6 +4,7 @@ namespace Incentives\CatalogoBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Productoprecio
@@ -41,7 +42,7 @@ class Productoprecio
 
     /**
      * @var float
-     *
+     * @Assert\NotNull(message="Debe escribir un valor.")
      * @ORM\Column(name="precio", type="float", nullable=true)
      */
     private $precio;

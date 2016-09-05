@@ -57,14 +57,7 @@ class ProductoType extends AbstractType
         $builder->add('iva',IntegerType::class,array('label'  => 'Iva (%)'));
         $builder->add('incremento',IntegerType::class,array('label'  => 'Incremento (%)'));
         $builder->add('logistica');
-        //$builder->addEventSubscriber(new AddImagenproductoFieldSubscriber());
-        // $builder->add('imagenproducto', 'collection', array(
-        //     'type'  => new ImagenproductoType(),
-        //     'label'          => 'Imagen producto',
-        //     'by_reference'   => false,
-        //     'allow_delete'   => true,
-        //     'allow_add'      => true
-        // ));
+
         $builder->add('productoprecio', CollectionType::class, array(
             'entry_type'  => ProductoprecioType::class,
             'label'          => 'Precio producto',

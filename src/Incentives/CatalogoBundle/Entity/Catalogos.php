@@ -4,6 +4,7 @@ namespace Incentives\CatalogoBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Catalogos
@@ -24,14 +25,14 @@ class Catalogos
 
     /**
      * @var string
-     *
+     * @Assert\NotNull(message="Debe escribir un valor.")
      * @ORM\Column(name="nombre", type="string", length=255, nullable=true)
      */
     private $nombre;
 
     /**
      * @var string
-     *
+     * @Assert\NotNull(message="Debe escribir un valor.")
      * @ORM\Column(name="descripcion", type="text", nullable=true)
      */
     private $descripcion;

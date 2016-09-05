@@ -1,52 +1,62 @@
+{% extends "::basePop.html.twig" %}
 
-<div class="box-content">
-<form action="{{ path('productocatalogo_nuevo') }}" method="POST"  class="form-horizontal">
-    {{ form_errors(form) }}
-    <input type='hidden' name='producto' value={{ producto }}>
-    <input type='hidden' name='catalogo' value={{ catalogo }}>
-    <fieldset>
-        <div class="control-group">
-            {{ form_label(form.activo, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
-            <div class="controls">
-                {{ form_widget(form.activo, { 'attr': {'class': 'input-xlarge focused'} }) }}
-            </div>
+{% block title %}Agregar Premio{% endblock %}
+
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+    <div class="box span12">
+        <div class="box-header well" data-original-title>
+            <h2><i class="icon-edit"></i>Nuevo Premio</h2>
         </div>
-        <div class="control-group">
-            {{ form_label(form.puntos, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
-            <div class="controls">
-                {{ form_widget(form.puntos, { 'attr': {'class': 'input-xlarge focused'} }) }}
-            </div>
-        </div>
-        <div class="control-group">
-            {{ form_label(form.precio, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
-            <div class="controls">
-                {{ form_widget(form.precio, { 'attr': {'class': 'input-xlarge focused'} }) }}
-            </div>
-        </div>
-        <div class="control-group">
-            {{ form_label(form.incremento, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
-            <div class="controls">
-                {{ form_widget(form.incremento, { 'attr': {'class': 'input-xlarge focused'} }) }}
-            </div>
-        </div>
-        <div class="control-group">
-            {{ form_label(form.logistica, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
-            <div class="controls">
-                {{ form_widget(form.logistica, { 'attr': {'class': 'input-xlarge focused'} }) }}
-            </div>
-        </div>
-        <div class="control-group">
-            {{ form_label(form.logistica, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
-            <div class="controls">
-                {{ form_widget(form.logistica, { 'attr': {'class': 'input-xlarge focused'} }) }}
-            </div>
-        </div>
-        <div class="control-group">
-            {{ form_label(form.actualizacion, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
-            <div class="controls">
-                {{ form_widget(form.actualizacion, { 'attr': {'class': 'input-xlarge focused'} }) }}
-            </div>
-        </div>
-    </fieldset>
-</form>
+            <form action="{{ path('premios_nuevo',  {'producto': producto, 'catalogo': catalogo}) }}" method="POST"  class="form-horizontal">
+                {{ form_errors(form) }}
+                <table>
+                    <td class="control-group">
+                        {{ form_label(form.categoria, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+                        <div class="controls">
+                            {{ form_widget(form.categoria, { 'attr': {'class': 'input-xlarge focused'} }) }}
+                        </div>
+                    </td>
+                     <div class="control-group">
+                        {{ form_label(form.puntosTemporal, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+                        <div class="controls">
+                            {{ form_widget(form.puntosTemporal, { 'attr': {'class': 'input-xlarge focused'} }) }}
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        {{ form_label(form.precioTemporal, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+                        <div class="controls">
+                            {{ form_widget(form.precioTemporal, { 'attr': {'class': 'input-xlarge focused'} }) }}
+                        </div>
+                    </div>
+                     <div class="control-group">
+                        {{ form_label(form.incrementoTemporal, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+                        <div class="controls">
+                            {{ form_widget(form.incrementoTemporal, { 'attr': {'class': 'input-xlarge focused'} }) }}
+                        </div>
+                    </div>
+                     <div class="control-group">
+                        {{ form_label(form.logisticaTemporal, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+                        <div class="controls">
+                            {{ form_widget(form.logisticaTemporal, { 'attr': {'class': 'input-xlarge focused'} }) }}
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        {{ form_label(form.agotado, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+                        <div class="controls">
+                            {{ form_widget(form.agotado, { 'attr': {'class': 'input-xlarge focused'} }) }}
+                        </div>
+                    </div>
+                </table>
+
+                <div class="row-fluid sortable ui-sortable">
+
+                </div>  
+                <div class="form-actions">
+                    <input class="btn btn-primary" type="submit" name="Enviar" value="Enviar">
+                </div>
+            {{ form_widget(form._token) }}
+            </form>
+    </div>
 </div>
+{% endblock %}

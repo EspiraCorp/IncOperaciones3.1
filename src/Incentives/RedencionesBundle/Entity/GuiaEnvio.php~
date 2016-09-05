@@ -74,6 +74,12 @@ class GuiaEnvio
     private $fecha;
 
     /**
+     * @ORM\OneToMany(targetEntity="Incentives\InventarioBundle\Entity\DespachoGuia", mappedBy="guia", cascade={"persist"})
+     * 
+     */
+    protected $despachoguia;
+
+    /**
      * 
      * @ORM\ManyToOne(targetEntity="\Incentives\FacturacionBundle\Entity\FacturaLogistica", inversedBy="guias", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="facturaLogistica_id", referencedColumnName="id", nullable=true)
@@ -384,5 +390,39 @@ class GuiaEnvio
     public function getUsuario()
     {
         return $this->usuario;
+    }
+
+    /**
+     * Add despachoguium
+     *
+     * @param \Incentives\InventarioBundle\Entity\DespachoGuia $despachoguium
+     *
+     * @return GuiaEnvio
+     */
+    public function addDespachoguium(\Incentives\InventarioBundle\Entity\DespachoGuia $despachoguium)
+    {
+        $this->despachoguia[] = $despachoguium;
+
+        return $this;
+    }
+
+    /**
+     * Remove despachoguium
+     *
+     * @param \Incentives\InventarioBundle\Entity\DespachoGuia $despachoguium
+     */
+    public function removeDespachoguium(\Incentives\InventarioBundle\Entity\DespachoGuia $despachoguium)
+    {
+        $this->despachoguia->removeElement($despachoguium);
+    }
+
+    /**
+     * Get despachoguia
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getDespachoguia()
+    {
+        return $this->despachoguia;
     }
 }

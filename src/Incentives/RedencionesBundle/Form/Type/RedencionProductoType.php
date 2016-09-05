@@ -12,37 +12,27 @@ use PUGX\AutocompleterBundle\Form\Type\AutocompleteType;
 class RedencionProductoType extends AbstractType
 {
 	
-	public $id_catalogo;
-	
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
      */
-     
-    function __construct($parametros) {
-        $this->id_catalogo = $parametros['id_catalogo'];
-    }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-		
-		$id_catalogo = $this->id_catalogo;
 
-        $builder->add('productocatalogo', EntityType::class, array(
+        $builder->add('producto', EntityType::class, array(
                 //'empty_value' => 'Select',
                 'label' => 'Producto', 
-                'class' => 'IncentivesCatalogoBundle:Productocatalogo', 
-                'choice_label' => 'producto.nombreId', 
-                'query_builder' => function(\Doctrine\ORM\EntityRepository $er) use ($id_catalogo) {
+                'class' => 'IncentivesCatalogoBundle:Producto',
+                'choice_label' => 'codInc',
+                //'choice_label' => 'producto.nombreId', 
+                'query_builder' => function(\Doctrine\ORM\EntityRepository $er){
                     return $er->createQueryBuilder('p')
-                    ->addSelect('pd')
-                    ->Leftjoin('p.producto', 'pd')
-                    ->where('p.catalogos='.$id_catalogo)
-                    ;
-
-               }
-            ))
-           ;
+                    ->addSelect('p')
+                    ->where('p.estado = 1')
+                    ->orderBy('p.codInc');
+               })
+            );
 
         $builder->add('Enviar', SubmitType::class);
     }
@@ -53,7 +43,7 @@ class RedencionProductoType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Incentives\RedencionesBundle\Entity\Redenciones'
+            'data_class' => 'Incentives\RedencionesBundle\Entity\RedencionesProductos'
         ));
     }
 

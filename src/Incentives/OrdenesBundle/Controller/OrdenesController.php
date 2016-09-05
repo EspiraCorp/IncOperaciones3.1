@@ -1356,14 +1356,10 @@ class OrdenesController extends Controller
         
         $em = $this->getDoctrine()->getManager();
 
-        print_r($request->request->all()); exit;
-
-        $id_prod = $request->request->all()['producto'];
-        $OrdenesP = $request->request->all()['ordenesproducto'];
         $cantidadR = 1;
 
         $redencionProducto = $em->getRepository('IncentivesRedencionesBundle:RedencionesProductos')->find($redencion);
-        $ordenesProducto = $em->getRepository('IncentivesOrdenesBundle:OrdenesProducto')->find($redencion->getOrdenesProducto()->getId());
+        $ordenesProducto = $em->getRepository('IncentivesOrdenesBundle:OrdenesProducto')->find($redencionProducto->getOrdenesProducto()->getId());
       
         if(isset($ordenesProducto)){
 
@@ -1405,15 +1401,15 @@ class OrdenesController extends Controller
 
                     if(isset($redencion)){
 
-                            $redencionA = $em->getRepository('IncentivesRedencionesBundle:Redenciones')->find($redencion->getId());
                             $estado = $em->getRepository('IncentivesRedencionesBundle:Redencionesestado')->find('4');
-                            $redencionA->setRedencionestado($estado);
-                            $em->persist($redencionA);
-                            $em->flush();
+                            $redencionProducto->setEstado($estado);
+                            $em->persist($redencionProducto);
 
-                            //Almacenar Historico
-                            $redencionH = $this->get('incentives_redenciones');
-                            $redencionH->insertar($redencionA);
+                            $redencion = $em->getRepository('IncentivesRedencionesBundle:Redenciones')->find($redencionProducto->getRedencion()->getId());
+                            $redencion->setRedencionestado($estado);
+                            $em->persist($redencionProducto);
+
+                            $em->flush();
 
                             $codInventario = time().$redencion->getId();
                             $inventarioP->setRedencion($redencion);
@@ -1426,7 +1422,7 @@ class OrdenesController extends Controller
                             $qb = $em->createQueryBuilder();            
                             $qb->select('e');
                             $qb->from('IncentivesRedencionesBundle:RedencionesEnvios','e');
-                            $str_filtro = 'e.redencion ='.$redencionA->getId();
+                            $str_filtro = 'e.redencion ='.$redencion->getId();
                             $qb->where($str_filtro);
                             $qb->orderBy('e.id', 'DESC');
                             $qb->setMaxResults(1);
@@ -1449,7 +1445,8 @@ class OrdenesController extends Controller
                             $despacho->setTelefonoContacto($datosEnvio['telefonoContacto']);
                             $despacho->setCelularContacto($datosEnvio['celularContacto']);
                             $despacho->setDepartamentoContacto($datosEnvio['departamentoContacto']);
-                            $despacho->setRedencion($redencionA);
+                            $despacho->setRedencion($redencion);
+                            $despacho->setRedencionesProductos($redencionProducto);
                             $despacho->setProducto($ordenesProducto->getProducto());
                             $despacho->setOrdenProducto($ordenesProducto);
                             $despacho->setCantidad(1);
@@ -1458,9 +1455,6 @@ class OrdenesController extends Controller
                             $inventarioP->setDespacho($despacho);
 
                     }
-                    
-                    $inventarioH = $this->get('incentives_inventario');
-                    $inventarioH->insertar($inventarioP);
 
                     $em->persist( $inventarioP );
                     $em->flush();

@@ -92,15 +92,15 @@ class RedencionController extends Controller
             
             
             $qb = $em->createQueryBuilder();            
-            $qb->select('MAX(r.fechaModificacion) fechaModificacion');
-            $qb->from('IncentivesRedencionesBundle:Redencioneshistorico','r');
+            $qb->select('MAX(r.fechaAutorizacion) fechaAutorizacion');
+            $qb->from('IncentivesRedencionesBundle:Redenciones','r');
     	    $qb->leftJoin('r.participante', 'pt');
-    	    $qb->where('pt.programa='.$value[0]['id'].' AND r.redencionestado=2');
+    	    $qb->where('pt.programa='.$value[0]['id']);
     	    $qb->groupBy('pt.programa');
             $fecha = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
             
             if(isset($fecha[0])){
-                $programas[$key]['fecha'] = $fecha[0]['fechaModificacion'];
+                $programas[$key]['fecha'] = $fecha[0]['fechaAutorizacion'];
             }else{
                 $programas[$key]['fecha'] = null;                
             }
@@ -405,11 +405,10 @@ class RedencionController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $redencionD = $em->getRepository('IncentivesRedencionesBundle:Redenciones')->find($redencion);
-        $historico = $em->getRepository('IncentivesRedencionesBundle:Redencioneshistorico')->findByRedencion($redencion);
         $datosenvio = $em->getRepository('IncentivesRedencionesBundle:Redencionesenvios')->findByRedencion($redencion);
 
         return $this->render('IncentivesRedencionesBundle:Redencion:datosredencion.html.twig', 
-            array( 'datosenvio' => $datosenvio[0], 'historico' => $historico, 'redencion' => $redencionD));
+            array( 'datosenvio' => $datosenvio[0], 'redencion' => $redencionD));
     }
 
 
@@ -1009,19 +1008,8 @@ class RedencionController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        //Determinar Catalogo
-        $query = $em->createQueryBuilder()
-                ->select('pc','c') 
-                ->from('IncentivesCatalogoBundle:Productocatalogo', 'pc')
-                ->leftJoin('pc.redencion','r')
-                ->leftJoin('pc.catalogos','c')
-                ->where("r.id=".$redencion);
-
-        $catalogo = $query->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
-        $id_catalogo = $catalogo[0]['catalogos']['id'];
-
-        $redencionD = $em->getRepository('IncentivesRedencionesBundle:Redenciones')->find($redencion);
-        $form = $this->createForm(new RedencionProductoType(array('id_catalogo'=>$id_catalogo)), $redencionD);
+        $redencionProducto = $em->getRepository('IncentivesRedencionesBundle:RedencionesProductos')->find($redencion);
+        $form = $this->createForm(RedencionProductoType::class, $redencionProducto);
                     
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
@@ -1029,22 +1017,16 @@ class RedencionController extends Controller
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
                 $pro = $request->request->all()['redencion_producto'];
-                // realiza alguna acción, tal como guardar la tarea en la base de datos
 
-                $productoD = $em->getRepository('IncentivesCatalogoBundle:Productocatalogo')->find($pro['productocatalogo']);
+                $productoR = $em->getRepository('IncentivesCatalogoBundle:Producto')->find($pro['producto']);
 
-                $redencionD->setProductocatalogo($productoD);
-                
-                //Guardar precios
-                $redencionD->setValorCompra($productoD->getPrecio());
-                $redencionD->setIncremento($productoD->getIncremento());
-                $redencionD->setLogistica($productoD->getLogistica());
+                $redencionProducto->setProducto($productoR);
                     
-                $em->persist($redencionD);
+                $em->persist($redencionProducto);
                 $em->flush();
                 
                 return $this->redirect($this->generateUrl('redenciones_datosredencion').'/'
-            .$redencion);
+            .$redencionProducto->getRedencion()->getId());
             }
         }
 

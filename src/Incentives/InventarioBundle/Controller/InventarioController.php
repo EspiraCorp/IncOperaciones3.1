@@ -9,7 +9,6 @@ use Incentives\InventarioBundle\Entity\Planilla;
 use Incentives\RedencionesBundle\Entity\GuiaEnvio;
 use Incentives\OperacionesBundle\Entity\Excel;
 use Incentives\InventarioBundle\Entity\Inventario;
-use Incentives\InventarioBundle\Entity\InventarioGuia;
 use Incentives\InventarioBundle\Entity\CostosLogistica;
 use Incentives\InventarioBundle\Entity\Requisicionesenvios;
 use Incentives\InventarioBundle\Form\Type\IngresoType;

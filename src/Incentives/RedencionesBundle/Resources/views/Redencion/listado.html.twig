@@ -19,7 +19,7 @@
                             <th>Programa</th>
                             <th>Redenciones</th>
                             <th>Sin autorizar</th>
-			    <th>Canceladas</th>
+			                      <th>Canceladas</th>
                             <th>Fecha ultima autorizacion</th>
                           </tr>
                         </thead>
@@ -34,7 +34,7 @@
                                 {{ programa.pendientes }}
                             {% endif %}
                             </td>
-			    <td>{{ programa.canceladas }}</td>
+                            <td>{{ programa.canceladas }}</td>
                             <td>{% if (programa.fecha) %}{{ programa.fecha | date("Y-m-d") }}{% else %}Aun no se han hecho autorizaciones{% endif %}</td>
                           </tr>
                           {% endfor %}
@@ -44,7 +44,7 @@
                             <th>Programa</th>
                             <th>Redenciones</th>
                             <th>Sin autorizar</th>
-			    <th>Canceladas</th>
+			                       <th>Canceladas</th>
                             <th>Fecha ultima autorizacion</th>
                           </tr>
                         </tfoot>

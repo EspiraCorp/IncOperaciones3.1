@@ -1,24 +1,20 @@
 {% extends '::baseLte.html.twig' %}
 
-{% block title %}{{ parent() }}::Editar Producto{% endblock %}
-{% block sectiontitle %}<h1>Catálogo<small>Editar Producto</small></h1>{% endblock %}
-{% block breadcum %} <li><a href="{{ path('producto') }}"><i class="fa fa-star"></i>Productos Catalogo</a>
-    <br><a href="{{ path('producto_listadouniversal') }}"><i class="fa fa-star-o"></i>Productos General</a>
-    </li>
-    <li class="active"><a href="{{ path('producto_datos') }}/{{ id }}">{{ producto.codInc}}</a></li>
-    <li class="active">Editar Producto</li>{% endblock %}
-
+{% block title %}{{ parent() }}::Catálogo Nuevo{% endblock %}
+{% block sectiontitle %}<h1>Catálogos<small>Catálogo Nuevo</small></h1>{% endblock %}
+{% block breadcum %} <li><a href="{{ path('catalogo') }}"><i class="fa fa-star"></i>Catálogo Nuevo</a>
+    <li class="active">Catálogo Nuevo</li>{% endblock %}
 {% block content %}
 <div class="row">
     <div class="col-md-12">
         <!-- Horizontal Form -->
         <div class="box box-warning">
             <div class="box-header bg-black">
-              <h3 class="box-title"><i class="icon-edit"></i>Editar Producto {{ producto.codInc}}</h3>
+              <h3 class="box-title"><i class="icon-edit"></i>Catálogo Nuevo</h3>
             </div>
             <!-- /.box-header -->
             <!-- form start -->
-            <form action="{{ path('producto_editar') }}" method="POST" class="form-horizontal">
+            <form action="{{ path('catalogo') }}" method="POST" class="form-horizontal">
                 {{ form_errors(form) }}
               <div class="box-body">
                 <div class="form-group">
@@ -127,7 +123,6 @@
                 <div class="box-footer">
                     {{ form_widget(form.Enviar, { 'attr': {'class': 'btn btn-info pull-right'} }) }}
                 </div>
-                <input type='hidden' name='id' value={{ id }}>
                 {{ form_widget(form._token) }}
                 <!-- /.box-footer -->
             </form>

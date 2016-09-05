@@ -2,7 +2,10 @@
 
 {% block title %}{{ parent() }}::Producto Nuevo{% endblock %}
 {% block sectiontitle %}<h1>Catálogo<small>Producto Nuevo</small></h1>{% endblock %}
-{% block breadcum %} <li><a href="{{ path('producto') }}"><i class="fa fa-hand-o-right"></i>Productos</a></li><li class="active">Nuevo</li>{% endblock %}
+{% block breadcum %} <li><a href="{{ path('producto') }}"><i class="fa fa-star"></i>Productos Catalogo</a>
+    <br><a href="{{ path('producto_listadouniversal') }}"><i class="fa fa-star-o"></i>Productos General</a>
+    </li>
+    <li class="active">Producto Nuevo</li>{% endblock %}
 
 {% block content %}
 <div class="row">

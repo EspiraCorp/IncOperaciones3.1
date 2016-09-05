@@ -1,56 +1,51 @@
-{% extends "::base.html.twig" %}
+{% extends "::basePopLte.html.twig" %}
 
-{% block title %}IncentivesCatalogoBundle:Producto:nuevo{% endblock %}
+{% block title %}Producto - Editar Precio{% endblock %}
 
-{% block cuerpo %}
-<div class="row-fluid sortable ui-sortable">
-<div class="box span12">
-<div class="box-header well" data-original-title>
-                        <h2><i class="icon-edit"></i>Editar Precio</h2>
-                        <div class="box-icon">
-                            <a href="{{ path('cliente_datos', {'id': id} ) }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
-                        </div>
-                    </div>
-<div class="box-content">
-<form action="{{ path('producto_editarprecio') }}" method="POST"  class="form-horizontal">
-    {{ form_errors(form) }}
-    <input type='hidden' name='id' value={{ id }}>
-    <fieldset>
-        <div class="control-group">
-            {{ form_label(form.precio, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
-            <div class="controls">
-                {{ form_widget(form.precio, { 'attr': {'class': 'input-xlarge focused'} }) }}
-            </div>
-        </div>
-        <div class="control-group">
-            {{ form_label(form.precioDolares, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
-            <div class="controls">
-                {{ form_widget(form.precioDolares, { 'attr': {'class': 'input-xlarge focused'} }) }}
-            </div>
-        </div>
-        <div class="control-group">
-            {{ form_label(form.proveedor, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
-            <div class="controls">
-                {{ form_widget(form.proveedor, { 'attr': {'class': 'input-xlarge focused'} }) }}
-            </div>
-        </div>
-        <div class="control-group">
-            {{ form_label(form.principal, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
-            <div class="controls">
-                {{ form_widget(form.principal, { 'attr': {'class': 'input-xlarge focused'} }) }}
-            </div>
-        </div>
-       
+{% block content %}
 
-    </fieldset>
-    <div class="row-fluid sortable ui-sortable">
-
-    </div>  
-<input type="submit">
-{{ form_widget(form._token) }}
-</form>
-</div>
-</div>
- </div>
+     <div class="">
+          <div class="modal-dialog box box-warning">
+            <div class="modal-content">
+              <div class="modal-header bg-black">
+                <h4 class="modal-title">Agregar Precio</h4>
+              </div>
+              <form action="{{ path('producto_editarprecio') }}" method="POST"  class="form-horizontal">
+              <div class="modal-body">
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">{{ form_label(form.proveedor, label|default(), { 'label_attr': { 'class': 'control-label' } }) }}</label>
+                  <div class="col-sm-10">
+                    {{ form_widget(form.proveedor, { 'attr': {'class': 'form-control'} }) }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">{{ form_label(form.precio, label|default(), { 'label_attr': { 'class': 'control-label' } }) }}</label>
+                  <div class="col-sm-10">
+                    {{ form_widget(form.precio, { 'attr': {'class': 'form-control'} }) }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">{{ form_label(form.precioDolares, label|default(), { 'label_attr': { 'class': 'control-label' } }) }}</label>
+                  <div class="col-sm-10">
+                    {{ form_widget(form.precioDolares, { 'attr': {'class': 'form-control'} }) }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">{{ form_label(form.principal, label|default(), { 'label_attr': { 'class': 'control-label' } }) }}</label>
+                  <div class="col-sm-10">
+                    {{ form_widget(form.principal, { 'attr': {'class': 'checkbox'} }) }}
+                  </div>
+                </div>
+                <input type='hidden' name='id' value={{ id }}>
+                {{ form_widget(form._token) }}
+              </div>
+              <div class="modal-footer bg-black">
+                <button class="btn btn-warning bg-black" type="submit">Enviar</button>
+              </div>
+              </form>
+            </div>
+            <!-- /.modal-content -->
+          </div>
+          <!-- /.modal-dialog -->
+    </div>
 {% endblock %}
-

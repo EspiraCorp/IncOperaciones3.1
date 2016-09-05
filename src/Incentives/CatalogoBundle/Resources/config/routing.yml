@@ -54,13 +54,7 @@ producto_estadoprecio:
     path:  /producto/precio/estado/{id}
     defaults: { _controller: IncentivesCatalogoBundle:Producto:estadoPrecio, id: null }
     requirements:
-        id:  \d+
-
-producto_estadopremio:
-    path:  /producto/premio/estado/{id}
-    defaults: { _controller: IncentivesCatalogoBundle:Maestro:estadoPremio, id: null }
-    requirements:
-        id:  \d+        
+        id:  \d+       
 
 producto_editarprecio:
     path:  /producto/precio/editar/{id}
@@ -108,7 +102,7 @@ programa:
 
 programa_nuevo:
     path:  /programa/nuevo/{id}
-    defaults: { _controller: IncentivesCatalogoBundle:Programa:nuevo, id: null}
+    defaults: { _controller: IncentivesCatalogoBundle:Programa:nuevo, id: null }
 
 programa_editar:
     path:  /programa/editar/{id}
@@ -130,11 +124,11 @@ programa_estado:
 
 catalogo:
     path:  /catalogo
-    defaults: { _controller: IncentivesCatalogoBundle:Catalogos:listado}
+    defaults: { _controller: IncentivesCatalogoBundle:Catalogos:listado }
 
 catalogo_nuevo:
     path:  /catalogo/nuevo/{id}
-    defaults: { _controller: IncentivesCatalogoBundle:Catalogos:nuevo, id: null}
+    defaults: { _controller: IncentivesCatalogoBundle:Catalogos:nuevo, id: null }
 
 catalogo_editar:
     path:  /catalogo/editar/{id}
@@ -178,12 +172,6 @@ catalogo_imagenes:
     requirements:
         id:  \d+
 
-productocatalogo_imagenes:
-    path:  /productocatalogo/imagenes/{catalogo}
-    defaults: { _controller: IncentivesCatalogoBundle:Catalogos:imagenesCatalogo, catalogo: null}
-    requirements:
-        catalogo:  \d+
-
 catalogo_estadoaprobar:
     path:  /catalogo/aprobarcatalogo/{accion}/{id}/{catalogo}/{resumido}
     defaults: { _controller: IncentivesCatalogoBundle:Catalogos:aprobarcatalogo, accion: null, id: null, catalogo: null, resumido: null}
@@ -198,14 +186,6 @@ catalogo_navegar:
     path:  /catalogo/navegar
     defaults: { _controller: IncentivesCatalogoBundle:Catalogos:navegar}
 
-productocatalogo_nuevo:
-    path:  /productocatalogo/nuevo/{producto}/{catalogo}
-    defaults: { _controller: IncentivesCatalogoBundle:Maestro:nuevo, producto: null, catalogo: null}
-
-productocatalogo_listado:
-    path:  /productocatalogo/listado
-    defaults: { _controller: IncentivesCatalogoBundle:Maestro:listado}
-
 producto_importar:
     path:  /producto/importar/
     defaults: { _controller: IncentivesCatalogoBundle:Producto:importar }
@@ -217,38 +197,6 @@ producto_exportar:
 producto_formato:
     path:  /producto/formato/
     defaults: { _controller: IncentivesCatalogoBundle:Producto:formato }
-
-productocatalogo_maestro:
-    path:  /productocatalogo/maestro
-    defaults: { _controller: IncentivesCatalogoBundle:Maestro:maestro}
-
-productocatalogo_grupo:
-    path:  /productocatalogo/grupo/{id}/{pagina}/{str_filtro}/{parametros}
-    defaults: { _controller: IncentivesCatalogoBundle:Maestro:grupo, id: null, pagina: null, str_filtro: null, parametros: null}
-    requirements:
-        id:  \d+
-
-productocatalogo_procesar:
-    path:  /productocatalogo/procesar
-    defaults: { _controller: IncentivesCatalogoBundle:Maestro:procesarItem}
-
-productocatalogo_calcular:
-    path:  /productocatalogo/calcular
-    defaults: { _controller: IncentivesCatalogoBundle:Maestro:calcularPuntos}
-
-productocatalogo_importar:
-    path:  /productocatalogo/importar/{id}
-    defaults: { _controller: IncentivesCatalogoBundle:Maestro:importar}
-    requirements:
-        id:  \d+
-
-productocatalogo_formato:
-    path:  /productocatalogo/formato
-    defaults: { _controller: IncentivesCatalogoBundle:Maestro:formato}
-
-productocatalogo_catalogoim:
-    path:  /productocatalogo/catalogoim/{id}
-    defaults: { _controller: IncentivesCatalogoBundle:Maestro:formatoimagen}
 
 producto_editar_mas:
     path:  /producto/editarmas/
@@ -262,33 +210,6 @@ producto_formato_proveedor:
     path:  /producto/formatoproveedor/{id}
     defaults: { _controller: IncentivesCatalogoBundle:Producto:formatoporproveedor }
 
-productocatalogo_nuevocatalogo:
-    path:  /productocatalogo/nuevocatalogo/{producto}
-    defaults: { _controller: IncentivesCatalogoBundle:Maestro:nuevocatalogo, producto: null }
-
-productocatalogo_nuevopremio:
-    path:  /productocatalogo/nuevopremio/{producto}/{catalogo}
-    defaults: { _controller: IncentivesCatalogoBundle:Maestro:nuevoPremio, producto: null, catalogo: null }
-
-productocatalogo_editarpremio:
-    path:  /productocatalogo/editarpremio/{id}
-    defaults: { _controller: IncentivesCatalogoBundle:Maestro:editarPremio, id: null }
-
-productocatalogo_estadopremio:
-    path:  /productocatalogo/estadopremio/{id}
-    defaults: { _controller: IncentivesCatalogoBundle:Maestro:estadoPremioMaestro, id: null }
-    requirements:
-        id:  \d+ 
-
-productomaestro_estado:
-    path:  /productomaestro/estado/{id}
-    defaults: { _controller: IncentivesCatalogoBundle:Producto:estadoMaestro, id: null }
-    requirements:
-        id:  \d+
-
-productocatalogo_editarcatalogo:
-    path:  /productocatalogo/editarcatalogo/{productocatalogo}
-    defaults: { _controller: IncentivesCatalogoBundle:Maestro:editarcatalogo, productocatalogo: null }
 
 catalogo_intervalos:
     path:  /catalogo/intervalos/{id}
@@ -298,18 +219,11 @@ catalogo_intervaloseditar:
     path:  /catalogo/intervaloseditar/{id}
     defaults: { _controller: IncentivesCatalogoBundle:Catalogos:editarntervalos, id: null}
 
-catalogo_realcular:
-    path:  /catalogo/recalcular/{id}
-    defaults: { _controller: IncentivesCatalogoBundle:Maestro:recalcularCatalogo, id: null}
 
 producto_referencia:
     path:  /producto/referencia/{id}
     defaults: { _controller: IncentivesCatalogoBundle:Producto:productoreferencia, id: null }
-
-productocatalogo_formatocambios:
-    path:  /productocatalogo/formatocambios/{id}
-    defaults: { _controller: IncentivesCatalogoBundle:Maestro:formatoCambios, id: null }
-    
+   
 productos_proveedor:
     path:  /proveedores/productos/{id}
     defaults: { _controller: IncentivesCatalogoBundle:Catalogos:productosproveedor, id: null }
@@ -362,4 +276,56 @@ promociones_estado:
 
 premios_nuevo_producto:
     path:  /premios/nuevo/producto/{producto}
-    defaults: { _controller: IncentivesCatalogoBundle:Premios:nuevoProducto, producto: null }
+    defaults: { _controller: IncentivesCatalogoBundle:Premios:nuevoDesdeProducto, producto: null }
+
+premios_editar_producto:
+    path:  /premios/editar/producto/{premio}/{producto}
+    defaults: { _controller: IncentivesCatalogoBundle:Premios:editarDesdeProducto, premio: null, producto: null }
+
+premios_estado_producto:
+    path:  /premios/estado/premio/{premio}/{producto}
+    defaults: { _controller: IncentivesCatalogoBundle:Premios:estadoDesdeProducto, premio: null, producto: null }
+    requirements:
+        premio:  \d+ 
+
+premios_maestro:
+    path:  /premios/maestro
+    defaults: { _controller: IncentivesCatalogoBundle:Premios:maestro }
+
+premios_formatocambios:
+    path:  /premios/formatocambios/{id}
+    defaults: { _controller: IncentivesCatalogoBundle:Premios:formatoCambios, id: null }
+
+premios_importar:
+    path:  /premios/importar/{id}
+    defaults: { _controller: IncentivesCatalogoBundle:Premios:importar }
+    requirements:
+        id:  \d+
+
+premios_exportar:
+    path:  /premios/exportar/{id}
+    defaults: { _controller: IncentivesCatalogoBundle:Premios:exportar }
+
+premios_formato:
+    path:  /premios/formato
+    defaults: { _controller: IncentivesCatalogoBundle:Premios:formato}
+
+premios_imagenes:
+    path:  /premios/imagenes/{catalogo}
+    defaults: { _controller: IncentivesCatalogoBundle:Catalogos:imagenesCatalogo, catalogo: null}
+    requirements:
+        catalogo:  \d+
+
+premios_nuevo:
+    path:  /premios/nuevo/{producto}/{catalogo}
+    defaults: { _controller: IncentivesCatalogoBundle:Premios:nuevo, producto: null, catalogo: null }
+
+premios_editar:
+    path:  /premios/editar/{premio}
+    defaults: { _controller: IncentivesCatalogoBundle:Premios:editar, premio: null }
+
+premios_estado:
+    path:  /premios/estado/{premio}
+    defaults: { _controller: IncentivesCatalogoBundle:Premios:estado, premio: null }
+    requirements:
+        premio:  \d+ 

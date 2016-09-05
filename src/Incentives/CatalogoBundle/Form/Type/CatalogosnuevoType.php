@@ -8,6 +8,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use PUGX\AutocompleterBundle\Form\Type\AutocompleteType;
+use Doctrine\ORM\EntityRepository;
 
 class CatalogosnuevoType extends AbstractType
 {
@@ -21,6 +22,10 @@ class CatalogosnuevoType extends AbstractType
             'class' => 'IncentivesCatalogoBundle:Programa',
             'choice_label' => 'nombre',
             'placeholder' => 'Seleccionar',
+            'query_builder' => function (EntityRepository $er) {
+                return $er->createQueryBuilder('u')
+                    ->orderBy('u.nombre', 'ASC');
+            },
         ));
 
         $builder->add('pais', EntityType::class, array(
@@ -29,6 +34,18 @@ class CatalogosnuevoType extends AbstractType
             'placeholder' => 'Seleccionar',
         ));
         
+        $builder->add('catalogotipo', EntityType::class, array(
+            'class' => 'IncentivesCatalogoBundle:CatalogoTipo',
+            'choice_label' => 'nombre',
+            'placeholder' => 'Seleccionar',
+        ));
+
+        $builder->add('estado', EntityType::class, array(
+            'class' => 'IncentivesCatalogoBundle:Estados',
+            'choice_label' => 'nombre',
+            'placeholder' => 'Seleccionar',
+        ));
+
         $builder->add('catalogotipo', EntityType::class, array(
             'class' => 'IncentivesCatalogoBundle:CatalogoTipo',
             'choice_label' => 'nombre',

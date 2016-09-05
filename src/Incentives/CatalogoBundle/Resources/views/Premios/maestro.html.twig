@@ -66,12 +66,7 @@
                               <div class="box span" style="height: 300px; width:250px">
                                 <div class="box-header well" data-original-title="">
                                   <h2>{{ producto.producto.codInc }}</h2>
-                                  <div style="position: relative; left: 50px;">{% if (producto.producto.estado.id!=1) %}
-                                            <a class="btn btn-danger 1" onClick="confirmar('{{ url("productomaestro_estado", {"id": producto.producto.id}) }}')" href="#">Inactivo</a>
-                                          {% else %}
-                                            <a class="btn btn-success 1" onClick="confirmar('{{ url("productomaestro_estado", {"id": producto.producto.id}) }}')" href="#">Activo</a>
-                                          {% endif %}
-                                    </div>
+
                                 </div>
                                 <div class="box-content" >
                                       <ul class="thumbnails gallery">
@@ -79,8 +74,8 @@
                                        {% for imagen in producto.producto.imagenproducto %}
                                         {% if i<1 %}                  
                                           <li id="imagen-{{imagen.id}}" class="thumbnail" style="widht: 100px">
-                                              <a class="cboxElement" href="../../../{{ imagen.path | slice (0)}}" title="{{ producto.producto.codInc }}" style="background:url(../../../{{(imagen.path| slice (0))[:-4]}}_min.jpg)">
-                                                <img class="grayscale" src="../../../{{ imagen.path | slice(0)[:-4]}}_min.jpg" style="display: block;">
+                                              <a class="cboxElement" href="../../../{{ imagen.path | slice (7)}}" title="{{ producto.producto.codInc }}" style="background:url(../../../{{(imagen.path| slice (7))[:-4]}}_min.jpg)">
+                                                <img class="grayscale" src="../../../{{ imagen.path | slice(7)[:-4]}}_min.jpg" style="display: block;">
                                               </a>
                                             </li>
                                           {% set i=i+1 %}
@@ -111,59 +106,62 @@
                                       <table class="table">
                                         <tr><th colspan="3" style="text-align: center;">{{ catalogo.nombre }}</th></tr>
                                         <tr><th></th><th>Actual</th><th>Nuevo</th></tr>
-                                        {% set pe=0 %}
-                                        {% for productocatalogo in producto.producto.productocatalogo %}
-                                          {% set pc=0 %}
-                                          {% if(productocatalogo.catalogos.id == catalogo.id) %}
-                                            {% set pc = 1 %}
-                                              {% if pc == 1 %}
-                                                <tr>
-                                                    <td>Valor</td>
-                                                    <td>{{ productocatalogo.precio }}</td>
-                                                    <td>{{ productocatalogo.precioTemporal }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Incremento</td>
-                                                    <td>{{ productocatalogo.incremento }}</td>
-                                                    <td>{{ productocatalogo.incrementoTemporal }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Logistica</td>
-                                                    <td>{{ productocatalogo.logistica }}</td>
-                                                    <td>{{ productocatalogo.logisticaTemporal }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Puntos</td>
-                                                    <td>{{ productocatalogo.puntos }}</td>
-                                                    <td>{{ productocatalogo.puntosTemporal }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Categoria</td>
-                                                    <td colspan="2">{{ productocatalogo.categoria.nombre }}</td>
-                                                </tr>
-                                                <tr>
-                                                  <td>
-                                                      {% if(productocatalogo.activo == 1) %}
-                                                        <a class="btn btn-success 1" href="#" {% if is_granted('ROLE_ADMIN') or  is_granted('ROLE_DIR') %}
-																								onclick="confirmar('{{ url("productocatalogo_estadopremio", {"id": productocatalogo.id}) }}')"{% endif %}>
-																								Activo</a>
-                                                      {% else %}
-                                                        <a class="btn btn-danger 1" href="#" onclick="confirmar('{{ url("productocatalogo_estadopremio", {"id": productocatalogo.id}) }}')">Inactivo</a>
-                                                      {% endif %}
-                                                  </td>
-                                                  <td colspan="2">
-                                                      <div class="editar" href="{{ path('productocatalogo_editarpremio') }}/{{ productocatalogo.id }}"><a class="btn btn-primary">Editar</a></div>
-                                                  </td> 
-                                                </tr>
-                                              </tr>
-                                                {% set pe = 1 %}
-                                              {% endif %}
-                                            {% endif %}
-                                          {% endfor %}
+                                        {% set pe=0 %}    
+                                          {% if producto.producto.premiosproductos|length > 0 %}
+                                            {% for premio in producto.producto.premiosproductos %}
+                                              {% set pc=0 %}
+
+                                              {% if (premio.premio.catalogos.id == catalogo.id) %}
+                                                  {% set pc=1 %}{% endif %}
+
+                                                  {% if pc == 1 %}
+                                                    <tr>
+                                                        <td>Valor</td>
+                                                        <td>{{ premio.premio.precio }}</td>
+                                                        <td>{{ premio.premio.precioTemporal }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Incremento</td>
+                                                        <td>{{ premio.premio.incremento }}</td>
+                                                        <td>{{ premio.premio.incrementoTemporal }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Logistica</td>
+                                                        <td>{{ premio.premio.logistica }}</td>
+                                                        <td>{{ premio.premio.logisticaTemporal }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Puntos</td>
+                                                        <td>{{ premio.premio.puntos }}</td>
+                                                        <td>{{ premio.premio.puntosTemporal }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Categoria</td>
+                                                        <td colspan="2">{{ premio.premio.categoria.nombre }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                      <td>
+                                                          {% if(premio.premio.estado.id == 1) %}
+                                                            <a class="btn btn-success 1" href="#" {% if is_granted('ROLE_ADMIN') or  is_granted('ROLE_DIR') %}
+    																								onclick="confirmar('{{ url("premios_estado", {"premio": premio.premio.id}) }}')"{% endif %}>
+    																								Activo</a>
+                                                          {% else %}
+                                                            <a class="btn btn-danger 1" href="#" onclick="confirmar('{{ url("premios_estado", {"premio": premio.premio.id}) }}')">Inactivo</a>
+                                                          {% endif %}
+                                                      </td>
+                                                      <td colspan="2">
+                                                          <div class="editar" href="{{ path('premios_editar') }}/{{ premio.premio.id }}"><a class="btn btn-primary">Editar</a></div>
+                                                      </td> 
+                                                    </tr>
+                                                  </tr>
+                                                    {% set pe = 1 %}
+                                                {% endif %}
+                                            {% endfor %}
+                                          {% endif %}
                                           {% if pe==0 %}
                                                <tr>
                                                 <td colspan="3"  style="text-align: center;">
-                                                    <div class="agregar"  href="{{ path('productocatalogo_nuevopremio') }}/{{ producto.producto.id }}/{{ catalogo.id }}"><a class="btn btn-info">Agregar</a></div>
+                                                    <div class="agregar"  href="{{ path('premios_nuevo') }}/{{ producto.producto.id }}/{{ catalogo.id }}"><a class="btn btn-info">Agregar</a></div>
                                                 </td> 
                                               </tr>
                                           {% endif %}

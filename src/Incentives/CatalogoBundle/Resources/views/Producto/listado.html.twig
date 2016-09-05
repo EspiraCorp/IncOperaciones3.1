@@ -2,7 +2,7 @@
 
 {% block title %}{{ parent() }}::Productos Catálogo{% endblock %}
 {% block sectiontitle %}<h1>Catálogo<small>Listado de Productos</small></h1>{% endblock %}
-{% block breadcum %} <li><a href=""><i class="fa fa-star-o"></i>Productos</a></li><li class="active"></li>{% endblock %}
+{% block breadcum %} <li><a href=""><i class="fa fa-star-o"></i>Productos Catálogo</a></li><li class="active"></li>{% endblock %}
 
 {% block content %}
   <div class="row">
@@ -11,10 +11,10 @@
         		<div class="box-header bg-black">
         			<h3 class="box-title">Productos Catálogo</h3> 
               <div class="box-tools pull-right"> 
-                      <a href="{{ path('producto_editar_mas') }}" title="Edicion Masiva" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i></a>
-                      <a href="{{ path('producto_importar') }}" title="Carga Masiva" class="btn btn-info btn-sm"><i class="fa fa-upload"></i></a>
-                      <a href="{{ path('producto_exportar') }}" title="Descargar" class="btn btn-info btn-sm"><i class="fa fa-download"></i></a>
-                      <a href="{{ path('producto_nuevo') }}" class="btn btn-success btn-sm" title="Agregar"><i class="fa fa-plus"></i></a>
+                  <a href="{{ path('producto_editar_mas') }}" title="Edición Masiva" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i></a>
+                  <a href="{{ path('producto_importar') }}" title="Carga Masiva" class="btn btn-info btn-sm"><i class="fa fa-upload"></i></a>
+                  <a href="{{ path('producto_exportar') }}" title="Exportar" class="btn btn-info btn-sm"><i class="fa fa-download"></i></a>
+                  <a href="{{ path('producto_nuevo') }}" class="btn btn-success btn-sm" title="Agregar"><i class="fa fa-plus"></i></a>
               </div>
         		</div>
         		<div class="box-body no-padding">

@@ -12,22 +12,20 @@
                         </div>
                     </div>
 <div class="box-content">
-    <h6>Recuerde que para poder editar el producto este debe existir en el catálogo. (No es necesario aprobarlo)</h6><br><br>
-<form action="{{ path('redenciones_editarproducto') }}/{{ redencion }}" method="POST"  class="form-horizontal">
-    {{ form_errors(form) }}
-    <input type='hidden' name='id' value={{ redencion }}>
-    <fieldset>
-        <div class="control-group">
-            {{ form_label(form.productocatalogo, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
-            <div class="controls">
-                {{ form_widget(form.productocatalogo, { 'attr': {'class': 'input-xlarge focused'} }) }}
+    <form action="{{ path('redenciones_editarproducto') }}/{{ redencion }}" method="POST"  class="form-horizontal">
+        {{ form_errors(form) }}
+        <fieldset>
+            <div class="control-group">
+                {{ form_label(form.producto, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+                <div class="controls">
+                    {{ form_widget(form.producto, { 'attr': {'class': 'input-xlarge focused'} }) }}
+                </div>
             </div>
-        </div>
-<div class="form-actions">
-    {{ form_widget(form.Enviar, { 'attr': {'class': 'btn btn-primary'} }) }}
-</div>
-{{ form_widget(form._token) }}
-</form>
+    <div class="form-actions">
+        {{ form_widget(form.Enviar, { 'attr': {'class': 'btn btn-primary'} }) }}
+    </div>
+    {{ form_widget(form._token) }}
+    </form>
 </div>
 </div>
  </div>

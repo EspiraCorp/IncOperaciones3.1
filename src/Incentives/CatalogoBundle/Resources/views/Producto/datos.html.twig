@@ -2,7 +2,10 @@
 
 {% block title %}{{ parent() }}::Datos Producto{% endblock %}
 {% block sectiontitle %}<h1>Catálogo<small>Datos Producto</small></h1>{% endblock %}
-{% block breadcum %} <li><a href="{{ path('producto') }}"><i class="fa fa-star-o"></i>Productos</a></li><li class="active"></li>{% endblock %}
+{% block breadcum %} <li><a href="{{ path('producto') }}"><i class="fa fa-star"></i>Productos Catalogo</a>
+	<br><a href="{{ path('producto_listadouniversal') }}"><i class="fa fa-star-o"></i>Productos General</a>
+	</li>
+	<li class="active">Datos Producto</li>{% endblock %}
 
 {% block content %}
 
@@ -111,7 +114,7 @@
 					<tbody>
 						{% for precio in productoprecio %}
 						<tr>
-							<td><a href="{{ path("producto_editarprecio", {"id": precio.id}) }}">{{precio.proveedor.nombre}}</a></td>
+							<td><a class="precio_editar" href="{{ path("producto_editarprecio", {"id": precio.id}) }}">{{precio.proveedor.nombre}}</a></td>
 							<td class="text-right">{{ precio.precio }}</td>
 							<td class="text-right">{{ precio.precioDolares }}</td>
 							<td class="text-right">{{ precio.principal }}</td>
@@ -160,13 +163,14 @@
 							<th>Precio Temporal</th>
 							<th>Incremento Temporal (%)</th>
 							<th>Logistica Temporal</th>
+							<th>Agotado</th>
 							<th>Estado</th>
 						</tr>
 					</thead>
 					<tbody>
 						{% for premio in premios %}
 						<tr>
-							<td><a href="{{ path("productocatalogo_editarcatalogo", {"productocatalogo": premio.premio.id}) }}">{{ premio.premio.catalogos.nombre }}</a></td>
+							<td><a class="premio_editar" href="{{ path("premios_editar_producto", {"premio": premio.premio.id, "producto": producto.id}) }}">{{ premio.premio.catalogos.nombre }}</a></td>
 							<td>{{ premio.premio.catalogos.programa.nombre }}</td>
 							<td>{{ premio.premio.catalogos.programa.cliente.nombre }}</td>
 							<td>{{ premio.premio.puntos }}</td>
@@ -177,11 +181,12 @@
 							<td>{{ premio.premio.precioTemporal }}</td>
 							<td>{{ premio.premio.incrementoTemporal }}</td>
 							<td>{{ premio.premio.logisticaTemporal }}</td>
+							<td>{{ premio.premio.agotado }}</td>
 							<td>{% if (premio.premio.estado.id==1) %}
-										<a class="btn btn-success 1" {% if is_granted('ROLE_ADMIN') or  is_granted('ROLE_DIR') %} onClick=confirmar('{{ url("producto_estadopremio", {"id": premio.premio.id}) }}') {% endif %} href="#">
+										<a class="btn btn-success 1" {% if is_granted('ROLE_ADMIN') or  is_granted('ROLE_DIR') %} onClick=confirmar('{{ url("premios_estado_producto", {"premio": premio.premio.id, "producto": producto.id}) }}') {% endif %} href="#">
 										Activo</a>
 									{% else %}
-										<a class="btn btn-danger 1" onClick=confirmar('{{ url("producto_estadopremio", {"id": premio.premio.id}) }}') href="#">
+										<a class="btn btn-danger 1" onClick=confirmar('{{ url("premios_estado_producto", {"premio": premio.premio.id, "producto": producto.id}) }}') href="#">
 										Inactivo</a>										
 									{% endif %}
 								</td>
@@ -216,6 +221,8 @@
 	$("#agregar_imagen").colorbox({href:"{{ path('producto_agregarimagen',  {"id": producto.id}) }}"});
 	$("#agregar_precio").colorbox({href:"{{ path('producto_agregarprecio',  {"id": producto.id}) }}"});
 	$("#agregar_premio").colorbox({href:"{{ path('premios_nuevo_producto',  {"producto": producto.id}) }}"});
+	$(".precio_editar").colorbox({href: this.href });
+	$(".premio_editar").colorbox({href: this.href});
 
 	</script>
 {% endblock %}

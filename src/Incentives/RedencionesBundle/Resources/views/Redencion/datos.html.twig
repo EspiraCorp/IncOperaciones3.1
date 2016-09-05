@@ -44,13 +44,13 @@
                               <th><input type="text" id="redenciones_producto" name="redenciones[producto]"  style="width: 250px"></th>
                               <th><input type="text" id="redenciones_puntos" name="redenciones[puntos]"  style="width: 100px"></th>
                               <th>
-								  <select style="width:140px" name="redenciones[catalogo]" id="redenciones_catalogo">
-									<option selected="selected" value="">Seleccionar</option>
-									{% for catalogo in catalogos %}
-										<option value="{{ catalogo.id }}">{{ catalogo.nombre }}</option>
-									{% endfor %}
-								  </select>
-								</th>
+              								  <select style="width:140px" name="redenciones[catalogo]" id="redenciones_catalogo">
+              									<option selected="selected" value="">Seleccionar</option>
+              									{% for catalogo in catalogos %}
+              										<option value="{{ catalogo.id }}">{{ catalogo.nombre }}</option>
+              									{% endfor %}
+              								  </select>
+              								</th>
                               <th><input type="text" id="redenciones_fecha" name="redenciones[fecha]" style="width: 100px"></th>
                               <th></th>
                             </tr>

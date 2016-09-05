@@ -15,14 +15,6 @@
               <i class="icon-edit icon-white"></i>
             </button>
           </a>
-
-      {% if(redencion.redencionestado.id < 4) %}
-       <a href="{{ path('redenciones_editarproducto') }}/{{ redencion.id }}" title="Editar Envio">
-            <button class="btn btn-primary btn-info">
-              <i class="icon-barcode icon-white"></i>
-            </button>
-          </a>
-      {% endif %}
         <div class="box-icon">
                     <a href="{{ path('redenciones_programa') }}/{{ redencion.participante.programa.id }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
                 </div>
@@ -32,42 +24,49 @@
 <div class="box span12">
     <div class="box span6">
       <div class="box-content">
-        
         <div class="box-header well">
         <h2>
-        
-        </i>Datos Redencion</h2>
+          </i>Datos Redencion</h2>
         </h2>
       </div>
-      
-
-        <table class="table table-bordered table-striped">
-          <tbody>
-            <tr><td>Programa</td><td>{{ redencion.participante.programa.nombre }}</td></tr>
-            <tr><td>Participante</td><td>{{ redencion.participante.nombre }}</td></tr>
-            <tr><td>Documento</td><td>{{ redencion.participante.documento }}</td></tr>
-            <tr><td>Fecha de solicitud</td><td>{{ redencion.fecha | date("Y-m-d") }}</td></tr>
-            <tr><td>Valor</td><td>{{ redencion.valor }}</td></tr>
-            <tr><td>Codigo</td><td>{{ redencion.codigoredencion }}</td></tr>
-            <tr><td>Estado</td><td>{{ redencion.redencionestado.nombre }}</td></tr>
-            
-          </tbody>
-        </table>
+      <table class="table table-bordered table-striped">
+        <tbody>
+          <tr><td>Programa</td><td>{{ redencion.participante.programa.nombre }}</td></tr>
+          <tr><td>Participante</td><td>{{ redencion.participante.nombre }}</td></tr>
+          <tr><td>Documento</td><td>{{ redencion.participante.documento }}</td></tr>
+          <tr><td>Fecha de solicitud</td><td>{{ redencion.fecha | date("Y-m-d") }}</td></tr>
+          <tr><td>Puntos</td><td>{{ redencion.puntos }}</td></tr>
+          <tr><td>Valor</td><td>{{ redencion.valor }}</td></tr>
+          <tr><td>Codigo</td><td>{{ redencion.codigoredencion }}</td></tr>
+          <tr><td>Estado</td><td>{{ redencion.redencionestado.nombre }}</td></tr>  
+        </tbody>
+      </table>
     </div>
   </div>
   
-  <div class="box span6">
+<div class="box span12">
+  {% set i=0 %}
+  {% for producto in redencion.redencionesproductos %}
+    {% set i = i+1 %}
+    <div class="box span6">
       <div class="box-content">
         <div class="box-header well">
-          <h2></i>Datos Productos</h2>
+          <h2>{% if(redencion.redencionestado.id < 4) %}
+                <a href="{{ path('redenciones_editarproducto') }}/{{ producto.id }}" title="Editar Envio">
+                  <button class="btn btn-primary btn-info">
+                    <i class="icon-barcode icon-white"></i>
+                  </button>
+                </a>
+              {% endif %}
+              Datos Producto {{ i }}
+          </h2>
         </div>
-        {% for producto in redencion.premio.premiosproductos %} 
           <table class="table table-bordered table-striped">
             <tbody>
               <tr><td colspan="2">
-                {% if producto.producto.imagenproducto|length > 0 %}
-                <a href="../../../{{ producto.producto.imagenproducto[0].path| slice (7) }}" target='_blank'><img src="../../../{{( producto.producto.imagenproducto[0].path| slice (7))[:-4]}}_min.jpg"><a>
-                {% endif %}
+                  {% if producto.producto.imagenproducto|length > 0 %}
+                  <a href="../../../{{ producto.producto.imagenproducto[0].path| slice (7) }}" target='_blank'><img src="../../../{{( producto.producto.imagenproducto[0].path| slice (7))[:-4]}}_min.jpg" height="150"><a>
+                  {% endif %}
               </td></tr>
               <tr><td>Sku</td><td>{{ producto.producto.codInc }}</td></tr>
               <tr><td>Nombre</td><td>{{ producto.producto.nombre }}</td></tr>
@@ -75,9 +74,9 @@
               <tr><td>Categoria</td><td>{{ producto.producto.nombre }}</td></tr>
             </tbody>
           </table>
-        {% endfor %}
+      </div>
     </div>
-  </div>
+  {% endfor %}
 </div>
 
 <div class="box span12">
@@ -131,43 +130,6 @@
     </div>
   </div>
 </div>
-
-  <div class="box span12">
-    <div class="box-content">
-      
-        <div class="box-header well">
-        <h2>
-            <a href="">
-              <button class="btn btn-small btn-success" style="display: none;">
-                <i class="icon-plus icon-white"></i>
-              </button>
-            </a>
-          Historico
-        </h2>
-      </div>
-      <table class="table table-bordered table-striped">
-        <thead>
-          <tr>
-            <th>Estado</th>
-            <th>Fecha</th>
-            <th>Orden Compra</th>
-            <th>Observacion</th>
-            <th>Guia</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for datos in historico %} 
-          <tr>
-              <td>{{ datos.redencionestado.nombre }}</td>
-              <td>{{ datos.fecha | date("Y-m-d") }}</td>
-              <td>{% if datos.ordenesproducto is null %}{% else %}{{ datos.ordenesproducto.ordenescompra.consecutivo }}{% endif %}</td>
-              <td>{{ datos.observacion }}</td>
-              <td></td>
-          </tr>         
-          {% endfor %}
-
-    </div>
-  </div>
 
 
 {% endblock %}

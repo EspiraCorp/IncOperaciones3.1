@@ -1,138 +1,142 @@
-{% extends "::base.html.twig" %}
+{% extends '::baseLte.html.twig' %}
 
-{% block title %}Catalogos{% endblock %}
-{% block sidebar %}
-{{ parent() }}
-{% endblock %}
-{% block cuerpo %}
-<div class="row-fluid sortable ui-sortable">
-	<div class="box span12">
-		<div class="box-header well">
-			<h2><i class="icon-th-list"></i>Catalogos</h2>
-      <div class="box-icon"> 
-          <a href="{{ path('catalogo_nuevo') }}" class="btn btn-round" title="Agregar"><i class="icon-plus"></i></a>
-      </div>
-		</div>
-		<div class="box-content">
-			<div id="dashboard">
-          <div id="tabla" class="" cellspacing="0" width="100%">
-                      <table id="catalogos" class="display">
-                        <thead style="display:table-row-group;" >
-                          <tr>
-                            <th>Id</th>
-                            <th>Nombre</th>
-                            <th>Programa</th>
-                            <th>Cliente</th>
-                            <th>Fecha Inicio</th>
-                            <th>Fecha Fin</th>
-                            {% if not is_granted('ROLE_CLI') %}
-                            <th>Valor punto</th>
-                            <th>Puntos maximo</th>
-                            <th>Pais</th>
-                            <th>Estado</th>
-                            {% endif %}
-                          </tr>
+{% block title %}{{ parent() }}::Catálogos De Premios{% endblock %}
+{% block sectiontitle %}<h1>Catálogos<small>Listado de Catálogos</small></h1>{% endblock %}
+{% block breadcum %} <li><a href=""><i class="fa fa-star-o"></i>Catálogos</a></li><li class="active"></li>{% endblock %}
+
+{% block content %}
+  <div class="row">
+        <div class="col-xs-12">
+          <div class="box box-warning">
+            <div class="box-header bg-black">
+              <h3 class="box-title">Catálogos De Premios</h3> 
+              <div class="box-tools pull-right"> 
+                      <a href="{{ path('catalogo_nuevo') }}" title="Crear Catálogo" class="btn btn-success btn-sm"><i class="fa fa-plus"></i></a>
+              </div>
+            </div>
+            <div class="box-body no-padding">
+              <div class="dataTables_wrapper form-inline dt-bootstrap">
+                <div class="row">
+                  <div class="col-sm-12">
+                    <table class="table table-bordered table-striped table-condensed dataTable" id="productos" role="grid">
+                        <thead>
+                          {{ form_start(form, { attr: {novalidate: 'novalidate', class: 'form-horizontal'} }) }}
+                            <tr>
+                                <th class="sorting" tabindex="0" rowspan="1" colspan="1">{{ knp_pagination_sortable(catalogos, 'Id', 'c.id') }}</th>
+                                <th class="sorting" tabindex="0" rowspan="1" colspan="1">{{ knp_pagination_sortable(catalogos, 'Nombre', 'c.nombre') }}</th>
+                                <th class="sorting" tabindex="0" rowspan="1" colspan="1">{{ knp_pagination_sortable(catalogos, 'Programa', 'c.programa') }}</th>
+                                <th class="sorting" tabindex="0" rowspan="1" colspan="1">{{ knp_pagination_sortable(catalogos, 'Cliente', 'c.cliente') }}</th>
+                                <th class="sorting" tabindex="0" rowspan="1" colspan="1">{{ knp_pagination_sortable(catalogos, 'Pais', 'ps.nombre') }}</th>
+                                <th class="sorting" tabindex="0" rowspan="1" colspan="1">{{ knp_pagination_sortable(catalogos, 'Tipo', 'c.catalogotipo') }}</th>
+                                <th class="sorting" tabindex="0" rowspan="1" colspan="1">{{ knp_pagination_sortable(catalogos, 'Fecha Inicio', 'p.fechainicio') }}</th>
+                                <th class="sorting" tabindex="0" rowspan="1" colspan="1">{{ knp_pagination_sortable(catalogos, 'Fecha Fin', 'p.fechafin') }}</th>
+                                <th class="sorting" tabindex="0" rowspan="1" colspan="1">{{ knp_pagination_sortable(catalogos, 'Valor Punto', 'c.valorPunto') }}</th>
+                                <th class="sorting" tabindex="0" rowspan="1" colspan="1">{{ knp_pagination_sortable(catalogos, 'Puntos Max.', 'c.puntosMaximos') }}</th>
+                                <th class="sorting" tabindex="0" rowspan="1" colspan="1">{{ knp_pagination_sortable(catalogos, 'Estado', 'e.nombre') }}</th>
+                                <th colspan="2"></th>
+                            </tr>
+                            <tr>
+                                <th><input type="text" id="catalogo_id" name="catalogosnuevo[id]" style="width: 40px" value="{%if filtros.id is defined %}{{ filtros.id }}{% endif %}" class="form-control input-sm"></th>
+                                <th>{{ form_widget(form.nombre, { 'attr': { 'class' : 'form-control input-sm' }, 'value': filtros.nombre | default("") } ) }}</th>
+                                <th>{{ form_widget(form.programa, { 'attr': { 'class' : 'form-control input-sm' }, 'value': filtros.programa | default("") } ) }}</th>
+                                <th>{{ form_widget(form.nombre, { 'attr': { 'class' : 'form-control input-sm' }, 'value': filtros.nombre | default("") } ) }}</th>
+                                <th>{{ form_widget(form.pais, { 'attr': { 'class' : 'form-control input-sm' }, 'value': filtros.pais | default("") } ) }}</th>
+                                <th>{{ form_widget(form.catalogotipo, { 'attr': { 'class' : 'form-control input-sm' }, 'value': filtros.catalogotipo | default("") } ) }}</th>
+                                <th><input type="text" id="catalogo_id" name="catalogosnuevo[fechainicio]" style="width: 80px" value="{%if filtros.fechainicio is defined %}{{ filtros.fechainicio }}{% endif %}" class="form-control input-sm"></th>
+                                <th><input type="text" id="catalogo_id" name="catalogosnuevo[fechafin]" style="width: 80px" value="{%if filtros.fechafin is defined %}{{ filtros.fechafin }}{% endif %}" class="form-control input-sm"></th>
+                                <th>{{ form_widget(form.valorPunto, { 'attr': { 'class' : 'form-control input-sm' }, 'value': filtros.valorPunto | default("") } ) }}</th>
+                                <th>{{ form_widget(form.puntosMaximos, { 'attr': { 'class' : 'form-control input-sm' }, 'value': filtros.puntosMaximos | default("") } ) }}</th>                                
+                                <th>{{ form_widget(form.estado, { 'attr': { 'class' : 'form-control input-sm' }, 'value': filtros.estado | default("") } ) }}</th>
+                                <th>
+                                  {{ form_widget(form.Enviar, { 'attr': {'class': 'btn btn-primary btn-xs'}, 'label': 'Buscar' }) }}
+                                
+                                  <a class="btn btn-danger btn-xs" title="Limpiar" id="borrar"><i class="fa fa-trash"></i></a>
+                                </th>
+                            </tr>
                         </thead>
                         <tbody>
-                          {% for catalogo in listado %}
-                          <tr>
-                            <td>{{ catalogo.id }}</td>
-                            <td><a href="{{ path("catalogo_datos", {"id": catalogo.id}) }}">{{ catalogo.nombre }}</a></td>
-                            <td>{{ catalogo.programa.nombre }}</td>
-                            <td>{{ catalogo.programa.cliente.nombre }}</td>
-                            <td>{{ catalogo.programa.fechainicio | date("Y-m-d")  }}</td>
-                            <td>{{ catalogo.programa.fechafin | date("Y-m-d") }}</td>
-                            {% if not is_granted('ROLE_CLI') %}
-                            <td>{{ catalogo.valorPunto }}</td>
-                            <td>{{ catalogo.puntosMaximos }}</td>
-                            <td>{{ catalogo.pais.nombre }}</td>
-                            <td>{% if (catalogo.estado.id!=1) %}<a class="btn btn-danger 1" onClick="confirmar('{{ url("catalogo_estado", {"id": catalogo.id}) }}')" href="#">Inactivo</a>{% else %}<a class="btn btn-success 1" onClick="confirmar('{{ url("catalogo_estado", {"id": catalogo.id}) }}')" href="#">Activo</a>{% endif %}</td>
-                            {% endif %}
+                          {% for catalogo in catalogos %}
+                            <tr role="row">
+                              <td><a href="{{ path("catalogo_datos", {"id": catalogo.id}) }}">{{ catalogo.id }}</a></td>
+                              <td>{{ catalogo.nombre }}</td>
+                              <td>{{ catalogo.programa.nombre }}</td>
+                              <td>{{ catalogo.programa.cliente.nombre }}</td>
+                              <td>{{ catalogo.pais.nombre }}</td>
+                              <td>{{ catalogo.catalogotipo.nombre }}</td>
+                              <td>{{ catalogo.programa.fechainicio | date("Y-m-d")  }}</td>
+                              <td>{{ catalogo.programa.fechafin | date("Y-m-d") }}</td>
+                              {% if not is_granted('ROLE_CLI') %}
+                              <td>{{ catalogo.valorPunto }}</td>
+                              <td>{{ catalogo.puntosMaximos }}</td>
+                              
+                              <td>
+                                {% if (catalogo.estado.id!=1) %}<a class="btn btn-danger 1" onClick="confirmar('{{ url("catalogo_estado", {"id": catalogo.id}) }}')" href="#">Inactivo</a>{% else %}<a class="btn btn-success 1" onClick="confirmar('{{ url("catalogo_estado", {"id": catalogo.id}) }}')" href="#">Activo</a>{% endif %}
+                              </td>
+                              {% endif %}
                           </tr>
+                            </tr>
                           {% endfor %}
                         </tbody>
-                         <tfoot style="display: table-header-group;">
-                          <tr>
-                            <th>Id</th>
-                            <th>Nombre</th>
-                            <th>Programa</th>
-                            <th>Cliente</th>
-                            <th>Fecha Inicio</th>
-                            <th>Fecha Fin</th>
-                            {% if not is_granted('ROLE_CLI') %}
-                            <th>Valor punto</th>
-                            <th>Puntos maximo</th>
-                            <th>Pais</th>
-                            <th>Estado</th>
-                            {% endif %}
-                          </tr>
-                        </tfoot>
                       </table>
-                    </div>
-      </div>
-		</div>
-	</div>
-</div>
+                </div>   
+              </div>
+              <div class="row">
+                <div class="col-sm-5"><div class="dataTables_info" role="status" aria-live="polite">Mostrando {{ catalogos.getItemNumberPerPage*(catalogos.getCurrentPageNumber-1)+1  }} a {{ catalogos.getItemNumberPerPage*catalogos.getCurrentPageNumber }} de {{ catalogos.getTotalItemCount }}   Catálogos</div></div>
+
+                <div class="col-sm-7"><div class="dataTables_paginate paging_simple_numbers">
+                {{ knp_pagination_render(catalogos) }}</div></div>
+              </div>
+            </div>
+        </div>
+    </div>
+  </div>
 {% endblock %}
 
-{% block javascripts %}
+{% block javascript %}
 
 {{ parent() }}
 
-	<script type="text/javascript">
- $(document).ready(function() {
-//    inifuntion
- var table = $('#catalogos').dataTable({
-
-            "sDom": 'T<"clear">lfrtip',
-             "bPaginate": true,
-             "bLengthChange": true,
-             "bFilter": true,
-             "bSort": true,
-             "bInfo": false,
-             "bAutoWidth": true,
-             "bJQueryUI": false,
-             "sPaginationType": "full_numbers",
-             "iDisplayLength": 20,
-             "aLengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "Todo"] ],
-              initComplete: function () {
-                    this.api().columns().every( function () {
-                        var column = this;
-                        var select = $('<select style="width: 100%"><option value=""></option></select>')
-                            .appendTo( $(column.footer()).empty() )
-                            .on( 'change', function () {
-                                var val = $.fn.dataTable.util.escapeRegex(
-                                    $(this).val()
-                                );
-         
-                                column
-                                    .search( val ? '^'+val+'$' : '', true, false )
-                                    .draw();
-                            } );
-         
-                        column.data().unique().sort().each( function ( d, j ) {
-                            //limpiar
-                            //d
-                            select.append( '<option value="'+d+'">'+d+'</option>' )
-                        } );
-                    } );
-                }
-    });
-
-})
-  </script>
-
   <script type="text/javascript">
+  
       function confirmar(ruta)
       {
-        if (confirm("Desea cambiar el estado")==true){
+        if (confirm("Desea cambiar el estado del catálogo")==true){
             self.location=ruta;
         }else{
             alert("OK");
         }
         
       }
-  </script>
+ 
+    $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip();  
+    });
+
+
+
+    $(function(){
+        $('#borrar').on('click', function(e){
+            e.preventDefault(); // prevent the default form submit actio
+            var form = document.forms['catalogosnuevo'];
+            var input = document.createElement( "input" );
+            input.setAttribute( "name", "limpiar" );
+            input.setAttribute( "value", "1" );
+            form.appendChild( input );
+            form.submit();
+        });
+    });
+</script>
 
 {% endblock %}
+
+{% block stylesheet %}
+  {{ parent() }}
+  <style>
+    body {
+        width: 135%;
+    }
+  </style>
+
+{% endblock %}
+
 

@@ -11,7 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use PUGX\AutocompleterBundle\Form\Type\AutocompleteType;
 
-class ProductocatalogoProdType extends AbstractType
+class PremioDesdeProductoType extends AbstractType
 {
         /**
      * @param FormBuilderInterface $builder
@@ -19,15 +19,12 @@ class ProductocatalogoProdType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('activo', CheckboxType::class, array(
-            'required' => false
-        ) )
+        /*$builder
             ->add('puntosTemporal')
             ->add('precioTemporal')
             ->add('incrementoTemporal')
             ->add('logisticaTemporal')
-            ->add('agotado');
+            ->add('agotado');*/
             
         $builder->add('catalogos', EntityType::class, array(
             'class' => 'IncentivesCatalogoBundle:Catalogos',
@@ -47,13 +44,6 @@ class ProductocatalogoProdType extends AbstractType
             'label' => 'Subcategoria',
         ));
 
-        /*$builder->add('actualizacion', ChoiceType::class, array(
-            'choices'   => array(
-                0   => 'Automatica',
-                1 => 'Manual',
-            ),
-            'expanded'  => true,
-        ));*/
         $builder->add('Enviar', SubmitType::class);
         
     }
@@ -64,7 +54,7 @@ class ProductocatalogoProdType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Incentives\CatalogoBundle\Entity\Productocatalogo'
+            'data_class' => 'Incentives\CatalogoBundle\Entity\Premios'
         ));
     }
 
@@ -73,6 +63,6 @@ class ProductocatalogoProdType extends AbstractType
      */
     public function getName()
     {
-        return 'productocatalogo';
+        return 'premio';
     }
 }
