@@ -8,8 +8,8 @@
 <div class="row">
 	<div class="col-md-6">
 	    <div class="box box-warning">
-		    	<div class="box-header">
-		    		<h3>Datos Proveedor</h3>
+		    	<div class="box-header bg-black">
+		    		<h3 class="box-title">Datos Proveedor</h3>
 					<div class="box-tools pull-right">
 					{% if (is_granted('ROLE_ADMIN') or is_granted('ROLE_DIR') or is_granted('ROLE_ASIS') or is_granted('ROLE_ASISCOMP')) or is_granted('ROLE_CAT') %}
 						<a href="{{ path('proveedores_editar',  {"id": proveedor.id}) }}" title="Editar proveedor">
@@ -61,8 +61,8 @@
 
 	<div class="col-md-6">
 		<div class="box box-warning">
-			    <div class="box-header">
-					<h3>Documentos</h3>
+			    <div class="box-header bg-black">
+					<h3 class="box-title">Documentos</h3>
 					<div class="box-tools pull-right">
 						<a href="{{ path('proveedores_documentos_carga',  {"id": proveedor.id}) }}" title="Agregar Documento">
 								<button class="btn btn-small btn-success">
@@ -96,8 +96,8 @@
 		
 	<div class="col-md-6">
 		<div class="box box-warning">
-			    <div class="box-header">
-					<h3>Catálogos</h3>
+			    <div class="box-header bg-black">
+					<h3 class="box-title">Catálogos</h3>
 					<div class="box-tools pull-right">
 							<a href="{{ path('proveedores_catalogo_carga',  {"id": proveedor.id}) }}" title="Cargar Catalogo">
 								<button class="btn btn-small btn-success">
@@ -131,8 +131,8 @@
 		
 	<div class="col-md-6">
 		<div class="box box-warning">
-			    <div class="box-header">
-					<h3>Calificación</h3>
+			    <div class="box-header bg-black">
+					<h3 class="box-title">Calificación</h3>
 					<div class="box-tools pull-right">
 					{% if (is_granted('ROLE_ADMIN') or is_granted('ROLE_DIR') or is_granted('ROLE_ASIS') or is_granted('ROLE_ASISCOMP'))  %}
 							<a href="{{ path('proveedores_calificacion',  {"id": proveedor.id}) }}" title="Calificar Proveedor">
@@ -170,8 +170,8 @@
 
 	<div class="col-md-6">
 		<div class="box box-warning">
-			<div class="box-header">
-				<h3>Contactos</h3>
+			<div class="box-header bg-black">
+				<h3 class="box-title">Contactos</h3>
 				<div class="box-tools pull-right">
 					<a href="{{ path('contacto_nuevo',  {"id": proveedor.id}) }}" title="Agregar Contacto">
 						<button class="btn btn-small btn-success">

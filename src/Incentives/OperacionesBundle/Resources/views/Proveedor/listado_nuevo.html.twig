@@ -14,8 +14,7 @@
   <div class="row">
         <div class="col-xs-12">
           <div class="box box-primary">
-            <div class="box-header">
-              <i class="fa fa-users"></i>
+            <div class="box-header bg-black">
               <h3 class="box-title">Proveedores</h3>
               <div class="box-tools pull-right"> 
                 <a href="{{ path('proveedores_importar') }}" title="Carga Masiva" class="btn btn-primary"><i class="fa fa-upload"></i></a>
@@ -46,16 +45,16 @@
                             <th></th>
                           </tr>
                           <tr>
-                            <th><input type="text" id="proveedor_id" name="proveedores[id]" style="width: 40px" value="{%if filtros.id is defined %}{{ filtros.id }}{% endif %}"></th>
-                            <th>{{ form_widget(form.nombre, { 'attr': { 'style' : 'width: 150px' }, 'value': filtros.nombre | default("") } ) }}</th>
-                            <th>{{ form_widget(form.numero_documento, { 'attr': { 'style' : 'width:150px' }, 'value': filtros.numero_documento | default("") } ) }}</th>
-                            <th>{{ form_widget(form.pais, { 'attr': { 'style' : 'width:150px' }, 'value': filtros.pais | default("") } ) }}</th>
-                            <th>{{ form_widget(form.ciudad, { 'attr': { 'style' : 'width:100px' }, 'value': filtros.ciudad | default("") } ) }}</th>
-                            <th>{{ form_widget(form.correo, { 'attr': { 'style' : 'width:100px' },  'value': filtros.correo | default("") } ) }}</th>
+                            <th><input type="text" id="proveedor_id" name="proveedores[id]" class="form-control input-sm"  style="width: 40px" value="{%if filtros.id is defined %}{{ filtros.id }}{% endif %}"></th>
+                            <th>{{ form_widget(form.nombre, { 'attr': { 'class' : 'form-control input-sm' }, 'value': filtros.nombre | default("") } ) }}</th>
+                            <th>{{ form_widget(form.numero_documento, { 'attr': { 'class' : 'form-control input-sm'  }, 'value': filtros.numero_documento | default("") } ) }}</th>
+                            <th>{{ form_widget(form.pais, { 'attr': { 'class' : 'form-control input-sm'  }, 'value': filtros.pais | default("") } ) }}</th>
+                            <th>{{ form_widget(form.ciudad, { 'attr': { 'class' : 'form-control input-sm' }, 'value': filtros.ciudad | default("") } ) }}</th>
+                            <th>{{ form_widget(form.correo, { 'attr': { 'class' : 'form-control input-sm' },  'value': filtros.correo | default("") } ) }}</th>
                             <th></th>
                             <th></th>
                             <th></th>
-                            <th>{{ form_widget(form.estado, { 'attr': { 'style' : 'width:80px' },  'value': filtros.estado | default('1') } ) }}</th>
+                            <th>{{ form_widget(form.estado, { 'attr': { 'class' : 'form-control input-sm' },  'value': filtros.estado | default('1') } ) }}</th>
                             <th>{{ form_widget(form.Enviar, { 'attr': {'class': 'btn btn-primary'} }) }}</th>
                           </tr>
                         </thead>

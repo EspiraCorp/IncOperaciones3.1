@@ -80,8 +80,8 @@ class ProveedoresFiltroType extends AbstractType
         $builder->add('estado', EntityType::class, array(
             'class' => 'IncentivesCatalogoBundle:Estados',
             'choice_label' => 'nombre',
-            'empty_data' => 'Seleccione una opcion',
             'label' => 'Estado',
+            'placeholder' => 'Seleccionar',
             'data' => $this->estado_id,
         ));
 
