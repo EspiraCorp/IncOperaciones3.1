@@ -27,6 +27,10 @@ use PHPExcel_Writer_Excel2007;
 use PHPExcel_Cell_DataValidation;
 use PHPExcel_Style_Fill;
 
+ini_set('max_execution_time', 300); 
+ini_set('memory_limit','512M');
+ini_set("upload_max_filesize","20M");
+
 class SolicitudesController extends Controller
 {
     
@@ -294,7 +298,7 @@ class SolicitudesController extends Controller
         $convocatoria = $em->getRepository('IncentivesOperacionesBundle:Convocatorias')->find($id);
 
         // Create the Transport
-        $transport = \Swift_SmtpTransport::newInstance('smtp.office365.com', 25, 'tls')
+        $transport = \Swift_SmtpTransport::newInstance('smtp.office365.com', 587, 'tls')
           ->setAuthMode('login')
           ->setUsername('operaciones@inc-group.co')
           ->setPassword('IncGroup2016!')
@@ -378,18 +382,13 @@ class SolicitudesController extends Controller
 
             $form->handleRequest($request);
 
-            if ($form->isValid()) {
-                $em = $this->getDoctrine()->getManager();
-                    
+            //if ($form->isValid()) {
+                $em = $this->getDoctrine()->getManager();                    
                     
                 //Archivo
                 $file = $form["archivo"]->getData();
                 
                 $extension = $file->guessExtension();
-                if (!$extension) {
-                    // extension cannot be guessed
-                    $extension = 'bin';
-                }
 
                 $rootDir = dirname($this->container->getParameter('kernel.root_dir'));
                 $Dir = '/web/Archivos/Convocatorias/';
@@ -408,8 +407,9 @@ class SolicitudesController extends Controller
 
                 $em->persist($archivo);
                 $em->flush();
+
                 return $this->redirect($this->generateUrl('solicitudes_datos')."/".$solicitud);
-            }
+            //}
 
         }
 
@@ -543,6 +543,25 @@ class SolicitudesController extends Controller
         return $this->redirect($this->generateUrl('solicitudes_datos')."/".$solicitud->getId());
     }
 
+     public function despachoEstadoAction($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $ordenDespacho = $em->getRepository('IncentivesSolicitudesBundle:DespachoOrdenes')->find($id);
+        $solicitud = $em->getRepository('IncentivesSolicitudesBundle:Solicitud')->find($ordenDespacho->getSolicitud()->getId());
+
+        if ($ordenDespacho->getEstado()->getId() == 1){
+            $estado = $em->getRepository('IncentivesCatalogoBundle:Estados')->find(2);
+            $ordenDespacho->setEstado($estado);
+        }else{
+            $estado = $em->getRepository('IncentivesCatalogoBundle:Estados')->find(1);
+            $ordenDespacho->setEstado($estado);
+        }       
+        $em->flush();
+        
+        return $this->redirect($this->generateUrl('solicitudes_datos')."/".$solicitud->getId());
+    }
+
 
     public function cerrarAction($id){
         
@@ -610,11 +629,12 @@ class SolicitudesController extends Controller
         }
 
         // Create the Transport
-        $transport = \Swift_SmtpTransport::newInstance('smtp.office365.com', 25, 'tls')
+        $transport = \Swift_SmtpTransport::newInstance('smtp.office365.com', 587, 'tls')
           ->setAuthMode('login')
           ->setUsername('operaciones@inc-group.co')
           ->setPassword('IncGroup2016!')
-          ;
+          //->setSourceIp('x.x.x.x') //replace x with your ip address
+          ->setLocalDomain('inc-group.co');
 
         $template = 'IncentivesSolicitudesBundle:Solicitudes:email.txt.twig';
         $subjet = 'Solicitudes - Notificación';

@@ -138,7 +138,7 @@
 		    		<tr>
 		    			<td><a href="{{asset(ordenDespacho.archivo | slice (5))}}" target="_blank">{{ ordenDespacho.archivo  }}</a></td>
 		    			<td width="150px">{% if (ordenDespacho.fechaModificacion != null) %} {{ordenDespacho.fechaModificacion | date("Y-m-d") }} {% endif %}</td>
-		    			<td>{% if (ordenDespacho.estado.id!=1) %}<a class="btn btn-danger 1" onClick="confirmar('{{ url("solicitud_archivo_estado", {"id": ordenDespacho.id}) }}')" href="#">Inactivo</a>{% else %}<a class="btn btn-success 1" onClick="confirmar('{{ url("solicitud_archivo_estado", {"id": ordenDespacho.id}) }}')" href="#">Activo</a>{% endif %}</td>
+		    			<td>{% if (ordenDespacho.estado.id!=1) %}<a class="btn btn-danger 1" onClick="confirmar('{{ url("solicitud_despacho_estado", {"id": ordenDespacho.id}) }}')" href="#">Inactivo</a>{% else %}<a class="btn btn-success 1" onClick="confirmar('{{ url("solicitud_despacho_estado", {"id": ordenDespacho.id}) }}')" href="#">Activo</a>{% endif %}</td>
 		    		</tr>
 		    	{% endfor %}
 		    	</table>
@@ -289,7 +289,7 @@
 			    	<div class="box-content">
 				    	<div class="box-header well">
 							<h2>
-							{% if (is_granted('ROLE_DIR') or is_granted('ROLE_ASIS') or is_granted('ROLE_ASISCOMP')) %}
+							{% if (is_granted('ROLE_DIR') or is_granted('ROLE_ASIS') or is_granted('ROLE_ASISCOMP'))  or is_granted('ROLE_LOGIS') %}
 								{% if (solicitud.estado.id == 2) %}
 								<a href="{{ path('cotizaciones_nueva') }}/{{ solicitud.id }}">
 									<button class="btn btn-primary">
@@ -327,7 +327,7 @@
 	    	<div class="box-content">
 		    	<div class="box-header well">
 					<h2>
-					{% if is_granted('ROLE_DIR') or is_granted('ROLE_ASIS') or is_granted('ROLE_ASISCOMP') %}
+					{% if is_granted('ROLE_DIR') or is_granted('ROLE_ASIS') or is_granted('ROLE_ASISCOMP')  or is_granted('ROLE_LOGIS') %}
 						{% if (solicitud.estado.id == 2) %}
 						<a href="{{ path('ordenes_nueva_solicitud') }}/{{ solicitud.id }}">
 							<button class="btn btn-primary">
@@ -367,7 +367,7 @@
 		    	<div class="box-content">
 			    	<div class="box-header well">
 					<h2>
-						{% if (is_granted('ROLE_DIR') or is_granted('ROLE_ASIS') or is_granted('ROLE_ASISCOMP')) %}
+						{% if (is_granted('ROLE_DIR') or is_granted('ROLE_ASIS') or is_granted('ROLE_ASISCOMP'))  or is_granted('ROLE_LOGIS') %}
 							{% if (solicitud.estado.id == 2) %}
 							<a href="{{ path('requisiciones_nueva') }}/{{ solicitud.id }}">
 								<button class="btn btn-primary">

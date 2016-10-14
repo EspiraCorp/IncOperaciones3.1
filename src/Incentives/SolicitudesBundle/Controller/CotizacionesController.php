@@ -262,8 +262,8 @@ class CotizacionesController extends Controller
                     
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
-            $valores = $request->get('cotizacionesproducto');
-
+            $valores = $request->request->all()['cotizaciones_producto_cantidad'];
+            
             if ($form->isValid()) {
 
                 //actualiza valores
@@ -300,7 +300,8 @@ class CotizacionesController extends Controller
                     
         if ($request->isMethod('POST')) {
            // $form->handleRequest($request);
-                $valores = $request->get('cotizacionesproducto');
+           
+                $valores = $request->request->all()['cotizaciones_producto_cantidad'];
                 
                 $estado = $em->getRepository('IncentivesOrdenesBundle:OrdenesEstado')->find(2);
 
@@ -308,6 +309,7 @@ class CotizacionesController extends Controller
                 $productos->setEstado($estado);
                 $productos->setCantidad($valores['cantidad']);
                 $productos->setValortotal($productos->getValorunidad()/(1-($productos->getIncremento()/100))*$valores['cantidad']);
+                $productos->setFechaAprobacion(date_create("now"));
                 $em->persist($productos);
                 $em->flush();
                 
@@ -455,7 +457,7 @@ class CotizacionesController extends Controller
         }
 
         // Create the Transport
-        $transport = \Swift_SmtpTransport::newInstance('smtp.office365.com', 25, 'tls')
+        $transport = \Swift_SmtpTransport::newInstance('smtp.office365.com', 587, 'tls')
           ->setAuthMode('login')
           ->setUsername('operaciones@inc-group.co')
           ->setPassword('IncGroup2016!')
@@ -577,7 +579,7 @@ class CotizacionesController extends Controller
         }
 
         // Create the Transport
-        $transport = \Swift_SmtpTransport::newInstance('smtp.office365.com', 25, 'tls')
+        $transport = \Swift_SmtpTransport::newInstance('smtp.office365.com', 587, 'tls')
           ->setAuthMode('login')
           ->setUsername('operaciones@inc-group.co')
           ->setPassword('IncGroup2016!')

@@ -47,6 +47,12 @@ solicitud_archivo_estado:
     defaults: { _controller: IncentivesSolicitudesBundle:Solicitudes:archivoEstado, id: null }
     requirements:
         id:  \d+
+
+solicitud_despacho_estado:
+    path:  /solicitud/despacho/estado/{id}
+    defaults: { _controller: IncentivesSolicitudesBundle:Solicitudes:despachoEstado, id: null }
+    requirements:
+        id:  \d+
         
 solicitud_cerrar:
     path:  /solicitud/cerrar/{id}

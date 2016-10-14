@@ -31,7 +31,7 @@ class DespachoOrdenes
 
      /**
      * 
-     * @ORM\ManyToOne(targetEntity="Solicitud", inversedBy="archivos", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="Solicitud")
      * @ORM\JoinColumn(name="solicitud_id", referencedColumnName="id", nullable=true)
      * 
      */

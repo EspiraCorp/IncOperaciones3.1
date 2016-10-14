@@ -98,6 +98,13 @@ class  CotizacionProducto
     /**
      * @var \DateTime
      *
+     * @ORM\Column(name="fechaAprobacion", type="datetime", nullable=true)
+     */
+    private $fechaAprobacion;
+
+    /**
+     * @var \DateTime
+     *
      * @ORM\Column(name="fechaModificacion", type="datetime", nullable=true)
      */
     private $fechaModificacion;
@@ -412,5 +419,29 @@ class  CotizacionProducto
     public function getFacturaProducto()
     {
         return $this->facturaProducto;
+    }
+
+    /**
+     * Set fechaAprobacion
+     *
+     * @param \DateTime $fechaAprobacion
+     *
+     * @return CotizacionProducto
+     */
+    public function setFechaAprobacion($fechaAprobacion)
+    {
+        $this->fechaAprobacion = $fechaAprobacion;
+
+        return $this;
+    }
+
+    /**
+     * Get fechaAprobacion
+     *
+     * @return \DateTime
+     */
+    public function getFechaAprobacion()
+    {
+        return $this->fechaAprobacion;
     }
 }
