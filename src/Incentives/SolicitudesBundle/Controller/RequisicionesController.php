@@ -129,6 +129,45 @@ class RequisicionesController extends Controller
             'form' => $form->createView(), 'id' => $id
         ));
     }
+
+    public function editarProductoAction(Request $request, $id)
+    {        
+        $em = $this->getDoctrine()->getManager();
+
+        $requisicionproducto  = $em->getRepository('IncentivesSolicitudesBundle:RequisicionProducto')->find($id);
+
+        $form = $this->createForm(RequisicionProductoAgregarType::class, $requisicionproducto);
+                    
+        if ($request->isMethod('POST')) {
+            $form->handleRequest($request);
+
+            if ($form->isValid()) {
+                // realiza alguna acción, tal como guardar la tarea en la base de datos
+                
+                $pro = $request->request->all();
+                
+                $producto = $em->getRepository('IncentivesCatalogoBundle:Producto')->find($pro['requisicion_producto_agregar']['producto']);
+                $requisicionproducto->setCantidad($pro['requisicion_producto_agregar']["cantidad"]);
+                $requisicionproducto->setValorunidad($pro['requisicion_producto_agregar']["valorunidad"]);
+                $requisicionproducto->setValortotal($pro['requisicion_producto_agregar']["valorunidad"]/(1 - ($pro['requisicion_producto_agregar']["incremento"]/100))*$pro['requisicion_producto_agregar']["cantidad"]);
+                $requisicionproducto->setLogistica($pro['requisicion_producto_agregar']["logistica"]);
+                $requisicionproducto->setIncremento($pro['requisicion_producto_agregar']["incremento"]);
+                $requisicionproducto->setProducto($producto);
+
+                $em->persist($requisicionproducto);
+                $em->flush();
+
+                //$this->pdfAction($id);
+
+                return $this->redirect($this->generateUrl('requisiciones_datos').'/'.$requisicionproducto->getRequisicion()->getId());
+
+            }
+        }           
+
+        return $this->render('IncentivesSolicitudesBundle:Requisiciones:editarProducto.html.twig', array(
+            'form' => $form->createView(), 'id' => $id
+        ));
+    }
     
     
     public function editarValoresAction(Request $request, $id)
@@ -234,29 +273,29 @@ class RequisicionesController extends Controller
     public function pdfAction($id)
     {
         $em = $this->getDoctrine()->getManager();
-        $cotizacion = $em->getRepository('IncentivesSolicitudesBundle:Cotizacion')->find($id);
-        $productos = $em->getRepository('IncentivesSolicitudesBundle:CotizacionProducto')->findByCotizacion($cotizacion->getId());
+        $requisicion = $em->getRepository('IncentivesSolicitudesBundle:Requisicion')->find($id);
+        $productos = $em->getRepository('IncentivesSolicitudesBundle:RequisicionProducto')->findByRequisicion($requisicion->getId());
         
 
-        $html = $this->render('IncentivesSolicitudesBundle:Cotizaciones:pdf.html.twig', array(
-            'cotizacion' => $cotizacion, 'productos' => $productos,
+        $html = $this->render('IncentivesSolicitudesBundle:Requisiciones:pdf.html.twig', array(
+            'requisicion' => $requisicion, 'productos' => $productos,
         ));
 
 
         
         $rootDir = dirname($this->container->getParameter('kernel.root_dir'));
-        $Dir = '/web/Cotizaciones/';
+        $Dir = '/web/Requisiciones/';
         $uploadDir = $rootDir.$Dir;
 
         $dompdf = new DOMPDF();
         $dompdf->load_html($html,'UTF-8');
         $dompdf->render();
         $pdf = $dompdf->output();
-        file_put_contents($uploadDir.$cotizacion->getConsecutivo().".pdf", $pdf);
-        $cotizacion->setRutapdf($Dir.$cotizacion->getConsecutivo().".pdf");
+        file_put_contents($uploadDir.$requisicion->getConsecutivo().".pdf", $pdf);
+        $requisicion->setRutapdf($Dir.$requisicion->getConsecutivo().".pdf");
         $em->flush();
 
-        return $uploadDir.$cotizacion->getConsecutivo().".pdf";
+        return $uploadDir.$requisicion->getConsecutivo().".pdf";
 
     }
     
@@ -280,10 +319,10 @@ class RequisicionesController extends Controller
         }
 
         // Create the Transport
-        $transport = \Swift_SmtpTransport::newInstance('mail.sociosyamigos.com', 25)
+        $transport = \Swift_SmtpTransport::newInstance('email-smtp.us-east-1.amazonaws.com', 25)
           ->setAuthMode('login')
-          ->setUsername('pruebas@sociosyamigos.com')
-          ->setPassword('7d7_r47@fqxo')
+          ->setUsername('AKIAJAETNFKDQJKWT64Q')
+          ->setPassword('Aq29dWq2pKC+XhNaMGa1kG+vwjmNKBxbz7JJ4R1cRqjt')
           ;
 
           $template = 'IncentivesSolicitudesBundle:Cotizaciones:emailAprobacion.txt.twig';
@@ -402,10 +441,10 @@ class RequisicionesController extends Controller
         }
 
         // Create the Transport
-        $transport = \Swift_SmtpTransport::newInstance('mail.sociosyamigos.com', 25)
+        $transport = \Swift_SmtpTransport::newInstance('email-smtp.us-east-1.amazonaws.com', 25)
           ->setAuthMode('login')
-          ->setUsername('pruebas@sociosyamigos.com')
-          ->setPassword('7d7_r47@fqxo')
+          ->setUsername('AKIAJAETNFKDQJKWT64Q')
+          ->setPassword('Aq29dWq2pKC+XhNaMGa1kG+vwjmNKBxbz7JJ4R1cRqjt')
           ;
 
           $template = 'IncentivesSolicitudesBundle:Cotizaciones:email.txt.twig';

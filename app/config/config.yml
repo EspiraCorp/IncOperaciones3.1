@@ -36,6 +36,10 @@ framework:
 twig:
     debug:            "%kernel.debug%"
     strict_variables: "%kernel.debug%"
+    number_format:
+        decimals: 2
+        decimal_point: ','
+        thousands_separator: '.'
 
 # Doctrine Configuration
 doctrine:
@@ -90,6 +94,10 @@ services:
         arguments: ["@service_container"]
         tags:
             - { name: doctrine.event_listener, event: preUpdate }
+
+    my_mailer:
+        class:  Incentives\BaseBundle\Correos
+        arguments:    [servicio]
 
 simple_things_entity_audit:
     audited_entities:

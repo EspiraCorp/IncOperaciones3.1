@@ -134,6 +134,10 @@ inventario_exportar_detalle:
     path:  /inventario/reportedetalle
     defaults: { _controller: IncentivesInventarioBundle:Inventario:reporteDetalle }
 
+inventario_redenciones_disponibles:
+    path:  /inventario/redencionesDipsonibles
+    defaults: { _controller: IncentivesInventarioBundle:Inventario:redencionesDipsonibles }
+
 planilla_agregar:
     path:  /planilla/agregar/{planilla}/{producto}
     defaults: { _controller: IncentivesInventarioBundle:Inventario:planillagregar, planilla: null, producto: null }
@@ -145,3 +149,11 @@ logistica_despacho_solicitudes:
 logistica_importar_guias:
     path:  /logistica/importarguias
     defaults: { _controller: IncentivesInventarioBundle:Logistica:importarGuias}
+
+logistica_imagen_aexpress:
+    path:  /logistica/aexpressimagen/{guia}
+    defaults: { _controller: IncentivesInventarioBundle:Logistica:imagenAexpress, guia: null }
+
+logistica_procesar_aexpress:
+    path:  /logistica/aexpresprocesar
+    defaults: { _controller: IncentivesInventarioBundle:Logistica:procesarAexpress }

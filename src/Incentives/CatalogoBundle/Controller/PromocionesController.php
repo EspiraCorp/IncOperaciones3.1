@@ -11,10 +11,12 @@ use Incentives\CatalogoBundle\Entity\Programa;
 use Incentives\CatalogoBundle\Form\Type\ProgramaType;
 use Incentives\CatalogoBundle\Entity\Catalogos;
 use Incentives\CatalogoBundle\Entity\Intervalos;
+use Incentives\CatalogoBundle\Entity\Promociones;
 use Incentives\CatalogoBundle\Form\Type\IntervalosType;
 use Incentives\CatalogoBundle\Form\Type\CatalogosType;
 use Incentives\CatalogoBundle\Form\Type\CatalogosnuevoType;
 use Incentives\CatalogoBundle\Form\Type\ProductoType;
+use Incentives\CatalogoBundle\Form\Type\PromocionesType;
 
 use PHPExcel;
 use PHPExcel_IOFactory;
@@ -28,130 +30,100 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class PromocionesController extends Controller
 {
-    /**
-     * @Route("/catalogo/nuevo")
-     * @Template()
-     */
-    public function nuevoAction(Request $request, $id)
+
+    public function nuevoAction(Request $request, $premio)
     {
         $em = $this->getDoctrine()->getManager();
-        $catalogo = new Catalogos();
-        if (isset($id)){
-            $programa = $em->getRepository('IncentivesCatalogoBundle:Programa')->find($id);
-            $form = $this->createForm(CatalogosType::class, $catalogo);
-        }else{
-            $programa = new Programa();
-            $form = $this->createForm(CatalogosnuevoType::class, $catalogo);
-        }        
+        $promocion = new Promociones();
+        $form = $this->createForm(PromocionesType::class);      
                     
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
 
             if ($form->isValid()) {
-                $id=($request->request->get('id'));
-                if ($id==0){
-                    $id=$catalogo->getPrograma()->getId();
-                }
-                $programa = $em->getRepository('IncentivesCatalogoBundle:Programa')->find($id);
-                $catalogo->setPrograma($programa);
+                $pro= $request->request->all()['promociones'];
+                //print_r($pro); exit;
+
+                $premio = $em->getRepository('IncentivesCatalogoBundle:Premios')->find($premio);
                 $estado = $em->getRepository('IncentivesCatalogoBundle:Estados')->find(1);
-                $catalogo->setEstado($estado);
-                $em->persist($catalogo);
+
+                $promocion->setNombre($pro['nombre']);
+                $promocion->setDescripcion($pro['descripcion']);
+                $promocion->setCantidad($pro['cantidad']);
+                $promocion->setDisponibles($pro['cantidad']);
+                $promocion->setPuntos($pro['puntos']);
+                $promocion->setFechaInicio(new \DateTime($pro['fechaInicio']));
+                $promocion->setFechaFin(new \DateTime($pro['fechaFin']));
+                $promocion->setPremio($premio);
+                $promocion->setEstado($estado);
+
+                $em->persist($promocion);
 
                 $em->flush();
 
-                return $this->redirect($this->generateUrl('programa_datos').'/'.$id);
+                return $this->redirect($this->generateUrl('promociones_datos').'/'.$promocion->getId());
             }
         }          
-        if ($id!=0){
-            return $this->render('IncentivesCatalogoBundle:Catalogos:nuevo.html.twig', array(
-                'form' => $form->createView(), 'id'=>$id
-            ));
-        }else{
-            return $this->render('IncentivesCatalogoBundle:Catalogos:nuevo1.html.twig', array(
-                'form' => $form->createView(), 'id'=>$id
-            ));
-        }
+        
+        return $this->render('IncentivesCatalogoBundle:Promociones:nuevo.html.twig', array(
+                'form' => $form->createView(), 'premio'=>$premio ));
     }
 
-    /**
-     * @Route("/catalogo/editar")
-     * @Template()
-     */
-    public function editarAction(Request $request, $id)
+    public function editarAction(Request $request, $promocion)
     {
         $em = $this->getDoctrine()->getManager();
-
-        if (isset($id)){
-            $catalogo = $em->getRepository('IncentivesCatalogoBundle:Catalogos')->find($id);
-            $form = $this->createForm(CatalogosType::class, $catalogo);
-        }else{
-            $form = $this->createForm(CatalogosType::class);
-            $catalogo = new Catalogos();
-        }
-
+        $promocion = $em->getRepository('IncentivesCatalogoBundle:Promociones')->find($promocion);
+        $form = $this->createForm(PromocionesType::class, $promocion);      
+                    
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
 
+            if ($form->isValid()) {
+                $pro= $request->request->all()['promociones'];
+                //print_r($pro); exit;
 
-            if ($form->isValid()) {                
-                $pro=($request->request->get('catalogos'));
-                $id=($request->request->get('id'));
-                $catalogo = $em->getRepository('IncentivesCatalogoBundle:Catalogos')->find($id);
-                $catalogo->setNombre($pro["nombre"]);
-                $catalogo->setDescripcion($pro["descripcion"]);
-                $catalogo->setValorpunto($pro["valorPunto"]);
-                
-                $tipo = $em->getRepository('IncentivesCatalogoBundle:Catalogotipo')->find($pro["catalogotipo"]);
-                $catalogo->setCatalogotipo($tipo);
+                $promocion->setNombre($pro['nombre']);
+                $promocion->setDescripcion($pro['descripcion']);
+                $promocion->setCantidad($pro['cantidad']);
+                $promocion->setPuntos($pro['puntos']);
+                $disponibles = $pro['cantidad'] - $promocion->getRedimidos();;
+                $promocion->setDisponibles($disponibles);
+                $promocion->setFechaInicio(new \DateTime($pro['fechaInicio']));
+                $promocion->setFechaFin(new \DateTime($pro['fechaFin']));
 
-                $em->persist($catalogo);   
+                $em->persist($promocion);
+
                 $em->flush();
 
-                //$conn = $this->get('database_connection'); 
-
-                //$excelcar = $conn->insert('Programa', array('fechainicio' => date($pro["fechainicio"]["year"]."-". $pro["fechainicio"]["month"]."-".$pro["fechainicio"]["day"])));
-
-                return $this->redirect($this->generateUrl('catalogo_datos').'/'.$id);
+                return $this->redirect($this->generateUrl('promociones_datos').'/'.$promocion->getId());
             }
-        }
-
-
-        return $this->render('IncentivesCatalogoBundle:Catalogos:editar.html.twig', array(
-            'form' => $form->createView(), 'catalogo' => $catalogo, 'id'=>$id,
-        ));
-    }
-
-    /**
-     * @Route("/catalogo/datos/{id}")
-     * @Template()
-     */
-    public function datosAction($id)
-    {
-        $repositoryca = $this->getDoctrine()
-            ->getRepository('IncentivesCatalogoBundle:Catalogos');
-
-        $catalogo = $repositoryca->find($id);
+        }          
         
-        $repositoryInt = $this->getDoctrine()
-            ->getRepository('IncentivesCatalogoBundle:Intervalos');
-
-        $intervalos = $repositoryInt->findByCatalogos($id);
-
-		$galeria = 0;
-        if ($this->get('security.authorization_checker')->isGranted('ROLE_CLI')) {
-            $cliente =  $this->getUser()->getCliente()->getId();      
-            if($cliente==28) $galeria = 1;
-        }
-
-        return $this->render('IncentivesCatalogoBundle:Catalogos:datos.html.twig', 
-            array( 'id'=>$id, 'catalogo'=>$catalogo, 'intervalos' => $intervalos, 'galeria' => $galeria));
+        return $this->render('IncentivesCatalogoBundle:Promociones:editar.html.twig', array(
+                'form' => $form->createView(), 'promocion'=>$promocion ));
     }
 
-    /**
-     * @Route("/catalogo")
-     * @Template()
-     */
+    public function datosAction($promocion)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $query = $em->createQueryBuilder()
+                ->select('promo','pr','prp','p','ct','e') 
+                ->from('IncentivesCatalogoBundle:Promociones', 'promo')
+                ->leftJoin('promo.premio','pr')
+                ->leftJoin('pr.premiosproductos','prp')
+                ->leftJoin('prp.producto','p')
+                ->leftJoin('pr.catalogos','ct')
+                ->leftJoin('promo.estado','e')
+                ->where('promo.id='.$promocion);
+
+        $promocion = $query->getQuery()->getOneOrNullResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
+        //echo "<pre>"; print_r($promocion); echo "</pre>"; exit;
+        return $this->render('IncentivesCatalogoBundle:Promociones:datos.html.twig', 
+            array('promocion' => $promocion));
+    }
+
+
     public function listadoAction()
     {
         $em = $this->getDoctrine()->getManager();
@@ -180,39 +152,47 @@ class PromocionesController extends Controller
             array('listado' => $listado));
     }
 
-    /**
-     * @Route("/catalogo/estado/{id}")
-     * @Template()
-     */
-    public function estadoAction($id)
+
+    public function listadoCatalogoAction($catalogo)
     {
         $em = $this->getDoctrine()->getManager();
 
-        $catalogo = $em->getRepository('IncentivesCatalogoBundle:Catalogos')->find($id);
+        $query = $em->createQueryBuilder()
+                ->select('promo','pr','prp','p','e') 
+                ->from('IncentivesCatalogoBundle:Promociones', 'promo')
+                ->leftJoin('promo.premio','pr')
+                ->leftJoin('pr.premiosproductos','prp')
+                ->leftJoin('prp.producto','p')
+                ->leftJoin('promo.estado','e')
+                ->orderBy("promo.estado");
 
-        if ($catalogo->getEstado()->getId() == 1){
+        $promociones = $query->getQuery()->getResult();
+
+        return $this->render('IncentivesCatalogoBundle:Promociones:listadoCatalogo.html.twig', 
+            array('promociones' => $promociones, 'catalogo' => $catalogo));
+    }
+
+    public function estadoAction($promocion)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $promocion = $em->getRepository('IncentivesCatalogoBundle:Promociones')->find($promocion);
+
+        if ($promocion->getEstado()->getId() == 1){
             $estado = $em->getRepository('IncentivesCatalogoBundle:Estados')->find(2);
-            $catalogo->setEstado($estado);
-            
-            //inhabilitar de todos los catalogos
-            $repositorypc = $this->getDoctrine()->getRepository('IncentivesCatalogoBundle:Productocatalogo');
-            $productocatalogo = $repositorypc->findByCatalogos($id);
-            
-            foreach($productocatalogo as $keyP => $valueP){
-                
-                $valueP->setActivo(0);
-                $em->persist($valueP);
-                $em->flush();
-                
-            }
+            $promocion->setEstado($estado);
             
         }else{
+
             $estado = $em->getRepository('IncentivesCatalogoBundle:Estados')->find(1);
-            $catalogo->setEstado($estado);
-        }       
+            $promocion->setEstado($estado);
+        
+        }
+
+        $em->persist($promocion);
         $em->flush();
        
-        return $this->redirect($this->generateUrl('catalogo'));
+        return $this->redirect($this->generateUrl('promociones_datos').'/'.$promocion->getId());
     }
     
 }

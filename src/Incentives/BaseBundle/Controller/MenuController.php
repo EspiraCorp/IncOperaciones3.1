@@ -39,6 +39,7 @@ class MenuController extends Controller
         $str .= " AND m.estado=1 AND m.tipo=3";
         $qb->where($str);
         $qb->orderBy("m.orden");
+        $qb->AddOrderBy("op.orden");
         
         $menu =  $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
         //echo "<pre>"; print_r($menu); echo "</pre>"; exit;

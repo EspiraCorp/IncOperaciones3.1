@@ -48,7 +48,6 @@ class ProveedorController extends Controller
         // crea una task y le asigna algunos datos ficticios para este ejemplo
         
         $proveedor = new Proveedores();
-        $contacto = new Contacto();
         $usuario = new Usuario();
 
         $form = $this->createForm(ProveedoresType::class, $proveedor);
@@ -57,16 +56,8 @@ class ProveedorController extends Controller
 
             $form->handleRequest($request);
 
-            if ($form->isValid()) {
-                $em = $this->getDoctrine()->getManager();
-                // realiza alguna acción, tal como guardar la tarea en la base de datos
-                if (0 != count($proveedor->getContactos())) {
-                    foreach ($proveedor->getContactos() as $contacto) {
-                        $contacto->setProveedor($proveedor);
-                        $proveedor->addContacto($contacto);
-                        $em->persist($contacto);
-                    }
-                }    
+            //if ($form->isValid()) {
+                $em = $this->getDoctrine()->getManager();    
                     
                 $pro = $request->request->all()['proveedores'];
 
@@ -135,8 +126,7 @@ class ProveedorController extends Controller
 			      	//throw new \Exception('Ya existe un registro con el número de identificación y/o correo digitados.');
 			       	$this->get('session')->getFlashBag()->add('warning','Ya existe un registro con el número de identificación digitado.');
 			    }
-
-			}
+			//}
 		}            
 
         return $this->render('IncentivesOperacionesBundle:Proveedor:nuevo.html.twig', array(
@@ -303,6 +293,7 @@ class ProveedorController extends Controller
 	    $qb->leftJoin('p.pais','ps');
 	    $qb->leftJoin('p.estado','e');
 	    $qb->leftJoin('p.ciudad','c');
+	    $qb->orderBy('p.nombre');
 	    $qb->where($sqlFiltro);
 	    
 		$repositoryp = $this->getDoctrine()
@@ -456,9 +447,9 @@ class ProveedorController extends Controller
 				$extension = 'bin';
 			    }
 
-			    if ($extension!='pdf') {
+			    if ($extension!='pdf' && $extension!='jpg' && $extension!='jpeg' && $extension!='png') {
 			        throw $this->createNotFoundException(
-			            'Solo se aceptan archivos tipo pdf.'
+			            'Solo se aceptan archivos tipo pdf, jpg y png.'
 			        );
 			    }
 			    
@@ -1281,13 +1272,13 @@ public function exportarAction()
 
     public function calificacionAction(Request $request, $id)
     {
-    	if ($this->get('security.authorization_checker')->isGranted('ROLE_USER')) {
-            $user =  $this->getUser();
-      	}
     	$em = $this->getDoctrine()->getManager();
     	$proveedor = $em->getRepository('IncentivesOperacionesBundle:Proveedores')->find($id);
      	$calificacion = new ProveedoresCalificacion();
      	$calificacion->setFecha(date_create("now"));
+
+		if($this->container->get('security.token_storage')->getToken()) $user = $this->container->get('security.token_storage')->getToken()->getUser();
+
      	$calificacion->setUsuario($user);
      	$calificacion->setEstado("0");
 

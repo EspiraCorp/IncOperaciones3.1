@@ -5,6 +5,8 @@ namespace Incentives\FacturacionBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 use PHPExcel;
 use PHPExcel_IOFactory;
@@ -15,6 +17,9 @@ use PHPExcel_Style_Fill;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
+ini_set('max_execution_time', 300); 
+ini_set('memory_limit','512M');
+
 class RentabilidadController extends Controller
 {
 
@@ -23,13 +28,13 @@ class RentabilidadController extends Controller
         $repository = $this->getDoctrine()
             ->getRepository('IncentivesCatalogoBundle:Programa');
 
-        $listado= $repository->findAll();
+        $listado= $repository->findByEstado(1);
 
         return $this->render('IncentivesFacturacionBundle:Rentabilidad:listado.html.twig', 
             array('listado' => $listado));
     }
 
-    public function rentabilidadProgramaAction($id)
+    public function rentabilidadProgramaAction(Request $request, $id)
     {
 
         $em = $this->getDoctrine()->getManager();
@@ -54,15 +59,13 @@ class RentabilidadController extends Controller
         }
 
         $qb = $em->createQueryBuilder(); 
-        $qb->select('r redenciones, count(r) total, SUM(r.valorCompra/(1-(r.incremento/100))) venta, SUM(r.valorOrden) compra, SUM(r.logistica) logisticaVenta, SUM(g.valor) logisticaCompra, AVG(NULLIF(r.diasEntrega ,0)) dias','pc','p','c','g');
+        $qb->select('r redenciones, count(r) total, SUM(r.valorCompra/(1-(r.incremento/100))) venta, SUM(r.valorOrden) compra, SUM(r.logistica) logisticaVenta, 0 logisticaCompra, AVG(NULLIF(r.diasEntrega ,0)) dias','pr','prp','p','c');
         $qb->from('IncentivesRedencionesBundle:Redenciones','r');
         $qb->leftJoin('r.participante', 'pt');
-        $qb->leftJoin('r.productocatalogo', 'pc');
-        $qb->leftJoin('pc.producto', 'p');
+        $qb->leftJoin('r.premio', 'pr');
+        $qb->leftJoin('pr.premiosproductos', 'prp');
+        $qb->leftJoin('prp.producto', 'p');
         $qb->leftJoin('p.categoria', 'c');
-        $qb->leftJoin('r.inventario', 'i');
-        $qb->leftJoin('i.inventarioguia', 'ig');
-        $qb->leftJoin('ig.guia', 'g');
         $qb->groupBy('c.id');
         $str_filtro = "pt.programa=".$id;
         $str_filtro.= " AND r.redencionestado in (3,4,5,6)";
@@ -78,7 +81,7 @@ class RentabilidadController extends Controller
             array('categorias' => $categorias, 'programa' => $programa, 'filtros' => $filtros));
     }
 
-    public function rentabilidadGeneralAction()
+    public function rentabilidadGeneralAction(Request $request)
     {
 
         $em = $this->getDoctrine()->getManager();
@@ -101,15 +104,13 @@ class RentabilidadController extends Controller
         }
 
         $qb = $em->createQueryBuilder(); 
-        $qb->select('r redenciones, count(r) total, SUM(r.valorCompra/(1-(r.incremento/100))) venta, SUM(r.valorOrden) compra, SUM(r.logistica) logisticaVenta, SUM(g.valor) logisticaCompra, AVG(NULLIF(r.diasEntrega ,0)) dias','pc','p','c','g');
+        $qb->select('r redenciones, count(r) total, SUM(r.valorCompra/(1-(r.incremento/100))) venta, SUM(r.valorOrden) compra, SUM(r.logistica) logisticaVenta, 0 logisticaCompra, AVG(NULLIF(r.diasEntrega ,0)) dias','pr','prp','p','c');
         $qb->from('IncentivesRedencionesBundle:Redenciones','r');
         $qb->leftJoin('r.participante', 'pt');
-        $qb->leftJoin('r.productocatalogo', 'pc');
-        $qb->leftJoin('pc.producto', 'p');
+        $qb->leftJoin('r.premio', 'pr');
+        $qb->leftJoin('pr.premiosproductos', 'prp');
+        $qb->leftJoin('prp.producto', 'p');
         $qb->leftJoin('p.categoria', 'c');
-        $qb->leftJoin('r.inventario', 'i');
-        $qb->leftJoin('i.inventarioguia', 'ig');
-        $qb->leftJoin('ig.guia', 'g');
         $qb->groupBy('c.id');
         $str_filtro = " 1=1 ";
         $str_filtro.= " AND r.redencionestado in (3,4,5,6)";
@@ -141,15 +142,13 @@ class RentabilidadController extends Controller
         }
 
         $qb = $em->createQueryBuilder(); 
-        $qb->select('r','pc','p','c','pt');
+        $qb->select('r','pr','prp','p','c','pt');
         $qb->from('IncentivesRedencionesBundle:Redenciones','r');
         $qb->leftJoin('r.participante', 'pt');
-        $qb->leftJoin('r.productocatalogo', 'pc');
-        $qb->leftJoin('pc.producto', 'p');
+        $qb->leftJoin('r.premio', 'pr');
+        $qb->leftJoin('pr.premiosproductos', 'prp');
+        $qb->leftJoin('prp.producto', 'p');
         $qb->leftJoin('p.categoria', 'c');
-        $qb->leftJoin('r.inventario', 'i');
-        $qb->leftJoin('i.inventarioguia', 'ig');
-        $qb->leftJoin('ig.guia', 'g');
         $qb->groupBy('r.id');
         $str_filtro = "pt.programa=".$programa." AND c.id=".$categoria;
         $str_filtro.= " AND r.redencionestado in (3,4,5,6)";
@@ -208,12 +207,13 @@ class RentabilidadController extends Controller
         $em = $this->getDoctrine()->getManager();
         //Consultar puntos redimidos
         $qb = $em->createQueryBuilder();            
-        $qb->select('r','pt','pc','pd','ct','i','estado','pg','op','oc','pais','c');
+        $qb->select('r','pt','pr','prp','p','ct','i','estado','pg','op','oc','pais','c');
             $qb->from('IncentivesRedencionesBundle:Redenciones','r');
-            $qb->leftJoin('r.productocatalogo', 'pc');
-            $qb->leftJoin('pc.producto', 'pd');
-            $qb->leftJoin('pd.categoria', 'ct');
-            $qb->leftJoin('pc.catalogos', 'c');
+            $qb->leftJoin('r.premio', 'pr');
+            $qb->leftJoin('pr.premiosproductos', 'prp');
+            $qb->leftJoin('prp.producto', 'p');
+            $qb->leftJoin('p.categoria', 'ct');
+            $qb->leftJoin('pr.catalogos', 'c');
             $qb->leftJoin('c.pais', 'pais');
             $qb->leftJoin('r.participante', 'pt');
             $qb->leftJoin('pt.programa', 'pg');
@@ -223,12 +223,12 @@ class RentabilidadController extends Controller
             $qb->leftJoin('r.inventario', 'i');
             $qb->orderBy('pt.programa,r.fecha', 'ASC');
             
-            $str_filtro = " pc.id!=2505 ";
+            $str_filtro = " pr.id!=2505 ";
             $str_filtro .= " AND r.redencionestado in (3,4,5,6)";
             if(isset($id)) $str_filtro .= " AND pg.id=".$id;
             $qb->where($str_filtro);
             $redenciones = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
-
+            //print_r($redenciones); exit;
             $fil=2;
             foreach($redenciones as $key => $value){              
 
@@ -247,9 +247,9 @@ class RentabilidadController extends Controller
                         ->setCellValueByColumnAndRow(5, $fil, $value['participante']['nombre'])
                         ->setCellValueByColumnAndRow(6, $fil, $value['participante']['documento'])
                         ->setCellValueByColumnAndRow(7, $fil, $value['puntos'])
-                        ->setCellValueByColumnAndRow(8, $fil, $value['productocatalogo']['producto']['nombre'])
-                        ->setCellValueByColumnAndRow(9, $fil, $value['productocatalogo']['producto']['codInc'])
-                        ->setCellValueByColumnAndRow(10, $fil, $value['productocatalogo']['producto']['categoria']['nombre'])
+                        ->setCellValueByColumnAndRow(8, $fil, $value['premio']['premiosproductos'][0]['producto']['nombre'])
+                        ->setCellValueByColumnAndRow(9, $fil, $value['premio']['premiosproductos'][0]['producto']['codInc'])
+                        ->setCellValueByColumnAndRow(10, $fil, $value['premio']['premiosproductos'][0]['producto']['categoria']['nombre'])
                         ->setCellValueByColumnAndRow(11, $fil, $value['valorCompra'])
                         ->setCellValueByColumnAndRow(12, $fil, $value['incremento'])
                         ->setCellValueByColumnAndRow(13, $fil, $valorVenta)
@@ -260,7 +260,7 @@ class RentabilidadController extends Controller
                         ->setCellValueByColumnAndRow(18, $fil, $value['ordenesProducto']['ordenesCompra']['trm'])
                         ->setCellValueByColumnAndRow(19, $fil, $value['redencionestado']['nombre'])
                         ->setCellValueByColumnAndRow(20, $fil, $ordenCompra)
-                        ->setCellValueByColumnAndRow(21, $fil, $value['productocatalogo']['catalogos']['pais']['nombre']);
+                        ->setCellValueByColumnAndRow(21, $fil, $value['premio']['catalogos']['pais']['nombre']);
 
                 if($value['fechaAutorizacion']!= null) $PHPexcel->getActiveSheet()->setCellValueByColumnAndRow(2, $fil, $value['fechaAutorizacion']->format('Y-m-d'));
                 if($value['fechaDespacho']!= null) $PHPexcel->getActiveSheet()->setCellValueByColumnAndRow(18, $fil, $value['fechaDespacho']->format('Y-m-d'));

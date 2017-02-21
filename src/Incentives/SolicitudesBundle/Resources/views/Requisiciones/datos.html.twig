@@ -80,25 +80,40 @@
 					{% for producto in productos %}	
 					<tr>
 						{% set rutaImagen = "" %}
-						{% for imagen in producto.producto.imagenproducto %}
-							{% if imagen.estado==1 %}
-								{% set rutaImagen = imagen.path %}
-							{% endif %}
-						{% endfor %}
-						
-						
+						{% if producto.producto %}
+							{% for imagen in producto.producto.imagenproducto %}
+								{% if imagen.estado==1 %}
+									{% set rutaImagen = imagen.path %}
+								{% endif %}
+							{% endfor %}						
 							<td><a href="../../../{{ rutaImagen | slice (0)}}" target='_blank'><img src="../../../{{( rutaImagen| slice (0))[:-4]}}_min.jpg" width="100" height="100"><a></td>
 							<td>{{ producto.producto.referencia }}</td>
 							<td>{{ producto.producto.nombre }}</td>
 							<td>{{ producto.producto.descripcion }}</td>
+						{% else %}
+							<td></td>
+							<td>{{ producto.descripcion }}</td>
+							<td></td>
+							<td></td>
+						{% endif %}
 							<td>{{ producto.cantidad }}</td>
 							<td>$ {{ producto.valorunidad|number_format(2, ',', '.') }}</td>
 							<td>$ {{ (producto.valorunidad/(1 - (producto.incremento/100)))|number_format(2, ',', '.') }}</td>
 							<td>$ {{ producto.logistica|number_format(2, ',', '.') }}</td>
 							<td>$ {{ (producto.valortotal + (producto.logistica*producto.cantidad))|number_format(2, ',', '.') }}</td>
-							{% if producto.producto.estadoIva == true %}
+							<td>{% if( (is_granted('ROLE_DIR') or is_granted('ROLE_ASIS') or is_granted('ROLE_ASISCOMP'))) %}	
+								<a class="btn btn-primary" id="productoeditar_{{ producto.id }}">
+									<i class="icon-edit icon-white" align='rigth'></i>			
+									Editar										
+								</a>
+								{% endif %}
+							</td>
+
+							{% if producto.producto %}
+								{% if producto.producto.estadoIva == true %}
 									{% set totaliva = totaliva + (producto.valortotal*(producto.producto.iva/100)) %}
 								{% endif %}	
+							{% endif %}
 							{% set subtotal = subtotal+producto.valortotal + (producto.logistica*producto.cantidad)  %}
 
 					</tr>
@@ -128,8 +143,7 @@
 	}
 	
 	{% for producto in productos %}	
-		$("#productoeditar_{{ producto.id }}").colorbox({href:"{{ path('cotizaciones_valores',  {"id": producto.id})}}"});	
-		$("#productoaprobar_{{ producto.id }}").colorbox({href:"{{ path('cotizaciones_aprobar_producto',  {"id": producto.id})}}"});	
+		$("#productoeditar_{{ producto.id }}").colorbox({href:"{{ path('requisiciones_editarproducto',  {"id": producto.id})}}"});	
 	{% endfor %}
 	
 

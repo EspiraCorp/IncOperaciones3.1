@@ -18,25 +18,28 @@
                       <table id="programas_redenciones" class="display">
                         <thead style="display:table-row-group;"  >
                           <tr>
+                            <th>Id</th>
                             <th>Programa</th>
                             <th>Redenciones</th>
-                            <th>Fecha ultima autorizacion</th>
+                            <th>Estado</th>
                           </tr>
                         </thead>
                         <tbody>
                           {% for programa in programas  %}
                           <tr>
-                            <td><a href="{{ path("garantiasredenciones_programa", {"programa": programa[0].id }) }}">{{ programa[0].nombre }}</a></td>
+                            <td><a href="{{ path("garantiasredenciones_programa", {"programa": programa[0].id }) }}">{{ programa[0].id }}</a></td>
+                            <td>{{ programa[0].nombre }}</td>
                             <td>{{ programa.total }}</td>
-                            <td>{% if (programa.fecha) %}{{ programa.fecha | date("Y-m-d") }}{% else %}Aun no se han hecho autorizaciones{% endif %}</td>
+                            <td>{{ programa[0].estado.nombre }}</td>
                           </tr>
                           {% endfor %}
                         </tbody>
                          <tfoot style="display: table-header-group;">
                           <tr>
+                            <th>Id</th>
                             <th>Programa</th>
                             <th>Redenciones</th>
-                            <th>Fecha ultima autorizacion</th>
+                            <th>Estado</th>
                           </tr>
                         </tfoot>
                       </table>

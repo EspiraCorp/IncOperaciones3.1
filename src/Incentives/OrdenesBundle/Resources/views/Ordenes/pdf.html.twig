@@ -127,7 +127,9 @@ VERSIÓN 3
 	 			<td>{{ producto.producto.codInc }}</td>
 	 			<td>{{ producto.producto.codEAN }}</td>
 	 			<td>{{ cc[producto.id] }} 
-	 				{% if orden.solicitud is not null %}{{ orden.solicitud.programa.centrocostos }}{% endif %}
+	 				{% if orden.solicitud is not null and producto.centrocostos=="" %}
+	 					{{ orden.solicitud.centrocostos.centrocostos }}
+	 				{% endif %}
 	 			</td>
 	 			<td>{{ producto.producto.nombre }}</td>
 	 			<td>{{ producto.cantidad }}</td>

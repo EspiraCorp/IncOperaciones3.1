@@ -57,16 +57,16 @@
       <br>
         {% for producto in productos %}
         {% set i=0 %}
-          <div class="box span" style="height: 330px; width:230px">
+          <div class="box span" style="height: 350px; width:230px">
             <div class="box-header well" data-original-title="">
-              <h2>{{ producto.premiosproductos[0].producto.codInc }}</h2>
+              <h2>{{ producto.codigo }}</h2>
             </div>
             <div class="box-content">
                   <ul class="thumbnails gallery">
-                    {% if(producto.premiosproductos[0].producto.imagenproducto) %}
-                    <li id="imagen-{{producto.premiosproductos[0].producto.imagenproducto[0].id}}" class="thumbnail" style="widht: 100px">
-                      <a class="cboxElement" href="../../../{{ producto.premiosproductos[0].producto.imagenproducto[0].path | slice (7)}}" style="background:url(../../../{{(producto.premiosproductos[0].producto.imagenproducto[0].path| slice (7))[:-4]}}_min.jpg)">
-                        <img alt="{{ producto.premiosproductos[0].producto.codInc }}" src="../../../{{(producto.premiosproductos[0].producto.imagenproducto[0].path| slice (7))[:-4]}}_min.jpg" style="display: block;">
+                    {% if(producto.imagen) %}
+                    <li id="imagen-{{producto.id}}" class="thumbnail" style="widht: 100px">
+                      <a class="cboxElement" href="../../../{{ producto.imagen | slice (7)}}" style="background:url(../../../{{(producto.imagen| slice (7))[:-4]}}_min.jpg)">
+                        <img alt="{{ producto.imagen }}" src="../../../{{(producto.imagen| slice (7))[:-4]}}_min.jpg" style="display: block;">
                       </a>
                     </li>
                     {% endif %}
@@ -74,14 +74,34 @@
               <table class="table">
                 <tbody>
                   <tr>
-                    <td>{{ producto.premiosproductos[0].producto.nombre }}</td>
+                    <td>{{ producto.nombre }}</td>
                   </tr>
                   <tr>
-                    <td>REF: {{ producto.premiosproductos[0].producto.referencia }}</td>
+                    <td>REF: {{ producto.referencia }}</td>
                   </tr>
                   <tr>
                     <td>Puntos: {{ producto.puntos }}</td>
                   </tr>
+                  {% if is_granted('ROLE_ADMIN') or  is_granted('ROLE_DIR') or is_granted('ROLE_ASISCOMP') or is_granted('ROLE_CAT') %}
+                    <tr>
+                      <td>Puntos Promoción:
+                      {% if (producto.promocion) %}
+                          {{ producto.promocion[0].puntos }}
+                          <a href="{{ path('promociones_datos', {"promocion": producto.promocion[0].id }) }}" target="_blank"> 
+                            <button class="btn btn-small btn-info">
+                              <i class="fa fa-plus"></i> Ver
+                            </button>
+                          </a>
+                      {% else %}
+                          <a class="promociones_nuevo" href="{{ path('promociones_nuevo', {"premio": producto.id}) }}">
+                            <button class="btn btn-small btn-success">
+                              <i class="fa fa-plus"></i> Agregar
+                            </button>
+                          </a>
+                      {% endif %}
+                      </td>
+                    </tr>
+                  {% endif %}
                   {% if is_granted('ROLE_ADMIN') or  is_granted('ROLE_DIR') or is_granted('ROLE_ASISCOMP') or is_granted('ROLE_LOGIS') or is_granted('ROLE_CAT') or is_granted('ROLE_EJEC') or is_granted('ROLE_COM') or (is_granted('ROLE_CLI') and precioVenta==1) %}
                    <tr>
                      {% set valorventa =  producto.precio/(1-(producto.incremento/100)) + producto.logistica %}
@@ -116,4 +136,9 @@
 
 {% block javascripts %}
 {{ parent() }}
+  
+  <script type="text/javascript">
+    $(".promociones_nuevo").colorbox({href: this.href});
+  </script>
+
 {% endblock %}

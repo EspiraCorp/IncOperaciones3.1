@@ -22,6 +22,10 @@ redenciones_programa:
     path:  /redenciones/{programa}
     defaults: { _controller: IncentivesRedencionesBundle:Redencion:listadoprograma, programa: null}
 
+redenciones_listado_consolidado:
+    path:  /redenciones/consolidado/{programa}
+    defaults: { _controller: IncentivesRedencionesBundle:Redencion:listadoConsolidado, programa: null}
+
 redenciones_datos:
     path:  /redenciones/datos/{id}
     defaults: { _controller: IncentivesRedencionesBundle:Redencion:datos, id: null}
@@ -29,6 +33,10 @@ redenciones_datos:
 redenciones_estado:
     path:  /redenciones/estado/{accion}/{id}
     defaults: { _controller: IncentivesRedencionesBundle:Redencion:estado, accion: null, id: null}
+
+redenciones_autorizar_consolidado:
+    path:  /redenciones/autorizarconsolidado/{accion}/{id}
+    defaults: { _controller: IncentivesRedencionesBundle:Redencion:autorizarConsolidado, accion: null, id: null}
 
 redenciones_exportar:
     path:  /redenciones/exportar/{programa}

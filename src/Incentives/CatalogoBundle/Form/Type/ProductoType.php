@@ -30,7 +30,11 @@ class ProductoType extends AbstractType
             'class' => 'IncentivesOperacionesBundle:Categoria',
             'choice_label' => 'nombre',
             'empty_data' => null,
-            'placeholder' => 'Seleccionar'
+            'placeholder' => 'Seleccionar',
+            'query_builder' => function(\Doctrine\ORM\EntityRepository $er) { 
+                return $er->createQueryBuilder('u')->orderBy('u.nombre', 'ASC')
+                    ->orderBy('u.nombre', 'ASC');
+            },
         ));
         $builder->add('referencia');
         $builder->add('marca');

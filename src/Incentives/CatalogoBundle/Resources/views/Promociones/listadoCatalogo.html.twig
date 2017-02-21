@@ -1,0 +1,71 @@
+{% extends '::baseLte.html.twig' %}
+
+{% block title %}{{ parent() }}::Listado Promociones{% endblock %}
+{% block sectiontitle %}<h1>Catálogo<small>Listado Promociones</small></h1>{% endblock %}
+{% block breadcum %} <li><a href="{{ path('catalogo') }}"><i class="fa fa-star"></i>Catálogo</a></li>
+	<li><a href="{{ path('catalogo_datos') }}/{{ catalogo }}">Catálogo</a></li>
+	<li class="active">Listado Promociones</li>{% endblock %}
+
+{% block content %}
+
+<div class="row">
+	<div class="col-md-12">
+	    <div class="box box-warning">
+		    <div class="box-header bg-black">
+				<h3 class="box-title">Listado Promociones</h3>
+			</div>
+			<div class="box-body">
+				<table class="table table-bordered table-striped table-condensed dataTable">
+					<thead>
+						<tr>
+							<th>Id</th>
+							<th>Nombre</th>
+							<th>Descripcion</th>
+							<th>Premio</th>
+							<th>Puntos Promoción</th>
+							<th>Fecha Inicio</th>
+							<th>Fecha Fin</th>
+							<th>Estado</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for promocion in promociones %}
+						<tr>
+							<td><a class="promociones_datos" href="{{ path("promociones_datos", {"promocion": promocion.id}) }}">{{ promocion.id }}</a></td>
+							<td>{{ promocion.nombre }}</td>
+							<td>{{ promocion.descripcion }}</td>
+							<td>{{ promocion.premio.premiosproductos[0].producto.codInc }}</td>
+							<td>{{ promocion.puntos }}</td>
+							<td>{{ promocion.fechaInicio | date("Y-m-d") }}</td>
+							<td>{{ promocion.fechaFin | date("Y-m-d") }}</td>
+							<td>{{ promocion.estado.nombre }}</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>	
+
+{% endblock %}
+
+{% block javascript %}
+	
+	{{ parent() }}
+	
+	<script>
+
+	function confirmar(ruta)
+	{
+	  if (confirm("Cambiar estado")==true){
+	  	self.location=ruta;
+	  }else{
+	  	alert("OK");
+	  }
+	  
+	}
+
+	</script>
+{% endblock %}
+

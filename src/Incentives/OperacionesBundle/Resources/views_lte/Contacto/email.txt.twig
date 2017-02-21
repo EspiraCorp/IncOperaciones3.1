@@ -1,0 +1,12 @@
+Buen dia.
+
+Señor {{ contacto.nombres }} nos comunicamos con usted para informarle que sus datos se encuentran registrados en la plataforma de operaciones de Incentives como contacto asociado al proveedor {{ contacto.proveedor.nombre }}.
+
+Sus datos de contacto son
+Usuario: {{ contacto.correo }}
+
+Para actualizar su contraseña puede ingresar a la siguiente direccion.
+
+<a href="{{ url('incentives_operaciones_contacto_actualizarpassword', {'id': contacto.id, 'pass': contacto.password}) }}">Cambiar clave.</a>
+
+Gracias por su atencion.

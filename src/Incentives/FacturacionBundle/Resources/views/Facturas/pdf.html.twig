@@ -73,15 +73,11 @@ VERSION 2
 	 		<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
 	 		<tr>
 	 			<td>Cliente:</td>
-	 			<td>{{ factura.programa.cliente.nombre }}</td>
-	 		</tr>
-	 		<tr>
-	 			<td>Programa:</td>
-	 			<td>{{ factura.programa.nombre }}</td>
+	 			<td>{{ factura.centroCostos.id }}</td>
 	 		</tr>
 	 		<tr>
 	 			<td>Centro de Costos:</td>
-	 			<td>{{ factura.programa.centrocostos }}</td>
+	 			<td>{{ factura.centroCostos.centrocostos }}</td>
 	 		</tr>
 	 		<tr>
 	 			<td>Periodo:</td>
@@ -105,7 +101,11 @@ VERSION 2
 	 		{% set subtotal=0 %}
 	 		{% for item in productos %}
 	 		<tr>
+	 			{% if item.producto %}
 	 			<td>{{ item.producto.codInc }}</td>
+	 			{% else %}
+	 			<td></td>
+	 			{% endif %}
 	 			<td>{{ item.cantidad }}</td>
 	 			<td>{{ item.descripcion }}</td>
 	 			<td>$ {{ item.valorunitario |number_format(2, ',', '.') }}</td>

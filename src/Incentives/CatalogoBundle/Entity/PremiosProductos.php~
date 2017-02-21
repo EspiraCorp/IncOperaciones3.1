@@ -39,6 +39,19 @@ class PremiosProductos
     protected $producto;
 
     /**
+     * @var integer
+     * @ORM\Column(name="cantidad", type="integer", nullable=true)
+     */
+    private $cantidad;
+
+    /**
+     * @var string
+     * @ORM\ManyToOne(targetEntity="EstadoCatalogo")
+     * @ORM\JoinColumn(name="estado_id", referencedColumnName="id", nullable=true)
+     */
+    protected $estado;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="fechaModificacion", type="datetime", nullable=true)
@@ -161,5 +174,53 @@ class PremiosProductos
     public function getUsuario()
     {
         return $this->usuario;
+    }
+
+    /**
+     * Set cantidad
+     *
+     * @param integer $cantidad
+     *
+     * @return PremiosProductos
+     */
+    public function setCantidad($cantidad)
+    {
+        $this->cantidad = $cantidad;
+
+        return $this;
+    }
+
+    /**
+     * Get cantidad
+     *
+     * @return integer
+     */
+    public function getCantidad()
+    {
+        return $this->cantidad;
+    }
+
+    /**
+     * Set estado
+     *
+     * @param \Incentives\CatalogoBundle\Entity\EstadoCatalogo $estado
+     *
+     * @return PremiosProductos
+     */
+    public function setEstado(\Incentives\CatalogoBundle\Entity\EstadoCatalogo $estado = null)
+    {
+        $this->estado = $estado;
+
+        return $this;
+    }
+
+    /**
+     * Get estado
+     *
+     * @return \Incentives\CatalogoBundle\Entity\EstadoCatalogo
+     */
+    public function getEstado()
+    {
+        return $this->estado;
     }
 }

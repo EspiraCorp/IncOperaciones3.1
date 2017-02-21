@@ -1,0 +1,41 @@
+{% extends '::baseLte.html.twig' %}
+{% block title %}{{ parent() }}::Importar Premios en Combo{% endblock %}
+{% block sectiontitle %}<h1>Catálogos<small>Importar Premios en Combo</small></h1>{% endblock %}
+{% block breadcum %} <li><a href=""><i class="fa fa-star-o"></i>Catálogos</a></li><li class="active"></li>{% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-md-12">
+        <!-- Horizontal Form -->
+        <div class="box box-warning">
+            <div class="box-header bg-black">
+              <h3 class="box-title"><i class="icon-edit"></i>Carga Masiva Combos</h3>
+              <a class="btn btn-mini btn-success" style="margin-left: 20px" href="{{ path('premios_formato_combos') }}">
+                    <i class="icon-zoom-in icon-white"></i>
+                    Formato
+                </a>
+                <a class="btn btn-mini btn-primary" style="margin-left: 20px" href="{{ path('premios_imagenmasivo_combos',  {"catalogo": id}) }}">
+                    <i class="icon-cog icon-white"></i>
+                    Procesar Imagenes
+                </a>
+            </div>
+
+            <form action="{{ path('premios_importar_combos', {"id": id}) }}" method="POST" enctype="multipart/form-data"  class="form-horizontal">
+                {{ form_errors(form) }}
+                <div class="box-body">
+                    <div class="form-group">
+                        {{ form_label(form.excel, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+                        <div class="col-sm-8">
+                            {{ form_widget(form.excel, { 'attr': {'class': 'input-xlarge focused'} }) }}
+                        </div>
+                    </div>                
+            <div class="box-footer">
+                {{ form_widget(form.cargar, { 'attr': {'class': 'btn btn-primary'} }) }}
+            </div>
+            {{ form_widget(form._token) }}
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

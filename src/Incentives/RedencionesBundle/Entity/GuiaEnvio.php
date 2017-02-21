@@ -60,6 +60,13 @@ class GuiaEnvio
     private $valor;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="ruta", type="string", length=600, nullable=true)
+     */
+    private $ruta;
+
+    /**
      * @var integer
      *
      * @ORM\Column(name="estado", type="integer", nullable=true)
@@ -424,5 +431,29 @@ class GuiaEnvio
     public function getDespachoguia()
     {
         return $this->despachoguia;
+    }
+
+    /**
+     * Set ruta
+     *
+     * @param string $ruta
+     *
+     * @return GuiaEnvio
+     */
+    public function setRuta($ruta)
+    {
+        $this->ruta = $ruta;
+
+        return $this;
+    }
+
+    /**
+     * Get ruta
+     *
+     * @return string
+     */
+    public function getRuta()
+    {
+        return $this->ruta;
     }
 }

@@ -26,29 +26,25 @@ class FacturaType extends AbstractType
      */
      
      
-    function __construct($parametros) {
-        
-        $this->id_programa = $parametros['programa'];
-    }
-     
      
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        
-        $id_programa = $this->id_programa;
 
         $builder
             ->add('fecha', DateType::class, array(
             'input'  => 'datetime',
             'widget' => 'single_text',
+            'required' => true
         ))
             ->add('fechaInicio', DateType::class, array(
             'input'  => 'datetime',
             'widget' => 'single_text',
+            'required' => true
         ))
             ->add('fechaFin', DateType::class, array(
             'input'  => 'datetime',
             'widget' => 'single_text',
+            'required' => true
         ))
             ->add('numero')
             ->add('requisiciones', CheckboxType::class, array('label' => 'Requisiciones'))
@@ -60,15 +56,7 @@ class FacturaType extends AbstractType
                 //'empty_value' => 'Select',
                 'label' => 'Pais', 
                 'class' => 'IncentivesOperacionesBundle:Pais', 
-                'choice_label' => 'nombre', 
-                'query_builder' => function(\Doctrine\ORM\EntityRepository $er) use ($id_programa) {
-                    return $er->createQueryBuilder('p')
-                    ->addSelect('c')
-                    ->Leftjoin('p.catalogo', 'c')
-                    ->where('c.programa='.$id_programa)
-                    ;
-
-               }
+                'choice_label' => 'nombre'
             ))
            ;
         
@@ -76,16 +64,17 @@ class FacturaType extends AbstractType
             'class' => 'IncentivesFacturacionBundle:Periodos',
             'choice_label' => 'periodo',
             'placeholder' => 'Seleccionar',
-            'label' => 'Periodo'
+            'label' => 'Periodo',
+            'required' => true
         ));
 
-        $builder->add('detalle', CollectionType::class, array(
+        /*$builder->add('detalle', CollectionType::class, array(
              'type'  => new FacturaDetalleType(),
                 'label'          => 'Detalle',
                 'by_reference'   => false,
                 'allow_delete'   => true,
                 'allow_add'      => true
-        ));
+        ));*/
 
         $builder->add('Enviar', SubmitType::class);
     }
@@ -96,7 +85,8 @@ class FacturaType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Incentives\FacturacionBundle\Entity\Factura'
+            'data_class' => 'Incentives\FacturacionBundle\Entity\Factura',
+            'cascade_validation' => true
         ));
     }
 

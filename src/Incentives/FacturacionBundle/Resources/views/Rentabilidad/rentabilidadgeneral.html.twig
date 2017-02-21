@@ -61,7 +61,7 @@
             {% set totalDias = totalDias + categoria.dias %}
             {% if(categoria.dias > 0) %}{% set j = j + 1 %}{% endif %}
             <tr>
-                <td>{{ categoria.redenciones.productocatalogo.producto.categoria.nombre }}</td>
+                <td>{{ categoria.redenciones.premio.premiosproductos[0].producto.categoria.nombre }}</td>
                 <td align="right">{{ categoria.total }}</td>
 
                 <td align="right">$ {{ categoria.compra | number_format(0, ',', '.') }}</td>

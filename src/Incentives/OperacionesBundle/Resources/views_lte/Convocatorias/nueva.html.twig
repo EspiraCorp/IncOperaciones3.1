@@ -1,0 +1,132 @@
+{# src/Sinaptica/ProveedoresBundle/Resources/views/Default/new.html.twig #}
+{% extends '::base.html.twig' %}
+{% block title %}Nueva Convocatoria{% endblock %}
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+<div class="box span12">
+<div class="box-header well" data-original-title>
+    <h2><i class="icon-edit"></i>Nueva Convocatoria</h2>
+     <div class="box-icon">
+        <a href="{{ path('convocatorias') }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+    </div>
+</div>
+<div class="box-content">
+<form action="{{ path('convocatorias_nueva') }}/{{ solicitud }}" method="POST"  class="form-horizontal">
+    {{ form_errors(form) }}
+    <fieldset>
+        <div class="control-group">
+            {{ form_label(form.titulo, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.titulo, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            {{ form_label(form.descripcion, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.descripcion, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            {{ form_label(form.fechaInicio, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.fechaInicio, { 'id': 'fechaInicio' }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            {{ form_label(form.fechaFin, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.fechaFin, { 'id': 'fechaFin' }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            {{ form_label(form.archivo, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.archivo, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+    </fieldset>
+    <div class="row-fluid sortable ui-sortable">
+        <div class="proveedores box span10" data-prototype="{{ form_widget(form.convocatoriasproveedores.vars.prototype)|e }}">
+            <div class="box-header well" data-original-title>
+                <h2><i class="icon-user"></i>Proveedores</h2>
+            </div>
+         </div> 
+    </div>  
+<div class="form-actions">
+    {{ form_widget(form.Enviar, { 'attr': {'class': 'btn btn-primary'} }) }}
+</div>
+{{ form_widget(form._token) }}
+</form>
+</div>
+</div>
+ </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        $( "#fechaInicio" ).datepicker({ dateFormat: 'yy-mm-dd' });
+        $( "#fechaFin" ).datepicker({ dateFormat: 'yy-mm-dd' });
+    </script>
+    
+    <script>
+        // Get the div that holds the collection of addresses
+        var collectionHolder = $('div.proveedores');
+
+        var Holder = $('button.btn-primary');
+
+        // setup an "add a address" link
+        var $newLinkLi = $('<button class="btn"><a href="#">Agregar proveedor</a></button>');
+
+        $(function(){
+
+            // add the "add a address" anchor and li to the addresses div
+            Holder.parent().append($newLinkLi);
+
+            // count the current form inputs we have (e.g. 2), use that as the new
+            // index when inserting a new item (e.g. 2)
+            collectionHolder.data('index', collectionHolder.find(':input').length);
+
+            $newLinkLi.on('click', function(e) {
+                // prevent the link from creating a "#" on the URL
+                e.preventDefault();
+
+                // add a new address form (see next code block)
+                addTagForm(collectionHolder);
+            });
+
+        });
+
+
+        function addTagForm(collectionHolder) {
+            // Get the data-prototype explained earlier
+            var titulo=$('<div class="box-header well" data-original-title="">Proveedor</div>;');
+            var prototype = collectionHolder.data('prototype');
+
+            // get the new index
+            var index = collectionHolder.data('index');
+
+            // Replace '__name__' in the prototype's HTML to
+            // instead be a number based on how many items we have
+            var newForm = prototype.replace(/__name__/g, index);
+
+            // increase the index with one for the next item
+            collectionHolder.data('index', index + 1);
+
+            // Display the form in the page in an li, before the "Add a address" link li
+            var $newFormLi = $('<div class="box span4" id="proveedor'+ index +'"><div class="box-header well" data-original-title="">Agregar Proveedor<div class="box-icon"><a class="btn btn-closer btn-round"  id="closeproveedor'+ index +'" href="#"><i class="icon-remove"></i></a></div></div></div>').append(newForm);
+            collectionHolder.append($newFormLi);
+
+            var $Closer = $('#closeproveedor'+ index);
+
+             $Closer.on('click', function(e) {
+                // prevent the link from creating a "#" on the URL
+                e.preventDefault();
+
+                $( "div" ).remove( "#proveedor"+ index );
+            });
+        }
+    </script>
+
+{% endblock %}

@@ -1,0 +1,87 @@
+{% if cotizaciones %}
+<table>
+    <th colspan="4">Cotizaciones</th>
+    <tr>
+        <th>Id</th>
+        <th>Solicitud</th>
+        <th>Cotizacion</th>
+        <th>Orden Compra</th>
+        <th>SKU</th>
+        <th>Producto</th>
+        <th>Cantidad</th>
+        <th>Valor Compra</th>
+        <th>Valor Venta</th>
+        <th>Total</th>
+        <th>Fecha Aprobación</th>
+        <th>Estado</th>
+    </tr>
+{% set ij = 0 %}
+{% for cotizacion in cotizaciones %}
+    <tr>
+        {% set ij = ij + 1 %}
+        <td>{{ ij }}</td>
+        <td>{{ cotizacion.cotizacion.solicitud.id }}</td>
+        <td>{{ cotizacion.cotizacion.consecutivo }}</td>
+        {% if cotizacion.ordenesproducto|length > 0 %}
+        <td>{{ cotizacion.ordenesproducto[0].ordenesCompra.consecutivo }}</td>
+        {% else %}
+        <td></td>
+        {% endif %}
+        <td>{{ cotizacion.producto.codInc }}</td>
+        <td>{{ cotizacion.producto.nombre }}</td>
+        <td>{{ cotizacion.cantidad }}</td>
+        <td>{{ cotizacion.valorunidad | number_format(2, '.', ',') }}</td>
+        {% set valorventa = cotizacion.valorunidad/(1-(cotizacion.incremento/100)) +  cotizacion.logistica %}
+        {% set totalventa = valorventa * cotizacion.cantidad %}
+        <td>{{ valorventa | number_format(2, '.', ',') }}</td>
+        <td>{{ totalventa | number_format(2, '.', ',') }}</td>
+        <td>{{ cotizacion.fechaAprobacion | date("Y-m-d") }}</td>
+        <td>{{ cotizacion.estado.nombre }}</td>
+    </tr>
+
+{% endfor %}
+</table>
+{% endif %}
+
+{% if requisiciones %}
+<table>
+    <th colspan="4">Requisiciones</th>
+    <tr>
+        <th>Id</th>
+        <th>Solicitud</th>
+        <th>Requisicion</th>
+        <th>SKU</th>
+        <th>Producto</th>
+        <th>Cantidad</th>
+        <th>Valor Unidad</th>
+        <th>Valor Venta</th>
+        <th>Total</th>
+        <th>Fecha Requisicion</th>
+    </tr>
+{% set ij = 0 %}
+{% for requisicion in requisiciones %}
+    <tr>
+        {% set ij = ij + 1 %}
+        <td>{{ ij }}</td>
+        <td>{{ requisicion.requisicion.solicitud.id }}</td>
+        <td>{{ requisicion.requisicion.id }}</td>
+        {% if requisicion.producto %}
+            <td>{{ requisicion.producto.codInc }}</td>
+            <td>{{ requisicion.producto.nombre }}</td>
+        {% else %}
+            <td></td>
+            <td>{{ requisicion.descripcion }}</td>
+        {% endif %}
+        
+        <td>{{ requisicion.cantidad }}</td>
+        <td>{{ requisicion.valorunidad |number_format(2, '.', ',') }}</td>
+        {% set valorventa = requisicion.valorunidad/(1-(requisicion.incremento/100)) +  requisicion.logistica %}
+        {% set totalventa = valorventa * requisicion.cantidad %}
+        <td>{{ valorventa |number_format(2, '.', ',') }}</td>
+        <td>{{ totalventa |number_format(2, '.', ',') }}</td>
+        <td>{{ requisicion.requisicion.fechaCreacion | date("Y-m-d") }}</td>
+    </tr>
+
+{% endfor %}
+</table>
+{% endif %}

@@ -73,7 +73,7 @@
                                  <div class="form-group">
                                      {{ form_label(form.directo, label|default(null), { 'label_attr': { 'class': 'col-sm-2 control-label' } }) }}
                                     <div class="col-sm-8">
-                                        {{ form_widget(form.directo, { 'attr': {'class': 'form-control'} }) }}
+                                        {{ form_widget(form.directo, { 'attr': {'class': ''} }) }}
                                     </div>
                                 </div>   
                                 
@@ -122,7 +122,7 @@
                                 <div class="form-group">
                                     {{ form_label(form.lineaAtencion, label|default(null), { 'label_attr': { 'class': 'col-sm-2 control-label' } }) }}
                                     <div class="col-sm-8">
-                                        {{ form_widget(form.lineaAtencion, { 'attr': {'class': 'form-control'} }) }} días
+                                        {{ form_widget(form.lineaAtencion, { 'attr': {'class': 'form-control'} }) }}
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -140,7 +140,7 @@
                                 <div class="form-group">
                                     {{ form_label(form.sedes, label|default(null), { 'label_attr': { 'class': 'col-sm-2 control-label' } }) }}
                                     <div class="col-sm-8">
-                                        {{ form_widget(form.sedes, { 'attr': {'class': 'form-control'} }) }}
+                                        {{ form_widget(form.sedes, { 'attr': {'class': ''} }) }}
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -164,20 +164,13 @@
 
 {% block javascript %}
     {{ parent() }}
-    
-    <script src="{{ asset('js/autocompleter-jqueryui.js') }}"></script>
-    <script src="{{ asset('js/app.js') }}"></script>
 
     <script>
-    $('#proveedores_ciudad').autocompleter({
-        url_list: "{{ path('ciudad_buscar') }}",
-        url_get: "{{ path('ciudad_campos') }}"
-    });
 
-        $( "#proveedores_pais" ).change(function() {
+        /*$( "#proveedores_pais" ).change(function() {
             var pais = $(this).val();
             $("#select_ciudad").load("{{ path('campos_capitales') }}/"+pais);
-        });
+        });*/
 
         $( "#proveedores_numero_documento" ).keyup(function() {
             var documento = $(this).val();
@@ -188,64 +181,6 @@
             var email = $(this).val();
             $("#resultado_correo").load("{{ path('proveedores_comprobar_correo') }}/"+email);
         });*/
-    </script>
-    <script>
-        // Get the div that holds the collection of addresses
-        var collectionHolder = $('div.contactos');
-
-        var Holder = $('button.btn-primary');
-
-        // setup an "add a address" link
-        var $newLinkLi = $('<button class="btn"><a href="#">Agregar un contacto</a></button>');
-
-        $(function(){
-
-            // add the "add a address" anchor and li to the addresses div
-            Holder.parent().append($newLinkLi);
-
-            // count the current form inputs we have (e.g. 2), use that as the new
-            // index when inserting a new item (e.g. 2)
-            collectionHolder.data('index', collectionHolder.find(':input').length);
-
-            $newLinkLi.on('click', function(e) {
-                // prevent the link from creating a "#" on the URL
-                e.preventDefault();
-
-                // add a new address form (see next code block)
-                addTagForm(collectionHolder);
-            });
-
-        });
-
-
-        function addTagForm(collectionHolder) {
-            // Get the data-prototype explained earlier
-            var titulo=$('<div class="box-header well" data-original-title="">Agregar Imagen</div>;');
-            var prototype = collectionHolder.data('prototype');
-
-            // get the new index
-            var index = collectionHolder.data('index');
-
-            // Replace '__name__' in the prototype's HTML to
-            // instead be a number based on how many items we have
-            var newForm = prototype.replace(/__name__/g, index);
-
-            // increase the index with one for the next item
-            collectionHolder.data('index', index + 1);
-
-            // Display the form in the page in an li, before the "Add a address" link li
-            var $newFormLi = $('<div class="box span4" id="contacto'+ index +'"><div class="box-header well" data-original-title="">Agregar Contacto<div class="box-icon"><a class="btn btn-closer btn-round"  id="closecontacto'+ index +'" href="#"><i class="icon-remove"></i></a></div></div></div>').append(newForm);
-            collectionHolder.append($newFormLi);
-
-            var $Closer = $('#closecontacto'+ index);
-
-             $Closer.on('click', function(e) {
-                // prevent the link from creating a "#" on the URL
-                e.preventDefault();
-
-                $( "div" ).remove( "#contacto"+ index );
-            });
-        }
     </script>
 
 {% endblock %}

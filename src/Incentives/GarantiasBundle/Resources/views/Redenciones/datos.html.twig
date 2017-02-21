@@ -34,7 +34,7 @@
 
         <table class="table table-bordered table-striped">
           <tbody>
-            <tr><td>Programa</td><td>{{ redencion.productocatalogo.catalogos.programa.nombre }}</td></tr>
+            <tr><td>Programa</td><td>{{ redencion.premio.catalogos.programa.nombre }}</td></tr>
             <tr><td>Participante</td><td>{{ redencion.participante.nombre }}</td></tr>
             <tr><td>Documento</td><td>{{ redencion.participante.documento }}</td></tr>
             <tr><td>Fecha de solicitud</td><td>{{ redencion.fecha | date("Y-m-d") }}</td></tr>
@@ -44,44 +44,6 @@
             
           </tbody>
         </table>
-    </div>
-  </div>
-
-
-  <div class="box span12">
-    <div class="box-content">
-      
-        <div class="box-header well">
-        <h2>
-            <a href="">
-              <button class="btn btn-small btn-success" style="display: none;">
-                <i class="icon-plus icon-white"></i>
-              </button>
-            </a>
-          Historico
-        </h2>
-      </div>
-      <table class="table table-bordered table-striped">
-        <thead>
-          <tr>
-            <th>Estado</th>
-            <th>Fecha</th>
-            <th>Orden Compra</th>
-            <th>Observacion</th>
-            <th>Guia</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for datos in historico %} 
-          <tr>
-              <td>{{ datos.redencionestado.nombre }}</td>
-              <td>{{ datos.fecha | date("Y-m-d") }}</td>
-              <td>{% if datos.ordenesproducto is null %}{% else %}{{ datos.ordenesproducto.ordenescompra.consecutivo }}{% endif %}</td>
-              <td>{{ datos.observacion }}</td>
-              <td></td>
-          </tr>         
-          {% endfor %}
-
     </div>
   </div>
 

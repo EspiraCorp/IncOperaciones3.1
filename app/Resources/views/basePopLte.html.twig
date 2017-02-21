@@ -21,6 +21,8 @@
 
             <link rel="stylesheet" href="{{ asset('templates/AdminLTE/bootstrap/css/bootstrap.min.css') }}">
             <link rel="stylesheet" href="{{ asset('templates/AdminLTE/dist/css/AdminLTE.css') }}">
+            <!-- Date Picker -->
+            <link rel="stylesheet" href="{{ asset('templates/AdminLTE/plugins/datepicker/datepicker3.css') }}">
             <link href="{{ asset('css/colorbox.css') }}" rel='stylesheet'>
            
         {% endblock %}
@@ -77,9 +79,9 @@
 
 
         {% block javascript %}
-
-		</script>
-
+            <script src="{{ asset('templates/AdminLTE/plugins/jQuery/jquery-2.2.3.min.js') }}"></script>
+            <!-- datepicker -->
+            <script src="{{ asset('templates/AdminLTE/plugins/datepicker/bootstrap-datepicker.js') }}"></script>
         {% endblock %}
     </body>
 </html>

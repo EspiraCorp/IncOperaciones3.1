@@ -101,6 +101,7 @@ class CatalogosController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $catalogo = $em->getRepository('IncentivesCatalogoBundle:Catalogos')->find($id);
+        $estado = $em->getRepository('IncentivesCatalogoBundle:Estados')->find($catalogo->getEstado()->getId());
         $form = $this->createForm(CatalogosnuevoType::class, $catalogo);
         
 
@@ -108,10 +109,9 @@ class CatalogosController extends Controller
             $form->handleRequest($request);
 
 
-            if ($form->isValid()) {                
-                $pro = $request->request->all()['catalogos'];
-                $id = $request->request->all()['id'];
-                $catalogo = $em->getRepository('IncentivesCatalogoBundle:Catalogos')->find($id);
+            //if ($form->isValid()) {                
+                $pro = $request->request->all()['catalogosnuevo'];
+                //$id = $request->request->all()['id'];
                 $catalogo->setNombre($pro["nombre"]);
                 $catalogo->setDescripcion($pro["descripcion"]);
                 $catalogo->setValorpunto($pro["valorPunto"]);
@@ -119,11 +119,13 @@ class CatalogosController extends Controller
                 $tipo = $em->getRepository('IncentivesCatalogoBundle:Catalogotipo')->find($pro["catalogotipo"]);
                 $catalogo->setCatalogotipo($tipo);
 
+                $catalogo->setEstado($estado);
+
                 $em->persist($catalogo);   
                 $em->flush();
 
                 return $this->redirect($this->generateUrl('catalogo_datos').'/'.$id);
-            }
+            //}
         }
 
 
@@ -195,7 +197,7 @@ class CatalogosController extends Controller
                    }elseif($Filtro=="programa"){
                         $sqlFiltro .= " AND p.id=".$valueF."";
                    }elseif($Filtro=="cliente"){
-                        $sqlFiltro .= " AND c.id=".$valueF."";
+                        $sqlFiltro .= " AND cl.id=".$valueF."";
                    }elseif($Filtro=="catalogotipo"){
                         $sqlFiltro .= " AND c.catalogotipo=".$valueF."";
                    }elseif($Filtro=="pais"){
@@ -261,15 +263,22 @@ class CatalogosController extends Controller
             $catalogo->setEstado($estado);
             
             //inhabilitar de todos los catalogos
-            $repositorypc = $this->getDoctrine()->getRepository('IncentivesCatalogoBundle:Productocatalogo');
-            $productocatalogo = $repositorypc->findByCatalogos($id);
+            $estadoCatalogo = $em->getRepository('IncentivesCatalogoBundle:EstadoCatalogo')->find(2);
             
-            foreach($productocatalogo as $keyP => $valueP){
+            $query = $em->createQueryBuilder()
+                    ->select('pr') 
+                    ->from('IncentivesCatalogoBundle:Premios', 'pr')
+                    ->leftJoin('pr.catalogos','c');
+                    
+            $query->where("c.id=".$id);
                 
-                $valueP->setActivo(0);
+            $productos = $query->getQuery()->getResult();
+            
+            foreach($productos as $keyP => $valueP){
+                
+                $valueP->setEstado($estadoCatalogo);
                 $em->persist($valueP);
                 $em->flush();
-                
             }
             
         }else{
@@ -405,12 +414,13 @@ class CatalogosController extends Controller
          }
 
         $query = $em->createQueryBuilder()
-                ->select('pr','pp','p','i','c') 
+                ->select('pr','pp','p','i','c', 'promo')
                 ->from('IncentivesCatalogoBundle:Premios', 'pr')
                 ->leftJoin('pr.premiosproductos','pp')
                 ->leftJoin('pp.producto','p')
                 ->leftJoin('pr.categoria','c')
                 ->leftJoin('p.imagenproducto','i','WITH','i.estado=1')
+                ->leftJoin('pr.promocion','promo','WITH','promo.estado=1')
                 ->orderBy("pr.puntos");
 
         $condiciones = "pr.catalogos=".$id." AND pr.estado = 1 AND p.estado=1";
@@ -742,7 +752,7 @@ class CatalogosController extends Controller
     }
     
     
-    public function editarIntervalosAction(Request $request, $id)
+     public function editarIntervalosAction(Request $request, $id)
     {
         $em = $this->getDoctrine()->getManager();
         $intervalos = $em->getRepository('IncentivesCatalogoBundle:Intervalos')->find($id);
@@ -764,8 +774,9 @@ class CatalogosController extends Controller
                 $existe = $query->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
 
                 if($existe){
-                    $this->get('session')->getFlashBag()->add('warning','Alguno de los valores ya se encuentra detro de un intervalo'
-                );
+                    $this->get('session')->getFlashBag()->add('notice','Alguno de los valores ya se encuentra detro de un intervalo'
+                    );
+                    return $this->redirect($this->generateUrl('catalogo_datos').'/'.$catalogoId);
                 }else{
 
                     $catalogo = $em->getRepository('IncentivesCatalogoBundle:Catalogos')->find($catalogoId);
@@ -777,6 +788,9 @@ class CatalogosController extends Controller
 
                     $em->flush();
 
+                    $this->get('session')->getFlashBag()->add('notice','El intervalo se edito correctamente.'
+                    );
+
                     return $this->redirect($this->generateUrl('catalogo_datos').'/'.$catalogoId);
                 }
             }
@@ -785,6 +799,22 @@ class CatalogosController extends Controller
         return $this->render('IncentivesCatalogoBundle:Catalogos:intervalosEditar.html.twig', array(
                 'form' => $form->createView(), 'id'=>$id, 'catalogo' => $catalogoId
             ));
+    }
+
+
+    public function eliminarIntervalosAction(Request $request, $id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $intervalo = $em->getRepository('IncentivesCatalogoBundle:Intervalos')->find($id);
+
+        $catalogoId = $intervalo->getCatalogos()->getId();
+        
+        $em->remove($intervalo);
+        $em->flush();
+
+        $this->get('session')->getFlashBag()->add('notice','El intervalo se elimino correctamente.');
+
+        return $this->redirect($this->generateUrl('catalogo_datos').'/'.$catalogoId);
     }
 
     public function imagenesCatalogoAction($catalogo, Request $request)
@@ -881,25 +911,30 @@ class CatalogosController extends Controller
         $query->where($strFilter);
         $productos = $query->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
         $files = array();
-        //echo "<pre>"; print_r($productos); echo "</pre>"; exit;
+        
         foreach ($productos as $keyp => $valueP) {
             foreach ($valueP['premiosproductos'][0]['producto']['imagenproducto'] as $keyI => $imagen) {
-                array_push($files, $imagen['path']);             
+                array_push($files, substr($imagen['path'], 7));             
             }
         }
 
         $zip = new \ZipArchive();
         $zipName = $catalogo->getId()."_".$catalogo->getNombre()."_".time().".zip";
+        
         $zip->open($zipName,  \ZipArchive::CREATE);
+        
         foreach ($files as $f) {
             $zip->addFromString(basename($f),  file_get_contents($f)); 
         }
 
         $zip->close();
-        header('Content-Type', 'application/zip');
-        header('Content-disposition: attachment; filename="' . $zipName . '"');
-        header('Content-Length: ' . filesize($zipName));
+        
+        
+        header('Content-type: application/zip');
+        header('Content-Disposition: attachment; filename="'.$zipName.'"');
         readfile($zipName);
+        // remove zip file is exists in temp path
+        unlink($zipName);
     }
     
     public function productosproveedorAction($id)

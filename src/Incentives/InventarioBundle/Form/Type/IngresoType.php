@@ -6,6 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Incentives\CatalogoBundle\Entity\ProductoRepository;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use PUGX\AutocompleterBundle\Form\Type\AutocompleteType;
@@ -18,11 +19,18 @@ class IngresoType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        /*$builder->add('producto', EntityType::class, array(
+        $builder->add('producto', EntityType::class, array(
             'class' => 'IncentivesCatalogoBundle:Producto',
-            'choice_label' => 'nombreid',
+        'query_builder' => function(ProductoRepository $repository) { 
+                return $repository->createQueryBuilder('u')->orderBy('u.nombre', 'ASC')
+                    ->where('u.estado = :id')->setParameter('id', '1')
+                    ->orderBy('u.codInc', 'ASC');
+            },
+            'choice_label' => 'nombreId',
             'placeholder' => 'Seleccionar',
-        ));*/
+            'label' => 'Producto'
+        ));
+
         $builder->add('cantidad', IntegerType::class, array(
                 'mapped' => false,
             ));

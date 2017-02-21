@@ -24,16 +24,16 @@ facturacion_listado:
     defaults: { _controller: IncentivesFacturacionBundle:Facturas:listado}
 
 facturas_listado:
-    path:  /facturacion/factura/listado/{programa}
-    defaults: { _controller: IncentivesFacturacionBundle:Facturas:facturasprograma, programa: null}
+    path:  /facturacion/factura/listado/{centrocostos}
+    defaults: { _controller: IncentivesFacturacionBundle:Facturas:facturasprograma, centrocostos: null}
     requirements:
         programa:  \d+
 
 factura_nueva:
-    path:  /facturacion/factura/nueva/{programa}
-    defaults: { _controller: IncentivesFacturacionBundle:Facturas:nueva, programa: null}
+    path:  /facturacion/factura/nueva/{centroCostos}
+    defaults: { _controller: IncentivesFacturacionBundle:Facturas:nueva, centroCostos: null}
     requirements:
-        programa:  \d+
+        centroCostos:  \d+
 
 factura_generarnueva:
     path:  /facturacion/factura/generar/{programa}
@@ -86,9 +86,21 @@ factura_redencionesgenerar:
     path:  /facturacion/redencionesgenerar
     defaults: { _controller: IncentivesFacturacionBundle:Facturas:redencionesGenerar }
     
-factura_requisicionesgenerar:
-    path:  /facturacion/requisicionesgenerar
-    defaults: { _controller: IncentivesFacturacionBundle:Facturas:requisicionesGenerar }
+factura_solicitudesgenerar:
+    path:  /facturacion/solicitudesgenerar
+    defaults: { _controller: IncentivesFacturacionBundle:Facturas:solicitudesGenerar }
+
+factura_detallegenerarredenciones:
+    path:  /facturacion/detallegenerarredenciones/{centrocostos}/{pais}
+    defaults: { _controller: IncentivesFacturacionBundle:Facturas:detalleGenerarRedenciones, centrocostos: null, pais: null}
+
+factura_detallegenerarsolicitudes:
+    path:  /facturacion/detallegenerarsolicitudes/{centrocostos}
+    defaults: { _controller: IncentivesFacturacionBundle:Facturas:detalleGenerarSolicitudes, centrocostos: null}
+
+factura_detallesolicitudes:
+    path:  /facturacion/detallesolicitudes/{id}
+    defaults: { _controller: IncentivesFacturacionBundle:Facturas:detalleSolicitudes, id: null}
 
 factura_detallesolicitudes:
     path:  /facturacion/detallesolicitudes/{id}

@@ -149,6 +149,9 @@ class RedencionController extends Controller
                 }elseif($accion=='cancelar'){
                     $estado = $em->getRepository('IncentivesRedencionesBundle:Redencionesestado')->find("7");
                     $redencion->setRedencionestado($estado);
+
+                    //verificar si tiene alguna promocion asociada y actualizar cantidades
+                    
                     
                     //Actualizar estado productos redencion
                     foreach ($redencionesPremios as $keyRP => $valueRP) {
@@ -188,7 +191,7 @@ class RedencionController extends Controller
                    if($Filtro=="nombre"  || $Filtro=="documento"){
                         $sqlFiltro .= " AND pt.".$Filtro." LIKE '%".$valueF."%'";
                    }elseif($Filtro=="producto"){
-                        $sqlFiltro .= " AND p.nombre  LIKE '%".$valueF."%'";;
+                        $sqlFiltro .= " AND pd.nombre  LIKE '%".$valueF."%'";;
                    }elseif($Filtro=="catalogo"){
                         $sqlFiltro .= " AND pc.catalogos=".$valueF;
                    }elseif($Filtro=="puntos"){
@@ -206,6 +209,8 @@ class RedencionController extends Controller
             ->select('r','pt','pr','p','c') 
             ->from('IncentivesRedencionesBundle:Redenciones', 'r')
             ->leftJoin('r.participante','pt')
+            ->leftJoin('r.redencionesProductos', 'rp')
+            ->leftJoin('rp.producto', 'pd')
 		    ->leftJoin('r.premio', 'pr')
 		    ->leftJoin('pr.premiosproductos', 'p')
 		    ->leftJoin('pr.catalogos', 'c')
@@ -279,6 +284,7 @@ class RedencionController extends Controller
 		    ->leftJoin('r.premio', 'pr')
 		    ->leftJoin('r.redencionestado', 'e')
 		    ->leftJoin('r.redencionesProductos', 'rp')
+            ->leftJoin('rp.producto', 'p')
             ->leftJoin('rp.inventario', 'i')
             ->leftJoin('rp.despacho', 'd')
 		    ->leftJoin('d.despachoguia', 'dg')
@@ -1077,7 +1083,7 @@ class RedencionController extends Controller
 						'Id Redencion','Id Premio','Fecha Redencion','Fecha Autorizacion','Fecha Modificacion','Redimido Por','Codigo Redencion',
                         'Nombre Participante','Cedula participante','Nombre envio','Documento envio','Telefono envio','Celular envio','Direccion envio',
                         'Barrio envio','Departamento','Ciudad','Puntos','Codigo EAN','Producto','Sku','Categoria','Proveedor Principal','Proveedor OC',
-                        'Costo OC','Valor Venta','Valor Mercado','Valor Consignacion','Orden de compra','Fecha Orden Compra','Guia','Operador','Semaforo','Nombre Contacto',
+                        'Costo OC','Valor Venta','Valor Mercado','Valor Consignacion','Orden de compra','Fecha Orden Compra','Guia','Operador','Imagen Guia','Semaforo','Nombre Contacto',
                         'Documento Contacto','Direccion Contacto','Telefono Contacto','Fecha Despacho','Planilla','Factura','Fecha Entrega');
 			
 	 //print_r($redenciones); exit;       
@@ -1100,10 +1106,11 @@ class RedencionController extends Controller
                     	LEFT JOIN Redencionesenvios envio ON envio.redencion_id=r.id
                     	LEFT JOIN Redencionesestado estado ON r.redencionestado_id=estado.id
                     	LEFT JOIN Inventario i ON i.redencion_id=r.id
+                        LEFT JOIN Despachos dp ON dp.redencionproducto_id=rp.id
                     	/*LEFT JOIN InventarioGuia ig ON ig.inventario_id=i.id
                     	LEFT JOIN GuiaEnvio guia ON guia.id=ig.guia_id*/
-                    	LEFT JOIN Planilla pl ON pl.id=i.planilla_id
-                    	LEFT JOIN OrdenesProducto op ON r.ordenesproducto_id=op.id
+                    	LEFT JOIN Planilla pl ON pl.id=dp.planilla_id
+                    	LEFT JOIN OrdenesProducto op ON rp.ordenesproducto_id=op.id
                     	LEFT JOIN OrdenesCompra oc ON op.ordenescompra_id=oc.id
                     	LEFT JOIN Proveedores pv ON oc.proveedor_id=pv.id
                     	LEFT JOIN FacturaProductos fp ON r.facturaProducto_id=fp.id
@@ -1165,7 +1172,7 @@ class RedencionController extends Controller
 
 						$row[] = utf8_decode($value['proveedor']);//23
 						$row[] = $value['valorunidad'];//24
-						$precioV = $value['valorunidad'] * (1 + $value['incremento']/100) + $value['logistica'];  
+						$precioV = ($value['valorunidad'] / (1 - ($value['incremento']/100))) + $value['logistica'];  
 						$row[] = $precioV;//25
 						
 						$row[] = "";//26
@@ -1182,7 +1189,7 @@ class RedencionController extends Controller
 						}
 						
 					    //consultar guias
-					    $query = "SELECT g.operador,g.guia
+					    $query = "SELECT g.operador,g.guia,g.ruta
                         	FROM DespachoGuia as dg
                         	JOIN Despachos as d ON dg.despacho_id=d.id
                         	JOIN GuiaEnvio as g ON g.id=dg.guia_id";
@@ -1194,16 +1201,25 @@ class RedencionController extends Controller
                         
                         $guias = array();
                         $opeador = array();
+                        $imagenguia = array();
+
                         foreach($guiasResult as $keyG => $valueG){
                             $guias[]= $valueG['guia'];
                             $opeador[]= $valueG['operador'];
+                            if($valueG['ruta']!=""){
+                                $rutaGuia = "http://operaciones.inc-group.co/".substr($valueG['ruta'], 5);
+                                //$imagenguia[]= '=HYPERLINK("'.$rutaGuia.'", "'.$rutaGuia.'")';
+                                $imagenguia[] = $rutaGuia;
+                            } 
                         }
                         
                         $guias = implode(" / ", $guias);
                         $opeador = implode(" / ", $opeador);
+                        $imagenguia = implode(" ", $imagenguia);
             
 						$row[] = utf8_decode($guias);//29 guias
 						$row[] = utf8_decode($opeador);//30 operador
+                        $row[] = utf8_decode($imagenguia);//30 operador
 						
 						$row[] = $value['estado'];//31 estado
 					
@@ -1567,5 +1583,75 @@ class RedencionController extends Controller
         return $this->render('IncentivesRedencionesBundle:Redencion:listadoCompleto.html.twig', 
             array( 'redenciones' => $pagination, 'filtros' => $filtros, 'form' => $form->createView()));
     }
-       
+
+
+    public function listadoConsolidadoAction(Request $request, $programa)
+    {
+
+       $em = $this->getDoctrine()->getManager();
+        
+        $session = $this->get('session');
+         
+        $page = $request->get('page');
+        if(!$page) $page= 1;
+            
+        if($pro = $request->request->get('redenciones')){
+            $page = 1;
+            $session->set('filtros_redenciones', $pro);
+        }
+        
+        $sqlFiltro = "";
+
+        if($filtros = $session->get('filtros_redenciones')){
+           
+           foreach($filtros as $Filtro => $valueF){
+               
+               if($valueF!=""){
+                   if($Filtro=="nombre"  || $Filtro=="documento"){
+                        $sqlFiltro .= " AND pt.".$Filtro." LIKE '%".$valueF."%'";
+                   }elseif($Filtro=="producto"){
+                        $sqlFiltro .= " AND p.nombre  LIKE '%".$valueF."%'";;
+                   }elseif($Filtro=="catalogo"){
+                        $sqlFiltro .= " AND pc.catalogos=".$valueF;
+                   }elseif($Filtro=="puntos"){
+                        $sqlFiltro .= " AND r.puntos=".$valueF."";
+                   }else{
+                        $sqlFiltro .= " AND r.".$Filtro." LIKE '%".$valueF."%'";
+                   }
+               }
+           } 
+        }
+            
+        $sqlFiltro = "pt.programa=".$programa." AND r.redencionestado=1 ".$sqlFiltro;
+
+        $query = $em->createQueryBuilder()
+            ->select('r','pt','pr','p','c','count(r) cantidad') 
+            ->from('IncentivesRedencionesBundle:Redenciones', 'r')
+            ->leftJoin('r.participante','pt')
+            ->leftJoin('r.premio', 'pr')
+            ->leftJoin('pr.premiosproductos', 'p')
+            ->leftJoin('pr.catalogos', 'c')
+            ->where($sqlFiltro);
+        $query->groupBy('pr.id','pr.catalogos');
+            
+        $resultado = $query->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
+        //echo "<pre>"; print_r($resultado); echo "</pre>"; exit;
+
+        if($request->get('sort')){
+            $query->orderBy($request->get('sort'), $request->get('direction'));    
+        }
+        
+        $arrayFiltro['programa'] = $programa;
+        $catalogos = $em->getRepository('IncentivesCatalogoBundle:Catalogos')->findBy($arrayFiltro);
+           
+        $paginator  = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $query,
+            $page/*page number*/,
+            40 /*limit per page*/
+        );
+
+        return $this->render('IncentivesRedencionesBundle:Redencion:listadoConsolidado.html.twig', 
+            array( 'programa'=>$programa, 'redenciones'=>$pagination, 'catalogos' => $catalogos, 'filtros' => $filtros));
+        }
 }

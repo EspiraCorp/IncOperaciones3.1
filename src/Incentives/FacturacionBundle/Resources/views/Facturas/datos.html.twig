@@ -7,7 +7,7 @@
         Facturas	
         <div class="box-icon">
 				<div class="box-icon">
-                    <a href="{{ path('facturas_listado') }}/{{ factura.programa.id }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+                    <a href="{{ path('facturas_listado') }}/{{ factura.centroCostos.id }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
                 </div>
     	</div>
     </div>
@@ -35,13 +35,12 @@
 				<table class="table table-bordered table-striped">
 					<tbody>
 						<tr><td>Numero</td><td>{{ factura.numero }}</td></tr>
-						<tr><td>Cliente</td><td>{{ factura.programa.cliente.nombre }}</td></tr>
-						<tr><td>Programa</td><td>{{ factura.programa.nombre }}</td></tr>
+						<tr><td>Cliente</td><td>{{ factura.centroCostos.cliente.nombre }}</td></tr>
+						<tr><td>Centro Costos</td><td>{{ factura.centroCostos.nombre }}</td></tr>
 						<tr><td>Fecha Factura</td><td>{{ factura.fecha | date("Y-m-d")  }}</td></tr>
 						<tr><td>Periodo</td><td>{{ factura.periodo.periodo }}</td></tr>
 						<tr><td>Fecha Inicio</td><td>{{ factura.fechaInicio | date("Y-m-d") }}</td></tr>
-						<tr><td>Fecha Fin</td><td>{{ factura.fechaFin | date("Y-m-d") }}</td></tr>												
-					
+						<tr><td>Fecha Fin</td><td>{{ factura.fechaFin | date("Y-m-d") }}</td></tr>
 					</tbody>
 				</table>
 		</div>

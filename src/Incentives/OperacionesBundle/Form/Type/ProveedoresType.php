@@ -44,20 +44,17 @@ class ProveedoresType extends AbstractType
         $builder->add('pais', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:Pais',
             'choice_label' => 'nombre',
-            'placeholder' => 'Seleccionar',
-            'required' => false
+            'placeholder' => 'Seleccionar'
         ));
-        $builder->add('ciudad', 'PUGX\AutocompleterBundle\Form\Type\AutocompleteType', array(
-			'class' => 'IncentivesOperacionesBundle:Ciudad',
-			//'choice_label' => 'nombre',
-            //'placeholder' => 'Seleccionar',
-            'required' => false
-		));
+        $builder->add('ciudad', EntityType::class, array(
+            'class' => 'IncentivesOperacionesBundle:Ciudad',
+            'choice_label' => 'nombre',
+            'placeholder' => 'Seleccionar'
+        ));
         $builder->add('categoria', EntityType::class, array(
             'class' => 'IncentivesOperacionesBundle:Categoria',
             'choice_label' => 'nombre',
-            'placeholder' => 'Seleccionar',
-            'required' => false
+            'placeholder' => 'Seleccionar'
         ));
 
         $builder->add('proveedortipo', EntityType::class, array(

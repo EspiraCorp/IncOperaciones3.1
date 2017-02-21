@@ -58,7 +58,15 @@
             <div class="controls">
                 {{ form_widget(form.diasentrega, { 'attr': {'class': 'input-xlarge focused'} }) }}
             </div>
-        </div>  
+        </div> 
+        {% if is_granted('ROLE_ADMIN') %}
+        <div class="control-group">
+            * {{ form_label(form.apiKey, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.apiKey, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div> 
+        {% endif %} 
 
     </fieldset>
     <div class="row-fluid sortable ui-sortable">

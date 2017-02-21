@@ -63,6 +63,14 @@ ciudad_campos:
    path:  /ciudad/campos
    defaults: { _controller: IncentivesBaseBundle:Campos:CiudadCampos}
 
+correoEnviar:
+   path:  /correo/enviar
+   defaults: { _controller: IncentivesBaseBundle:Correos:correoEnviar }
+
+campos_exporar:
+   path:  /campos/exportar
+   defaults: { _controller: IncentivesBaseBundle:Campos:exportar}
+
 menu:
    path:  /menu
    defaults: { _controller: IncentivesBaseBundle:Menu:menuPrincipal }

@@ -61,8 +61,8 @@
                         <tbody>
                         {% for proveedor in listado %}
                           <tr role="row">
-                            <td>{{ proveedor.id }}</td>
-                            <td><a href="{{ path("proveedores_datos", {"id": proveedor.id}) }}">{{ proveedor.nombre }}</a></td>
+                            <td><a href="{{ path("proveedores_datos", {"id": proveedor.id}) }}">{{ proveedor.id }}</a></td>
+                            <td>{{ proveedor.nombre }}</td>
                             <td>{{ proveedor.numerodocumento }}</td>
                             <td>{% if proveedor.pais is null %}{% else %}{{ proveedor.pais.nombre }}{% endif %}</td>
                             <td>{% if proveedor.ciudad is null %}{% else %}{{ proveedor.ciudad.nombre }}{% endif %}</td>

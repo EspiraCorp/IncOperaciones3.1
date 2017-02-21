@@ -1,44 +1,44 @@
-{% extends '::basePop.html.twig' %}
+{% extends '::basePopLte.html.twig' %}
 
 {% block title %}Agregar Intervalo{% endblock %}
 
-{% block cuerpo %}
-<div class="row-fluid sortable ui-sortable">
-<div class="box span12">
-<div class="box-header well" data-original-title>
-                        <h2><i class="icon-edit"></i>Editar Intervalo</h2>
-                        <div class="box-icon">
-                            <a href="{{ path('catalogo_datos') }}/{{ catalogo }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+{% block content %}
+<div class="">
+          <div class="modal-dialog box box-warning">
+            <div class="modal-content">
+              <div class="modal-header bg-black">
+                <h4 class="modal-title">Editar Intervalo</h4>
+              </div>
+              <div class="modal-body">
+                <form action="{{ path('catalogo_intervaloseditar') }}/{{ id }}" method="POST"  class="form-horizontal">
+                    {{ form_errors(form) }}
+                    <input type='hidden' name='id' value={{ id }}>
+                    <fieldset>
+                        <div class="form-group">
+                            {{ form_label(form.minimo, label|default(null), { 'label_attr': { 'class': 'col-sm-4 control-label' } }) }}
+                            <div class="col-sm-8">
+                                {{ form_widget(form.minimo, { 'attr': {'class': 'form-control'} }) }}
+                            </div>
                         </div>
-                    </div>
-<div class="box-content">
-<form action="{{ path('catalogo_intervaloseditar') }}/{{ id }}" method="POST"  class="form-horizontal">
-    {{ form_errors(form) }}
-    <input type='hidden' name='id' value={{ id }}>
-    <fieldset>
-        <div class="control-group">
-            {{ form_label(form.minimo, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
-            <div class="controls">
-                {{ form_widget(form.minimo, { 'attr': {'class': 'input-xlarge focused'} }) }}
+                        <div class="form-group">
+                            {{ form_label(form.maximo, label|default(null), { 'label_attr': { 'class': 'col-sm-4 control-label' } }) }}
+                            <div class="col-sm-8">
+                                {{ form_widget(form.maximo, { 'attr': {'class': 'form-control'} }) }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.puntos, label|default(null), { 'label_attr': { 'class': 'col-sm-4 control-label' } }) }}
+                            <div class="col-sm-8">
+                                {{ form_widget(form.puntos, { 'attr': {'class': 'form-control'} }) }}
+                            </div>
+                         </div>
+                         <div class="modal-footer bg-black">
+                            {{ form_widget(form.Enviar, { 'attr': {'class': 'btn btn-warning bg-black'} }) }}
+                        </div>
+                {{ form_widget(form._token) }}
+                </form>
             </div>
         </div>
-        <div class="control-group">
-            {{ form_label(form.maximo, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
-            <div class="controls">
-                {{ form_widget(form.maximo, { 'attr': {'class': 'input-xlarge focused'} }) }}
-            </div>
-        </div>
-        <div class="control-group">
-            {{ form_label(form.puntos, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
-            <div class="controls">
-                {{ form_widget(form.puntos, { 'attr': {'class': 'input-xlarge focused'} }) }}
-            </div>
-<div class="form-actions">
-    {{ form_widget(form.Enviar, { 'attr': {'class': 'btn btn-primary'} }) }}
+    </div>
 </div>
-{{ form_widget(form._token) }}
-</form>
-</div>
-</div>
- </div>
 {% endblock %}

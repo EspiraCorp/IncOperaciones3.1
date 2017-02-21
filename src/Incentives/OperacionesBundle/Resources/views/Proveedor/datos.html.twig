@@ -11,14 +11,14 @@
 		    	<div class="box-header bg-black">
 		    		<h3 class="box-title">Datos Proveedor</h3>
 					<div class="box-tools pull-right">
-					{% if (is_granted('ROLE_ADMIN') or is_granted('ROLE_DIR') or is_granted('ROLE_ASIS') or is_granted('ROLE_ASISCOMP')) or is_granted('ROLE_CAT') %}
+					{% if (is_granted('ROLE_ADMIN') or is_granted('ROLE_DIR') or is_granted('ROLE_ASIS') or is_granted('ROLE_ASISCOMP')) or is_granted('ROLE_CAT') or is_granted('ROLE_LOGIS') %}
 						<a href="{{ path('proveedores_editar',  {"id": proveedor.id}) }}" title="Editar proveedor">
 							<button class="btn btn-primary">
 								<i class="fa fa-edit icon-white"></i>
 							</button>
 						</a>
 					{% endif %}
-					{% if (is_granted('ROLE_ADMIN') or is_granted('ROLE_DIR') or is_granted('ROLE_ASIS') or is_granted('ROLE_ASISCOMP') or is_granted('ROLE_CAT'))  %}
+					{% if (is_granted('ROLE_ADMIN') or is_granted('ROLE_DIR') or is_granted('ROLE_ASIS') or is_granted('ROLE_ASISCOMP') or is_granted('ROLE_CAT') or is_granted('ROLE_LOGIS'))  %}
 							<a href="{{ path('productos_proveedor',  {"id": proveedor.id}) }}"  class="btn btn-info" title="Productos">
 			            		<i class="fa fa-barcode icon-white"></i>
 							</a>

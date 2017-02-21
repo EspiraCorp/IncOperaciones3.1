@@ -14,7 +14,7 @@
             </div>
             <!-- /.box-header -->
             <!-- form start -->
-            <form action="{{ path('catalogo_nuevo') }}" method="POST" class="form-horizontal">
+            <form action="{{ path('catalogo_editar') }}/{{ id }}" method="POST" class="form-horizontal">
                 {{ form_errors(form) }}
               <div class="box-body">
                 <div class="form-group">

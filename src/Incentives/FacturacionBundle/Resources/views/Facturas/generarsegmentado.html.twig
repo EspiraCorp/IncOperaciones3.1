@@ -19,7 +19,7 @@
         <tr>
         <tr>
             <th>País</th>
-            <th>Programa</th>
+            <th>Centro Costos</th>
             <th>Cantidad</th>
             <th>Fecha Inicial</th>
             <th>Ultima Fecha</th>
@@ -42,20 +42,25 @@
     
     <table class="table table-bordered table-striped">
         <tr>
-            <th colspan="6"><h3>Requisiciones</h3></th>
+            <th colspan="6"><h3>Solicitudes</h3></th>
         <tr>
         <tr>
-            <th>Programa</th>
+            <th>Centro Costos</th>
             <th>Cantidad</th>
             <th></th>
         </tr>
         {% set i=0 %}
-        {% for requisicion in requisiciones %}
+        {% for solicitud in solicitudes %}
             {% set i=i+1 %}
-            <tr><td>{{ requisicion.programa }}</td>
-                <td>{{ requisicion.total }}</td>
+            <tr><td><a id="{{ i }}" onClick="detalle('{{ i }}')" class="btn btn-success">+</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ solicitud.centroCostos }} - {{ solicitud.centroCostosNombre }}</td>
+                <td>{{ solicitud.total }}</td>
                 <td>
-                    <a class="btn btn-info" onClick="post('{{ path('factura_requisicionesgenerar') }}', {programa: {{ requisicion.idPrograma }}})">Generar</a>
+                    <a class="btn btn-info" onClick="post('{{ path('factura_solicitudesgenerar') }}', {centrocostos: {{ solicitud.idCentroCostos }}})">Generar</a>
+                </td>
+            </tr>
+            <tr id="detalle_{{ i }}" class="hide">
+                <td colspan="4">
+                    <div>{{ render(controller('IncentivesFacturacionBundle:Facturas:detalleGenerarSolicitudes', { 'centrocostos': solicitud.idCentroCostos })) }}</div>
                 </td>
             </tr>
         {% endfor %}
@@ -68,7 +73,7 @@
         <tr>
         <tr>
             <th>País</th>
-            <th>Programa</th>
+            <th>Centro Costos</th>
             <th>Cantidad</th>
             <th></th>
         </tr>

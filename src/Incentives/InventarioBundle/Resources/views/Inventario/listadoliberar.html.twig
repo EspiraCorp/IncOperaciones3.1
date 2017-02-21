@@ -1,28 +1,25 @@
-{% extends "::base.html.twig" %}
+{% extends '::baseLte.html.twig' %}
 
-{% block title %}Liberar Inventario{% endblock %}
-{% block sidebar %}
-{{ parent() }}
-{% endblock %}
-{% block cuerpo %}
-<div class="row-fluid sortable ui-sortable">
-	<div class="box span12">
-		<div class="box-header well">
-			<h2><i class="icon-th-list"></i>Liberar Inventario</h2>
+{% block title %}{{ parent() }}::Inventario Liberar{% endblock %}
+{% block sectiontitle %}<h1>Inventario<small>Liberar</small></h1>{% endblock %}
+{% block breadcum %} <li><a href="{{ path('inventario_listado') }}"><i class="fa fa-star-o"></i>Inventario</a></li><li class="active">Liberar</li>{% endblock %}
 
-      <div class="box-icon">
-        <div class="box-icon">
-                    <a href="" class="btn btn-round"><i class="icon-arrow-left"></i></a>
-                </div>
-      </div>
-		</div>
-		<div class="box-content">
-			<div id="dashboard">
-          <div id="tabla" class="table table-bordered table-striped" cellspacing="0" width="100%">
-            <table id="inventario" class="display">
-              <form action="" method="POST" class="form-horizontal">
-              <thead style="display:table-row-group;"  >
-                <tr>
+{% block content %}
+  <div class="row">
+        <div class="col-xs-12">
+          <div class="box box-warning">
+            <div class="box-header bg-black">
+              <h3 class="box-title">Listado de Productos Para Liberar</h3> 
+            </div>
+
+            <div class="box-body no-padding">
+              <div class="dataTables_wrapper form-inline dt-bootstrap">
+                <div class="row">
+                  <div class="col-sm-12">
+                    <table class="table table-bordered table-striped table-condensed dataTable" id="productos" role="grid">
+                      <form action="" method="POST" class="form-horizontal">
+                        <thead>
+                          <tr>
                             <th>Id</th>
                             <th>Codigo</th>
                             <th>Producto</th>
@@ -36,23 +33,23 @@
                             <th>Observación</th>
                             <th>Liberar</th>
                           </tr>
-                  <tr>
-                    <th></th>
-                    <th><input type="text" id="inventario_codigo" name="inventario[codigo]" style="width: 60px"></th>
-                    <th><input type="text" id="inventario_producto" name="inventario[nombre]" style="width: 120px"></th>
-                    <th><input type="text" id="inventario_marca" name="inventario[marca]" style="width: 60px"></th>
-                    <th><input type="text" id="inventario_referencia" name="inventario[referencia]" style="width: 80px"></th>
-                    <th><input type="text" id="inventario_codInc" name="inventario[codInc]" style="width: 60px"></th>
-                    <th><input type="text" id="inventario_fechaEntrada" name="inventario[fechaEntrada]" style="width: 100px"></th>
-                    <th><input type="text" id="inventario_redencion" name="inventario[redencion]" style="width: 100px"></th>
-                    <th><input type="text" id="inventario_ordenCompra" name="inventario[ordenCompra]" style="width: 80px"></th>
-                    <th><input type="text" id="inventario_planilla" name="inventario[planilla]" style="width: 60px"></th>
-                    <th><input type="text" id="inventario_observacion" name="inventario[observacion]" style="width: 120px"></th>
-                    <th><button type="submit" id="inventario_Enviar" name="inventario[Enviar]" class="btn btn-primary">Enviar</button></th>
-                  </tr>
-              </thead>
-              </form>
-              <tbody>
+                          <tr>
+                            <th></th>
+                            <th><input type="text" id="inventario_codigo" name="inventario[codigo]" style="width: 60px" class="form-control input-sm"></th>
+                            <th><input type="text" id="inventario_producto" name="inventario[nombre]" style="width: 120px" class="form-control input-sm"></th>
+                            <th><input type="text" id="inventario_marca" name="inventario[marca]" style="width: 60px" class="form-control input-sm"></th>
+                            <th><input type="text" id="inventario_referencia" name="inventario[referencia]" style="width: 80px" class="form-control input-sm"></th>
+                            <th><input type="text" id="inventario_codInc" name="inventario[codInc]" style="width: 60px" class="form-control input-sm"></th>
+                            <th><input type="text" id="inventario_fechaEntrada" name="inventario[fechaEntrada]" style="width: 100px" class="form-control input-sm"></th>
+                            <th><input type="text" id="inventario_redencion" name="inventario[redencion]" style="width: 100px" class="form-control input-sm"></th>
+                            <th><input type="text" id="inventario_ordenCompra" name="inventario[ordenCompra]" style="width: 80px" class="form-control input-sm"></th>
+                            <th><input type="text" id="inventario_planilla" name="inventario[planilla]" style="width: 60px" class="form-control input-sm"></th>
+                            <th><input type="text" id="inventario_observacion" name="inventario[observacion]" style="width: 120px" class="form-control input-sm"></th>
+                            <th><button type="submit" id="inventario_Enviar" name="inventario[Enviar]" class="btn btn-primary">Buscar</button></th>
+                          </tr>
+                        </thead>
+                      </form>
+                      <tbody>
                           {% for registro in listado %}
                           <tr>
                             <td>{{ registro['inventario']['id'] }}</td>
@@ -69,30 +66,34 @@
                             <td><input type="checkbox" name="id" value="{{ registro['inventario']['id'] }}"></td>
                           </tr>
                           {% endfor %}
-              </tbody>
-            </table>
-          </div>
-          <div>
-            <div align="rigth">Todos<input id="checktodos" name="checktodos" type="checkbox" /></div>
-              <input type="submit" value="Liberar" onclick='check_value("{{ path("inventario_listadoliberar") }}")'>
-            </div>
-          </div>
-          
-              <div class="box span11">
-                <div class="box-content">
-                        <div class="dataTables_info">Mostrando {{ listado.getItemNumberPerPage*(listado.getCurrentPageNumber-1)+1  }} a {{ listado.getItemNumberPerPage*listado.getCurrentPageNumber }} de {{ listado.getTotalItemCount }}   Productos
-                        </div>
-                        <div class="pagination pagination-centered">
-                                {{ knp_pagination_render(listado) }}                    
-                        </div>
+                      </tbody>
+                  </table>
+                  </div>
                 </div>
-            </div>
-		</div>
-	</div>
-</div>
+
+                <div class="row pull-right">
+                  <div class="col-sm-12">
+                    <div align="pull-right">
+                      <input type="submit" value="Liberar" onclick='check_value("{{ path("inventario_listadoliberar") }}")' class="btn btn-primary">
+                      <input id="checktodos" name="checktodos" type="checkbox" />Todos
+                    </div>
+                  </div>
+                </div>
+          
+              <div class="row">
+                    <div class="col-sm-5"><div class="dataTables_info" role="status" aria-live="polite">Mostrando {{ listado.getItemNumberPerPage*(listado.getCurrentPageNumber-1)+1  }} a {{ listado.getItemNumberPerPage*listado.getCurrentPageNumber }} de {{ listado.getTotalItemCount }}   Productos</div></div>
+
+                    <div class="col-sm-7"><div class="dataTables_paginate paging_simple_numbers">
+                    {{ knp_pagination_render(listado) }}</div></div>
+                  </div>
+                </div>
+          </div>
+        </div>
+      </div>
+    </div>
 {% endblock %}
 
-{% block javascripts %}
+{% block javascript %}
 
 {{ parent() }}
 

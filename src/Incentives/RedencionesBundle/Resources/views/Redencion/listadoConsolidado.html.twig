@@ -1,0 +1,175 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Redenciones por programa{% endblock %}
+{% block sidebar %}
+{{ parent() }}
+{% endblock %}
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+  <div class="box span12">
+    <div class="box-header well">
+      <h2><i class="icon-th-list"></i>Redenciones por programa</h2>
+
+      <div class="box-icon">
+        <div class="box-icon">
+                    <a href="{{ path('redenciones') }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+                </div>
+      </div>
+    </div>
+    <div class="box-content">
+      <div id="dashboard">
+        <div id="tabla" class="" cellspacing="0" width="100%">
+                      <table id="tabla_redenciones" class="table table-bordered table-striped">
+                        <form action="{{ path('redenciones_datos') }}/{{ programa }}"  enctype="multipart/form-data" method="POST" class="form-horizontal">
+                            <div class="box-icon">
+                              Todos<input id="checktodos" name="checktodos" type="checkbox" />
+                              <input type="submit" value="Buscar" class='btn btn-primary'>
+                              
+                            </div>
+                          <thead  style="display:table-row-group;" >
+                            <tr>
+                              <th>{{ knp_pagination_sortable(redenciones, 'Id', 'pr.id') }}</th>
+                              <th>{{ knp_pagination_sortable(redenciones, 'Producto', 'p.nombre') }}</th>
+                              <th>{{ knp_pagination_sortable(redenciones, 'Marca', 'p.nombre') }}</th>
+                              <th>{{ knp_pagination_sortable(redenciones, 'Referencia', 'p.nombre') }}</th>
+                              <th>{{ knp_pagination_sortable(redenciones, 'Sku', 'p.nombre') }}</th>
+                              <th>{{ knp_pagination_sortable(redenciones, 'Puntos', 'r.puntos') }}</th>
+                              <th>{{ knp_pagination_sortable(redenciones, 'Catalogo', 'pc.catalogos') }}</th>
+                              <th>{{ knp_pagination_sortable(redenciones, 'Fecha', 'r.fecha') }}</th>
+                              <th>Cantidad</th>
+                              <th>Modificar</th>
+                            </tr>
+                             <tr>
+                              <th><input type="text" id="redenciones_producto" name="redenciones[premio]"  style="width: 50px"></th>
+                              <th><input type="text" id="redenciones_producto" name="redenciones[producto]"  style="width: 150px"></th>
+                              <th><input type="text" id="redenciones_producto" name="redenciones[producto]"  style="width: 150px"></th>
+                              <th><input type="text" id="redenciones_producto" name="redenciones[producto]"  style="width: 150px"></th>
+                              <th><input type="text" id="redenciones_producto" name="redenciones[producto]"  style="width: 150px"></th>
+                              <th><input type="text" id="redenciones_puntos" name="redenciones[puntos]"  style="width: 100px"></th>
+                              <th>
+                                <select style="width:140px" name="redenciones[catalogo]" id="redenciones_catalogo">
+                                <option selected="selected" value="">Seleccionar</option>
+                                {% for catalogo in catalogos %}
+                                  <option value="{{ catalogo.id }}">{{ catalogo.nombre }}</option>
+                                {% endfor %}
+                                </select>
+                              </th>
+                              <th><input type="text" id="redenciones_fecha" name="redenciones[fecha]" style="width: 100px"></th>
+                              <th></th>
+                              <th></th>
+
+                            </tr>
+                          </thead>
+                        </form>
+                        <tbody>
+                          {% for redencion in redenciones %}
+                                   <tr>
+                                    <td>
+                                      {{ redencion[0].premio.id }}
+                                    </td>
+                                    <td>
+                                      {% if(redencion[0].premio.nombre is not null) %}
+                                      {{ redencion[0].premio.nombre }}
+                                      {% else %}
+                                      {{ redencion[0].redencionesproductos[0].producto.nombre }}
+                                      {% endif %}
+                                    </td>
+                                    <td>
+                                      {% if(redencion[0].premio.marca is not null) %}
+                                      {{ redencion[0].premio.marca }}
+                                      {% else %}
+                                      {{ redencion[0].redencionesproductos[0].producto.marca }}
+                                      {% endif %}
+                                    </td>
+                                    <td>
+                                      {% if(redencion[0].premio.referencia is not null) %}
+                                      {{ redencion[0].premio.referencia }}
+                                      {% else %}
+                                      {{ redencion[0].redencionesproductos[0].producto.referencia }}
+                                      {% endif %}
+                                    </td>
+                                    <td>
+                                      {{ redencion[0].redencionesproductos[0].producto.codInc }}
+                                    </td>
+                                    <td>{{ redencion[0].puntos }}</a></td>
+                                    <td>{{ redencion[0].premio.catalogos.nombre }}</a></td>
+                                    <td>{{ redencion[0].fecha | date("Y-m-d") }}</a></td>
+                                    <td>{{ redencion.cantidad }}</a></td>
+                                    <td><input type="checkbox" id="redencion_{{ redencion[0].premio.id }}" name="id" value="{{ redencion[0].id }}"></a></td>
+                                  </tr>
+                        {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                    
+                    <div id="tabla" class="row-fluid"></div>  
+                    <input type="submit" value="Autorizar" 
+                        onclick='check_value("{{ path("redenciones_autorizar_consolidado", {"accion": "autorizar"}) }}")'>
+                    <input type="submit" value="Cancelar" 
+                        onclick='check_value("{{ path("redenciones_autorizar_consolidado", {"accion": "cancelar"}) }}")'>
+            </div>
+    </div>
+    <div class="box span11">
+        <div class="box-content">
+                <div class="dataTables_info">Mostrando {{ redenciones.getItemNumberPerPage*(redenciones.getCurrentPageNumber-1)+1  }} a {{ redenciones.getItemNumberPerPage*redenciones.getCurrentPageNumber }} de {{ redenciones.getTotalItemCount }} Redenciones
+                </div>
+                <div class="pagination pagination-centered">
+                        {{ knp_pagination_render(redenciones) }}                    
+                </div>
+        </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+
+{{ parent() }}
+
+<script type="text/javascript">
+$(document).ready(function(){
+ 
+  //Checkbox
+  $("#checktodos").change(function(){
+    $(':checkbox').each( function(indice, elemento) {
+      if($("#checktodos").is(":checked")){
+        $(this).attr("checked",true);
+  $(this).parent().addClass("checked");
+      } else {
+        $(this).attr("checked",false);
+  $(this).parent().removeClass("checked");
+      }
+    });
+  });
+ 
+});
+    
+    function check_value(ruta)
+    { 
+      var arreglo="";
+      var chk=document.getElementsByName('id');
+        for (var i = 0; i < chk.length; i++) {
+            if(chk[i].checked){
+              arreglo=arreglo+chk[i].value+",";
+              //self.location=ruta+"/"+chk[i].value;
+            }
+        }
+        self.location=ruta+"/"+arreglo;
+    }
+
+      function confirmar(ruta)
+      {
+        if (confirm("Desea cambiar el estado")==true){
+            self.location=ruta;
+        }else{
+            alert("OK");
+        }
+        
+      }
+      
+      
+    
+  </script>
+
+{% endblock %}
+

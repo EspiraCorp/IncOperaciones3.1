@@ -120,18 +120,18 @@ class CalificacionController extends Controller
         $datos = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
 
         // Create the Transport
-         $transport = \Swift_SmtpTransport::newInstance('mail.sociosyamigos.com', 25)
+        $transport = \Swift_SmtpTransport::newInstance('email-smtp.us-east-1.amazonaws.com', 587, 'tls')
           ->setAuthMode('login')
-          ->setUsername('pruebas@sociosyamigos.com')
-          ->setPassword('7d7_r47@fqxo');
+          ->setUsername('AKIAJAETNFKDQJKWT64Q')
+          ->setPassword('Aq29dWq2pKC+XhNaMGa1kG+vwjmNKBxbz7JJ4R1cRqjt');
 
         // Create the Mailer using your created Transport
         $mailer = \Swift_Mailer::newInstance($transport);
 
         $message = \Swift_Message::newInstance()
             ->setSubject('Resultados de evaluación de desempeño proveedores INC Group')
-            ->setFrom(array('test@grupo-inc.com' => 'Grupo Inc'))
-            ->setTo(array_merge(array('manuelgb13@gmail.com','controloperaciones@inc-group.co','lferro@inc-group.co','compras1@grupo-inc.com','compras2@grupo-inc.com','compras3@grupo-inc.com','compras4@grupo-inc.com'),$correos))
+            ->setFrom(array('operaciones@inc-group.co' => 'Grupo Inc'))
+            ->setTo(array_merge(array('controloperaciones@inc-group.co','asanchez@inc-group.co','compras1@grupo-inc.com','compras2@grupo-inc.com','compras3@grupo-inc.com','compras4@grupo-inc.com'),$correos))
             ->attach(\Swift_Attachment::fromPath($this->container->getParameter('kernel.root_dir').'/..'.$calificacion->getPath()))
             ->attach(\Swift_Attachment::fromPath($this->container->getParameter('kernel.root_dir').'/..'.$calificacion->getCarta()))
             ->setBody(

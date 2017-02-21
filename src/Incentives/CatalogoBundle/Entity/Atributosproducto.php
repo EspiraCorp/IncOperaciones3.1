@@ -52,6 +52,13 @@ class Atributosproducto
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="imagen", type="string", length=255, nullable=true)
+     */
+    private $imagen;
+
+    /**
+     * @var string
      * @ORM\ManyToOne(targetEntity="Estados", inversedBy="atributos", cascade={"persist"})
      * @ORM\JoinColumn(name="estado_id", referencedColumnName="id", nullable=true)
      */
@@ -258,5 +265,29 @@ class Atributosproducto
     public function getUsuario()
     {
         return $this->usuario;
+    }
+
+    /**
+     * Set imagen
+     *
+     * @param string $imagen
+     *
+     * @return Atributosproducto
+     */
+    public function setImagen($imagen)
+    {
+        $this->imagen = $imagen;
+
+        return $this;
+    }
+
+    /**
+     * Get imagen
+     *
+     * @return string
+     */
+    public function getImagen()
+    {
+        return $this->imagen;
     }
 }

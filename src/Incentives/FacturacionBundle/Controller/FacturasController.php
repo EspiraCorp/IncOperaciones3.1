@@ -33,10 +33,10 @@ class FacturasController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $qb = $em->createQueryBuilder()
-            ->select('p','c','e')
-            ->from('IncentivesCatalogoBundle:Programa','p')
-            ->leftJoin('p.cliente', 'c')
-            ->leftJoin('p.estado', 'e');
+            ->select('cc','c','e')
+            ->from('IncentivesCatalogoBundle:CentroCostos','cc')
+            ->leftJoin('cc.cliente', 'c')
+            ->leftJoin('cc.estado', 'e');
 
         $listado = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
 
@@ -60,33 +60,35 @@ class FacturasController extends Controller
             array('listado' => $listado));
     }
 
-    public function facturasprogramaAction($programa)
+    public function facturasprogramaAction($centrocostos)
     {
         $repository = $this->getDoctrine()
             ->getRepository('IncentivesFacturacionBundle:Factura');
 
-        $listado= $repository->findByPrograma($programa);
+        $listado= $repository->findByCentroCostos($centrocostos);
         
         $repository = $this->getDoctrine()
-            ->getRepository('IncentivesCatalogoBundle:Programa');
+            ->getRepository('IncentivesCatalogoBundle:CentroCostos');
 
-        $programa = $repository->find($programa);
+        $centrocostos = $repository->find($centrocostos);
 
         return $this->render('IncentivesFacturacionBundle:Facturas:facturasprograma.html.twig', 
-            array('listado' => $listado, 'programa' => $programa));
+            array('listado' => $listado, 'centrocostos' => $centrocostos));
     }
 
 
-    public function nuevaAction(Request $request, $programa)
+    public function nuevaAction(Request $request, $centroCostos)
     {        
         $em = $this->getDoctrine()->getManager();
         $facturas = $em->getRepository('IncentivesFacturacionBundle:Factura')->findAll();
         $factura = new Factura();
         $detalle = new FacturaDetalle();
 
-        $form = $this->createForm(new FacturaType(array('programa' => $programa), $factura));
+       // $form = $this->createForm(new FacturaType(array('programa' => $programa), $factura));
+
+        $form = $this->createForm(FacturaType::class);
         
-        $programa = $em->getRepository('IncentivesCatalogoBundle:Programa')->find($programa);
+        $centroCostos = $em->getRepository('IncentivesCatalogoBundle:centroCostos')->find($centroCostos);
                     
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
@@ -96,11 +98,11 @@ class FacturasController extends Controller
             if ($form->isValid()) {
                 // realiza alguna acción, tal como guardar la tarea en la base de datos
 
-                $id = $request->request->all()['programa'];
+                $id = $request->request->all()['centroCostos'];
                 
                 $ordenes = $em->getRepository('IncentivesFacturacionBundle:Factura')->findAll();
                 
-                $factura->setPrograma($programa);
+                $factura->setCentroCostos($centroCostos);
                 $pais = $em->getRepository('IncentivesOperacionesBundle:Pais')->find($pro["pais"]);
                 $factura->setPais($pais);
                 $factura->setNumero(str_pad(count($ordenes)+1, 3, '0', STR_PAD_LEFT)."-".date_create("now")->format('y'));
@@ -112,337 +114,17 @@ class FacturasController extends Controller
 
                 $em->persist($factura);
                 $em->flush();
+
+                return $this->redirect($this->generateUrl('factura_datos').'/'.$factura->getid());
                 
-                $incluyeLogistica= 0;
-                if(isset($pro["logistica"])) $incluyeLogistica = $pro["logistica"];
-                $incluyePremios= 0;
-                if(isset($pro["premios"])) $incluyePremios = $pro["premios"];
-                $incluyeRequisiciones= 0;
-                if(isset($pro["requisiciones"])) $incluyeRequisiciones = $pro["requisiciones"];
-				
-				$fechaInicio = strtotime('-1 day', strtotime($pro["fechaInicio"]));
-				$fechaInicio = date('Y-m-d', $fechaInicio);
-
-                if($incluyePremios==1){
-                    if($incluyeLogistica==1){
-                        //FACTURAR PREMIOS CON LOGISTICA SEGUN FORMULAS DE NEGOCIACION
-                        
-                        //CONTAR CANTIDADES POR PRODUCTO Y PRECIOS
-                        $qb = $em->createQueryBuilder(); 
-                        $qb->select('count(r) as total','p.id','pc.id productocatalogo','p.nombre','pc.precio','pc.incremento','pc.logistica');
-                        $qb->from('IncentivesRedencionesBundle:Redenciones','r');
-                        $qb->leftJoin('r.participante', 'pt');
-                        $qb->leftJoin('r.productocatalogo', 'pc');
-                        $qb->leftJoin('pc.catalogos', 'c');
-                        $qb->leftJoin('pc.producto', 'p');
-                        $qb->groupBy('p.id');
-                        $str_filtro = "pt.programa=".$programa->getId()." AND r.redencionestado IN (2,3,4,5,6) AND r.fecha>='".$fechaInicio."'  AND r.fecha<='".$pro["fechaFin"]."' AND r.facturaProducto IS NULL AND c.pais=".$pro["pais"];
-                        $qb->where($str_filtro);
-                        //echo $qb->getDql(); exit;
-                        $ProductosFactura = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
-
-                        //echo "<pre>"; print_r($ProductosFactura); echo "</pre>"; exit;
-                    
-                        $ip = 0;
-
-                        //Crear detalle factura
-                        foreach($ProductosFactura as $keyProd => $valueProd){
-                            
-                            //
-                            $cantidad = $valueProd['total'];
-                            $precioVenta = $valueProd['precio'];
-                            $incremento = $valueProd['incremento'];
-                            $logistica = $valueProd['logistica'];
-                            
-                            $valorVenta = ($precioVenta/(1-($incremento/100))) + $logistica;
-                            $valorTotal = $valorVenta * $cantidad;
-                            
-                            $Productos = new FacturaProductos();
-                            $Productos->setFactura($factura);
-                            $Infoproducto = $em->getRepository('IncentivesCatalogoBundle:Producto')->find($valueProd['id']);
-                            $Productos->setProducto($Infoproducto);
-                            $Productos->setCantidad($valueProd['total']);
-                            $Productos->setValorUnitario($valorVenta);
-                            $Productos->setValorTotal($valorTotal);
-                            //$Productos->setValorRentabilidad(0);
-                            $Productos->setDescripcion($valueProd['nombre']);
-                            $em->persist($Productos);
-                            
-                            $em->flush();
-
-                            $ip++;
-                        }
-
-                        $ProductosFac = $em->getRepository('IncentivesFacturacionBundle:FacturaProductos')->findByFactura($factura->getId());
-
-                        $qb = $em->createQueryBuilder(); 
-                        $qb->select('fp');
-                        $qb->from('IncentivesFacturacionBundle:FacturaProductos','fp');
-                        $str_filtro = "fp.factura=".$factura->getId();
-                        $qb->where($str_filtro);
-                        $ProductosFac = $qb->getQuery()->getResult();
-                        
-                        foreach($ProductosFac as $keyProd => $valueProd){
-
-                        //ACTUALIZAR REDENCIONES CON FACTURA Y DETALLE FACTURA
-                            $qb = $em->createQueryBuilder(); 
-                            $qb->select('r');
-                            $qb->from('IncentivesRedencionesBundle:Redenciones','r');
-                            $qb->leftJoin('r.historico', 'rh');
-                            $qb->leftJoin('r.participante', 'pt');
-                            $qb->leftJoin('r.productocatalogo', 'pc');
-                            $qb->leftJoin('pc.catalogos', 'c');
-                            $str_filtro = "pt.programa=".$programa->getId()." AND r.redencionestado IN (2,3,4,5,6) AND r.fecha>='".$fechaInicio."'  AND r.fecha<='".$pro["fechaFin"]."' AND r.facturaProducto IS NULL AND pc.producto=".$valueProd->getProducto()->getId()." AND c.pais=".$pro["pais"];
-                            $qb->where($str_filtro);
-                            //echo $qb->getDql(); exit;
-                            $RedencionesFactura = $qb->getQuery()->getResult();
-
-                            foreach($RedencionesFactura as $KeyRedencion => $valueRedencion){
-                                $valueRedencion->setFacturaproducto($valueProd);
-                                $em->persist($valueRedencion);
-                            }
-                            $em->flush();
-                        }
-                    }else{
-                        
-                        //FACTURAR PREMIOS SIN LOGISTICA SEGUN FORMULAS DE NEGOCIACION
-                    
-                        //CONTAR CANTIDADES POR PRODUCTO Y PRECIOS
-                        $qb = $em->createQueryBuilder(); 
-                        $qb->select('count(r) as total','p.id','pc.id productocatalogo','p.nombre','pc.precio','pc.incremento','pc.logistica');
-                        $qb->from('IncentivesRedencionesBundle:Redenciones','r');
-                        $qb->leftJoin('r.participante', 'pt');
-                        $qb->leftJoin('r.productocatalogo', 'pc');
-                        $qb->leftJoin('pc.catalogos', 'c');
-                        $qb->leftJoin('pc.producto', 'p');
-                        $qb->groupBy('p.id');
-                        $str_filtro = "pt.programa=".$programa->getId()." AND r.redencionestado IN (2,3,4,5,6) AND r.fecha>='".$fechaInicio."'  AND r.fecha<='".$pro["fechaFin"]."' AND r.facturaProducto IS NULL AND c.pais=".$pro["pais"];
-                        $qb->where($str_filtro);
-                        $ProductosFactura = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
-        
-                        $ip = 0;
-
-                        //Crear detalle factura
-                        foreach($ProductosFactura as $keyProd => $valueProd){
-
-                            $ip++;
-                            
-                            //
-                            $cantidad = $valueProd['total'];
-                            $precioVenta = $valueProd['precio'];
-                            $incremento = $valueProd['incremento'];
-                            $logistica = $valueProd['logistica'];
-                            
-                            $valorVenta = ($precioVenta/(1-($incremento/100)));
-                            $valorTotal = $valorVenta * $cantidad;
-                            
-                            $Productos = new FacturaProductos();
-                            $Productos->setFactura($factura);
-                            $Infoproducto = $em->getRepository('IncentivesCatalogoBundle:Producto')->find($valueProd['id']);
-                            $Productos->setProducto($Infoproducto);
-                            $Productos->setCantidad($valueProd['total']);
-                            $Productos->setValorUnitario($valorVenta);
-                            $Productos->setValorTotal($valorTotal);
-                            //$Productos->setValorRentabilidad(0);
-                            $Productos->setDescripcion($valueProd['nombre']);
-                            $em->persist($Productos);
-                            
-                            //ACTUALIZAR REDENCIONES CON FACTURA Y DETALLE FACTURA
-                            $qb = $em->createQueryBuilder(); 
-                            $qb->select('rh','r');
-                            $qb->from('IncentivesRedencionesBundle:Redenciones','r');
-                            $qb->leftJoin('r.participante', 'pt');
-                            $qb->leftJoin('r.productocatalogo', 'pc');
-							$qb->leftJoin('pc.catalogos', 'c');
-                            $str_filtro = "pt.programa=".$programa->getId()." AND r.redencionestado IN (2,3,4,5,6) AND r.fecha>='".$fechaInicio."'  AND r.fecha<='".$pro["fechaFin"]."' AND r.facturaProducto IS NULL AND r.productocatalogo=".$valueProd['productocatalogo'];
-                            $qb->where($str_filtro);
-                            $RedencionesFactura = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
-                
-                            foreach($RedencionesFactura as $KeyRedencion => $valueRedencion){
-                                $redencion = $em->getRepository('IncentivesRedencionesBundle:Redenciones')->find($valueRedencion['redencion']['id']);
-                                $redencion->setFacturaProducto($Productos);
-                                $em->persist($redencion);
-                            }
-                        }
-                                            
-                        //BUSCAR GUIAS ASOCIADAS SIN FACTURAR
-                        //CONTAR CANTIDADES POR PRODUCTO Y PRECIOS
-                        $qb = $em->createQueryBuilder(); 
-                        $qb->select('SUM(g.valor) as total');
-                        $qb->from('IncentivesRedencionesBundle:Redenciones','r');
-                        $qb->leftJoin('r.inventario', 'i');
-                        $qb->leftJoin('i.guia', 'g');
-                        $qb->leftJoin('r.participante', 'pt');
-                        $str_filtro = "pt.programa=".$programa->getId()." AND r.redencionestado IN (2,3,4,5,6) AND r.fecha>='".$fechaInicio."'  AND r.fecha<='".$pro["fechaFin"]."' AND g.facturalogistica IS NULL";
-                        $qb->where($str_filtro);
-                        $LogisticaFactura = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
-                        
-                        foreach($LogisticaFactura as $keyLog=> $valueLog){
-                            
-                            if($valueLog['total']>0){
-
-                                $Logistica = new FacturaLogistica();
-                                $Logistica->setFactura($factura);
-                                $Logistica->setCantidad(1);
-                                $Logistica->setValorUnitario($valueLog['total']);
-                                $Logistica->setValorTotal($valueLog['total']);
-                                //$Productos->setValorRentabilidad(0);
-                                $Logistica->setDescripcion("LOGISTICA ENVIOS VARIOS");
-                                $em->persist($Logistica);
-                                
-                                //ACTUALIZAR GUIAS CON FACTURA Y DETALLE FACTURA
-                                $qb = $em->createQueryBuilder(); 
-                                $qb->select('rh','r','i','g');
-                                $qb->from('IncentivesRedencionesBundle:Redenciones','r');
-                                $qb->leftJoin('r.inventario', 'i');
-                                $qb->leftJoin('i.guia', 'g');
-                                $qb->leftJoin('r.participante', 'pt');
-                                $str_filtro = "pt.programa=".$programa->getId()." AND r.redencionestado IN (2,3,4,5,6) AND r.fecha>='".$fechaInicio."'  AND r.fecha<='".$pro["fechaFin"]."' AND g.facturalogistica IS NULL";
-                                $qb->where($str_filtro);
-                                $GuiasFactura = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
-                    
-                                foreach($GuiasFactura as $KeyGuias => $ValueGuias){
-                                    foreach($ValueGuias['redencion']['inventario'] as $keyInv => $valueInv){
-                                        foreach($valueInv['guia'] as $keyG => $valueG){
-                                            $guia = $em->getRepository('IncentivesRedencionesBundle:GuiaEnvio')->find($valueG['id']);
-                                            $guia->setFacturaLogistica($Logistica);
-                                            $em->persist($guia);
-                                        }  
-                                    }
-                                }
-                            }
-        
-                        }
-
-                    }
-                }
-
-                if($incluyeRequisiciones==1){
-
-                    if($incluyeLogistica==1){
-                        //Requisiciones
-                        //CONTAR CANTIDADES POR PRODUCTO Y PRECIOS
-                        $qb = $em->createQueryBuilder(); 
-                        $qb->select('op','oc','p');
-                        $qb->from('IncentivesOrdenesBundle:OrdenesProducto','op');
-                        $qb->leftJoin('op.ordenesCompra', 'oc');
-                        $qb->leftJoin('op.producto', 'p');
-                        $str_filtro = "op.programa=".$programa->getId()." AND oc.fechaCreacion>='".$pro["fechaInicio"]."' AND oc.fechaCreacion<='".$pro["fechaFin"]."'";
-                        $qb->where($str_filtro);
-                        $ProductosFactura = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
-        
-                        $ip=0;
-
-                        //Crear detalle factura
-                        foreach($ProductosFactura as $keyProd => $valueProd){
-                            
-                            $ip++;
-                            //
-                            $cantidad = $valueProd['cantidad'];
-                            $valorVenta = $valueProd['valorunidad'];
-                            $productoId = $valueProd['producto']['id'];
-                            $valorTotal = $valorVenta * $cantidad;
-                            
-                            $Productos = new FacturaProductos();
-                            $Productos->setFactura($factura);
-                            $Infoproducto = $em->getRepository('IncentivesCatalogoBundle:Producto')->find($productoId);
-                            $Productos->setProducto($Infoproducto);
-                            $Productos->setCantidad($cantidad);
-                            $Productos->setValorUnitario($valorVenta);
-                            $Productos->setValorTotal($valorTotal);
-                            //$Productos->setValorRentabilidad(0);
-                            $Productos->setDescripcion($valueProd['producto']['nombre']);
-                            $em->persist($Productos);
-                            
-                            $em->flush();
-                        }
-                    }else{
-                        //Requisiciones
-                        //CONTAR CANTIDADES POR PRODUCTO Y PRECIOS
-                        $qb = $em->createQueryBuilder(); 
-                        $qb->select('op','oc','p');
-                        $qb->from('IncentivesOrdenesBundle:OrdenesProducto','op');
-                        $qb->leftJoin('op.ordenesCompra', 'oc');
-                        $qb->leftJoin('op.producto', 'p');
-                        $str_filtro = "op.programa=".$programa->getId()." AND oc.fechaCreacion>='".$pro["fechaInicio"]."' AND oc.fechaCreacion<='".$pro["fechaFin"]."'";
-                        $qb->where($str_filtro);
-                        $ProductosFactura = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
-        
-                        $ip=0;
-
-                        //Crear detalle factura
-                        foreach($ProductosFactura as $keyProd => $valueProd){
-                            
-                            $ip++;
-                            //
-                            $cantidad = $valueProd['cantidad'];
-                            $valorVenta = $valueProd['valorunidad'];
-                            $productoId = $valueProd['producto']['id'];
-                            $valorTotal = $valorVenta * $cantidad;
-                            
-                            $Productos = new FacturaProductos();
-                            $Productos->setFactura($factura);
-                            $Infoproducto = $em->getRepository('IncentivesCatalogoBundle:Producto')->find($productoId);
-                            $Productos->setProducto($Infoproducto);
-                            $Productos->setCantidad($cantidad);
-                            $Productos->setValorUnitario($valorVenta);
-                            $Productos->setValorTotal($valorTotal);
-                            //$Productos->setValorRentabilidad(0);
-                            $Productos->setDescripcion($valueProd['producto']['nombre']);
-                            $em->persist($Productos);
-                            
-                            $em->flush();
-                        }
-
-                        //Buscar logisica registrada en planillas de requisiciones
-                        //BUSCAR GUIAS ASOCIADAS SIN FACTURAR
-                        //CONTAR CANTIDADES POR PRODUCTO Y PRECIOS
-                        $qb = $em->createQueryBuilder(); 
-                        $qb->select('cl','p');
-                        $qb->from('IncentivesInventarioBundle:CostosLogistica','cl');
-                        $qb->leftJoin('cl.planilla', 'p');
-                        $str_filtro = "p.programa=".$programa->getId()." AND p.fecha>='".$pro["fechaInicio"]."'  AND p.fecha<='".$pro["fechaFin"]."' AND cl.facturalogistica IS NULL";
-                        $qb->where($str_filtro);
-                        $CostosLogistica = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
-                        
-                        foreach($CostosLogistica as $keyLog=> $valueLog){
-                         
-                            $Logistica = new FacturaLogistica();
-                            $Logistica->setFactura($valueLog['cantidad']);
-                            $Logistica->setCantidad($valueLog['cantidad']);
-                            $Logistica->setValorUnitario($valueLog['valorUnitario']);
-                            $Logistica->setValorTotal($valueLog['valorTotal']);
-                            //$Productos->setValorRentabilidad(0);
-                            $Logistica->setDescripcion($valueLog['descripcion']);
-                            $em->persist($Logistica);
-                        }
-                    }
-
-                }
-
-                if($ip>0){
-
-                    $pdf = $this->pdfAction($factura->getId());
-                    if($incluyePremios==1) $excel = $this->detallePremiosAction($factura->getId());
-                    
-                    $this->get('session')->getFlashBag()->add('notice', 'La factura con numero '.$factura->getNumero().' se creo correctamente');
-                }else{
-                    
-                    $em->remove($factura);
-                    $em->flush();
-
-                    $this->get('session')->getFlashBag()->add('warning', 'No se encontraron datos para facturar');
-                }
-                
-                return $this->redirect($this->generateUrl('facturas_listado').'/'.$id);
             }
         }
-        
+
         //Buscar ultima fecha de facturacion
         $qb = $em->createQueryBuilder(); 
         $qb->select('MAX(f.fechaFin) fecha');
         $qb->from('IncentivesFacturacionBundle:Factura','f');
-        $str_filtro = "f.programa=".$programa->getId();
+        $str_filtro = "f.centroCostos=".$centroCostos->getId();
         $qb->where($str_filtro);
         $fechaInicio = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
 
@@ -458,9 +140,9 @@ class FacturasController extends Controller
 
         $fechaFin = date ( 'Y-m-d' , $fechaFin );
         $fecha = date('Y-m-d');
-        
+
         return $this->render('IncentivesFacturacionBundle:Facturas:nueva.html.twig', array(
-            'form' => $form->createView(), 'programa' => $programa, 'fechaInicio' => $fechaInicio, 'fechaFin' => $fechaFin, 'fecha' => $fecha
+            'form' => $form->createView(), 'centroCostos' => $centroCostos, 'fechaInicio' => $fechaInicio, 'fechaFin' => $fechaFin, 'fecha' => $fecha
         ));
     }
 
@@ -533,7 +215,7 @@ class FacturasController extends Controller
     }
 
 
-    public function generarAction($id,$periodo)
+    public function generarAction($id, $periodo)
     {   
 
         //id del programar a facturar
@@ -779,20 +461,22 @@ class FacturasController extends Controller
             $em = $this->getDoctrine()->getManager();
             //Consultar puntos redimidos
             $qb = $em->createQueryBuilder();            
-            $qb->select('r','pt','pc','pd','ct','envio','i','guia','estado','op','oc','pv','ig','fp');
+            $qb->select('r','pt','pr','prp','pd','ct','envio','i','guia','estado','op','oc','pv','d','dg','fp');
             
             $qb->from('IncentivesRedencionesBundle:Redenciones','r');
-            $qb->leftJoin('r.productocatalogo', 'pc');
-            $qb->leftJoin('pc.producto', 'pd');
+            $qb->leftJoin('r.premio', 'pr');
+            $qb->leftJoin('pr.premiosproductos', 'prp');
+            $qb->leftJoin('prp.producto', 'pd');
             $qb->leftJoin('pd.categoria', 'ct');
-            $qb->leftJoin('pc.catalogos', 'c');
+            $qb->leftJoin('pr.catalogos', 'c');
             $qb->leftJoin('r.participante', 'pt');
             $qb->leftJoin('r.redencionesenvios', 'envio');
             $qb->leftJoin('r.redencionestado', 'estado');
             $qb->leftJoin('r.inventario', 'i');
             $qb->leftJoin('r.facturaProducto', 'fp');
-            $qb->leftJoin('i.inventarioguia', 'ig');
-            $qb->leftJoin('ig.guia', 'guia');
+            $qb->leftJoin('i.despacho', 'd');
+            $qb->leftJoin('d.despachoguia', 'dg');
+            $qb->leftJoin('dg.guia', 'guia');
             $qb->leftJoin('r.ordenesProducto', 'op');
             $qb->leftJoin('op.ordenesCompra', 'oc');
             $qb->leftJoin('oc.proveedor', 'pv');
@@ -823,11 +507,10 @@ class FacturasController extends Controller
                         ->setCellValueByColumnAndRow(6, $fil, $value['participante']['nombre'])
                         ->setCellValueByColumnAndRow(7, $fil, $value['participante']['documento'])
                         ->setCellValueByColumnAndRow(8, $fil, $value['participante']['nombre'])
-                        ->setCellValueByColumnAndRow(9, $fil, $value['puntos'])
-                        ->setCellValueByColumnAndRow(10, $fil, $value['productocatalogo']['producto']['codEAN'])
-                        ->setCellValueByColumnAndRow(11, $fil, $value['productocatalogo']['producto']['nombre'])
-                        ->setCellValueByColumnAndRow(12, $fil, $value['productocatalogo']['producto']['codInc'])
-                        ->setCellValueByColumnAndRow(13, $fil, $value['productocatalogo']['producto']['categoria']['nombre'])
+                        ->setCellValueByColumnAndRow(10, $fil, $value['puntos'])
+                        ->setCellValueByColumnAndRow(11, $fil, $value['premio']['premiosproductos'][0]['producto']['nombre'])
+                        ->setCellValueByColumnAndRow(12, $fil, $value['premio']['premiosproductos'][0]['producto']['codInc'])
+                        ->setCellValueByColumnAndRow(13, $fil, $value['premio']['premiosproductos'][0]['producto']['categoria']['nombre'])
                         ->setCellValueByColumnAndRow(14, $fil, $valorVenta)
                         ->setCellValueByColumnAndRow(15, $fil, $value['redencionestado']['nombre']);
 
@@ -835,14 +518,14 @@ class FacturasController extends Controller
                 if(isset($value['fechaModificacion']) && $value['fechaModificacion']!="0000-00-00") $PHPexcel->getActiveSheet()->setCellValueByColumnAndRow(3, $fil, $value['fechaModificacion']->format('Y-m-d'));
                 
                 if($value['fechaAutorizacion']!= null) $PHPexcel->getActiveSheet()->setCellValueByColumnAndRow(2, $fil, $value['fechaAutorizacion']->format('Y-m-d'));
-                if($value['fechaDespacho']!= null) $PHPexcel->getActiveSheet()->setCellValueByColumnAndRow(16, $fil, $value['fechaDespacho']->format('Y-m-d'));
+                if($value['fechaDespacho']!= null) $PHPexcel->getActiveSheet()->setCellValueByColumnAndRow(20, $fil, $value['fechaDespacho']->format('Y-m-d'));
 
                  $strGuias = "";
                  $strOperador = "";
 
                 //Otros
                     if($value['otros']!=""){
-                        $iR = 17;
+                        $iR = 21;
                         $otrosR = explode(";", $value['otros']);
                         foreach ($otrosR as $keyR) {
                             $iR++;
@@ -876,8 +559,8 @@ class FacturasController extends Controller
         $qb = $em->createQueryBuilder(); 
         $qb->select('count(r) as total','pg.nombre programa','pg.id idprograma','ps.nombre pais','ps.id idpais','MIN(r.fecha) fechaInicio','MAX(r.fecha) fechaFin');
         $qb->from('IncentivesRedencionesBundle:Redenciones','r');
-        $qb->leftJoin('r.productocatalogo', 'pc');
-        $qb->leftJoin('pc.catalogos', 'c');
+        $qb->leftJoin('r.premio', 'pr');
+        $qb->leftJoin('pr.catalogos', 'c');
         $qb->leftJoin('c.programa', 'pg');
         $qb->leftJoin('c.pais', 'ps');
         $qb->groupBy('pg.id', 'ps.id');
@@ -888,37 +571,70 @@ class FacturasController extends Controller
 
         //echo "<pre>"; print_r($Redenciones); echo "</pre>"; exit;
 
-        //Requisiciones pendientes por facturacion
+
+        //Solicitudes
+
+        //Cotizaciones aprobadas pendientes por facturacion
         $qb = $em->createQueryBuilder(); 
-        $qb->select('count(cp) as total', 'p.nombre programa','p.id idPrograma');
+        $qb->select('count(cp) as total', 'cc.nombre centroCostosNombre', 'cc.centrocostos centroCostos', 'cc.id idCentroCostos');
         $qb->from('IncentivesSolicitudesBundle:CotizacionProducto','cp');
         $qb->leftJoin('cp.cotizacion', 'c');
         $qb->leftJoin('c.solicitud', 's');
-        $qb->leftJoin('s.programa', 'p');
-        $qb->groupBy('p.id');
+        $qb->leftJoin('s.centroCostos', 'cc');
+        $qb->groupBy('cc.id');
         $str_filtro = "cp.facturaProducto IS NULL AND cp.estado in (2,6,5)";
         $qb->where($str_filtro);
+        $Cotizaciones = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
+        //echo "<pre>"; print_r($Cotizaciones); echo "</pre>"; exit;
+
+        //Ordenes sin cotizacion pendientes por facturacion
+        /*$qb = $em->createQueryBuilder(); 
+        $qb->select('count(op) as total', 'cc.nombre centroCostosNombre', 'cc.centrocostos centroCostos', 'cc.id idCentroCostos');
+        $qb->from('IncentivesOrdenesBundle:OrdenesProducto','op');
+        $qb->leftJoin('op.ordenesCompra', 'oc');
+        $qb->leftJoin('oc.solicitud', 's');
+        $qb->leftJoin('s.centroCostos', 'cc');
+        $qb->groupBy('cc.id');
+        $str_filtro = "op.facturaProducto IS NULL AND oc.ordenesEstado in (2,4,5) AND s.centroCostos IS NOT NULL AND oc.fechaCreacion >= '2016-08-01'";
+        $qb->where($str_filtro);
+        $Ordenes = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);*/
+        //echo "<pre>"; print_r($Ordenes); echo "</pre>"; exit;
+
+        //Requisiciones sin cotizacion pendientes por facturacion
+        $qb = $em->createQueryBuilder(); 
+        $qb->select('count(rp) as total', 'cc.nombre centroCostosNombre', 'cc.centrocostos centroCostos', 'cc.id idCentroCostos');
+        $qb->from('IncentivesSolicitudesBundle:RequisicionProducto','rp');
+        $qb->leftJoin('rp.requisicion', 'r');
+        $qb->leftJoin('r.solicitud', 's');
+        $qb->leftJoin('s.centroCostos', 'cc');
+        $qb->leftJoin('s.programa', 'p');
+        $qb->groupBy('cc.id');
+        $str_filtro = "rp.facturaProducto IS NULL";
+        $qb->where($str_filtro);
         $Requisiciones = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
-        
         //echo "<pre>"; print_r($Requisiciones); echo "</pre>"; exit;
         
         //Logistica pendientes por facturacion
         //Buscar logisica registrada en planillas de requisiciones
         $qb = $em->createQueryBuilder(); 
-        $qb->select('count(cl) as total','ps.nombre pais', 'ps.id idpais', 'p.nombre programa','p.id idPrograma');
+        $qb->select('count(cl) as total', 'cc.nombre centroCostosNombre', 'cc.centrocostos centroCostos', 'cc.id idCentroCostos');
         $qb->from('IncentivesInventarioBundle:CostosLogistica','cl');
         $qb->leftJoin('cl.planilla', 'pl');
         $qb->leftJoin('pl.solicitud', 's');
         $qb->leftJoin('pl.pais', 'ps');
-        $qb->leftJoin('s.programa', 'p');
-        $qb->groupBy('p.id');
+        $qb->leftJoin('s.centroCostos', 'cc');
+        $qb->groupBy('cc.id');
         $str_filtro = "cl.facturalogistica IS NULL";
         $qb->where($str_filtro);
         $Logistica = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
         //echo "<pre>"; print_r($Logistica); echo "</pre>"; exit;
 
+        $Solicitudes = array_merge($Cotizaciones, $Requisiciones, $Logistica);
+
+        //echo "<pre>"; print_r($Solicitudes); echo "</pre>"; exit;
+
         return $this->render('IncentivesFacturacionBundle:Facturas:generarsegmentado.html.twig', 
-            array('redenciones' => $Redenciones, 'requisiciones' => $Requisiciones, 'logisticas' => $Logistica));
+            array('redenciones' => $Redenciones, 'solicitudes' => $Solicitudes, 'cotizaciones' => $Cotizaciones, /*'ordenes' => $Ordenes,*/ 'requisiciones' => $Requisiciones, 'logisticas' => $Logistica));
     }
 
    public function detalleSolicitudesAction($id)
@@ -937,13 +653,14 @@ class FacturasController extends Controller
                         ->setCellValue('E1','Solicitante')
                         ->setCellValue('F1','Solicitud')
                         ->setCellValue('G1','Cotización')
-                        ->setCellValue('H1','Requisición')
-                        ->setCellValue('I1','Cantidad')
-                        ->setCellValue('J1','Sku')
-                        ->setCellValue('K1','Producto')
-                        ->setCellValue('L1','Marca')
-                        ->setCellValue('M1','Referencia')
-                        ->setCellValue('N1','Valor Venta');
+                        ->setCellValue('H1','Orden Compra')
+                        ->setCellValue('I1','Requisición')
+                        ->setCellValue('J1','Cantidad')
+                        ->setCellValue('K1','Sku')
+                        ->setCellValue('L1','Producto')
+                        ->setCellValue('M1','Marca')
+                        ->setCellValue('N1','Referencia')
+                        ->setCellValue('O1','Valor Venta');
 
             $em = $this->getDoctrine()->getManager();
             
@@ -981,12 +698,62 @@ class FacturasController extends Controller
                         ->setCellValueByColumnAndRow(4, $fil, $value['cotizacion']['solicitud']['solicitante']['nombre'])
                         ->setCellValueByColumnAndRow(5, $fil, $value['cotizacion']['solicitud']['id'])
                         ->setCellValueByColumnAndRow(6, $fil, $value['cotizacion']['consecutivo'])
-                        ->setCellValueByColumnAndRow(8, $fil, $value['cantidad'])
-                        ->setCellValueByColumnAndRow(9, $fil, $value['producto']['codInc'])
-                        ->setCellValueByColumnAndRow(10, $fil, $value['producto']['nombre'])
-                        ->setCellValueByColumnAndRow(11, $fil, $value['producto']['marca'])
-                        ->setCellValueByColumnAndRow(12, $fil, $value['producto']['referencia'])
-                        ->setCellValueByColumnAndRow(13, $fil, $valorVenta);
+                        ->setCellValueByColumnAndRow(9, $fil, $value['cantidad'])
+                        ->setCellValueByColumnAndRow(10, $fil, $value['producto']['codInc'])
+                        ->setCellValueByColumnAndRow(11, $fil, $value['producto']['nombre'])
+                        ->setCellValueByColumnAndRow(12, $fil, $value['producto']['marca'])
+                        ->setCellValueByColumnAndRow(13, $fil, $value['producto']['referencia'])
+                        ->setCellValueByColumnAndRow(14, $fil, $valorVenta);
+
+                
+                if(isset($value['fechaModificacion']) && $value['fechaModificacion']!="0000-00-00") $PHPexcel->getActiveSheet()->setCellValueByColumnAndRow(3, $fil, $value['fechaModificacion']->format('Y-m-d'));
+                
+                //if($value['fechaAutorizacion']!= null) $PHPexcel->getActiveSheet()->setCellValueByColumnAndRow(2, $fil, $value['fechaAutorizacion']->format('Y-m-d'));
+                
+                $fil++;
+
+            }
+
+            //Consultar producos de ordenes
+            $qb = $em->createQueryBuilder(); 
+            $qb->select('op','oc','s','cc','p','e','u');
+            $qb->from('IncentivesOrdenesBundle:OrdenesProducto','op');
+            $qb->leftJoin('op.ordenesCompra', 'oc');
+            $qb->leftJoin('op.facturaProducto', 'fp');
+            $qb->leftJoin('oc.ordenesEstado', 'e');
+            $qb->leftJoin('op.producto', 'p');
+            $qb->leftJoin('oc.solicitud', 's');
+            $qb->leftJoin('s.solicitante', 'u');
+            $qb->leftJoin('s.centroCostos', 'cc');
+            $qb->orderBy('s.fechaSolicitud', 'ASC');
+            
+            $str_filtro = 'fp.factura='.$id;
+            $qb->where($str_filtro);
+            $productosOrdenes = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
+
+            //echo "<pre>";print_r($productosOrdenes); exit;
+            
+            foreach($productosOrdenes as $key => $value){              
+
+                $guiaP = "";
+                $Operador="";
+
+                $valorVenta = $value['cantidad']*($value['valorunidad']/(1-($value['incremento']/100)) + $value['logistica']);
+
+                //Redencion, participante, producto
+                $PHPexcel->getActiveSheet()
+                        ->setCellValueByColumnAndRow(0, $fil, $value['id'])
+                        ->setCellValueByColumnAndRow(1, $fil, $value['ordenesCompra']['solicitud']['fechaSolicitud']->format('d/m/Y'))
+                        //
+                        ->setCellValueByColumnAndRow(4, $fil, $value['ordenesCompra']['solicitud']['solicitante']['nombre'])
+                        ->setCellValueByColumnAndRow(5, $fil, $value['ordenesCompra']['solicitud']['id'])
+                        ->setCellValueByColumnAndRow(8, $fil, $value['ordenesCompra']['consecutivo'])
+                        ->setCellValueByColumnAndRow(9, $fil, $value['cantidad'])
+                        ->setCellValueByColumnAndRow(10, $fil, $value['producto']['codInc'])
+                        ->setCellValueByColumnAndRow(11, $fil, $value['producto']['nombre'])
+                        ->setCellValueByColumnAndRow(12, $fil, $value['producto']['marca'])
+                        ->setCellValueByColumnAndRow(13, $fil, $value['producto']['referencia'])
+                        ->setCellValueByColumnAndRow(14, $fil, $valorVenta);
 
                 
                 if(isset($value['fechaModificacion']) && $value['fechaModificacion']!="0000-00-00") $PHPexcel->getActiveSheet()->setCellValueByColumnAndRow(3, $fil, $value['fechaModificacion']->format('Y-m-d'));
@@ -997,7 +764,7 @@ class FacturasController extends Controller
 
             }
             
-            //Consultar producos de cotizaciones
+            //Consultar productos de requisiciones
             $qb = $em->createQueryBuilder();            
             $qb->select('rp','pd','r','s','u');
             
@@ -1029,14 +796,18 @@ class FacturasController extends Controller
                         //
                         ->setCellValueByColumnAndRow(4, $fil, $value['requisicion']['solicitud']['solicitante']['nombre'])
                         ->setCellValueByColumnAndRow(5, $fil, $value['requisicion']['solicitud']['id'])
-                        ->setCellValueByColumnAndRow(7, $fil, $value['requisicion']['consecutivo'])
-                        ->setCellValueByColumnAndRow(8, $fil, $value['cantidad'])
-                        ->setCellValueByColumnAndRow(9, $fil, $value['producto']['codInc'])
-                        ->setCellValueByColumnAndRow(10, $fil, $value['producto']['nombre'])
-                        ->setCellValueByColumnAndRow(11, $fil, $value['producto']['marca'])
-                        ->setCellValueByColumnAndRow(12, $fil, $value['producto']['referencia'])
-                        ->setCellValueByColumnAndRow(13, $fil, $valorVenta);
+                        ->setCellValueByColumnAndRow(8, $fil, $value['requisicion']['consecutivo'])
+                        ->setCellValueByColumnAndRow(9, $fil, $value['cantidad'])
+                        ->setCellValueByColumnAndRow(10, $fil, $value['producto']['codInc'])
+                        ->setCellValueByColumnAndRow(11, $fil, $value['producto']['nombre'])
+                        ->setCellValueByColumnAndRow(12, $fil, $value['producto']['marca'])
+                        ->setCellValueByColumnAndRow(13, $fil, $value['producto']['referencia'])
+                        ->setCellValueByColumnAndRow(14, $fil, $valorVenta);
 
+
+                if(!isset($value['producto'])){
+                    $PHPexcel->getActiveSheet()->setCellValueByColumnAndRow(11, $fil, $value['descripcion']);
+                }
                 
                 if(isset($value['fechaModificacion']) && $value['fechaModificacion']!="0000-00-00") $PHPexcel->getActiveSheet()->setCellValueByColumnAndRow(3, $fil, $value['fechaModificacion']->format('Y-m-d'));
                 
@@ -1061,20 +832,22 @@ class FacturasController extends Controller
     {        
         $em = $this->getDoctrine()->getManager();
         
-        $pais = intval($request->get('pais'));
-        $programa = intval($request->get('programa'));
+        $pais = intval($request->request->all()['pais']);
+        $programa = intval($request->request->all()['programa']);
         
         $facturas = $em->getRepository('IncentivesFacturacionBundle:Factura')->findAll();
         $factura = new Factura();
         $detalle = new FacturaDetalle();
 
-        $form = $this->createForm(new FacturaType(array('programa' => $programa), $factura));
+        $form = $this->createForm(FacturaType::class);
         
         $programa = $em->getRepository('IncentivesCatalogoBundle:Programa')->find($programa);
         $pais = $em->getRepository('IncentivesOperacionesBundle:Pais')->find($pais);
                     
         
-        if ($request->isMethod('POST')) {
+        $pro = $request->request->all(); 
+
+        if ($request->isMethod('POST') && isset($pro['factura'])) {
             $form->handleRequest($request);
 
             $pro = $request->request->all()['factura'];
@@ -1085,6 +858,7 @@ class FacturasController extends Controller
                 $ordenes = $em->getRepository('IncentivesFacturacionBundle:Factura')->findAll();
                 
                 $factura->setPrograma($programa);
+                $factura->setCentroCostos($programa->getCentroCostos());
                 $factura->setPais($pais);
                 $factura->setNumero(str_pad(count($ordenes)+1, 3, '0', STR_PAD_LEFT)."-".date_create("now")->format('y'));
                 $factura->setFecha(date_create($pro["fecha"]));
@@ -1110,12 +884,13 @@ class FacturasController extends Controller
                         
                 //CONTAR CANTIDADES POR PRODUCTO Y PRECIOS
                 $qb = $em->createQueryBuilder(); 
-                $qb->select('count(r) as total','p.id','pc.id productocatalogo','p.nombre','r.valorCompra','r.incremento','r.logistica');
+                $qb->select('count(r) as total','p.id','pr.id productocatalogo','p.nombre','r.valorCompra','r.incremento','r.logistica');
                 $qb->from('IncentivesRedencionesBundle:Redenciones','r');
                 $qb->leftJoin('r.participante', 'pt');
-                $qb->leftJoin('r.productocatalogo', 'pc');
-                $qb->leftJoin('pc.catalogos', 'c');
-                $qb->leftJoin('pc.producto', 'p');
+                $qb->leftJoin('r.premio', 'pr');
+                $qb->leftJoin('pr.catalogos', 'c');
+                $qb->leftJoin('pr.premiosproductos', 'prp');
+                $qb->leftJoin('prp.producto', 'p');
                 $qb->groupBy('p.id');
                 $qb->addGroupBy('r.valorCompra');
                 $str_filtro = "pt.programa=".$programa->getId()." AND r.redencionestado IN (2,3,4,5,6) AND r.fecha>='".$fechaInicio."'  AND r.fecha<='".$pro["fechaFin"]."' AND r.facturaProducto IS NULL AND c.pais=".$pais->getId();
@@ -1169,11 +944,11 @@ class FacturasController extends Controller
                     $qb = $em->createQueryBuilder(); 
                     $qb->select('r');
                     $qb->from('IncentivesRedencionesBundle:Redenciones','r');
-                    $qb->leftJoin('r.historico', 'rh');
                     $qb->leftJoin('r.participante', 'pt');
-                    $qb->leftJoin('r.productocatalogo', 'pc');
-                    $qb->leftJoin('pc.catalogos', 'c');
-                    $str_filtro = "pt.programa=".$programa->getId()." AND r.redencionestado IN (2,3,4,5,6) AND r.fecha>='".$fechaInicio."'  AND r.fecha<='".$pro["fechaFin"]."' AND r.facturaProducto IS NULL AND pc.producto=".$valueProd->getProducto()->getId()." AND c.pais=".$pais->getId();
+                    $qb->leftJoin('r.premio', 'pr');
+                    $qb->leftJoin('pr.premiosproductos', 'prp');
+                    $qb->leftJoin('pr.catalogos', 'c');
+                    $str_filtro = "pt.programa=".$programa->getId()." AND r.redencionestado IN (2,3,4,5,6) AND r.fecha>='".$fechaInicio."'  AND r.fecha<='".$pro["fechaFin"]."' AND r.facturaProducto IS NULL AND prp.producto=".$valueProd->getProducto()->getId()." AND c.pais=".$pais->getId();
                     $qb->where($str_filtro);
                     //echo $qb->getDql(); exit;
                     $RedencionesFactura = $qb->getQuery()->getResult();
@@ -1230,34 +1005,36 @@ class FacturasController extends Controller
         ));
     }
     
-    public function requisicionesGenerarAction(Request $request)
+    public function solicitudesGenerarAction(Request $request)
     {        
         $em = $this->getDoctrine()->getManager();
         
         $pais = 1;
-        $programa = intval($request->get('programa'));
+        $centroCostos = intval($request->get('centrocostos'));
+
+        $pro = $request->request->all();
         
         $facturas = $em->getRepository('IncentivesFacturacionBundle:Factura')->findAll();
         $factura = new Factura();
         $detalle = new FacturaDetalle();
 
-        $form = $this->createForm(new FacturaType(array('programa' => $programa), $factura));
+        $form = $this->createForm(FacturaType::class);
         
-        $programa = $em->getRepository('IncentivesCatalogoBundle:Programa')->find($programa);
+        $centroCostos = $em->getRepository('IncentivesCatalogoBundle:CentroCostos')->find($centroCostos);
         $pais = $em->getRepository('IncentivesOperacionesBundle:Pais')->find($pais);
                     
-        if ($request->isMethod('POST')) {
+        if ($request->isMethod('POST')  && isset($pro['factura'])) {
             $form->handleRequest($request);
 
-            $pro = $request->request->all()['factura'];
+            $pro = $pro['factura'];
 
             if ($form->isValid()) {
 
-                $id = $request->request->all()['programa'];
+                $id = $request->request->all()['centrocostos'];
                 
                 $ordenes = $em->getRepository('IncentivesFacturacionBundle:Factura')->findAll();
                 
-                $factura->setPrograma($programa);
+                $factura->setCentroCostos($centroCostos);
                 $pais = $em->getRepository('IncentivesOperacionesBundle:Pais')->find(1);
                 $factura->setPais($pais);
                 $factura->setNumero(str_pad(count($ordenes)+1, 3, '0', STR_PAD_LEFT)."-".date_create("now")->format('y'));
@@ -1275,6 +1052,9 @@ class FacturasController extends Controller
 				
 				$fechaInicio = strtotime('-1 day', strtotime($pro["fechaInicio"]));
 				$fechaInicio = date('Y-m-d', $fechaInicio);
+
+                $fechaFin = strtotime ( '+1 day' , strtotime ( $pro["fechaFin"]) ) ;
+                $fechaFin = date ( 'Y-m-j' , $fechaFin );
 				
 				$ip = 0;
 				
@@ -1286,7 +1066,7 @@ class FacturasController extends Controller
                         $qb->leftJoin('cp.cotizacion', 'c');
                         $qb->leftJoin('c.solicitud', 's');
                         $qb->leftJoin('cp.producto', 'p');
-                        $str_filtro = "cp.facturaProducto IS NULL AND cp.estado in (2,6,5) AND s.estado IN (2,3,5) AND s.programa=".$programa->getId()." AND s.fechaSolicitud>='".$pro["fechaInicio"]."' AND s.fechaSolicitud<='".$pro["fechaFin"]."'";
+                        $str_filtro = "cp.facturaProducto IS NULL AND cp.estado in (2,6,5) AND s.estado IN (2,3,5) AND s.centroCostos =".$centroCostos->getId()." AND cp.fechaAprobacion>='".$pro["fechaInicio"]."' AND cp.fechaAprobacion<'".$fechaFin."'";
                         $qb->where($str_filtro);
                         $ProductosFactura = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
 
@@ -1316,18 +1096,19 @@ class FacturasController extends Controller
                             
                             $em->flush();
                         }
-                        
-                        //Requisicones
+
+                        //Ordenes
                         //CONTAR CANTIDADES POR PRODUCTO Y PRECIOS
-                        $qb = $em->createQueryBuilder(); 
-                        $qb->select('rp','r','p');
-                        $qb->from('IncentivesSolicitudesBundle:RequisicionProducto','rp');
-                        $qb->leftJoin('rp.requisicion', 'r');
-                        $qb->leftJoin('r.solicitud', 's');
-                        $qb->leftJoin('rp.producto', 'p');
-                        $str_filtro = "rp.facturaProducto IS NULL AND s.programa=".$programa->getId()." AND s.fechaSolicitud>='".$pro["fechaInicio"]."' AND s.fechaSolicitud<='".$pro["fechaFin"]."'";
+                  /*      $qb = $em->createQueryBuilder(); 
+                        $qb->select('op','oc','p');
+                        $qb->from('IncentivesOrdenesBundle:OrdenesProducto','op');
+                        $qb->leftJoin('op.ordenesCompra', 'oc');
+                        $qb->leftJoin('oc.solicitud', 's');
+                        $qb->leftJoin('op.producto', 'p');
+                        $str_filtro = "op.facturaProducto IS NULL AND op.estado=1 AND oc.ordenesEstado in (2,4,5) AND op.productocotizacion IS NULL AND s.centroCostos=".$centroCostos->getId();
                         $qb->where($str_filtro);
                         $ProductosFactura = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
+                        //echo "<pre>"; print_r($ProductosFactura); echo "</pre>"; exit;
 
                         //Crear detalle factura
                         foreach($ProductosFactura as $keyProd => $valueProd){
@@ -1335,14 +1116,9 @@ class FacturasController extends Controller
                             $ip++;
                             //
                             $cantidad = $valueProd['cantidad'];
-                            $valorVenta = $valueProd['valorunidad'];
+                            $valorVenta = $valueProd['precioCliente']/(1-($valueProd['incremento']/100)) + $valueProd['logistica'];
                             $productoId = $valueProd['producto']['id'];
-                            $logistica = $valueProd['logistica'];
                             $valorTotal = $valorVenta * $cantidad;
-                            
-                            if($incluyeLogistica==1){
-                                $valorTotal += $valorTotal + ($logistica*$cantidad);
-                            }
                             
                             $Productos = new FacturaProductos();
                             $Productos->setFactura($factura);
@@ -1354,6 +1130,55 @@ class FacturasController extends Controller
                             $Productos->setDescripcion($valueProd['producto']['nombre']);
                             $em->persist($Productos);
                             
+                            $productoOrden = $em->getRepository('IncentivesOrdenesBundle:OrdenesProducto')->find($valueProd['id']);
+                            $productoOrden->setFacturaProducto($Productos);
+                            $em->persist($productoOrden);
+                            
+                            $em->flush();
+                        }
+                    */ 
+
+                        //Requisiciones
+                        //CONTAR CANTIDADES POR PRODUCTO Y PRECIOS
+                        $qb = $em->createQueryBuilder(); 
+                        $qb->select('rp','r','p');
+                        $qb->from('IncentivesSolicitudesBundle:RequisicionProducto','rp');
+                        $qb->leftJoin('rp.requisicion', 'r');
+                        $qb->leftJoin('r.solicitud', 's');
+                        $qb->leftJoin('rp.producto', 'p');
+                        $str_filtro = "rp.facturaProducto IS NULL AND s.centroCostos=".$centroCostos->getId()." AND r.fechaCreacion>='".$pro["fechaInicio"]."' AND r.fechaCreacion<'".$fechaFin."'";
+                        $qb->where($str_filtro);
+                        $ProductosFactura = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
+
+                        //Crear detalle factura
+                        foreach($ProductosFactura as $keyProd => $valueProd){
+                            
+                            $ip++;
+                            //
+                            $cantidad = $valueProd['cantidad'];
+                            $valorVenta = $valueProd['valorunidad']/(1-($valueProd['incremento']/100));
+                            if(isset($valueProd['producto'])) $productoId = $valueProd['producto']['id'];
+                            $logistica = $valueProd['logistica'];
+                            $valorTotal = $valorVenta * $cantidad;
+                            
+                            if($incluyeLogistica==1){
+                                $valorTotal = $valorTotal + ($logistica*$cantidad);
+                            }
+                            
+                            $Productos = new FacturaProductos();
+                            $Productos->setFactura($factura);
+                            if(isset($valueProd['producto'])){
+                                $Infoproducto = $em->getRepository('IncentivesCatalogoBundle:Producto')->find($productoId);
+                                $Productos->setProducto($Infoproducto);
+                                $Productos->setDescripcion($valueProd['producto']['nombre']);
+                            }else{
+                                $Productos->setDescripcion($valueProd['descripcion']);
+                            }
+                            
+                            $Productos->setCantidad($cantidad);
+                            $Productos->setValorUnitario($valorVenta);
+                            $Productos->setValorTotal($valorTotal); 
+                            $em->persist($Productos);
                             
                             $productoRequisicion = $em->getRepository('IncentivesSolicitudesBundle:RequisicionProducto')->find($valueProd['id']);
                             $productoRequisicion->setFacturaProducto($Productos);
@@ -1362,13 +1187,13 @@ class FacturasController extends Controller
                             $em->flush();
                         }
 
-			//Logistica
+			            //Logistica
                         //CONSULTAR LOGISTICAS CONSOLIDADAS DE COTIZACIONES APROBADAS
                         $qb = $em->createQueryBuilder(); 
                         $qb->select('c');
                         $qb->from('IncentivesSolicitudesBundle:Cotizacion','c');
                         $qb->leftJoin('c.solicitud', 's');
-                        $str_filtro = "c.facturaLogistica IS NULL AND c.logistica IS NOT NULL AND c.logistica!=0 AND s.estado IN (2,3,5) AND s.programa=".$programa->getId()." AND s.fechaSolicitud>='".$pro["fechaInicio"]."' AND s.fechaSolicitud<='".$pro["fechaFin"]."'";
+                        $str_filtro = "c.facturaLogistica IS NULL AND c.logistica IS NOT NULL AND c.logistica!=0 AND s.estado IN (2,3,5) AND s.centroCostos=".$centroCostos->getId()." AND s.fechaSolicitud>='".$pro["fechaInicio"]."' AND s.fechaSolicitud<'".$fechaFin."'";
                         $qb->where($str_filtro);
                         $Logistica = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
 
@@ -1398,6 +1223,9 @@ class FacturasController extends Controller
                     $excel = $this->detalleSolicitudesAction($factura->getId());
 
                     $this->get('session')->getFlashBag()->add('notice', 'La factura con número '.$factura->getNumero().' se creo correctamente');
+
+                    return $this->redirect($this->generateUrl('factura_datos').'/'.$factura->getId());
+
                 }else{
                     
                     $em->remove($factura);
@@ -1405,8 +1233,6 @@ class FacturasController extends Controller
 
                     $this->get('session')->getFlashBag()->add('warning', 'No se encontraron datos para facturar');
                 }
-                
-                //return $this->redirect($this->generateUrl('facturas_listado').'/'.$id);
             
             }
         }
@@ -1415,7 +1241,7 @@ class FacturasController extends Controller
         $qb = $em->createQueryBuilder(); 
         $qb->select('MAX(f.fechaFin) fecha');
         $qb->from('IncentivesFacturacionBundle:Factura','f');
-        $str_filtro = "f.programa=".$programa->getId();
+        $str_filtro = "f.centroCostos=".$centroCostos->getId();
         $qb->where($str_filtro);
         $fechaInicio = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
 
@@ -1432,8 +1258,8 @@ class FacturasController extends Controller
         $fechaFin = date ( 'Y-m-d' , $fechaFin );
         $fecha = date('Y-m-d');
         
-        return $this->render('IncentivesFacturacionBundle:Facturas:nuevaRequisiciones.html.twig', array(
-            'form' => $form->createView(), 'programa' => $programa, 'pais' => $pais, 'fechaInicio' => $fechaInicio, 'fechaFin' => $fechaFin, 'fecha' => $fecha
+        return $this->render('IncentivesFacturacionBundle:Facturas:nuevaSolicitudes.html.twig', array(
+            'form' => $form->createView(), 'centrocostos' => $centroCostos, 'pais' => $pais, 'fechaInicio' => $fechaInicio, 'fechaFin' => $fechaFin, 'fecha' => $fecha
         ));
     }
     
@@ -1451,7 +1277,7 @@ class FacturasController extends Controller
                 // realiza alguna acción, tal como guardar la tarea en la base de datos
                 
                 $id = $request->request->all()['id'];
-                $pro = $request->request->all()['facturalogistica'];
+                $pro = $request->request->all()['factura_logistica'];
                 
                 $factura = $em->getRepository('IncentivesFacturacionBundle:Factura')->find($id);
                 $logistica->setCantidad($pro["cantidad"]);
@@ -1473,5 +1299,182 @@ class FacturasController extends Controller
         return $this->render('IncentivesFacturacionBundle:Facturas:agregarlogistica.html.twig', array(
             'form' => $form->createView(), 'id' => $id
         ));
+    }
+
+
+    public function detalleGenerarSolicitudesAction(Request $request, $centrocostos)
+    {
+
+        $em = $this->getDoctrine()->getManager();
+
+        //Cotizaciones aprobadas pendientes por facturacion
+        $qb = $em->createQueryBuilder();
+        $qb->select('cp', 's', 'c','p','e','op','oc');
+        $qb->from('IncentivesSolicitudesBundle:CotizacionProducto','cp');
+        $qb->leftJoin('cp.cotizacion', 'c');
+        $qb->leftJoin('cp.ordenesproducto', 'op');
+        $qb->leftJoin('op.ordenesCompra', 'oc');
+        $qb->leftJoin('cp.producto', 'p');
+        $qb->leftJoin('cp.estado', 'e');
+        $qb->leftJoin('c.solicitud', 's');
+        $qb->leftJoin('s.centroCostos', 'cc');
+        $str_filtro = "cp.facturaProducto IS NULL AND cp.estado in (2,6,5) AND s.centroCostos=".$centrocostos;
+        $qb->where($str_filtro);
+        $Cotizaciones = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
+        //echo "<pre>"; print_r($Cotizaciones); echo "</pre>"; exit;
+
+        //Ordenes sin cotizacion pendientes por facturacion
+        /*$qb = $em->createQueryBuilder(); 
+        $qb->select('op','oc','s','cc','p','e');
+        $qb->from('IncentivesOrdenesBundle:OrdenesProducto','op');
+        $qb->leftJoin('op.ordenesCompra', 'oc');
+        $qb->leftJoin('oc.ordenesEstado', 'e');
+        $qb->leftJoin('op.producto', 'p');
+        $qb->leftJoin('oc.solicitud', 's');
+        $qb->leftJoin('s.centroCostos', 'cc');
+        $str_filtro = "op.facturaProducto IS NULL AND oc.ordenesEstado in (2,4,5) AND op.productocotizacion IS NULL AND s.centroCostos=".$centrocostos;
+        $qb->where($str_filtro);
+        $Ordenes = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);*/
+        //echo "<pre>"; print_r($Ordenes); echo "</pre>"; exit;
+
+        //Requisiciones sin cotizacion pendientes por facturacion
+        $qb = $em->createQueryBuilder(); 
+        $qb->select('rp','r','s','cc','p');
+        $qb->from('IncentivesSolicitudesBundle:RequisicionProducto','rp');
+        $qb->leftJoin('rp.requisicion', 'r');
+        $qb->leftJoin('rp.producto', 'p');
+        $qb->leftJoin('r.solicitud', 's');
+        $qb->leftJoin('s.centroCostos', 'cc');
+        $str_filtro = "rp.facturaProducto IS NULL AND s.centroCostos=".$centrocostos;
+        $qb->where($str_filtro);
+        $Requisiciones = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
+        //echo "<pre>"; print_r($Requisiciones); echo "</pre>"; exit;
+        
+        //Logistica pendientes por facturacion
+        //Buscar logisica registrada en planillas de requisiciones
+        $qb = $em->createQueryBuilder(); 
+        $qb->select('count(cl) as total','ps.nombre pais', 'ps.id idpais', 'p.nombre programa','p.id idPrograma');
+        $qb->from('IncentivesInventarioBundle:CostosLogistica','cl');
+        $qb->leftJoin('cl.planilla', 'pl');
+        $qb->leftJoin('pl.solicitud', 's');
+        $qb->leftJoin('pl.pais', 'ps');
+        $qb->leftJoin('s.programa', 'p');
+        $qb->groupBy('p.id');
+        $str_filtro = "cl.facturalogistica IS NULL";
+        $qb->where($str_filtro);
+        $Logistica = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
+        //echo "<pre>"; print_r($Logistica); echo "</pre>"; exit;
+
+        return $this->render('IncentivesFacturacionBundle:Facturas:detallegenerarsolicitudes.html.twig', 
+            array('cotizaciones' => $Cotizaciones, /*'ordenes' => $Ordenes,*/ 'requisiciones' => $Requisiciones, 'logisticas' => $Logistica));
+    }
+
+
+    public function EliminarAction(Request $request)
+    {
+
+        $em = $this->getDoctrine()->getManager();
+        
+        //Buscar y liberar redenciones
+        $qb = $em->createQueryBuilder(); 
+        $qb->select('r');
+        $qb->from('IncentivesRedencionesBundle:Redenciones','r');
+        $qb->leftJoin('r.premio', 'pr');
+        $qb->leftJoin('pr.catalogos', 'c');
+        $qb->leftJoin('c.programa', 'pg');
+        $qb->leftJoin('c.pais', 'ps');
+        $qb->groupBy('pg.id', 'ps.id');
+        $str_filtro = "r.factura IN ";
+        $qb->where($str_filtro);
+        //echo $qb->getDql(); exit;
+        $Redenciones = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
+
+        //Eliminar concpetos adicionales
+
+        //Buscar y liberar cotizaciones
+
+        //Buscar y liberar requisiciones
+
+        //Redenciones pendientes por facturacion
+
+        $qb = $em->createQueryBuilder(); 
+        $qb->select('count(r) as total','pg.nombre programa','pg.id idprograma','ps.nombre pais','ps.id idpais','MIN(r.fecha) fechaInicio','MAX(r.fecha) fechaFin');
+        $qb->from('IncentivesRedencionesBundle:Redenciones','r');
+        $qb->leftJoin('r.premio', 'pr');
+        $qb->leftJoin('pr.catalogos', 'c');
+        $qb->leftJoin('c.programa', 'pg');
+        $qb->leftJoin('c.pais', 'ps');
+        $qb->groupBy('pg.id', 'ps.id');
+        $str_filtro = "r.redencionestado IN (2,3,4,5,6) AND r.facturaProducto IS NULL AND r.fecha>='2015-12-01'";
+        $qb->where($str_filtro);
+        //echo $qb->getDql(); exit;
+        $Redenciones = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
+
+        //echo "<pre>"; print_r($Redenciones); echo "</pre>"; exit;
+
+
+        //Solicitudes
+
+        //Cotizaciones aprobadas pendientes por facturacion
+        $qb = $em->createQueryBuilder(); 
+        $qb->select('count(cp) as total', 'cc.nombre centroCostosNombre', 'cc.centrocostos centroCostos', 'cc.id idCentroCostos');
+        $qb->from('IncentivesSolicitudesBundle:CotizacionProducto','cp');
+        $qb->leftJoin('cp.cotizacion', 'c');
+        $qb->leftJoin('c.solicitud', 's');
+        $qb->leftJoin('s.centroCostos', 'cc');
+        $qb->groupBy('cc.id');
+        $str_filtro = "cp.facturaProducto IS NULL AND cp.estado in (2,6,5)";
+        $qb->where($str_filtro);
+        $Cotizaciones = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
+        //echo "<pre>"; print_r($Cotizaciones); echo "</pre>"; exit;
+
+        //Ordenes sin cotizacion pendientes por facturacion
+        /*$qb = $em->createQueryBuilder(); 
+        $qb->select('count(op) as total', 'cc.nombre centroCostosNombre', 'cc.centrocostos centroCostos', 'cc.id idCentroCostos');
+        $qb->from('IncentivesOrdenesBundle:OrdenesProducto','op');
+        $qb->leftJoin('op.ordenesCompra', 'oc');
+        $qb->leftJoin('oc.solicitud', 's');
+        $qb->leftJoin('s.centroCostos', 'cc');
+        $qb->groupBy('cc.id');
+        $str_filtro = "op.facturaProducto IS NULL AND oc.ordenesEstado in (2,4,5) AND s.centroCostos IS NOT NULL AND oc.fechaCreacion >= '2016-08-01'";
+        $qb->where($str_filtro);
+        $Ordenes = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);*/
+        //echo "<pre>"; print_r($Ordenes); echo "</pre>"; exit;
+
+        //Requisiciones sin cotizacion pendientes por facturacion
+        $qb = $em->createQueryBuilder(); 
+        $qb->select('count(rp) as total', 'cc.nombre centroCostosNombre', 'cc.centrocostos centroCostos', 'cc.id idCentroCostos');
+        $qb->from('IncentivesSolicitudesBundle:RequisicionProducto','rp');
+        $qb->leftJoin('rp.requisicion', 'r');
+        $qb->leftJoin('r.solicitud', 's');
+        $qb->leftJoin('s.centroCostos', 'cc');
+        $qb->leftJoin('s.programa', 'p');
+        $qb->groupBy('cc.id');
+        $str_filtro = "rp.facturaProducto IS NULL";
+        $qb->where($str_filtro);
+        $Requisiciones = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
+        //echo "<pre>"; print_r($Requisiciones); echo "</pre>"; exit;
+        
+        //Logistica pendientes por facturacion
+        //Buscar logisica registrada en planillas de requisiciones
+        $qb = $em->createQueryBuilder(); 
+        $qb->select('count(cl) as total', 'cc.nombre centroCostosNombre', 'cc.centrocostos centroCostos', 'cc.id idCentroCostos');
+        $qb->from('IncentivesInventarioBundle:CostosLogistica','cl');
+        $qb->leftJoin('cl.planilla', 'pl');
+        $qb->leftJoin('pl.solicitud', 's');
+        $qb->leftJoin('pl.pais', 'ps');
+        $qb->leftJoin('s.centroCostos', 'cc');
+        $qb->groupBy('cc.id');
+        $str_filtro = "cl.facturalogistica IS NULL";
+        $qb->where($str_filtro);
+        $Logistica = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
+        //echo "<pre>"; print_r($Logistica); echo "</pre>"; exit;
+
+        $Solicitudes = array_merge($Cotizaciones, $Requisiciones, $Logistica);
+
+        //echo "<pre>"; print_r($Solicitudes); echo "</pre>"; exit;
+
+        return $this->render('IncentivesFacturacionBundle:Facturas:generarsegmentado.html.twig', 
+            array('redenciones' => $Redenciones, 'solicitudes' => $Solicitudes, 'cotizaciones' => $Cotizaciones, /*'ordenes' => $Ordenes,*/ 'requisiciones' => $Requisiciones, 'logisticas' => $Logistica));
     }
 }

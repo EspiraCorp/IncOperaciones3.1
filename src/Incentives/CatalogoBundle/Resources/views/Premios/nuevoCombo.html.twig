@@ -1,0 +1,177 @@
+{% extends "::baseLte.html.twig" %}
+
+{% block title %}Agregar Combo{% endblock %}
+
+{% block content %}
+
+     <div class="">
+          <div class="modal-dialog box box-warning">
+            <div class="modal-content">
+              <div class="modal-header bg-black">
+                <h4 class="modal-title">Agregar Combo</h4>
+              </div>
+              <form action="{{ path('premios_combo_nuevo', {'catalogo': catalogo}) }}" method="POST"  enctype="multipart/form-data" class="form-horizontal" id="formCombo" onsubmit="return validarCombo()" novalidate>
+              <div class="modal-body">
+                <a class="btn btn-success btn-sm" href="#" id="agregar-producto">Agregar Producto</a>
+                {# almacena el prototipo en el atributo data-prototype #}
+                <div class="form-group" id="productos-lista" data-prototype="{{ form_widget(form.premiosproductos.vars.prototype) | e }}">
+                {% for productosCampo in form.premiosproductos %}
+                    <div>
+                        {{ form_errors(productosCampo) }}
+                        {{ form_widget(productosCampo) }}
+                    </div>
+                {% endfor %}
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">{{ form_label(form.nombre, label|default(), { 'label_attr': { 'class': 'control-label' } }) }}</label>
+                  <div class="col-sm-10">
+                    {{ form_widget(form.nombre, { 'attr': {'class': 'form-control'} }) }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">{{ form_label(form.marca, label|default(), { 'label_attr': { 'class': 'control-label' } }) }}</label>
+                  <div class="col-sm-10">
+                    {{ form_widget(form.marca, { 'attr': {'class': 'form-control'} }) }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">{{ form_label(form.referencia, label|default(), { 'label_attr': { 'class': 'control-label' } }) }}</label>
+                  <div class="col-sm-10">
+                    {{ form_widget(form.referencia, { 'attr': {'class': 'form-control'} }) }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">{{ form_label(form.descripcion, label|default(), { 'label_attr': { 'class': 'control-label' } }) }}</label>
+                  <div class="col-sm-10">
+                    {{ form_widget(form.descripcion, { 'attr': {'class': 'form-control'} }) }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">{{ form_label(form.imagen, label|default(), { 'label_attr': { 'class': 'control-label' } }) }}</label>
+                  <div class="col-sm-10">
+                    {{ form_widget(form.imagen) }}
+                  </div>
+                </div>
+                
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">{{ form_label(form.categoria, label|default(), { 'label_attr': { 'class': 'control-label' } }) }}</label>
+                  <div class="col-sm-10">
+                    {{ form_widget(form.categoria, { 'attr': {'class': 'form-control'} }) }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">{{ form_label(form.puntosTemporal, label|default(), { 'label_attr': { 'class': 'control-label' } }) }}</label>
+                  <div class="col-sm-10">
+                    {{ form_widget(form.puntosTemporal, { 'attr': {'class': 'form-control'} }) }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">{{ form_label(form.precioTemporal, label|default(), { 'label_attr': { 'class': 'control-label' } }) }}</label>
+                  <div class="col-sm-10">
+                    {{ form_widget(form.precioTemporal, { 'attr': {'class': 'form-control'} }) }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">{{ form_label(form.incrementoTemporal, label|default(), { 'label_attr': { 'class': 'control-label' } }) }}</label>
+                  <div class="col-sm-10">
+                    {{ form_widget(form.incrementoTemporal, { 'attr': {'class': 'form-control'} }) }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">{{ form_label(form.logisticaTemporal, label|default(), { 'label_attr': { 'class': 'control-label' } }) }}</label>
+                  <div class="col-sm-10">
+                    {{ form_widget(form.logisticaTemporal, { 'attr': {'class': 'form-control'} }) }}
+                  </div>
+                </div>
+                {{ form_widget(form._token) }}
+              </div>
+              <div class="modal-footer bg-black">
+                <button class="btn btn-warning bg-black" type="submit">Enviar</button>
+              </div>
+              </form>
+            </div>
+            <!-- /.modal-content -->
+          </div>
+          <!-- /.modal-dialog -->
+    </div>
+{% endblock %}
+
+{% block javascript %}
+  
+  {{ parent() }}
+
+<script type="text/javascript">
+    // realiza un seguimiento de cuántos campos de correo electrónico se han pintado
+    var productosTotal = '{{ form.premiosproductos | length }}';
+
+    jQuery(document).ready(function() {
+        jQuery('#agregar-producto').click(function() {
+            var productosLista = jQuery('#productos-lista');
+
+            // graba la plantilla prototipo
+            var newWidget = productosLista.attr('data-prototype');
+            // sustituye el "__name__" usado en el id y name del prototipo con un
+            // número que es único en tus correos termina con el
+            // atributo name viéndose como name="contact[emails][2]"
+            newWidget = newWidget.replace(/_name_/g, productosTotal);
+            productosTotal++;
+
+            // crea un nuevo elemento lista y lo añade a la lista
+            var newLi = jQuery('<div class="col-sm-10"></div>').html(newWidget);
+            var newLabel = jQuery('<label class="col-sm-2 control-label">Producto '+ productosTotal +'</label>'); 
+            
+            newLabel.appendTo(jQuery('#productos-lista'));
+            newLi.appendTo(jQuery('#productos-lista'));
+
+                return false;
+        });
+    })
+
+    function validarCombo(){
+
+      $('#formCombo').submit(function(event){
+        event.preventDefault();
+      });
+
+      var productosInput = $('.producto-combo');
+      var totalProductos = productosInput.size();     
+
+      if(productosTotal<1){
+
+        alert('Debe agregar por lo menos un producto.');
+        return false;
+
+      }
+
+      if(productosTotal==1){
+        $('#combos_imagen').removeAttr('required');
+        $('#formCombo').removeAttr('novalidate');
+        $('#formCombo').validate({
+            submitHandler: function(form){
+              document.getElementById("formCombo").submit();
+            }
+        });
+        return false;
+        ///document.getElementById("formCombo").submit();  
+      }
+
+      if(productosTotal >=2){
+        $('#combos_nombre').attr('required', 'required');
+        $('#combos_referencia').attr('required', 'required');
+        $('#combos_descripcion').attr('required', 'required');
+        $('#combos_marca').attr('required', 'required');
+        $('#formCombo').removeAttr('novalidate');
+
+        $('#formCombo').validate({
+            submitHandler: function(form){
+              document.getElementById("formCombo").submit();
+            }
+        });
+        return false;
+        //document.getElementById("formCombo").submit(); 
+      }
+
+    }
+</script>
+
+{% endblock %}

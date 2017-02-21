@@ -44,9 +44,19 @@ producto_imagenmasivo:
     path:  /producto/imagen/masivo
     defaults: { _controller: IncentivesCatalogoBundle:Producto:masivoImagen }
 
+premios_imagenmasivo_combos:
+    path:  /premios/imagencombos/{catalogo}
+    defaults: { _controller: IncentivesCatalogoBundle:Premios:masivoImagenCombos , catalogo: null}
+
 producto_agregarprecio:
     path:  /producto/precio/agregar/{id}
     defaults: { _controller: IncentivesCatalogoBundle:Producto:agregarPrecio, id: null }
+    requirements:
+        id:  \d+
+
+producto_agregaratributo:
+    path:  /producto/atributo/agregar/{id}
+    defaults: { _controller: IncentivesCatalogoBundle:Producto:agregarAtributo, id: null }
     requirements:
         id:  \d+
 
@@ -217,8 +227,11 @@ catalogo_intervalos:
     
 catalogo_intervaloseditar:
     path:  /catalogo/intervaloseditar/{id}
-    defaults: { _controller: IncentivesCatalogoBundle:Catalogos:editarntervalos, id: null}
+    defaults: { _controller: IncentivesCatalogoBundle:Catalogos:editarIntervalos, id: null}
 
+catalogo_intervaloseliminar:
+    path:  /catalogo/intervaloseliminar/{id}
+    defaults: { _controller: IncentivesCatalogoBundle:Catalogos:eliminarIntervalos, id: null}
 
 producto_referencia:
     path:  /producto/referencia/{id}
@@ -253,26 +266,32 @@ promociones:
     defaults: { _controller: IncentivesCatalogoBundle:Promociones:listado}
 
 promociones_nuevo:
-    path:  /promociones/nuevo
-    defaults: { _controller: IncentivesCatalogoBundle:Promociones:nuevo}
+    path:  /promociones/nuevo/{premio}
+    defaults: { _controller: IncentivesCatalogoBundle:Promociones:nuevo, premio: null }
 
 promociones_editar:
-    path:  /promociones/editar/{id}
-    defaults: { _controller: IncentivesCatalogoBundle:Promociones:editar, id: null }
+    path:  /promociones/editar/{promocion}
+    defaults: { _controller: IncentivesCatalogoBundle:Promociones:editar, promocion: null }
     requirements:
-        id:  \d+
+        promocion:  \d+
 
 promociones_datos:
-    path:  /promociones/datos/{id}
-    defaults: { _controller: IncentivesCatalogoBundle:Promociones:datos, id: null }
+    path:  /promociones/datos/{promocion}
+    defaults: { _controller: IncentivesCatalogoBundle:Promociones:datos, promocion: null }
     requirements:
-        id:  \d+
+        promocion:  \d+
 
 promociones_estado:
-    path:  /promociones/estado/{id}
-    defaults: { _controller: IncentivesCatalogoBundle:Promociones:estado, id: null }
+    path:  /promociones/estado/{promocion}
+    defaults: { _controller: IncentivesCatalogoBundle:Promociones:estado, promocion: null }
     requirements:
-        id:  \d+
+        promocion:  \d+
+
+promociones_catalogo:
+    path:  /promociones/catalogo/{catalogo}
+    defaults: { _controller: IncentivesCatalogoBundle:Promociones:listadoCatalogo, catalogo: null }
+    requirements:
+        catalogo:  \d+
 
 premios_nuevo_producto:
     path:  /premios/nuevo/producto/{producto}
@@ -302,13 +321,21 @@ premios_importar:
     requirements:
         id:  \d+
 
+premios_importar_combos:
+    path:  /premios/importarcombos/{id}
+    defaults: { _controller: IncentivesCatalogoBundle:Premios:importarCombos, id: null }
+
 premios_exportar:
     path:  /premios/exportar/{id}
     defaults: { _controller: IncentivesCatalogoBundle:Premios:exportar }
 
 premios_formato:
     path:  /premios/formato
-    defaults: { _controller: IncentivesCatalogoBundle:Premios:formato}
+    defaults: { _controller: IncentivesCatalogoBundle:Premios:formato }
+
+premios_formato_combos:
+    path:  /premios/formatocombos
+    defaults: { _controller: IncentivesCatalogoBundle:Premios:formatoCombos }
 
 premios_imagenes:
     path:  /premios/imagenes/{catalogo}
@@ -329,3 +356,20 @@ premios_estado:
     defaults: { _controller: IncentivesCatalogoBundle:Premios:estado, premio: null }
     requirements:
         premio:  \d+ 
+
+premios_listado:
+    path:  /premios/listado/{catalogo}
+    defaults: { _controller: IncentivesCatalogoBundle:Premios:listado, catalogo: null }
+
+premios_combo_nuevo:
+    path:  /premios/nuevocombo/{catalogo}
+    defaults: { _controller: IncentivesCatalogoBundle:Premios:nuevoCombo, catalogo: null }
+
+premios_combo_editar:
+    path:  /premios/editarcombo/{premio}
+    defaults: { _controller: IncentivesCatalogoBundle:Premios:editarCombo, premio: null }
+
+premios_datos:
+    path:  /premios/datos/{premio}
+    defaults: { _controller: IncentivesCatalogoBundle:Premios:datos, premio: null }
+

@@ -1,135 +1,152 @@
-{% extends "::base.html.twig" %}
+{% extends '::baseLte.html.twig' %}
 
-{% block title %}Inventario{% endblock %}
-{% block sidebar %}
-{{ parent() }}
-{% endblock %}
-{% block cuerpo %}
-<div class="row-fluid sortable ui-sortable">
-	<div class="box span12">
-		<div class="box-header well">
-			<h2><i class="icon-th-list"></i>Inventario</h2>
-			<div class="box-icon">
-	    <a href="{{ path('inventario_exportar') }}" title="Reporte Inventario" class="btn btn-primary">
-            <i class="icon-download icon-white"></i>
-        </a>
-        <a href="{{ path('inventario_exportar_detalle') }}" title="Reporte Detallado" class="btn btn-info">
-            <i class="icon-download-alt icon-white"></i>
-        </a>
-        <a href="{{ path('inventario_ingreso') }}" title="Ingresar" class="btn btn-primary btn-success">
-            <i class="icon-plus icon-white"></i>
-        </a>
-        <a href="{{ path('inventario_listadosalida') }}" title="Salida" class="btn btn-primary btn-warning">
-            <i class="icon-minus icon-white"></i>
-        </a>
-			</div>
-		</div>
-		<div class="box-content">
-			<div id="dashboard">
-                    <div id="tabla" class="" cellspacing="0" width="100%">
-                      <table id="ordenes" class="display">
-                        <thead style="display:table-row-group;"  >
-                          <tr>
-                            <th>Id</th>
-                            <th>Producto</th>
-                            <th>Marca</th>
-                            <th>Referencia</th>
-                            <th>SKU</th>
-                            <th>Ingreso</th>
-                            <th>Salio</th>
-                            <th>En Despacho</th>
-                            <th>Disponible</th>
-                          </tr>
+{% block title %}{{ parent() }}::Inventario{% endblock %}
+{% block sectiontitle %}<h1>Inventario<small>Productos</small></h1>{% endblock %}
+{% block breadcum %} <li><a href=""><i class="fa fa-star-o"></i>Inventario</a></li><li class="active"></li>{% endblock %}
+
+{% block content %}
+  <div class="row">
+        <div class="col-xs-12">
+          <div class="box box-warning">
+            <div class="box-header bg-black">
+              <h3 class="box-title">Listado de Productos Para Salida</h3> 
+              <div class="box-tools pull-right"> 
+                  <a href="{{ path('inventario_exportar') }}" title="Reporte Inventario" class="btn btn-primary">
+                      <i class="fa fa-download"></i>
+                  </a>
+                  <a href="{{ path('inventario_exportar_detalle') }}" title="Reporte Detallado" class="btn btn-info">
+                      <i class="fa fa-database"></i>
+                  </a>
+                  <a href="{{ path('inventario_ingreso') }}" id="Ingresar" title="Ingresar" class="btn btn-primary btn-success">
+                      <i class="fa fa-plus"></i>
+                  </a>
+                  <a href="{{ path('inventario_redenciones_disponibles') }}" title="Redenciones" class="btn btn-primary btn-info">
+                      <i class="fa fa-cog"></i>
+                  </a>
+                  <a href="{{ path('inventario_listadosalida') }}" title="Salida" class="btn btn-primary btn-danger">
+                      <i class="fa fa-minus"></i>
+                  </a>
+                  <a href="{{ path('inventario_listadoliberar') }}" title="Liberar" class="btn btn-primary btn-warning">
+                      <i class="fa fa-unlock"></i>
+                  </a>
+              </div>
+            </div>
+
+            <div class="box-body no-padding">
+              <div class="dataTables_wrapper form-inline dt-bootstrap">
+                <div class="row">
+                  <div class="col-sm-12">
+                    <table class="table table-bordered table-striped table-condensed dataTable" id="productos" role="grid">
+                      <thead>
+                          {{ form_start(form, { attr: {novalidate: 'novalidate', class: 'form-horizontal'} }) }}
+                            <tr>
+                                <th class="sorting" tabindex="0" rowspan="1" colspan="1">{{ knp_pagination_sortable(productos, 'Id', 'p.id') }}</th>
+                                <th class="sorting" tabindex="0" rowspan="1" colspan="1">{{ knp_pagination_sortable(productos, 'Producto', 'p.nombre') }}</th>
+                                <th class="sorting" tabindex="0" rowspan="1" colspan="1">{{ knp_pagination_sortable(productos, 'Marca', 'p.marca') }}</th>
+                                <th class="sorting" tabindex="0" rowspan="1" colspan="1">{{ knp_pagination_sortable(productos, 'Referencia', 'p.referencia') }}</th>
+                                <th class="sorting" tabindex="0" rowspan="1" colspan="1">{{ knp_pagination_sortable(productos, 'SKU', 'p.codInc') }}</th>
+                                <th class="sorting" tabindex="0" rowspan="1" colspan="1">{{ knp_pagination_sortable(productos, 'Categoria', 'c.nombre') }}</th>
+                                <th class="sorting" tabindex="0" rowspan="1" colspan="1">{{ knp_pagination_sortable(productos, 'Ingresado', 'ingresada') }}</th>
+                                <th class="sorting" tabindex="0" rowspan="1" colspan="1">{{ knp_pagination_sortable(productos, 'Salio', 'salida') }}</th>
+                                <th class="sorting" tabindex="0" rowspan="1" colspan="1">{{ knp_pagination_sortable(productos, 'En Despacho', 'asignada') }}</th>
+                                <th class="sorting" tabindex="0" rowspan="1" colspan="1">{{ knp_pagination_sortable(productos, 'Disponible', 'disponible') }}</th>
+                                <th class="sorting" tabindex="0" rowspan="1" colspan="1">{{ knp_pagination_sortable(productos, 'Estado', 'e.nombre') }}</th>
+                                <th colspan="2"></th>
+                            </tr>
+                            <tr>
+                                <th><input type="text" id="producto_id" name="producto[id]" style="width: 40px" value="{%if filtros.id is defined %}{{ filtros.id }}{% endif %}" class="form-control input-sm"></th>
+                                <th>{{ form_widget(form.nombre, { 'attr': { 'class' : 'form-control input-sm' }, 'value': filtros.nombre | default("") } ) }}</th>
+                                <th>{{ form_widget(form.marca, { 'attr': { 'class' : 'form-control input-sm' }, 'value': filtros.marca | default("") } ) }}</th>
+                                <th>{{ form_widget(form.referencia, { 'attr': { 'class' : 'form-control input-sm' }, 'value': filtros.referencia | default("") } ) }}</th>
+                                <th>{{ form_widget(form.codInc, { 'attr': { 'class' : 'form-control input-sm', 'style' : "width: 100px" }, 'value': filtros.codInc | default("") } ) }}</th>
+                                <th>{{ form_widget(form.categoria, { 'attr': { 'class' : 'form-control input-sm' }, 'value': filtros.categoria | default("") } ) }}</th>
+                                <th></th> 
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th>{{ form_widget(form.estado, { 'attr': { 'class' : 'form-control input-sm'}, 'value': filtros.estado | default(1) } ) }}</th>
+                                <th>
+                                  {{ form_widget(form.Enviar, { 'attr': {'class': 'btn btn-primary btn-xs'}, 'label': 'Buscar' }) }}
+                                
+                                  <a class="btn btn-danger btn-xs" title="Limpiar" id="borrar"><i class="fa fa-trash"></i></a>
+                                </th>
+                            </tr>
+                          </form>
                         </thead>
-                        <tbody>
-                          {% for producto in productos %}
+
+                      <tbody>
+                        {% for producto in productos %}
                           
                             {% set ocupada = 0 %}
                             
-                            {% if producto['asignada'] > producto['salida']%}
-                                {% set ocupada = 0 + producto['asignada'] %}
+                            {% if producto.asignada > producto.salida %}
+                                {% set ocupada = 0 + producto.asignada %}
                             {% else %}
-                                {% set ocupada = 0 + producto['salida'] %}
+                                {% set ocupada = 0 + producto.salida %}
                             {% endif %}
-                          <tr>
-                            <td>{{ producto['inventario']['producto']['id'] }}</td>
-                            <td>{{ producto['inventario']['producto']['nombre'] }}</td>
-                            <td>{{ producto['inventario']['producto']['marca'] }}</td>
-                            <td>{{ producto['inventario']['producto']['referencia'] }}</td>
-                            <td>{{ producto['inventario']['producto']['codInc'] }}</td>
-                            <td>{{ 0 + producto['ingresada'] }}</td>
-                            <td>{{ 0 + producto['salida'] }}</td>
-                            <td>{{ 0 +  producto['asignada'] }}</td>
-                            <td>{% set total = 0 + producto['disponible'] %}{{ total }}</td>
-                          </tr>
-                          {% endfor %}
-                        </tbody>
-                         <tfoot style="display: table-header-group;">
-                           <tr>
-                            <th>Id</th>
-                            <th>Producto</th>
-                            <th>Marca</th>
-                            <th>Referencia</th>
-                            <th>SKU</th>
-                            <th>C. Ingreso</th>
-                            <th>C. Salida</th>
-                            <th>C. Asignada</th>
-                            <th>C. Disponible</th>
-                          </tr>
-                        </tfoot>
-                      </table>
-                    </div>   
-		</div>
-	</div>
-</div>
+                        <tr role="row">
+                          <td>{{ producto.inventario.producto.id }}</td>
+                          <td>{{ producto.inventario.producto.nombre }}</td>
+                          <td>{{ producto.inventario.producto.marca }}</td>
+                          <td>{{ producto.inventario.producto.referencia }}</td>
+                          <td>{{ producto.inventario.producto.codInc }}</td>
+                          <td>{{ producto.inventario.producto.categoria.nombre }}</td>
+                          <td>{{ 0 + producto.ingresada }}</td>
+                          <td>{{ 0 + producto.salida }}</td>
+                          <td>{{ 0 +  producto.asignada }}</td>
+                          <td>{% set total = 0 + producto.disponible %}{{ total }}</td>
+                          <td>{{ producto.inventario.producto.estado.nombre }}</td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>   
+		            </div>
+                <div class="row">
+                  <div class="col-sm-5"><div class="dataTables_info" role="status" aria-live="polite">Mostrando {{ productos.getItemNumberPerPage*(productos.getCurrentPageNumber-1)+1  }} a {{ productos.getItemNumberPerPage*productos.getCurrentPageNumber }} de {{ productos.getTotalItemCount }}   Productos</div></div>
+
+                  <div class="col-sm-7"><div class="dataTables_paginate paging_simple_numbers">
+                  {{ knp_pagination_render(productos) }}</div></div>
+                </div>
+	           </div>
+          </div>
+        </div>
+      </div>
+    </div>
 {% endblock %}
 
-{% block javascripts %}
+{% block javascript %}
 
 {{ parent() }}
 
   <script type="text/javascript">
- $(document).ready(function() {
-//    inifuntion
- var table = $('#ordenes').dataTable({
-
-            "sDom": 'T<"clear">lfrtip',
-             "bPaginate": true,
-             "bLengthChange": true,
-             "bFilter": true,
-             "bSort": true,
-             "bInfo": false,
-             "bAutoWidth": true,
-             "bJQueryUI": false,
-             "sPaginationType": "full_numbers",
-             "iDisplayLength": 50,
-             "aLengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "Todo"] ],
-              initComplete: function () {
-                    this.api().columns().every( function () {
-                        var column = this;
-                        var select = $('<select style="width: 100%"><option value=""></option></select>')
-                            .appendTo( $(column.footer()).empty() )
-                            .on( 'change', function () {
-                                var val = $.fn.dataTable.util.escapeRegex(
-                                    $(this).val()
-                                );
-         
-                                column
-                                    .search( val ? '^'+val+'$' : '', true, false )
-                                    .draw();
-                            } );
-         
-                        column.data().unique().sort().each( function ( d, j ) {
-                            //limpiar
-                            //d
-                            select.append( '<option value="'+d+'">'+d+'</option>' )
-                        } );
-                    } );
-                }
+  
+    $(function(){
+        $('#borrar').on('click', function(e){
+            e.preventDefault(); // prevent the default form submit actio
+            var form = document.forms['producto'];
+            var input = document.createElement( "input" );
+            input.setAttribute( "name", "limpiar" );
+            input.setAttribute( "value", "1" );
+            form.appendChild( input );
+            form.submit();
+        });
     });
 
-})
-  </script>
+
+    $("#Ingresar").colorbox({href: this.href });
+
+</script>
+
+{% endblock %}
+
+{% block stylesheet %}
+  {{ parent() }}
+  <style>
+    body {
+        width: 120%;
+    }
+  </style>
 
 {% endblock %}
 

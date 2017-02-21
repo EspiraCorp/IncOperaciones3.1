@@ -2,6 +2,7 @@
 
 namespace Incentives\CatalogoBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -31,7 +32,7 @@ class Promociones
 
     /**
      * @var string
-     *
+     * @Assert\NotNull(message="Debe escribir un valor.")
      * @ORM\Column(name="nombre", type="string", length=255, nullable=true)
      */
     private $nombre;
@@ -45,14 +46,14 @@ class Promociones
     
     /**
      * @var integer
-     *
+     * @Assert\NotNull(message="Debe escribir un valor.")
      * @ORM\Column(name="puntos", type="integer", nullable=true)
      */
     private $puntos;
     
     /**
      * @var integer
-     *
+     * @Assert\NotNull(message="Debe escribir un valor.")
      * @ORM\Column(name="cantidad", type="integer", nullable=true)
      */
     private $cantidad;
@@ -72,15 +73,15 @@ class Promociones
     private $disponibles;
 
     /**
-     * @var \DateTime
-     *
+     * @var \Date
+     * @Assert\NotNull(message="Debe escribir un valor.")
      * @ORM\Column(name="fechaInicio", type="date", nullable=true)
      */
     private $fechaInicio;
 
     /**
-     * @var \DateTime
-     *
+     * @var \Date
+     * @Assert\NotNull(message="Debe escribir un valor.")
      * @ORM\Column(name="fechaFin", type="date", nullable=true)
      */
     private $fechaFin;
@@ -125,7 +126,7 @@ class Promociones
     {
         return $this->id;
     }
-
+    
 
     /**
      * Set nombre
@@ -200,6 +201,30 @@ class Promociones
     }
 
     /**
+     * Set cantidad
+     *
+     * @param integer $cantidad
+     *
+     * @return Promociones
+     */
+    public function setCantidad($cantidad)
+    {
+        $this->cantidad = $cantidad;
+
+        return $this;
+    }
+
+    /**
+     * Get cantidad
+     *
+     * @return integer
+     */
+    public function getCantidad()
+    {
+        return $this->cantidad;
+    }
+
+    /**
      * Set redimidos
      *
      * @param integer $redimidos
@@ -248,160 +273,6 @@ class Promociones
     }
 
     /**
-     * Set estado
-     *
-     * @param \Incentives\CatalogoBundle\Entity\Estados $estado
-     *
-     * @return Promociones
-     */
-    public function setEstado(\Incentives\CatalogoBundle\Entity\Estados $estado = null)
-    {
-        $this->estado = $estado;
-
-        return $this;
-    }
-
-    /**
-     * Get estado
-     *
-     * @return \Incentives\CatalogoBundle\Entity\Estados
-     */
-    public function getEstado()
-    {
-        return $this->estado;
-    }
-
-    /**
-     * Set fechaModificacion
-     *
-     * @param \DateTime $fechaModificacion
-     *
-     * @return Promociones
-     */
-    public function setFechaModificacion($fechaModificacion)
-    {
-        $this->fechaModificacion = $fechaModificacion;
-
-        return $this;
-    }
-
-    /**
-     * Get fechaModificacion
-     *
-     * @return \DateTime
-     */
-    public function getFechaModificacion()
-    {
-        return $this->fechaModificacion;
-    }
-
-    /**
-     * Set usuario
-     *
-     * @param \Incentives\BaseBundle\Entity\Usuario $usuario
-     *
-     * @return Promociones
-     */
-    public function setUsuario(\Incentives\BaseBundle\Entity\Usuario $usuario = null)
-    {
-        $this->usuario = $usuario;
-
-        return $this;
-    }
-
-    /**
-     * Get usuario
-     *
-     * @return \Incentives\BaseBundle\Entity\Usuario
-     */
-    public function getUsuario()
-    {
-        return $this->usuario;
-    }
-
-    /**
-     * Set premio
-     *
-     * @param \Incentives\CatalogoBundle\Entity\Premios $premio
-     *
-     * @return Promociones
-     */
-    public function setPremio(\Incentives\CatalogoBundle\Entity\Premios $premio = null)
-    {
-        $this->premio = $premio;
-
-        return $this;
-    }
-
-    /**
-     * Get premio
-     *
-     * @return \Incentives\CatalogoBundle\Entity\Premios
-     */
-    public function getPremio()
-    {
-        return $this->premio;
-    }
-
-    /**
-     * Set cantidad
-     *
-     * @param integer $cantidad
-     *
-     * @return Promociones
-     */
-    public function setCantidad($cantidad)
-    {
-        $this->cantidad = $cantidad;
-
-        return $this;
-    }
-
-    /**
-     * Get cantidad
-     *
-     * @return integer
-     */
-    public function getCantidad()
-    {
-        return $this->cantidad;
-    }
-
-    /**
-     * Add redencion
-     *
-     * @param \Incentives\RedencionesBundle\Entity\Redenciones $redencion
-     *
-     * @return Promociones
-     */
-    public function addRedencion(\Incentives\RedencionesBundle\Entity\Redenciones $redencion)
-    {
-        $this->redencion[] = $redencion;
-
-        return $this;
-    }
-
-    /**
-     * Remove redencion
-     *
-     * @param \Incentives\RedencionesBundle\Entity\Redenciones $redencion
-     */
-    public function removeRedencion(\Incentives\RedencionesBundle\Entity\Redenciones $redencion)
-    {
-        $this->redencion->removeElement($redencion);
-    }
-
-    /**
-     * Get redencion
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getRedencion()
-    {
-        return $this->redencion;
-    }
-
-    /**
      * Set fechaInicio
      *
      * @param \DateTime $fechaInicio
@@ -447,5 +318,135 @@ class Promociones
     public function getFechaFin()
     {
         return $this->fechaFin;
+    }
+
+    /**
+     * Set fechaModificacion
+     *
+     * @param \DateTime $fechaModificacion
+     *
+     * @return Promociones
+     */
+    public function setFechaModificacion($fechaModificacion)
+    {
+        $this->fechaModificacion = $fechaModificacion;
+
+        return $this;
+    }
+
+    /**
+     * Get fechaModificacion
+     *
+     * @return \DateTime
+     */
+    public function getFechaModificacion()
+    {
+        return $this->fechaModificacion;
+    }
+
+    /**
+     * Set premio
+     *
+     * @param \Incentives\CatalogoBundle\Entity\Premios $premio
+     *
+     * @return Promociones
+     */
+    public function setPremio(\Incentives\CatalogoBundle\Entity\Premios $premio = null)
+    {
+        $this->premio = $premio;
+
+        return $this;
+    }
+
+    /**
+     * Get premio
+     *
+     * @return \Incentives\CatalogoBundle\Entity\Premios
+     */
+    public function getPremio()
+    {
+        return $this->premio;
+    }
+
+    /**
+     * Set estado
+     *
+     * @param \Incentives\CatalogoBundle\Entity\Estados $estado
+     *
+     * @return Promociones
+     */
+    public function setEstado(\Incentives\CatalogoBundle\Entity\Estados $estado = null)
+    {
+        $this->estado = $estado;
+
+        return $this;
+    }
+
+    /**
+     * Get estado
+     *
+     * @return \Incentives\CatalogoBundle\Entity\Estados
+     */
+    public function getEstado()
+    {
+        return $this->estado;
+    }
+
+    /**
+     * Add redencion
+     *
+     * @param \Incentives\RedencionesBundle\Entity\Redenciones $redencion
+     *
+     * @return Promociones
+     */
+    public function addRedencion(\Incentives\RedencionesBundle\Entity\Redenciones $redencion)
+    {
+        $this->redencion[] = $redencion;
+
+        return $this;
+    }
+
+    /**
+     * Remove redencion
+     *
+     * @param \Incentives\RedencionesBundle\Entity\Redenciones $redencion
+     */
+    public function removeRedencion(\Incentives\RedencionesBundle\Entity\Redenciones $redencion)
+    {
+        $this->redencion->removeElement($redencion);
+    }
+
+    /**
+     * Get redencion
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getRedencion()
+    {
+        return $this->redencion;
+    }
+
+    /**
+     * Set usuario
+     *
+     * @param \Incentives\BaseBundle\Entity\Usuario $usuario
+     *
+     * @return Promociones
+     */
+    public function setUsuario(\Incentives\BaseBundle\Entity\Usuario $usuario = null)
+    {
+        $this->usuario = $usuario;
+
+        return $this;
+    }
+
+    /**
+     * Get usuario
+     *
+     * @return \Incentives\BaseBundle\Entity\Usuario
+     */
+    public function getUsuario()
+    {
+        return $this->usuario;
     }
 }

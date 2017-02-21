@@ -128,6 +128,20 @@ class Programa
      */
     protected $centroCostos;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="apiKey", type="string", length=255, nullable=true)
+     */
+    private $apiKey;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="apiSecret", type="string", length=255, nullable=true)
+     */
+    private $apiSecret;
+
    /**
      * @var \DateTime
      *
@@ -651,5 +665,53 @@ class Programa
     public function getUsuario()
     {
         return $this->usuario;
+    }
+
+    /**
+     * Set apiKey
+     *
+     * @param string $apiKey
+     *
+     * @return Programa
+     */
+    public function setApiKey($apiKey)
+    {
+        $this->apiKey = $apiKey;
+
+        return $this;
+    }
+
+    /**
+     * Get apiKey
+     *
+     * @return string
+     */
+    public function getApiKey()
+    {
+        return $this->apiKey;
+    }
+
+    /**
+     * Set apiSecret
+     *
+     * @param string $apiSecret
+     *
+     * @return Programa
+     */
+    public function setApiSecret($apiSecret)
+    {
+        $this->apiSecret = $apiSecret;
+
+        return $this;
+    }
+
+    /**
+     * Get apiSecret
+     *
+     * @return string
+     */
+    public function getApiSecret()
+    {
+        return $this->apiSecret;
     }
 }

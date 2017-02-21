@@ -135,7 +135,8 @@ VERSIÓN 3
 	 			{% set descuento = descuento + producto.descuento %}
 	 		</tr>
 	 		<tr>
-	 			<td colspan="3">{{ codes[producto.id] | raw }}</td>
+	 			<td colspan="3"><img src="{{ codes[producto.id] | raw }}">
+	 					</td>
 	 		</tr>
 	 			{% set linea = linea + 1 %}
 	 		{% endfor %}

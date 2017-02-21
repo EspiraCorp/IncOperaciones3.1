@@ -14,6 +14,7 @@
 		    <div class="box-header bg-black">
 				<h3 class="box-title">Datos Catálogo</h3>
 				<div class="box-tools pull-right">
+					{% if is_granted('ROLE_ADMIN') or  is_granted('ROLE_DIR') or is_granted('ROLE_ASISCOMP') or is_granted('ROLE_LOGIS') or is_granted('ROLE_CAT') %}
 					<a href="{{ path('catalogo_editar',  {"id": catalogo.id}) }}" title="Editar">
 						<button class="btn btn-primary">
 							<i class="fa fa-edit"></i>
@@ -24,12 +25,18 @@
 							<i class="fa fa-upload"></i>
 						</button>
 					</a>
+					<a href="{{ path('premios_importar_combos',  {"id": catalogo.id}) }}" title="Crear/Editar Combos">
+						<button class="btn btn-primary">
+							<i class="fa fa-th"></i>
+						</button>
+					</a>
 		    		<a href="{{ path('premios_exportar',  {"id": catalogo.id}) }}" title="Exportar">
 		    			<button class="btn btn-info">
 							<i class="fa fa-download"></i>
 						</button>
 		    		</a>
-		    		<a href="{{ path('premios_formatocambios',  {"id": catalogo.id}) }}" title="Exportar Cambios">
+					{% endif %}
+					<a href="{{ path('premios_formatocambios',  {"id": catalogo.id}) }}" title="Exportar Cambios">
 		    			<button class="btn btn-danger">
 							<i class="fa fa-exchange"></i>
 						</button>
@@ -44,9 +51,7 @@
 						<tr><td>Programa</td><td>{{ catalogo.programa.nombre}}</td></tr>
 						<tr><td>País</td><td>{{ catalogo.pais.nombre}}</td></tr>
 						<tr><td>Tipo</td><td>{{ catalogo.catalogotipo.nombre }}</td></tr>
-						{% if is_granted('ROLE_ADMIN') or  is_granted('ROLE_DIR') or is_granted('ROLE_ASISCOMP') or is_granted('ROLE_LOGIS') or is_granted('ROLE_CAT') %}
 						<tr><td>Descripcion</td><td>{{ catalogo.descripcion }}</td></tr>
-						{% endif %}
 						<tr><td>Valor punto</td><td>{{ catalogo.valorpunto|number_format(6, ',', '.') }}</td></tr>
 						<tr><td>Fecha inicio</td><td>{{ catalogo.programa.fechainicio | date("Y-m-d") }}</td></tr>
 						<tr><td>Fecha fin</td><td>{{ catalogo.programa.fechafin | date("Y-m-d") }}</td></tr>
@@ -83,7 +88,7 @@
 		        <!-- /.col -->
 		    {% endif %}
 
-		    {% if is_granted('ROLE_ADMIN') or  is_granted('ROLE_DIR') or is_granted('ROLE_ASISCOMP') or is_granted('ROLE_LOGIS') or is_granted('ROLE_CAT') or  is_granted('ROLE_EJEC') or  is_granted('ROLE_COM') or is_granted('ROLE_CLIDEMO') %}	
+		    {% if is_granted('ROLE_ADMIN') or  is_granted('ROLE_DIR') or is_granted('ROLE_ASISCOMP') or is_granted('ROLE_LOGIS') or is_granted('ROLE_CAT') or  is_granted('ROLE_EJEC') or  is_granted('ROLE_COM') or is_granted('ROLE_CLIDEMO') or is_granted('ROLE_CLI') %}	
 		      	<div class="col-md-6">
 			    	<a href="{{ path('catalogo_galeria',  {"id": catalogo.id}) }}">	    	
 			          <div class="info-box bg-blue">
@@ -184,6 +189,56 @@
 		        </div>
 		        <!-- /.col -->
 	        {% endif %}
+
+	        {% if is_granted('ROLE_ADMIN') or  is_granted('ROLE_DIR') or is_granted('ROLE_ASISCOMP') or is_granted('ROLE_CAT') %}
+			    <div class="col-md-6">
+			    	<a href="{{ path('promociones_catalogo',  {"catalogo": catalogo.id}) }}">	    	
+			          <div class="info-box bg-orange">
+			            <span class="info-box-icon"><i class="fa  fa-tag"></i></span>
+
+			            <div class="info-box-content">
+			              <span class="info-box-text">Promociones</span>
+			              <span class="info-box-number"></span>
+
+			              <div class="progress">
+			                <div style="width: 100%" class="progress-bar"></div>
+			              </div>
+			                  <span class="progress-description">
+			                    
+			                  </span>
+			            </div>
+			            <!-- /.info-box-content -->
+			          </div>
+			          <!-- /.info-box -->
+		          </a>
+		        </div>
+		        <!-- /.col -->
+	        {% endif %}
+
+	        {% if is_granted('ROLE_ADMIN') or  is_granted('ROLE_DIR') or is_granted('ROLE_ASISCOMP') or is_granted('ROLE_LOGIS') or is_granted('ROLE_CAT') or is_granted('ROLE_DIS') %}
+			    <div class="col-md-6">
+			    	<a href="{{ path('premios_listado',  {"catalogo": catalogo.id}) }}">	    	
+			          <div class="info-box bg-yellow color-palette">
+			            <span class="info-box-icon"><i class="fa fa-star"></i></span>
+
+			            <div class="info-box-content">
+			              <span class="info-box-text">Premios</span>
+			              <span class="info-box-number"></span>
+
+			              <div class="progress">
+			                <div style="width: 100%" class="progress-bar"></div>
+			              </div>
+			                  <span class="progress-description">
+			                    
+			                  </span>
+			            </div>
+			            <!-- /.info-box-content -->
+			          </div>
+			          <!-- /.info-box -->
+		          </a>
+		        </div>
+		        <!-- /.col -->
+	        {% endif %}
 	    </div>
 	    
     </div>
@@ -216,8 +271,13 @@
 							    			<td align="right">{{ intervalo.puntos|number_format(6, ',', '.') }}</td>
 								    		<td>
 								    			<a class="editar_intervalo" href="{{ path('catalogo_intervaloseditar',  {"id": intervalo.id}) }}">
-													<button class="btn btn-primary">
+													<button class="btn btn-primary btn-xs">
 														<i class="fa fa-edit"></i>
+													</button>
+												</a>
+												<a class="eliminar_intervalo" onClick="confirmar('{{ url("catalogo_intervaloseliminar", {"id": intervalo.id}) }}')">
+													<button class="btn btn-danger btn-xs">
+														<i class="fa fa-trash"></i>
 													</button>
 												</a>
 											</td>
@@ -236,6 +296,19 @@
 {% block javascript %}
 	
 	{{ parent() }}
+
+	<script type="text/javascript">
+  
+    function confirmar(ruta)
+    {
+        if (confirm("Desea eliminar el intervalo.")==true){
+            self.location=ruta;
+        } 
+     }
+
+	$(".editar_intervalo").colorbox({href: this.href});
+
+	</script>
 	
 
 {% endblock %}

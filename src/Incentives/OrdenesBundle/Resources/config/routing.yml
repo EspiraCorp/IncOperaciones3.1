@@ -34,6 +34,10 @@ ordenes_pdf:
     path:  /ordenes/pdf/{id}
     defaults: { _controller: IncentivesOrdenesBundle:Ordenes:pdf , id: null  }
 
+ordenes_pdf_actualizar:
+    path:  /ordenes/actualizarpdf/{id}
+    defaults: { _controller: IncentivesOrdenesBundle:Ordenes:pdfActualizar , id: null  }
+
 ordenes_pdfcodes:
     path:  /ordenes/pdfcodes/{id}
     defaults: { _controller: IncentivesOrdenesBundle:OrdenRedencion:pdfCodes , id: null  }

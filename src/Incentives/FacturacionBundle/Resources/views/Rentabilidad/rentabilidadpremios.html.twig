@@ -21,16 +21,24 @@
         <td>{{ redencion.participante.nombre }}</td>
         <td>{{ redencion.participante.documento }}</td>
         <td>{{ redencion.fecha | date("Y-m-d") }}</td>
-        <td>{{ redencion.productocatalogo.producto.nombre }}</td>
-        <td>{{ redencion.productocatalogo.producto.codInc }}</td>
+        <td>{{ redencion.premio.premiosproductos[0].producto.nombre }}</td>
+        <td>{{ redencion.premio.premiosproductos[0].producto.codInc }}</td>
         <td>$ {{ redencion.valorOrden | number_format(0, ',', '.') }}</td>
         <td>{{ redencion.incremento | number_format(0, ',', '.') }} %</td>
         {% set valorVenta = redencion.valorCompra/(1-(redencion.incremento/100)) %}
         <td>$ {{ valorVenta | number_format(0, ',', '.') }}</td>
+        {% if valorVenta>0 %}
         <td>{{ ((1-(redencion.valorOrden/valorVenta))*100) | number_format(2, ',', '.') }} %</td>
+        {% else %}
+        <td></td>
+        {% endif %}
         <td>$ {{ redencion.valorLogistica | number_format(0, ',', '.') }}</td>
         <td>$ {{ redencion.logistica | number_format(0, ',', '.') }}</td>
+        {% if redencion.logistica>0 %}
         <td>{{ ((1-(redencion.valorLogistica/redencion.logistica))*100) | number_format(2, ',', '.') }} %</td>
+        {% else %}
+        <td></td>
+        {% endif %}
         <td>{{ redencion.diasEntrega }}</td>
     </tr>
 

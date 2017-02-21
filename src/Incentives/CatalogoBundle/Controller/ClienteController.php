@@ -30,15 +30,7 @@ class ClienteController extends Controller
             $form->handleRequest($request);
 
             if ($form->isValid()) {
-                $em = $this->getDoctrine()->getManager();
-                // realiza alguna acción, tal como guardar la tarea en la base de datos
-                if (0 != count($cliente->getPrograma())) {
-                    foreach ($cliente->getPrograma() as $programas) {
-                        $programas->setCliente($cliente);
-                        $cliente->addProgramon($programas);
-                        $em->persist($programas);
-                    }
-                }    
+                $em = $this->getDoctrine()->getManager(); 
                 
                 $estado = $em->getRepository('IncentivesCatalogoBundle:Estados')->find(1);
                 $cliente->setEstado($estado);
@@ -46,7 +38,7 @@ class ClienteController extends Controller
 
                 $em->flush();
 
-                return $this->redirect($this->generateUrl('cliente'));
+                return $this->redirect($this->generateUrl('cliente_datos').'/'.$cliente->getId());
             }
         }            
 

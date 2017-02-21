@@ -12,11 +12,16 @@
     <tr>
         {% set ij = ij + 1 %}
         <td>{{ ij }}</td>
-        <td>{{ producto.ordenesCompra.solicitud.programa.nombre }}</td>
-        <td>{{ producto.ordenesCompra.solicitud.centroCostos.centrocostos }}</td>
+        <td></td>
+        <td>{% if(producto.ordenesCompra.solicitud) %}
+                {{ producto.ordenesCompra.solicitud.centroCostos.centrocostos }}
+            {% elseif (producto.programa) %}
+                {{ producto.programa.centroCostos.centrocostos }}
+            {% endif %}
+        </td>
         {% set rentabilidad = 0 %}
         {% set valorventa = 0 %}
-            {% if (producto.valorunidad!=0 and producto.incremento!=0) %}
+            {% if (producto.valorunidad!=0 and producto.incremento!=0 and producto.precioCliente!=0) %}
                 {% set valorventa = producto.precioCliente/(1-(producto.incremento/100)) %}
                 {% if (producto.valorunidad!=0 and producto.incremento!=0) %}
                     {% set rentabilidad = (1-((producto.valorunidad - (producto.descuento/producto.cantidad))/valorventa ))*100 %}

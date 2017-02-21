@@ -1,58 +1,50 @@
-{% extends "::base.html.twig" %}
+{% extends "::basePopLte.html.twig" %}
 
-{% block title %}Entrada Inventario{% endblock %}
+{% block title %}Ingreso Inventario{% endblock %}
 
-{% block cuerpo %}
-<div class="box">
-    <div class="box-header well" data-original-title="">
-        Entrada Inventario
-        <div class="box-icon">
-        <div class="box-icon">
+{% block content %}
+
+     <div class="">
+          <div class="modal-dialog box box-warning">
+            <div class="modal-content">
+              <div class="modal-header bg-black">
+                <h4 class="modal-title">Ingreso Inventario</h4>
+              </div>
+              <form method="POST" action="{{ path('inventario_ingreso') }}" class="form-horizontal">
+              <div class="modal-body">
+                <div class="form-group">
+                  <label class="col-sm-4 control-label">{{ form_label(form.producto, label|default(), { 'label_attr': { 'class': 'control-label' } }) }}</label>
+                  <div class="col-sm-8">
+                    {{ form_widget(form.producto, { 'attr': {'class': 'form-control'} }) }}
+                  </div>
                 </div>
-      </div>
+                <div class="form-group">
+                  <label class="col-sm-4 control-label">{{ form_label(form.cantidad, label|default(), { 'label_attr': { 'class': 'control-label' } }) }}</label>
+                  <div class="col-sm-8">
+                    {{ form_widget(form.cantidad, { 'attr': {'class': 'form-control'} }) }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-4 control-label">{{ form_label(form.valorCompra, label|default(), { 'label_attr': { 'class': 'control-label' } }) }}</label>
+                  <div class="col-sm-8">
+                    {{ form_widget(form.valorCompra, { 'attr': {'class': 'form-control'} }) }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-4 control-label">{{ form_label(form.observacion, label|default(), { 'label_attr': { 'class': 'control-label' } }) }}</label>
+                  <div class="col-sm-8">
+                    {{ form_widget(form.observacion, { 'attr': {'class': 'form-control'} }) }}
+                  </div>
+                </div>
+                {{ form_widget(form._token) }}
+              </div>
+              <div class="modal-footer bg-black">
+                <button class="btn btn-warning bg-black" type="submit">Enviar</button>
+              </div>
+              </form>
+            </div>
+            <!-- /.modal-content -->
+          </div>
+          <!-- /.modal-dialog -->
     </div>
-</div>
-
-  <div class="box span12">
-<div class="box-header well" data-original-title>
-                        <h2><i class="icon-edit"></i>Ingresar Producto</h2>
-                        
-                    </div>
-<div class="box-content">
-<form action="" method="POST"  class="form-horizontal">
-    {{ form_errors(form) }}
-    <fieldset>
-        <div class="control-group">
-            {{ form_label(form.producto, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
-            <div class="controls">
-                {{ form_widget(form.producto, { 'attr': {'class': 'input-xlarge focused'} }) }}
-            </div>
-        </div>
-        <div class="control-group">
-            {{ form_label(form.cantidad, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
-            <div class="controls">
-                {{ form_widget(form.cantidad, { 'attr': {'class': 'input-xlarge focused'} }) }}
-            </div>
-        </div>
-        <div class="control-group">
-            {{ form_label(form.valorCompra, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
-            <div class="controls">
-                {{ form_widget(form.valorCompra, { 'attr': {'class': 'input-xlarge focused'} }) }}
-            </div>
-        </div>
-        <div class="control-group">
-            {{ form_label(form.observacion, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
-            <div class="controls">
-                {{ form_widget(form.observacion, { 'attr': {'class': 'input-xlarge focused'} }) }}
-            </div>
-        </div>
-    </fieldset>
- <div class="form-actions">
-    {{ form_widget(form.Enviar, { 'attr': {'class': 'btn btn-primary'} }) }}
-</div>
-{{ form_widget(form._token) }}
-</form>
-</div>
-</div>
-
-  {% endblock %}
+{% endblock %}

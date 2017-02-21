@@ -66,7 +66,7 @@ class Novedades
 
      /**
      * @var string
-     * @ORM\ManyToOne(targetEntity="Novedadestipo", inversedBy="novedad")
+     * @ORM\ManyToOne(targetEntity="Novedadestipo")
      * @ORM\JoinColumn(name="tipo_id", referencedColumnName="id", nullable=true)
      */
     protected $tipo;

@@ -34,6 +34,7 @@ class ProgramaType extends AbstractType
             'widget' => 'single_text',
         ))
             ->add('diasentrega')
+            ->add('apiKey')
         ;
         
         $builder->add('centroCostos', EntityType::class, array(

@@ -5,8 +5,9 @@ parameters:
     database_name: incoperaciones_new
     database_user: root
     database_password: orwell
+    
     mailer_transport: smtp
-    mailer_host: 127.0.0.1
-    mailer_user: null
-    mailer_password: null
+    mailer_host: email-smtp.us-east-1.amazonaws.com
+    mailer_user: AKIAJAETNFKDQJKWT64Q
+    mailer_password: Aq29dWq2pKC+XhNaMGa1kG+vwjmNKBxbz7JJ4R1cRqjt
     secret: fd98ef3fa2db92b58f0133dc12a2fb197bcef22e

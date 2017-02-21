@@ -72,7 +72,7 @@
             {% set totalDias = totalDias + categoria.dias %}
             {% if(categoria.dias > 0) %}{% set j = j + 1 %}{% endif %}
             <tr>
-                <td><a id="{{ i }}" onClick="detalle('{{ i }}')" class="btn btn-success">+</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ categoria.redenciones.productocatalogo.producto.categoria.nombre }}</td>
+                <td><a id="{{ i }}" onClick="detalle('{{ i }}')" class="btn btn-success">+</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ categoria.redenciones.premio.premiosproductos[0].producto.categoria.nombre }}</td>
                 <td align="right">{{ categoria.total }}</td>
 
                 <td align="right">$ {{ categoria.compra | number_format(0, ',', '.') }}</td>
@@ -88,7 +88,7 @@
             </tr>
             <tr id="detalle_{{ i }}" class="hide">
                 <td colspan="9">
-                    <div>{{ render(controller('IncentivesFacturacionBundle:Rentabilidad:rentabilidadPremios', { 'categoria': categoria.redenciones.productocatalogo.producto.categoria.id , 'programa': programa.id })) }}</div>
+                    <div>{{ render(controller('IncentivesFacturacionBundle:Rentabilidad:rentabilidadPremios', { 'categoria': categoria.redenciones.premio.premiosproductos[0].producto.categoria.id , 'programa': programa.id })) }}</div>
                 </td>
             </tr></td>
             </tr>

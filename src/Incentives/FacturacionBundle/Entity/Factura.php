@@ -3,6 +3,7 @@
 namespace Incentives\FacturacionBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Factura
@@ -24,6 +25,7 @@ class Factura
     /**
      * @var \DateTime
      *
+     * @Assert\NotNull(message="Seleccione un valor.")
      * @ORM\Column(name="fecha", type="date", nullable=true)
      */
     private $fecha;
@@ -31,6 +33,7 @@ class Factura
     /**
      * @var \DateTime
      *
+     * @Assert\NotNull(message="Seleccione un valor.")
      * @ORM\Column(name="fechaInicio", type="date", nullable=true)
      */
     private $fechaInicio;
@@ -38,6 +41,7 @@ class Factura
     /**
      * @var \DateTime
      *
+     * @Assert\NotNull(message="Seleccione un valor.")
      * @ORM\Column(name="fechaFin", type="date", nullable=true)
      */
     private $fechaFin;
@@ -73,6 +77,13 @@ class Factura
      * @ORM\JoinColumn(name="programa_id", referencedColumnName="id", nullable=true)
      */
     protected $programa;
+
+    /**
+     * @var string
+     * @ORM\ManyToOne(targetEntity="Incentives\CatalogoBundle\Entity\CentroCostos", inversedBy="factura",cascade={"persist"})
+     * @ORM\JoinColumn(name="centroCostos_id", referencedColumnName="id", nullable=true)
+     */
+    protected $centroCostos;
     
     /**
      * @var string
@@ -83,6 +94,8 @@ class Factura
 
     /**
      * @var string
+     *
+     * @Assert\NotBlank(message="Seleccione un valor.")
      * @ORM\ManyToOne(targetEntity="Incentives\FacturacionBundle\Entity\Periodos", inversedBy="factura",cascade={"persist"})
      * @ORM\JoinColumn(name="periodo_id", referencedColumnName="id", nullable=true)
      */
@@ -601,5 +614,29 @@ class Factura
     public function getUsuario()
     {
         return $this->usuario;
+    }
+
+    /**
+     * Set centroCostos
+     *
+     * @param \Incentives\CatalogoBundle\Entity\CentroCostos $centroCostos
+     *
+     * @return Factura
+     */
+    public function setCentroCostos(\Incentives\CatalogoBundle\Entity\CentroCostos $centroCostos = null)
+    {
+        $this->centroCostos = $centroCostos;
+
+        return $this;
+    }
+
+    /**
+     * Get centroCostos
+     *
+     * @return \Incentives\CatalogoBundle\Entity\CentroCostos
+     */
+    public function getCentroCostos()
+    {
+        return $this->centroCostos;
     }
 }

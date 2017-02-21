@@ -29,6 +29,8 @@ class AppKernel extends Kernel
             new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
             new PUGX\AutocompleterBundle\PUGXAutocompleterBundle(),
             new SimpleThings\EntityAudit\SimpleThingsEntityAuditBundle(),
+            new NoiseLabs\Bundle\NuSOAPBundle\NoiseLabsNuSOAPBundle(),
+            new Hackzilla\BarcodeBundle\HackzillaBarcodeBundle(),
         ];
 
         if (in_array($this->getEnvironment(), ['dev', 'test'], true)) {

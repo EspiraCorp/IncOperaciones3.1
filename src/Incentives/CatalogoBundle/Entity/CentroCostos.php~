@@ -57,6 +57,12 @@ class CentroCostos
      */
     private $centrocostos;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Incentives\FacturacionBundle\Entity\Factura", mappedBy="centroCostos", cascade={"persist"})
+     * 
+     */
+    protected $factura;
+
    /**
      * @var \DateTime
      *
@@ -253,5 +259,39 @@ class CentroCostos
     public function getNombreCC()
     {
         return $this->centrocostos .' - '. $this->nombre;
+    }
+
+    /**
+     * Add factura
+     *
+     * @param \Incentives\FacturacionBundle\Entity\Factura $factura
+     *
+     * @return CentroCostos
+     */
+    public function addFactura(\Incentives\FacturacionBundle\Entity\Factura $factura)
+    {
+        $this->factura[] = $factura;
+
+        return $this;
+    }
+
+    /**
+     * Remove factura
+     *
+     * @param \Incentives\FacturacionBundle\Entity\Factura $factura
+     */
+    public function removeFactura(\Incentives\FacturacionBundle\Entity\Factura $factura)
+    {
+        $this->factura->removeElement($factura);
+    }
+
+    /**
+     * Get factura
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getFactura()
+    {
+        return $this->factura;
     }
 }

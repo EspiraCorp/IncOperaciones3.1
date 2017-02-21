@@ -23,13 +23,14 @@ class RedencionesController extends Controller
 
         //Consultar puntos redimidos
         $qb = $em->createQueryBuilder();            
-        $qb->select('p','count(r) total');
+        $qb->select('p','count(r) total','e');
         $qb->from('IncentivesCatalogoBundle:Programa','p');
         $qb->leftJoin('p.participantes', 'pt');
+        $qb->leftJoin('p.estado', 'e');
         $qb->leftJoin('pt.redencion', 'r');
         $qb->groupBy('p.id');
         $programas = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
-          //echo "<pre>";print_r($programas); echo "</pre>";exit;  
+        //echo "<pre>";print_r($programas); echo "</pre>";exit;  
 
         foreach($programas as $key => $value){
             
@@ -41,26 +42,6 @@ class RedencionesController extends Controller
             $qb->groupBy('pt.programa');
             $pendientes = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
             
-            if(isset($pendientes[0])){
-                $programas[$key]['pendientes'] = $pendientes[0]['total'];
-            }else{
-                $programas[$key]['pendientes'] = 0;                
-            }
-            
-            
-            $qb = $em->createQueryBuilder();            
-            $qb->select('MAX(r.fechaModificacion) fechaModificacion');
-            $qb->from('IncentivesRedencionesBundle:Redencioneshistorico','r');
-            $qb->leftJoin('r.participante', 'pt');
-            $qb->where('pt.programa='.$value[0]['id'].' AND r.redencionestado=2');
-            $qb->groupBy('pt.programa');
-            $fecha = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
-            
-            if(isset($fecha[0])){
-                $programas[$key]['fecha'] = $fecha[0]['fechaModificacion'];
-            }else{
-                $programas[$key]['fecha'] = null;                
-            }
         }
         
        // echo "<pre>"; print_r($programas); echo "</pre>";exit;
@@ -74,20 +55,21 @@ class RedencionesController extends Controller
         $em = $this->getDoctrine()->getManager();
             //Consultar puntos redimidos
             $qb = $em->createQueryBuilder();            
-            $qb->select('r','pt','pc','pd','ct','envio','i','guia','estado','op','oc','pv');
+            $qb->select('r','pr','pp','p','c','ct','envio','estado','pt');
             $qb->from('IncentivesRedencionesBundle:Redenciones','r');
-            $qb->leftJoin('r.productocatalogo', 'pc');
-            $qb->leftJoin('pc.producto', 'pd');
-            $qb->leftJoin('pd.categoria', 'ct');
-            $qb->leftJoin('pc.catalogos', 'c');
+            $qb->leftJoin('r.premio', 'pr');
+            $qb->leftJoin('pr.premiosproductos', 'pp');
+            $qb->leftJoin('pp.producto', 'p');
+            $qb->leftJoin('pr.categoria', 'ct');
+            $qb->leftJoin('pr.catalogos', 'c');
             $qb->leftJoin('r.participante', 'pt');
             $qb->leftJoin('r.redencionesenvios', 'envio');
             $qb->leftJoin('r.redencionestado', 'estado');
-            $qb->leftJoin('r.inventario', 'i');
-            $qb->leftJoin('i.guia', 'guia');
-            $qb->leftJoin('r.ordenesProducto', 'op');
-            $qb->leftJoin('op.ordenesCompra', 'oc');
-            $qb->leftJoin('oc.proveedor', 'pv');
+            //$qb->leftJoin('r.inventario', 'i');
+            //$qb->leftJoin('i.guia', 'guia');
+            //$qb->leftJoin('r.ordenesProducto', 'op');
+            //$qb->leftJoin('op.ordenesCompra', 'oc');
+            //$qb->leftJoin('oc.proveedor', 'pv');
             
             $str_filtro = 'pt.programa = '.$programa;
             $qb->where($str_filtro);
@@ -104,11 +86,10 @@ class RedencionesController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $redencionD = $em->getRepository('IncentivesRedencionesBundle:Redenciones')->find($redencion);
-        $historico = $em->getRepository('IncentivesRedencionesBundle:Redencioneshistorico')->findByRedencion($redencion);
         $datosenvio = $em->getRepository('IncentivesRedencionesBundle:Redencionesenvios')->findByRedencion($redencion);
 
         return $this->render('IncentivesGarantiasBundle:Redenciones:datos.html.twig', 
-            array( 'datosenvio' => $datosenvio, 'historico' => $historico, 'redencion' => $redencionD));
+            array( 'datosenvio' => $datosenvio, 'redencion' => $redencionD));
     }
 
 
@@ -126,7 +107,7 @@ class RedencionesController extends Controller
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
                 $pro = $request->request->all()['novedad'];
-                // realiza alguna acción, tal como guardar la tarea en la base de datos
+
                 $redencionN = $em->getRepository('IncentivesRedencionesBundle:Redenciones')->find($redencion);
                 $novedad->setRedencion($redencionD);
                 $estado = $em->getRepository('IncentivesGarantiasBundle:Novedadesestado')->find(1);
@@ -137,6 +118,8 @@ class RedencionesController extends Controller
                 $novedad->setObservacion($pro['observacion']);
                 $em->persist($novedad);
                 $em->flush();
+
+                $this->get('session')->getFlashBag()->add('notice', 'La novedad se registro correctamente.');
             }
         }            
 
@@ -154,9 +137,8 @@ class RedencionesController extends Controller
         $redencionId = $novedadD->getRedencion()->getId();
         $redencionD = $em->getRepository('IncentivesRedencionesBundle:Redenciones')->find($redencionId);
 
-        $historico = $em->getRepository('IncentivesRedencionesBundle:Redencioneshistorico')->findByRedencion($redencionId);
         $datosenvio = $em->getRepository('IncentivesRedencionesBundle:Redencionesenvios')->findByRedencion($redencionId);
-        $imagen = $em->getRepository('IncentivesCatalogoBundle:Imagenproducto')->findBy(array('producto' => $redencionD->getProductocatalogo()->getProducto()->getId(), 'estado' => 1));
+        $imagen = $em->getRepository('IncentivesCatalogoBundle:Imagenproducto')->findBy(array('producto' => $redencionD->getPremio()->getPremiosProductos()[0]->getProducto()->getId(), 'estado' => 1));
 
         $form = $this->createForm(NovedadaccionType::class, $novedadD);
                     
@@ -168,8 +150,9 @@ class RedencionesController extends Controller
                 $em = $this->getDoctrine()->getManager();
                 
                 $pro = $request->request->all()['novedadaccion'];
-                // realiza alguna acción, tal como guardar la tarea en la base de datos
+                
                 $redencionN = $em->getRepository('IncentivesRedencionesBundle:Redenciones')->find($redencionD->getId());
+                $redencionProductosN = $em->getRepository('IncentivesRedencionesBundle:RedencionesProductos')->findByRedencion($redencionD->getId());
                 $novedadD->setRedencion($redencionD);
                 $tipo = $em->getRepository('IncentivesGarantiasBundle:Novedadestipo')->find($pro['accion']);
                 $novedadD->setTipo($tipo);
@@ -180,22 +163,27 @@ class RedencionesController extends Controller
                     $estadoN = $em->getRepository('IncentivesGarantiasBundle:Novedadesestado')->find(1);
                     $estado = $em->getRepository('IncentivesRedencionesBundle:Redencionesestado')->find('2');
                     $redencionN->setRedencionestado($estado);
+                    $redencionProductosN[0]->setEstado($estado);
                     $em->persist($redencionN);
+                    $em->persist($redencionProductosN[0]);
                 }elseif($pro['accion']==2){
                     $estadoN = $em->getRepository('IncentivesGarantiasBundle:Novedadesestado')->find(2);
                     $estado = $em->getRepository('IncentivesRedencionesBundle:Redencionesestado')->find('4');
                     $redencionN->setRedencionestado($estado);
-                    $em->persist($redencionN);
+                    $redencionProductosN[0]->setEstado($estado);
+                    $em->persist($redencionProductosN[0]);
                 }
 
                 $novedadD->setEstado($estadoN);
                 $em->persist($novedadD);
                 $em->flush();
+
+                $this->get('session')->getFlashBag()->add('notice', 'La accion a realizar se registro correctamente.');
             }
         }           
 
         return $this->render('IncentivesGarantiasBundle:Redenciones:novedadaccion.html.twig', array(
-            'form' => $form->createView(),'redencion' => $redencionD, 'datosenvio' => $datosenvio[0], 'historico' => $historico, 'imagen' => $imagen
+            'form' => $form->createView(),'redencion' => $redencionD, 'datosenvio' => $datosenvio[0], 'imagen' => $imagen
         ));
     }
 
@@ -253,6 +241,7 @@ class RedencionesController extends Controller
 
         $novedadD = $em->getRepository('IncentivesGarantiasBundle:Novedades')->find($novedad);
         $redencionD = $em->getRepository('IncentivesRedencionesBundle:Redenciones')->find($novedadD->getRedencion()->getId());
+        $redencionProductosD = $em->getRepository('IncentivesRedencionesBundle:RedencionesProductos')->findByRedencion($novedadD->getRedencion()->getId());
                     
         $em = $this->getDoctrine()->getManager();
         // realiza alguna acción, tal como guardar la tarea en la base de datos
@@ -262,9 +251,12 @@ class RedencionesController extends Controller
 
         $estado = $em->getRepository('IncentivesRedencionesBundle:Redencionesestado')->find('2');
         $redencionD->setRedencionestado($estado);
+        $redencionProductosD[0]->setEstado($estado);
+
         $em->persist($redencionD);
+        $em->persist($redencionProductosD[0]);
                 
-         $em->flush();          
+        $em->flush();          
 
         return $this->redirect($this->generateUrl('garantiasrecompras_listado'));
     }
@@ -326,7 +318,7 @@ class RedencionesController extends Controller
 
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
-                $pro = $request->request->all()['envios'];
+                $pro = $request->request->all()['envio'];
                 // realiza alguna acción, tal como guardar la tarea en la base de datos
                 $redencionE->setCiudadNombre($pro['ciudadNombre']);
                 $redencionE->setDireccion($pro['direccion']);
@@ -362,9 +354,6 @@ class RedencionesController extends Controller
                     $InventarioD->setPlanilla(null);
                     $InventarioD->setSalio(null);
                     
-                    $inventarioH = $this->get('incentives_inventario');
-                    $inventarioH->insertar($InventarioD);
-                    
                     $em->persist($InventarioD);
                 }    
                 
@@ -399,7 +388,7 @@ class RedencionesController extends Controller
                 $despacho->setCelularContacto($datosEnvio['celularContacto']);
                 $despacho->setDepartamentoContacto($datosEnvio['departamentoContacto']);
                 $despacho->setRedencion($redencionD);
-                $despacho->setProducto($redencionD->getProductocatalogo()->getProducto());
+                $despacho->setProducto($redencionD->getPremio()->getPremiosproductos()[0]->getProducto());
                 //$despacho->setOrdenProducto($InventarioD()->getOrdenproducto());
                 $despacho->setCantidad(1);
                 

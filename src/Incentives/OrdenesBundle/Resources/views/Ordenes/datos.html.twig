@@ -29,24 +29,28 @@
 				</i>Datos Orden</h2>
 				
 					<div class="box-icon">
+						<a href="{{ path('ordenes_pdf_actualizar',  {"id": ordenes.id}) }}"  class="btn btn-primary">
+							<i class="icon-repeat icon-white"></i>
+						</a>
+
 						<a href="{{asset(ordenes.rutapdf | slice (5))}}"  class="btn btn-info" target="_blank">
 							<i class="icon-download-alt icon-white"></i>
 						</a>
 					{% if not is_granted('ROLE_PROV') %}
-						<a href="{{asset(ordenes.rutapdfcodes | slice (5))}}"  class="btn btn-info">
+						<a href="{{asset(ordenes.rutapdfcodes | slice (5))}}"  class="btn btn-info" target="_blank">
 							<i class="icon-barcode icon-white"></i>
 						</a>
-					{% if (ordenes.ordenesEstado.id == 5) %}
-						<a href="{{ path('ordenredencion_pdffinal',  {"id": ordenes.id}) }}"  class="btn btn-info">
-							<i class="icon-download icon-white"></i>
-						</a>
-					{% endif %}
+						{% if (ordenes.ordenesEstado.id == 5) %}
+							<a href="{{ path('ordenredencion_pdffinal',  {"id": ordenes.id}) }}"  class="btn btn-info" target="_blank">
+								<i class="icon-download icon-white"></i>
+							</a>
+						{% endif %}
 
-					{% if (ordenes.ordenesEstado.id != 1) %}
-						<a href="{{ path('ordenes_correo',  {"id": ordenes.id}) }}"  class="btn btn-info">
-							<i class="icon-envelope icon-white"></i>
-						</a>
-					{% endif %}
+						{% if (ordenes.ordenesEstado.id != 1) %}
+							<a href="{{ path('ordenes_correo',  {"id": ordenes.id}) }}"  class="btn btn-info">
+								<i class="icon-envelope icon-white"></i>
+							</a>
+						{% endif %}
 					{% endif %}
 					</div>
 			</div>

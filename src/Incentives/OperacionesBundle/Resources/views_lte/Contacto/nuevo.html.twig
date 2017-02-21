@@ -1,0 +1,23 @@
+{% extends '::base.html.twig' %}
+{% block title %}Nuevo Contacto{% endblock %}
+{% block cuerpo %}
+<div class="box span12">
+    <div class="box-header well" data-original-title="">
+        Nuevo Contacto
+        <div class="box-icon">
+            <a href="{{ path("proveedores_datos", {"id": id}) }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+        </div>
+    </div>
+    <div class="box-content">
+		<form action="{{ path('contacto_nuevo') }}" method="POST" >
+			<input type='hidden' name='id' value={{ id }}>
+				{{ form_errors(form) }}
+
+			    {{ form_row(form.nombres) }}
+
+			{{ form_rest(form) }}
+			<input type="submit" value="Enviar"/>
+		</form>
+	</div>
+</div>
+{% endblock %}

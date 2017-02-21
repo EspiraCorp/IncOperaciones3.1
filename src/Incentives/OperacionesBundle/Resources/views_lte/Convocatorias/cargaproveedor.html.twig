@@ -1,0 +1,38 @@
+{# src/Sinaptica/ProveedoresBundle/Resources/views/Default/new.html.twig #}
+{% extends '::base.html.twig' %}
+{% block title %}Carga de Datos{% endblock %}
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+<div class="box span12">
+<div class="box-header well" data-original-title>
+    <h2><i class="icon-edit"></i>Carga de Datos</h2>
+     <div class="box-icon">
+        <a href="{{ path('convocatorias_datos') }}/{{ id }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+    </div>
+</div>
+<div class="box-content">
+<form action="{{ path('convocatorias_cargaproveedor') }}/{{ id }}" method="POST"  class="form-horizontal">
+    {{ form_errors(form) }}
+    <fieldset>
+        <div class="control-group">
+            {{ form_label(form.archivo, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.archivo, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+        <div class="control-group">
+            {{ form_label(form.observacion, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
+            <div class="controls">
+                {{ form_widget(form.observacion, { 'attr': {'class': 'input-xlarge focused'} }) }}
+            </div>
+        </div>
+    </fieldset>
+<div class="form-actions">
+    {{ form_widget(form.Enviar, { 'attr': {'class': 'btn btn-primary'} }) }}
+</div>
+{{ form_widget(form._token) }}
+</form>
+</div>
+</div>
+ </div>
+{% endblock %}

@@ -1,0 +1,46 @@
+
+{# src/Sinaptica/ProveedoresBundle/Resources/views/Default/new.html.twig #}
+{% extends '::baseLte.html.twig' %}
+
+{% block title %}Proveedores Importar{% endblock %}
+{% block sectiontitle %}<h1>Proveedores<small>Importar</small></h1>{% endblock %}
+{% block breadcum %} <li><a href="{{ path('proveedores') }}"><i class="fa fa-hand-o-right"></i>Proveedores</a></li><li class="active">Importar</li>{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <!-- Horizontal Form -->
+        <div class="box box-warning">
+            <div class="box-header">
+                <h3 class="box-title"><i class="icon-edit"></i>Importar Proveedores</h3>
+                <div class="box-tools pull-right">
+                    <a class="btn btn-mini btn-success" style="margin-left: 20px" href="{{ path('proveedores_formato') }}">
+                        <i class="icon-zoom-in icon-white"></i>
+                            Formato
+                    </a>
+                </div>
+            </div>               
+            <div class="box-body">
+                <form action="{{ path('proveedores_importar') }}" method="POST"  class="form-horizontal">
+                    {{ form_errors(form) }}
+                    <fieldset>
+                        <div class="form-group">
+                            {{ form_label(form.excel, label|default(null), { 'label_attr': { 'class': 'col-sm-2 control-label' } }) }}
+                            <div class="col-sm-8">
+                                {{ form_widget(form.excel, { 'attr': {'class': 'form-control'} }) }}
+                            </div>
+                        </div>
+                    </fieldset>
+                    
+                <div class="form-actions">
+                    {{ form_widget(form.cargar, { 'attr': {'class': 'btn btn-primary'} }) }}
+                </div>
+                {{ form_widget(form._token) }}
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+

@@ -1,47 +1,154 @@
-{% extends "::base.html.twig" %}
+{% extends '::baseLte.html.twig' %}
 
-{% block title %}IncentivesCatalogoBundle:Catalogo:nuevo{% endblock %}
+{% block title %}{{ parent() }}::Catálogos De Premios{% endblock %}
+{% block sectiontitle %}<h1>Catálogos<small>Listado de Premios</small></h1>{% endblock %}
+{% block breadcum %} <li><a href=""><i class="fa fa-star-o"></i>Catálogos</a></li><li class="active"></li>{% endblock %}
 
-{% block cuerpo %}
-<div class="row-fluid sortable ui-sortable">
-<div class="box span12">
-<div class="box-header well" data-original-title>
-                        <h2><i class="icon-edit"></i>Nuevo Catalogo</h2>
-                        <div class="box-icon">
-                            <a href="{{ path('catalogo') }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
-                        </div>
-                    </div>
-<div class="box-content">
-<form action="{{ path('productocatalogo_listado') }}" method="POST"  class="form-horizontal">
-    {{ form_errors(form) }}
-    <fieldset>
-        <table>
-            <tr>
-                <th>Productos</th>
-                {% for catalogos in catalogo %}
-                    <th>{{ catalogos.nombre }}</th>
-                {% endfor %}
-            </tr>
-            {% for productos in producto %}
-                <tr>
-                    <th>{{ productos.nombre }}</th>
-                    {% for catalogos in catalogo %}
-                        <td>
-                            <div>
-                                {{ render(controller('IncentivesCatalogoBundle:Maestro:nuevo', { "producto": productos.id, "catalogo": catalogos.id})) }}
-                                {{ path('productocatalogo_nuevo',  {"producto": productos.id, "catalogo": catalogos.id}) }}
-                            </div>
-                        </td>
-                    {% endfor %}
-                </tr>
-            {% endfor %}
-        </table>
-    </fieldset>        
-<div class="form-actions">
-</div>
-{{ form_widget(form._token) }}
-</form>
-</div>
-</div>
- </div>
+{% block content %}
+  <div class="row">
+        <div class="col-xs-12">
+          <div class="box box-warning">
+            <div class="box-header bg-black">
+              <h3 class="box-title">Listado De Premios</h3> 
+              <div class="box-tools pull-right"> 
+                      {% if is_granted('ROLE_ADMIN') or  is_granted('ROLE_DIR') or is_granted('ROLE_ASISCOMP') or is_granted('ROLE_LOGIS') or is_granted('ROLE_CAT') %}
+                        <a href="{{ path('premios_exportar',  {"id": catalogo.id}) }}" title="Exportar">
+                          <button class="btn btn-info">
+                          <i class="fa fa-download"></i>
+                        </button>
+                        </a>
+                        <a href="{{ path('premios_combo_nuevo', {"catalogo": catalogo.id }) }}" title="Crear Premio" class="btn btn-success btn-sm"><i class="fa fa-plus"></i></a>
+                      {% endif %}
+              </div>
+            </div>
+            <div class="box-body no-padding">
+              <div class="dataTables_wrapper form-inline dt-bootstrap">
+                <div class="row">
+                  <div class="col-sm-12">
+                    <table class="table table-bordered table-striped table-condensed dataTable" id="productos" role="grid">
+                        <thead>
+                            {{ form_start(form, { attr: {novalidate: 'novalidate', class: 'form-horizontal'} }) }}
+                            <tr>
+                              <th>{{ knp_pagination_sortable(premios, 'Id', 'pr.nombre') }}</th>
+                              <th>{{ knp_pagination_sortable(premios, 'Nombre', 'pr.nombre') }}</th>
+                              <th>{{ knp_pagination_sortable(premios, 'Referencia', 'pr.referencia') }}</th>
+                              <th>{{ knp_pagination_sortable(premios, 'Marca', 'pr.marca') }}</th>
+                              <th>{{ knp_pagination_sortable(premios, 'SKU', 'pr.codigo') }}</th>
+                              <th>{{ knp_pagination_sortable(premios, 'Categoria', 'c.nombre') }}</th>
+                              <th>{{ knp_pagination_sortable(premios, 'Agotado', 'c.agotado') }}</th>
+                              <th>{{ knp_pagination_sortable(premios, 'Puntos', 'pr.puntos') }}</th>
+                              <th>{{ knp_pagination_sortable(premios, 'Precio', 'pr.precio') }}</th>
+                              <th>{{ knp_pagination_sortable(premios, 'Incremento', 'pr.incremento') }}</th>
+                              <th>{{ knp_pagination_sortable(premios, 'Logistica', 'pr.logistica') }}</th>
+                              <th>{{ knp_pagination_sortable(premios, 'Aprobación', 'pr.estadoAprobacion') }}</th>
+                              <th>{{ knp_pagination_sortable(premios, 'Estado', 'pr.estado') }}</th>
+                            </tr>
+                            <tr>
+                              <th><input type="text" id="premios_id" name="premios[id]" style="width: 40px" value="{%if filtros.id is defined %}{{ filtros.id }}{% endif %}" class="form-control input-sm"></th>
+                              <th>{{ form_widget(form.nombre, { 'attr': { 'style' : 'width:150px' , 'class' : 'form-control input-sm' }} ) }}</th>
+                              <th>{{ form_widget(form.referencia, { 'attr': { 'style' : 'width:150px' , 'class' : 'form-control input-sm' }} ) }}</th>
+                              <th>{{ form_widget(form.marca, { 'attr': { 'style' : 'width: 100px' , 'class' : 'form-control input-sm' }} ) }}</th>
+                              <th><input type="text" id="sku_id" name="premios[sku]" style="width: 60px" value="{%if filtros.id is defined %}{{ filtros.id }}{% endif %}" class="form-control input-sm"></th>
+                              <th>{{ form_widget(form.categoria, { 'attr': { 'style' : 'width: 80px' , 'class' : 'form-control input-sm' }} ) }}</th>
+                              <th></th>
+                              <th>{{ form_widget(form.puntos, { 'attr': { 'style' : 'width: 80px' , 'class' : 'form-control input-sm' }} ) }}</th>
+                              <th>{{ form_widget(form.precio, { 'attr': { 'style' : 'width: 80px' , 'class' : 'form-control input-sm' }} ) }}</th>
+                              <th>{{ form_widget(form.incremento, { 'attr': { 'style' : 'width: 80px' , 'class' : 'form-control input-sm' }} ) }}</th>
+                              <th>{{ form_widget(form.logistica, { 'attr': { 'style' : 'width: 80px' , 'class' : 'form-control input-sm' }} ) }}</th>
+                              <th>{{ form_widget(form.aprobacionEstado, { 'attr': { 'style' : 'width: 80px' , 'class' : 'form-control input-sm' }} ) }}</th>
+                              <th>{{ form_widget(form.estado, { 'attr': { 'style' : 'width: 80px' , 'class' : 'form-control input-sm' }} ) }}</th>
+                              <th>
+                                  {{ form_widget(form.Enviar, { 'attr': {'class': 'btn btn-primary btn-xs'}, 'label': 'Buscar' }) }}
+                                
+                                  <a class="btn btn-danger btn-xs" title="Limpiar" id="borrar"><i class="fa fa-trash"></i></a>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                          {% for premio in premios %}
+                            <tr role="row">
+                              <td><a href="{{ path("premios_datos", {"premio": premio.id}) }}">{{ premio.id }}</a></td>
+                              <td>{{ premio.nombre }}</td>
+                              <td>{{ premio.referencia }}</td>
+                              <td>{{ premio.marca }}</td>
+                              <td>{{ premio.codigo }}</td>
+                              <td>{{ premio.categoria.nombre }}</td>
+                              <td>{{ premio.agotado }}</td>
+                              <td>{{ premio.puntos|number_format(2, '.', ',') }}</td>
+                              <td>$ {{ premio.precio|number_format(2, '.', ',') }}</td>
+                              <td>{{ premio.incremento|number_format(2, '.', ',') }}%</td>
+                              <td>$ {{ premio.logistica|number_format(2, '.', ',') }}</td>
+                              <td>{% if premio.estadoAprobacion %}
+                                        {{ premio.estadoAprobacion.nombre }}
+                                    {% else %}
+                                        Por aprobar
+                                    {% endif %}
+                               </td>
+                               <td>{{ premio.estado.nombre }}</td>
+                            </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                </div>   
+              </div>
+              <div class="row">
+                <div class="col-sm-5"><div class="dataTables_info" role="status" aria-live="polite">Mostrando {{ premios.getItemNumberPerPage*(premios.getCurrentPageNumber-1)+1  }} a {{ premios.getItemNumberPerPage*premios.getCurrentPageNumber }} de {{ premios.getTotalItemCount }}   Premios</div></div>
+
+                <div class="col-sm-7"><div class="dataTables_paginate paging_simple_numbers">
+                {{ knp_pagination_render(premios) }}</div></div>
+              </div>
+            </div>
+        </div>
+    </div>
+  </div>
 {% endblock %}
+
+{% block javascript %}
+
+{{ parent() }}
+
+  <script type="text/javascript">
+  
+      function confirmar(ruta)
+      {
+        if (confirm("Desea cambiar el estado del catálogo")==true){
+            self.location=ruta;
+        }else{
+            alert("OK");
+        }
+        
+      }
+ 
+    $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip();  
+    });
+
+
+
+    $(function(){
+        $('#borrar').on('click', function(e){
+            e.preventDefault(); // prevent the default form submit actio
+            var form = document.forms['premios'];
+            var input = document.createElement( "input" );
+            input.setAttribute( "name", "limpiar" );
+            input.setAttribute( "value", "1" );
+            form.appendChild( input );
+            form.submit();
+        });
+    });
+</script>
+
+{% endblock %}
+
+{% block stylesheet %}
+  {{ parent() }}
+  <style>
+    body {
+        width: 120%;
+    }
+  </style>
+
+{% endblock %}
+
+
+

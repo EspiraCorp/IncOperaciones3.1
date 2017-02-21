@@ -298,10 +298,10 @@ class SolicitudesController extends Controller
         $convocatoria = $em->getRepository('IncentivesOperacionesBundle:Convocatorias')->find($id);
 
         // Create the Transport
-        $transport = \Swift_SmtpTransport::newInstance('smtp.office365.com', 587, 'tls')
+        $transport = \Swift_SmtpTransport::newInstance('email-smtp.us-east-1.amazonaws.com', 587, 'tls')
           ->setAuthMode('login')
-          ->setUsername('operaciones@inc-group.co')
-          ->setPassword('IncGroup2016!')
+          ->setUsername('AKIAJAETNFKDQJKWT64Q')
+          ->setPassword('Aq29dWq2pKC+XhNaMGa1kG+vwjmNKBxbz7JJ4R1cRqjt')
           ;
 
         // Create the Mailer using your created Transport
@@ -629,10 +629,10 @@ class SolicitudesController extends Controller
         }
 
         // Create the Transport
-        $transport = \Swift_SmtpTransport::newInstance('smtp.office365.com', 587, 'tls')
+        $transport = \Swift_SmtpTransport::newInstance('email-smtp.us-east-1.amazonaws.com', 587, 'tls')
           ->setAuthMode('login')
-          ->setUsername('operaciones@inc-group.co')
-          ->setPassword('IncGroup2016!')
+          ->setUsername('AKIAJAETNFKDQJKWT64Q')
+          ->setPassword('Aq29dWq2pKC+XhNaMGa1kG+vwjmNKBxbz7JJ4R1cRqjt')
           //->setSourceIp('x.x.x.x') //replace x with your ip address
           ->setLocalDomain('inc-group.co');
 

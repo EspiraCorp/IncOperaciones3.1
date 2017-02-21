@@ -33,14 +33,6 @@ class ClienteType extends AbstractType
         ));
         $builder->add('numero_documento', TextType::class, array('required' => false)); 
 
-        $builder->add('programa', CollectionType::class, array(
-            'entry_type'  => ProgramaclienteType::class,
-            'label'          => 'Programa',
-            'by_reference'   => false,
-            'allow_delete'   => true,
-            'allow_add'      => true
-        ));
-
         $builder->add('Enviar', SubmitType::class);
     }
     

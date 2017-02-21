@@ -69,6 +69,13 @@ class OrdenesCompra
     private $fechaRecepcion;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="fechaCierre", type="date", nullable=true)
+     */
+    private $fechaCierre;
+
+    /**
      * @var text
      *
      * @ORM\Column(name="observaciones", type="text", nullable=true)
@@ -189,6 +196,20 @@ class OrdenesCompra
      * @ORM\Column(name="total", type="float", nullable=true)
      */
     private $total;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="subtotal", type="float", nullable=true)
+     */
+    private $subtotal;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="iva", type="float", nullable=true)
+     */
+    private $iva;
 
     /**
      * @var string
@@ -1018,5 +1039,77 @@ class OrdenesCompra
     public function getFacturarCostos()
     {
         return $this->facturarCostos;
+    }
+
+    /**
+     * Set fechaCierre
+     *
+     * @param \DateTime $fechaCierre
+     *
+     * @return OrdenesCompra
+     */
+    public function setFechaCierre($fechaCierre)
+    {
+        $this->fechaCierre = $fechaCierre;
+
+        return $this;
+    }
+
+    /**
+     * Get fechaCierre
+     *
+     * @return \DateTime
+     */
+    public function getFechaCierre()
+    {
+        return $this->fechaCierre;
+    }
+
+    /**
+     * Set subtotal
+     *
+     * @param float $subtotal
+     *
+     * @return OrdenesCompra
+     */
+    public function setSubtotal($subtotal)
+    {
+        $this->subtotal = $subtotal;
+
+        return $this;
+    }
+
+    /**
+     * Get subtotal
+     *
+     * @return float
+     */
+    public function getSubtotal()
+    {
+        return $this->subtotal;
+    }
+
+    /**
+     * Set iva
+     *
+     * @param float $iva
+     *
+     * @return OrdenesCompra
+     */
+    public function setIva($iva)
+    {
+        $this->iva = $iva;
+
+        return $this;
+    }
+
+    /**
+     * Get iva
+     *
+     * @return float
+     */
+    public function getIva()
+    {
+        return $this->iva;
     }
 }

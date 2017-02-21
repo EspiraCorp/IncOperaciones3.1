@@ -67,7 +67,8 @@ class FacturaType extends AbstractType
             'class' => 'IncentivesFacturacionBundle:Periodos',
             'property' => 'periodo',
             'empty_value' => 'Seleccione una opcion',
-            'label' => 'Periodo'
+            'label' => 'Periodo',
+            'required' => true
         ));
 
         $builder->add('detalle', 'collection', array(

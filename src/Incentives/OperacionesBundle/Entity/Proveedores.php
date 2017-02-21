@@ -25,7 +25,7 @@ class Proveedores
 
     /**
      * @var string
-     *
+     * @Assert\NotNull(message="Debe escribir un valor.")
      * @ORM\Column(name="nombre", type="string", length=255, nullable=true)
      */
     private $nombre;
@@ -34,11 +34,13 @@ class Proveedores
      * @var string
      * @ORM\ManyToOne(targetEntity="Tipodocumento", inversedBy="proveedores")
      * @ORM\JoinColumn(name="tipodocumento_id", referencedColumnName="id", nullable=true)
+     * @Assert\NotNull(message="Debe escribir un valor.")
      */
     protected $tipodocumento;
 
     /**
      * @var string
+     * @Assert\NotNull(message="Debe escribir un valor.")
      * @ORM\ManyToOne(targetEntity="Categoria", inversedBy="proveedores")
      * @ORM\JoinColumn(name="categoria_id", referencedColumnName="id", nullable=true)
      */
@@ -46,13 +48,14 @@ class Proveedores
 
     /**
      * @var string
-     *
+     * @Assert\NotNull(message="Debe escribir un valor.")
      * @ORM\Column(name="numero_documento", type="string", length=30, nullable=true)
      */
     private $numero_documento;
 
     /**
      * @var string
+     * @Assert\NotNull(message="Debe escribir un valor.")
      * @ORM\ManyToOne(targetEntity="Pais", inversedBy="proveedores")
      * @ORM\JoinColumn(name="pais_id", referencedColumnName="id", nullable=true)
      */
@@ -60,12 +63,14 @@ class Proveedores
 
      /**
      * @var string
+     * @Assert\NotNull(message="Debe escribir un valor.")
      * @ORM\ManyToOne(targetEntity="Departamento", inversedBy="proveedores")
      * @ORM\JoinColumn(name="departamento_id", referencedColumnName="id", nullable=true)
      */
     protected $departamento;    
     
     /**
+     * @Assert\NotNull(message="Debe escribir un valor.")
      * @ORM\ManyToOne(targetEntity="Ciudad", inversedBy="proveedores")
      * @ORM\JoinColumn(name="ciudad_id", referencedColumnName="id", nullable=true)
      */
@@ -73,21 +78,21 @@ class Proveedores
 
     /**
      * @var string
-     *
+     * @Assert\NotNull(message="Debe escribir un valor.")
      * @ORM\Column(name="sede_principal", type="string", length=255, nullable=true)
      */
     private $sede_principal;
 
 	/**
      * @var string
-     *
+     * @Assert\NotNull(message="Debe escribir un valor.")
      * @ORM\Column(name="direccion", type="string", length=255, nullable=true)
      */
     private $direccion;
 
     /**
      * @var string
-     *
+     * @Assert\NotNull(message="Debe escribir un valor.")
      * @ORM\Column(name="correo", type="string", length=255, nullable=true)
      */
     private $correo;
@@ -100,6 +105,7 @@ class Proveedores
     private $registro_camara;
 
     /**
+    * @Assert\NotNull(message="Debe escribir un valor.")
      * @ORM\ManyToOne(targetEntity="Regimen", inversedBy="proveedores")
      * @ORM\JoinColumn(name="regimen_id", referencedColumnName="id", nullable=true)
      */
@@ -107,7 +113,7 @@ class Proveedores
 
     /**
      * @var string
-     *
+     * @Assert\NotNull(message="Debe escribir un valor.")
      * @ORM\Column(name="telefono", type="string", length=255, nullable=true)
      */
     private $telefono;
@@ -216,6 +222,7 @@ class Proveedores
     
     /**
      * @var string
+     * @Assert\NotNull(message="Debe escribir un valor.")
      * @ORM\ManyToOne(targetEntity="Incentives\OperacionesBundle\Entity\ProveedoresArea")
      * @ORM\JoinColumn(name="area_id", referencedColumnName="id", nullable=true)
      */

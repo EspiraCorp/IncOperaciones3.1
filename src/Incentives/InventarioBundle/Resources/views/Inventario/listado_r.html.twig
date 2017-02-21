@@ -1,0 +1,136 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Inventario{% endblock %}
+{% block sidebar %}
+{{ parent() }}
+{% endblock %}
+{% block cuerpo %}
+<div class="row-fluid sortable ui-sortable">
+	<div class="box span12">
+		<div class="box-header well">
+			<h2><i class="icon-th-list"></i>Inventario</h2>
+			<div class="box-icon">
+	    <a href="{{ path('inventario_exportar') }}" title="Reporte Inventario" class="btn btn-primary">
+            <i class="icon-download icon-white"></i>
+        </a>
+        <a href="{{ path('inventario_exportar_detalle') }}" title="Reporte Detallado" class="btn btn-info">
+            <i class="icon-download-alt icon-white"></i>
+        </a>
+        <a href="{{ path('inventario_ingreso') }}" title="Ingresar" class="btn btn-primary btn-success">
+            <i class="icon-plus icon-white"></i>
+        </a>
+        <a href="{{ path('inventario_listadosalida') }}" title="Salida" class="btn btn-primary btn-warning">
+            <i class="icon-minus icon-white"></i>
+        </a>
+			</div>
+		</div>
+		<div class="box-content">
+			<div id="dashboard">
+                    <div id="tabla" class="" cellspacing="0" width="100%">
+                      <table id="ordenes" class="display">
+                        <thead style="display:table-row-group;"  >
+                          <tr>
+                            <th>Id</th>
+                            <th>Producto</th>
+                            <th>Marca</th>
+                            <th>Referencia</th>
+                            <th>SKU</th>
+                            <th>Ingreso</th>
+                            <th>Salio</th>
+                            <th>En Despacho</th>
+                            <th>Disponible</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for producto in productos %}
+                          
+                            {% set ocupada = 0 %}
+                            
+                            {% if producto['asignada'] > producto['salida']%}
+                                {% set ocupada = 0 + producto['asignada'] %}
+                            {% else %}
+                                {% set ocupada = 0 + producto['salida'] %}
+                            {% endif %}
+                          <tr>
+                            <td>{{ producto['inventario']['producto']['id'] }}</td>
+                            <td>{{ producto['inventario']['producto']['nombre'] }}</td>
+                            <td>{{ producto['inventario']['producto']['marca'] }}</td>
+                            <td>{{ producto['inventario']['producto']['referencia'] }}</td>
+                            <td>{{ producto['inventario']['producto']['codInc'] }}</td>
+                            <td>{{ 0 + producto['ingresada'] }}</td>
+                            <td>{{ 0 + producto['salida'] }}</td>
+                            <td>{{ 0 +  producto['asignada'] }}</td>
+                            <td>{% set total = 0 + producto['disponible'] %}{{ total }}</td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                         <tfoot style="display: table-header-group;">
+                           <tr>
+                            <th>Id</th>
+                            <th>Producto</th>
+                            <th>Marca</th>
+                            <th>Referencia</th>
+                            <th>SKU</th>
+                            <th>C. Ingreso</th>
+                            <th>C. Salida</th>
+                            <th>C. Asignada</th>
+                            <th>C. Disponible</th>
+                          </tr>
+                        </tfoot>
+                      </table>
+                    </div>   
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+
+{{ parent() }}
+
+  <script type="text/javascript">
+ $(document).ready(function() {
+//    inifuntion
+ var table = $('#ordenes').dataTable({
+
+            "sDom": 'T<"clear">lfrtip',
+             "bPaginate": true,
+             "bLengthChange": true,
+             "bFilter": true,
+             "bSort": true,
+             "bInfo": false,
+             "bAutoWidth": true,
+             "bJQueryUI": false,
+             "sPaginationType": "full_numbers",
+             "iDisplayLength": 50,
+             "aLengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "Todo"] ],
+              initComplete: function () {
+                    this.api().columns().every( function () {
+                        var column = this;
+                        var select = $('<select style="width: 100%"><option value=""></option></select>')
+                            .appendTo( $(column.footer()).empty() )
+                            .on( 'change', function () {
+                                var val = $.fn.dataTable.util.escapeRegex(
+                                    $(this).val()
+                                );
+         
+                                column
+                                    .search( val ? '^'+val+'$' : '', true, false )
+                                    .draw();
+                            } );
+         
+                        column.data().unique().sort().each( function ( d, j ) {
+                            //limpiar
+                            //d
+                            select.append( '<option value="'+d+'">'+d+'</option>' )
+                        } );
+                    } );
+                }
+    });
+
+})
+  </script>
+
+{% endblock %}
+
+

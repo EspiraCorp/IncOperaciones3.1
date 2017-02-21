@@ -1,0 +1,339 @@
+<?php
+
+namespace Incentives\FacturacionBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Presupuestoshistorico
+ *
+ * @ORM\Entity
+ * @ORM\Table(name="Presupuestoshistorico")
+ */
+class Presupuestoshistorico
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="valor", type="bigint", nullable=true)
+     */
+    private $valor;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="mensual", type="bigint", nullable=true)
+     */
+    private $mensual;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="descripcion", type="string", length=255, nullable=true)
+     */
+    private $descripcion;
+
+    /**
+     * @var string
+     * @ORM\ManyToOne(targetEntity="Incentives\CatalogoBundle\Entity\Programa", inversedBy="presupuestos",cascade={"persist"})
+     * @ORM\JoinColumn(name="programa_id", referencedColumnName="id", nullable=true)
+     */
+    protected $programa;
+
+    /**
+     * @var string
+     * @ORM\ManyToOne(targetEntity="Incentives\FacturacionBundle\Entity\Areas", inversedBy="presupuestos",cascade={"persist"})
+     * @ORM\JoinColumn(name="area_id", referencedColumnName="id", nullable=true)
+     */
+    protected $area;
+
+    /**
+     * @var string
+     * @ORM\ManyToOne(targetEntity="Incentives\FacturacionBundle\Entity\Tipocostos", inversedBy="presupuesto",cascade={"persist"})
+     * @ORM\JoinColumn(name="tipo_id", referencedColumnName="id", nullable=true)
+     */
+    protected $tipo;
+
+     /**
+     * @var string
+     * @ORM\ManyToOne(targetEntity="Incentives\FacturacionBundle\Entity\Presupuestos", inversedBy="historico",cascade={"persist"})
+     * @ORM\JoinColumn(name="presupuesto_id", referencedColumnName="id", nullable=true)
+     */
+    protected $presupuesto;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="fechaCambio", type="datetime", nullable=true)
+     */
+    private $fechaCambio;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="fechaModificacion", type="datetime", nullable=true)
+     */
+    private $fechaModificacion;
+    
+    /**
+     * 
+     * @ORM\ManyToOne(targetEntity="Incentives\BaseBundle\Entity\Usuario")
+     * @ORM\JoinColumn(name="usuario_id", referencedColumnName="id", nullable=true)
+     * 
+     */
+    protected $usuario;
+
+    public function __construct()
+    {
+        $this->fechaCambio = new \DateTime("now");
+    }
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set valor
+     *
+     * @param integer $valor
+     * @return Presupuestos
+     */
+    public function setValor($valor)
+    {
+        $this->valor = $valor;
+    
+        return $this;
+    }
+
+    /**
+     * Get valor
+     *
+     * @return integer 
+     */
+    public function getValor()
+    {
+        return $this->valor;
+    }
+
+    /**
+     * Set descripcion
+     *
+     * @param string $descripcion
+     * @return Presupuestos
+     */
+    public function setDescripcion($descripcion)
+    {
+        $this->descripcion = $descripcion;
+    
+        return $this;
+    }
+
+    /**
+     * Get descripcion
+     *
+     * @return string 
+     */
+    public function getDescripcion()
+    {
+        return $this->descripcion;
+    }
+
+    /**
+     * Set programa
+     *
+     * @param \Incentives\CatalogoBundle\Entity\Programa $programa
+     * @return Presupuestos
+     */
+    public function setPrograma(\Incentives\CatalogoBundle\Entity\Programa $programa = null)
+    {
+        $this->programa = $programa;
+    
+        return $this;
+    }
+
+    /**
+     * Get programa
+     *
+     * @return \Incentives\CatalogoBundle\Entity\Programa 
+     */
+    public function getPrograma()
+    {
+        return $this->programa;
+    }
+
+    /**
+     * Set area
+     *
+     * @param \Incentives\FacturacionBundle\Entity\Areas $area
+     * @return Presupuestos
+     */
+    public function setArea(\Incentives\FacturacionBundle\Entity\Areas $area = null)
+    {
+        $this->area = $area;
+    
+        return $this;
+    }
+
+    /**
+     * Get area
+     *
+     * @return \Incentives\FacturacionBundle\Entity\Areas 
+     */
+    public function getArea()
+    {
+        return $this->area;
+    }
+
+    /**
+     * Set presupuesto
+     *
+     * @param \Incentives\FacturacionBundle\Entity\Presupuestos $presupuesto
+     * @return Presupuestoshistorico
+     */
+    public function setPresupuesto(\Incentives\FacturacionBundle\Entity\Presupuestos $presupuesto = null)
+    {
+        $this->presupuesto = $presupuesto;
+    
+        return $this;
+    }
+
+    /**
+     * Get presupuesto
+     *
+     * @return \Incentives\FacturacionBundle\Entity\Presupuestos 
+     */
+    public function getPresupuesto()
+    {
+        return $this->presupuesto;
+    }
+
+    /**
+     * Set mensual
+     *
+     * @param integer $mensual
+     * @return Presupuestoshistorico
+     */
+    public function setMensual($mensual)
+    {
+        $this->mensual = $mensual;
+    
+        return $this;
+    }
+
+    /**
+     * Get mensual
+     *
+     * @return integer 
+     */
+    public function getMensual()
+    {
+        return $this->mensual;
+    }
+
+    /**
+     * Set tipo
+     *
+     * @param \Incentives\FacturacionBundle\Entity\Tipocostos $tipo
+     * @return Presupuestoshistorico
+     */
+    public function setTipo(\Incentives\FacturacionBundle\Entity\Tipocostos $tipo = null)
+    {
+        $this->tipo = $tipo;
+    
+        return $this;
+    }
+
+    /**
+     * Get tipo
+     *
+     * @return \Incentives\FacturacionBundle\Entity\Tipocostos 
+     */
+    public function getTipo()
+    {
+        return $this->tipo;
+    }
+
+    /**
+     * Set fechaCambio
+     *
+     * @param \DateTime $fechaCambio
+     * @return Presupuestoshistorico
+     */
+    public function setFechaCambio($fechaCambio)
+    {
+        $this->fechaCambio = $fechaCambio;
+    
+        return $this;
+    }
+
+    /**
+     * Get fechaCambio
+     *
+     * @return \DateTime 
+     */
+    public function getFechaCambio()
+    {
+        return $this->fechaCambio;
+    }
+
+    /**
+     * Set usuario
+     *
+     * @param \Incentives\BaseBundle\Entity\Usuario $usuario
+     * @return Presupuestoshistorico
+     */
+    public function setUsuario(\Incentives\BaseBundle\Entity\Usuario $usuario = null)
+    {
+        $this->usuario = $usuario;
+    
+        return $this;
+    }
+
+    /**
+     * Get usuario
+     *
+     * @return \Incentives\BaseBundle\Entity\Usuario 
+     */
+    public function getUsuario()
+    {
+        return $this->usuario;
+    }
+
+    /**
+     * Set fechaModificacion
+     *
+     * @param \DateTime $fechaModificacion
+     * @return Presupuestoshistorico
+     */
+    public function setFechaModificacion($fechaModificacion)
+    {
+        $this->fechaModificacion = $fechaModificacion;
+    
+        return $this;
+    }
+
+    /**
+     * Get fechaModificacion
+     *
+     * @return \DateTime 
+     */
+    public function getFechaModificacion()
+    {
+        return $this->fechaModificacion;
+    }
+}

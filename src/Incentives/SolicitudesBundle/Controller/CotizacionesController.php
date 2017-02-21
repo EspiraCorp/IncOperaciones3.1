@@ -447,7 +447,7 @@ class CotizacionesController extends Controller
 
         $solicitante = $solicitud->getSolicitante();
 
-        $correos =  array('controloperaciones@inc-group.co');
+        $correos =  array('controloperaciones@inc-group.co','asanchez@inc-group.co');
 	array_push($correos, $solicitante->getEmail());
         
         $responsables = $em->getRepository('IncentivesSolicitudesBundle:SolicitudesAsignar')->findBySolicitud($solicitud->getId());
@@ -457,10 +457,10 @@ class CotizacionesController extends Controller
         }
 
         // Create the Transport
-        $transport = \Swift_SmtpTransport::newInstance('smtp.office365.com', 587, 'tls')
+        $transport = \Swift_SmtpTransport::newInstance('email-smtp.us-east-1.amazonaws.com', 587, 'tls')
           ->setAuthMode('login')
-          ->setUsername('operaciones@inc-group.co')
-          ->setPassword('IncGroup2016!')
+          ->setUsername('AKIAJAETNFKDQJKWT64Q')
+          ->setPassword('Aq29dWq2pKC+XhNaMGa1kG+vwjmNKBxbz7JJ4R1cRqjt')
           ;
 
           $template = 'IncentivesSolicitudesBundle:Cotizaciones:emailAprobacion.txt.twig';
@@ -579,10 +579,10 @@ class CotizacionesController extends Controller
         }
 
         // Create the Transport
-        $transport = \Swift_SmtpTransport::newInstance('smtp.office365.com', 587, 'tls')
+        $transport = \Swift_SmtpTransport::newInstance('email-smtp.us-east-1.amazonaws.com', 587, 'tls')
           ->setAuthMode('login')
-          ->setUsername('operaciones@inc-group.co')
-          ->setPassword('IncGroup2016!')
+          ->setUsername('AKIAJAETNFKDQJKWT64Q')
+          ->setPassword('Aq29dWq2pKC+XhNaMGa1kG+vwjmNKBxbz7JJ4R1cRqjt')
           ;
 
           $template = 'IncentivesSolicitudesBundle:Cotizaciones:email.txt.twig';

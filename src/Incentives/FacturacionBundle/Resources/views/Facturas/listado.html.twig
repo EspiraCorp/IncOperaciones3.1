@@ -21,25 +21,25 @@
                       <table id="programas" class="display">
                         <thead style="display:table-row-group;" >
                           <tr>
-                            <th>Programa</th>
+                            <th>Centro Costos</th>
                             <th>Cliente</th>
                             <th>Ultimo Período</th>
                             <th>Estado</th>
                           </tr>
                         </thead>
                         <tbody>
-                              {% for programa in listado %}
+                              {% for centrocostos in listado %}
                               <tr>
-                                <td><a href="{{ path("facturas_listado", {"programa": programa.id}) }}">{{ programa.nombre }}</a></td>
-                                <td>{{ programa.cliente.nombre }}</td>
-                                <td>{{ programa.fechaFactura }}</td>
-                                <td>{% if (programa.estado=='0') %}Inactivo{% else %}Activo{% endif %}</td>
+                                <td><a href="{{ path("facturas_listado", {"centrocostos": centrocostos.id}) }}">{{ centrocostos.centrocostos }} - {{ centrocostos.nombre }}</a></td>
+                                <td>{{ centrocostos.cliente.nombre }}</td>
+                                <td>{{ centrocostos.fechaFactura }}</td>
+                                <td>{% if (centrocostos.estado=='0') %}Inactivo{% else %}Activo{% endif %}</td>
                               </tr>
                               {% endfor %}
                             </tbody>
                          <tfoot style="display: table-header-group;">
                           <tr>
-                            <th>Programa</th>
+                            <th>Centro Costos</th>
                             <th>Cliente</th>
                             <th>Ultimo Período</th>
                             <th>Estado</th>

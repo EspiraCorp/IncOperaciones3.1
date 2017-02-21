@@ -18,8 +18,8 @@
 #}
 
 {% if pageCount > 1 %}
-<div class="pagination">
-    <ul>
+<div class="dataTables_paginate paging_simple_numbers">
+    <ul class="pagination">
 
     {% if previous is defined %}
         <li>
@@ -48,7 +48,7 @@
 
     {% for page in pagesInRange %}
         {% if page != current %}
-            <li>
+            <li class="paginate_button ">
                 <a href="{{ path(route, query|merge({(pageParameterName): page})) }}">{{ page }}</a>
             </li>
         {% else %}

@@ -1,6 +1,6 @@
 {% extends "::base.html.twig" %}
 
-{% block title %}Facturas Programa{% endblock %}
+{% block title %}Facturas Centro de Costos{% endblock %}
 {% block sidebar %}
 {{ parent() }}
 {% endblock %}
@@ -8,9 +8,9 @@
 <div class="row-fluid sortable ui-sortable">
 	<div class="box span12">
 		<div class="box-header well">
-			<h2><i class="icon-th-list"></i>Facturas Programa</h2>
+			<h2><i class="icon-th-list"></i>Facturas Centro de Costos</h2>
 			<div class="box-icon">
-              <a href="{{ path('factura_nueva') }}/{{ programa.id }}" title="Nueva Factura" class="btn btn-primary btn-sm">
+              <a href="{{ path('factura_nueva') }}/{{ centrocostos.id }}" title="Nueva Factura" class="btn btn-primary btn-sm">
                   <i class="icon-plus icon-white"></i>
               </a> 
       </div>
@@ -20,8 +20,8 @@
 			<div id="dashboard">
 			  <table class="table table-bordered table-striped">
 					<tbody>
-						<tr><td>Programa</td><td>{{ programa.nombre }}</td></tr>
-						<tr><td>Cliente</td><td>{{ programa.cliente.nombre }}</td></tr>
+						<tr><td>Centro de Costos</td><td>{{ centrocostos.centrocostos }} - {{ centrocostos.nombre }}</td></tr>
+						<tr><td>Cliente</td><td>{{ centrocostos.cliente.nombre }}</td></tr>
 					</tbody>
 				</table>
           <div id="tabla" class="" cellspacing="0" width="100%">

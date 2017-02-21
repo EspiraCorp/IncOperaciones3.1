@@ -49,8 +49,9 @@
                             <th>Proveedor</th>
                             <th>Pais</th>
                             <th>Categoria</th>
-                            <th>Fecha solicitud</th>
-                            <th>Fecha entrega</th>
+                            <th>Fecha Solicitud</th>
+                            <th>Fecha Entrega</th>
+                            <th>Fecha Cierre</th>
                             <th>Valor total</th>
                             <th>Tipo</th>
                             <th>Estado</th>
@@ -66,6 +67,7 @@
                             <td>{{ orden.categoria.nombre }}</td>
                             <td>{{ orden.fechaCreacion | date("Y-m-d") }}</td>
                             <td>{{ orden.fechaVencimiento | date("Y-m-d") }}</td>
+                            <td>{% if orden.fechaCierre %}{{ orden.fechaCierre | date("Y-m-d") }}{% endif %}</td>
                             <td>{{ orden.total|number_format(2, ',', '.')  }}</td>
                             <td>{{ orden.ordenesTipo.nombre }}</td>
                             <td>{{ orden.ordenesEstado.nombre }}</td>
@@ -79,8 +81,9 @@
                             <th>Proveedor</th>
                             <th>Pais</th>
                             <th>Categoria</th>
-                            <th>Fecha solicitud</th>
-                            <th>Fecha entrega</th>
+                            <th>Fecha Solicitud</th>
+                            <th>Fecha Entrega</th>
+                            <th>Fecha Cierre</th>
                             <th>Valor total</th>
                             <th>Tipo</th>
                             <th>Estado</th>

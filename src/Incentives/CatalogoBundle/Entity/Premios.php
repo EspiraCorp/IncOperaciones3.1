@@ -230,6 +230,27 @@ class Premios
     protected $premiosproductos;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="imagen", type="string", length=255, nullable=true)
+     */
+    private $imagen;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="imagenTemp", type="string", length=255, nullable=true)
+     */
+    private $imagenTemp;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="codigo", type="string", length=255, nullable=true)
+     */
+    private $codigo;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="fechaModificacion", type="datetime", nullable=true)
@@ -247,6 +268,7 @@ class Premios
     public function __construct()
     {
         $this->redencion = new ArrayCollection();
+        $this->premiosproductos = new ArrayCollection();
     }
 
     /**
@@ -1056,5 +1078,77 @@ class Premios
     public function getActualizacion()
     {
         return $this->actualizacion;
+    }
+
+    /**
+     * Set imagen
+     *
+     * @param string $imagen
+     *
+     * @return Premios
+     */
+    public function setImagen($imagen)
+    {
+        $this->imagen = $imagen;
+
+        return $this;
+    }
+
+    /**
+     * Get imagen
+     *
+     * @return string
+     */
+    public function getImagen()
+    {
+        return $this->imagen;
+    }
+
+    /**
+     * Set imagenTemp
+     *
+     * @param string $imagenTemp
+     *
+     * @return Premios
+     */
+    public function setImagenTemp($imagenTemp)
+    {
+        $this->imagenTemp = $imagenTemp;
+
+        return $this;
+    }
+
+    /**
+     * Get imagenTemp
+     *
+     * @return string
+     */
+    public function getImagenTemp()
+    {
+        return $this->imagenTemp;
+    }
+
+    /**
+     * Set codigo
+     *
+     * @param string $codigo
+     *
+     * @return Premios
+     */
+    public function setCodigo($codigo)
+    {
+        $this->codigo = $codigo;
+
+        return $this;
+    }
+
+    /**
+     * Get codigo
+     *
+     * @return string
+     */
+    public function getCodigo()
+    {
+        return $this->codigo;
     }
 }

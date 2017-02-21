@@ -1,0 +1,6 @@
+<select class="input-xlarge focused" name="proveedores[ciudad]" id="proveedores_ciudad">
+	<option value="">Seleccione una opcion</option>
+	{% for ciudad in listado %}
+		<option value="{{ ciudad.id }}">{{ ciudad.nombre }}</option>
+	{% endfor %}
+</select>

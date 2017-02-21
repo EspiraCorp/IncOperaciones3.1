@@ -70,7 +70,9 @@
                               <td>{{ catalogo.puntosMaximos }}</td>
                               
                               <td>
-                                {% if (catalogo.estado.id!=1) %}<a class="btn btn-danger 1" onClick="confirmar('{{ url("catalogo_estado", {"id": catalogo.id}) }}')" href="#">Inactivo</a>{% else %}<a class="btn btn-success 1" onClick="confirmar('{{ url("catalogo_estado", {"id": catalogo.id}) }}')" href="#">Activo</a>{% endif %}
+                                {% if is_granted('ROLE_ADMIN') or  is_granted('ROLE_DIR') or is_granted('ROLE_ASISCOMP') or is_granted('ROLE_LOGIS') or is_granted('ROLE_CAT') %}
+                                  {% if (catalogo.estado.id!=1) %}<a class="btn btn-danger 1" onClick="confirmar('{{ url("catalogo_estado", {"id": catalogo.id}) }}')" href="#">Inactivo</a>{% else %}<a class="btn btn-success 1" onClick="confirmar('{{ url("catalogo_estado", {"id": catalogo.id}) }}')" href="#">Activo</a>{% endif %}
+                                {% endif %}
                               </td>
                               {% endif %}
                           </tr>
@@ -133,7 +135,7 @@
   {{ parent() }}
   <style>
     body {
-        width: 135%;
+        width: 140%;
     }
   </style>
 

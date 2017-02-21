@@ -43,13 +43,6 @@ class PremiosType extends AbstractType
             'label' => 'Subcategoria',
         ));
 
-        /*$builder->add('actualizacion', ChoiceType::class, array(
-            'choices'   => array(
-                0   => 'Automatica',
-                1 => 'Manual',
-            ),
-            'expanded'  => true,
-        ));*/
         $builder->add('Enviar', SubmitType::class);
         
     }

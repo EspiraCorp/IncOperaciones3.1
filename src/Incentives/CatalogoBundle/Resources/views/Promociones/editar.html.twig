@@ -1,70 +1,75 @@
-{% extends "::base.html.twig" %}
+{% extends "::basePopLte.html.twig" %}
 
-{% block title %}IncentivesCatalogoBundle:Producto:nuevo{% endblock %}
+{% block title %}Catálogo - Agregar Promoción{% endblock %}
 
-{% block cuerpo %}
-<div class="row-fluid sortable ui-sortable">
-<div class="box span12">
-<div class="box-header well" data-original-title>
-                        <h2><i class="icon-edit"></i>Editar Cliente</h2>
-                        <div class="box-icon">
-                            <a href="{{ path('cliente_datos', {'id': id} ) }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
-                        </div>
-                    </div>
-<div class="box-content">
-<form action="{{ path('cliente_editar') }}" method="POST"  class="form-horizontal">
-    {{ form_errors(form) }}
-    <input type='hidden' name='id' value={{ id }}>
-    <fieldset>
-        <div class="control-group">
-            {{ form_label(form.nombre, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
-            <div class="controls">
-                {{ form_widget(form.nombre, { 'attr': {'class': 'input-xlarge focused'} }) }}
-            </div>
-        </div>
-        <div class="control-group">
-            {{ form_label(form.tipodocumento, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
-            <div class="controls">
-                {{ form_widget(form.tipodocumento, { 'attr': {'class': 'input-xlarge focused'} }) }}
-            </div>
-        </div>
-        <div class="control-group">
-            {{ form_label(form.numero_documento, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
-            <div class="controls">
-                {{ form_widget(form.numero_documento, { 'attr': {'class': 'input-xlarge focused'} }) }}
-            </div>
-        </div>
-        <div class="control-group">
-            {{ form_label(form.direccion, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
-            <div class="controls">
-                {{ form_widget(form.direccion, { 'attr': {'class': 'input-xlarge focused'} }) }}
-            </div>
-        </div>
-        <div class="control-group">
-            {{ form_label(form.telefono, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
-            <div class="controls">
-                {{ form_widget(form.telefono, { 'attr': {'class': 'input-xlarge focused'} }) }}
-            </div>
-        </div>
-        <div class="control-group">
-            {{ form_label(form.correo, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
-            <div class="controls">
-                {{ form_widget(form.correo, { 'attr': {'class': 'input-xlarge focused'} }) }}
-            </div>
-        </div>
-       
+{% block content %}
 
-    </fieldset>
-    <div class="row-fluid sortable ui-sortable">
-
-    </div>  
-<div class="form-actions">
-    {{ form_widget(form.Enviar, { 'attr': {'class': 'btn btn-primary'} }) }}
-</div>
-{{ form_widget(form._token) }}
-</form>
-</div>
-</div>
- </div>
+     <div class="">
+          <div class="modal-dialog box box-warning">
+            <div class="modal-content">
+              <div class="modal-header bg-black">
+                <h4 class="modal-title">Agregar Promoción</h4>
+              </div>
+              <form action="{{ path('promociones_editar', {'promocion': promocion.id }) }}" method="POST"  class="form-horizontal">
+              <div class="modal-body">
+                <div class="form-group">
+                  <label class="col-sm-4 control-label">{{ form_label(form.nombre, label|default(), { 'label_attr': { 'class': 'control-label' } }) }}</label>
+                  <div class="col-sm-8">
+                    {{ form_widget(form.nombre, { 'attr': {'class': 'form-control'} }) }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-4 control-label">{{ form_label(form.descripcion, label|default(), { 'label_attr': { 'class': 'control-label' } }) }}</label>
+                  <div class="col-sm-8">
+                    {{ form_widget(form.descripcion, { 'attr': {'class': 'form-control'} }) }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-4 control-label">{{ form_label(form.puntos, label|default(), { 'label_attr': { 'class': 'control-label' } }) }}</label>
+                  <div class="col-sm-8">
+                    {{ form_widget(form.puntos, { 'attr': {'class': 'form-control'} }) }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-4 control-label">{{ form_label(form.cantidad, label|default(), { 'label_attr': { 'class': 'control-label' } }) }}</label>
+                  <div class="col-sm-8">
+                    {{ form_widget(form.cantidad, { 'attr': {'class': 'form-control'} }) }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-4 control-label">{{ form_label(form.fechaInicio, label|default(), { 'label_attr': { 'class': 'control-label' } }) }}</label>
+                  <div class="col-sm-8">
+                    {{ form_widget(form.fechaInicio, { 'attr': {'class': 'form-control'} }) }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-4 control-label">{{ form_label(form.fechaFin, label|default(), { 'label_attr': { 'class': 'control-label' } }) }}</label>
+                  <div class="col-sm-8">
+                    {{ form_widget(form.fechaFin, { 'attr': {'class': 'form-control'} }) }}
+                  </div>
+                </div>
+                {{ form_widget(form._token) }}
+              </div>
+              <div class="modal-footer bg-black">
+                <button class="btn btn-warning bg-black" type="submit">Enviar</button>
+              </div>
+              </form>
+            </div>
+            <!-- /.modal-content -->
+          </div>
+          <!-- /.modal-dialog -->
+    </div>
 {% endblock %}
+
+{% block javascript %}
+    {{ parent() }}
+
+    <script>
+        $("#promociones_fechaInicio").datepicker({ format: 'yyyy-mm-dd' });
+        $("#promociones_fechaFin").datepicker({ format: 'yyyy-mm-dd' });
+    </script>
+
+{% endblock %}
+
+
 

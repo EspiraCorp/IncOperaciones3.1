@@ -43,6 +43,8 @@ class ProgramaController extends Controller
                 $id = $request->request->all()['id'];
                 $pro = $request->request->all()['programanuevo'];
 
+                //if(isset($pro['programanuevo'])) $pro = $pro['programanuevo']; else $pro = $pro['programa'];
+
                 if ($id==0){
                     $id=$programa->getCliente()->getId();
                 }
@@ -58,11 +60,13 @@ class ProgramaController extends Controller
                 $programa->setCliente($cliente);
                 $centroCostos = $em->getRepository('IncentivesCatalogoBundle:CentroCostos')->find($pro["centroCostos"]);
                 $programa->setCentroCostos($centroCostos);
+                $programa->setApiSecret(SHA1(time()));
+                $programa->setApiKey(SHA1($pro["nombre"]));
                 $em->persist($programa);
 
                 $em->flush();
 
-                return $this->redirect($this->generateUrl('cliente_datos').'/'.$id);
+                return $this->redirect($this->generateUrl('programa_datos').'/'.$programa->getId());
             }
         }            
 
@@ -107,10 +111,11 @@ class ProgramaController extends Controller
                 $programa->setFechainicio($fecha);
                 $fecha2 = date_create($pro["fechafin"]);
                 $programa->setFechafin($fecha2);
-                $programa->setDiasentrega($pro["diasentrega"]);
+                $programa->setDiasentrega(($pro["diasentrega"])? $pro["diasentrega"]: 0);
                 $programa->setIva($pro["iva"]);
                 $centroCostos = $em->getRepository('IncentivesCatalogoBundle:CentroCostos')->find($pro["centroCostos"]);
                 $programa->setCentroCostos($centroCostos);
+                if(isset($pro["apiKey"]) && $pro["apiKey"]!="") $programa->setApiKey($pro["apiKey"]);
 
                 $em->persist($programa);   
                 $em->flush();
@@ -177,11 +182,13 @@ class ProgramaController extends Controller
         if ($programa->getEstado()->getId() == 1){
             $estado = $em->getRepository('IncentivesCatalogoBundle:Estados')->find(2);
             $programa->setEstado($estado);
+
+            $estadoCatalogo = $em->getRepository('IncentivesCatalogoBundle:EstadoCatalogo')->find(2);
             
             $query = $em->createQueryBuilder()
-                    ->select('pc') 
-                    ->from('IncentivesCatalogoBundle:Productocatalogo', 'pc')
-                    ->leftJoin('pc.catalogos','c');
+                    ->select('pr') 
+                    ->from('IncentivesCatalogoBundle:Premios', 'pr')
+                    ->leftJoin('pr.catalogos','c');
                     
             $query->where("c.programa=".$id);
                 
@@ -189,7 +196,7 @@ class ProgramaController extends Controller
             
             foreach($productos as $keyP => $valueP){
                 
-                $valueP->setActivo(0);
+                $valueP->setEstado($estadoCatalogo);
                 $em->persist($valueP);
                 $em->flush();
             }

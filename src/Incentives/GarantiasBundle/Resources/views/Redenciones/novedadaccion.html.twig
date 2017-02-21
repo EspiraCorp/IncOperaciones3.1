@@ -27,7 +27,7 @@
 
         <table class="table table-bordered table-striped">
           <tbody>
-            <tr><td>Programa</td><td>{{ redencion.productocatalogo.catalogos.programa.nombre }}</td></tr>
+            <tr><td>Programa</td><td>{{ redencion.premio.catalogos.programa.nombre }}</td></tr>
             <tr><td>Participante</td><td>{{ redencion.participante.nombre }}</td></tr>
             <tr><td>Documento</td><td>{{ redencion.participante.documento }}</td></tr>
             <tr><td>Fecha de solicitud</td><td>{{ redencion.fecha | date("Y-m-d") }}</td></tr>
@@ -50,13 +50,13 @@
           <tbody>
             <tr><td colspan="2">
               {% if imagen|length > 0 %}
-              <a href="../../../{{ imagen[0].path| slice (0) }}" target='_blank'><img src="../../../{{( imagen[0].path| slice (0))[:-4]}}_min.jpg"><a>
+              <a href="../../../{{ imagen[0].path| slice (7) }}" target='_blank'><img src="../../../{{( imagen[0].path| slice (7))[:-4]}}_min.jpg"><a>
               {% endif %}
               </td></tr>
-            <tr><td>Sku</td><td>{{ redencion.productocatalogo.producto.codInc }}</td></tr>
-            <tr><td>Nombre</td><td>{{ redencion.productocatalogo.producto.nombre }}</td></tr>
-            <tr><td>Descripcion</td><td>{{ redencion.productocatalogo.producto.descripcion }}</td></tr>
-            <tr><td>Categoria</td><td>{{ redencion.productocatalogo.categoria.nombre }}</td></tr>
+            <tr><td>Sku</td><td>{{ redencion.premio.premiosproductos[0].producto.codInc }}</td></tr>
+            <tr><td>Nombre</td><td>{{ redencion.premio.premiosproductos[0].producto.nombre }}</td></tr>
+            <tr><td>Descripcion</td><td>{{ redencion.premio.premiosproductos[0].producto.descripcion }}</td></tr>
+            <tr><td>Categoria</td><td>{{ redencion.premio.categoria.nombre }}</td></tr>
           </tbody>
         </table>
         </div>

@@ -29,7 +29,7 @@ class NovedadesDevolucionTipo
     private $nombre;
 
     /**
-     * @ORM\OneToMany(targetEntity="Novedades", mappedBy="tipo", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="Novedades", mappedBy="devolucionTipo", cascade={"persist"})
      * 
      */
     protected $novedad;

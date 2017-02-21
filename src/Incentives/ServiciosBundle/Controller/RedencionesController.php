@@ -116,10 +116,11 @@ class RedencionesController extends Controller
 
 				//buscar producto redimido
 				$qb = $em->createQueryBuilder();            
-		        $qb->select('pr', 'pp');
+		        $qb->select('pr', 'pp', 'promo');
 		        $qb->from('IncentivesCatalogoBundle:Premios','pr');
 		        $qb->Join('pr.premiosproductos', 'pp');
 		        $qb->Join('pp.producto', 'p');
+		        $qb->leftJoin('pr.promocion', 'promo', 'WITH','promo.estado=1');
 		        $str_filtro = 'pr.catalogos = :id_catalogo';
 		        $str_filtro .= ' AND (p.codInc LIKE :sku)';
 		        $str_filtro .= ' AND pr.estado=1 AND pr.aproboCliente=1';
@@ -131,6 +132,7 @@ class RedencionesController extends Controller
 		        $qb->setParameters($arrayParametros);
 		        $qb->setMaxResults(1);
 		        $premio = $qb->getQuery()->getOneOrNullResult();
+		        //echo "<pre>"; print_r($premio); echo "</pre>"; exit;
 
 		        if(isset($premio)){//Si el producto existe almacenar y esta activo y aprobado
 
@@ -171,6 +173,36 @@ class RedencionesController extends Controller
 								$redencion->setPuntos($premio->getPuntos());
 								$noNulo++;
 							}
+
+							$promo = 0;
+							if($premio->getPromocion() && $premio->getPromocion()[0]){
+			                    $datosPromo = $premio->getPromocion()[0];
+
+			                    //echo "<pre>"; print_r($datosPromo); echo "</pre>";
+
+			                    $hoy = date("Y-m-d H:i:s");
+
+			                    $fechaInicio = $datosPromo->getFechaInicio()->format('Y-m-d H:i:s');
+			                    $fechaFin = $datosPromo->getFechaFin()->format('Y-m-d H:i:s');
+
+			                    $fechaFin = strtotime ( '+1 day' , strtotime ( $fechaFin ) ) ;
+			                    $fechaFin = strtotime ( '-1 second' , $fechaFin ) ;
+			                    $fechaFin = date ( 'Y-m-d H:i:s' , $fechaFin );
+
+			                    if($hoy >= $fechaInicio && $hoy <= $fechaFin && $datosPromo->getDisponibles()>0){
+
+			                    	$promocion = $em->getRepository('IncentivesCatalogoBundle:Promociones')->find($datosPromo->getId());
+			                        $redencion->setPromocion($promocion);
+			                        $redencion->setPuntos($datosPromo->getPuntos());
+			                        $promo = 1;
+
+			                    }else{
+			                    	$noNulo = 0;
+			                    	$mensaje .= " La promoción ha finalizado.";
+			                    	$promo = 2;
+			                    }
+
+			                }
 
 							if($noNulo>0){
 								
@@ -236,9 +268,28 @@ class RedencionesController extends Controller
 								if(isset($parametros->info_envio->contacto_barrio)) $envio->setBarrioContacto($parametros->info_envio->contacto_barrio);
 								if(isset($parametros->info_envio->contacto_documento)) $envio->setDocumentoContacto($parametros->info_envio->contacto_documento);
 								$envio->setRedencion($redencion);
+								
 								$em->persist($envio);
-
 								$em->flush();
+
+								//Si hay promo actualizar cantidades
+								if($premio->getPromocion() && $premio->getPromocion()[0]  && $promo == 1){
+			                    	$datosPromo = $premio->getPromocion()[0];
+									
+									$qb = $em->createQueryBuilder();            
+							    	$qb->select('count(r) total');
+							    	$qb->from('IncentivesRedencionesBundle:Redenciones','r');
+							        $str_filtro = 'r.redencionestado!=7 AND r.promocion = '.$datosPromo->getId();
+							        $qb->where($str_filtro);
+		        					$redimidosPromo = $qb->getQuery()->getOneOrNullResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
+
+			                        //Contar redenciones promocion
+			                        $promocion->setRedimidos($redimidosPromo['total']);
+			                        $disponiblesPromo = $datosPromo->getCantidad() - $redimidosPromo['total'];
+			                        $promocion->SetDisponibles($disponiblesPromo);
+			                        $em->persist($promocion);
+			                        $em->flush();
+			                    }
 
 							}else{					
 								$mensaje .= " El producto: ".$productoR[0]."  no cuenta con puntos validos.";
@@ -905,6 +956,7 @@ class RedencionesController extends Controller
 					    	$guias = $valueDG->getGuia();
 					    	$redencionesP[$key]['guia'] .= $guias->getGuia()." - ";
 						    $redencionesP[$key]['operador'] .= $guias->getOperador()." - ";
+						    $redencionesP[$key]['guiaImagen'] = $guias->getRuta();
 					    }
 				    }
 				}
@@ -969,7 +1021,7 @@ class RedencionesController extends Controller
             $qb1->leftJoin('r.participante', 'pt');
             $qb1->leftJoin('r.redencionestado', 'estado');
             $qb1->leftJoin('r.redencionesenvios', 'envio');
-            $qb1->leftJoin('r.despacho', 'd');
+            $qb1->leftJoin('rp.despacho', 'd');
             $qb1->leftJoin('d.despachoguia', 'dg');
             $qb1->leftJoin('dg.guia', 'guia');
 	        $str_filtro = 'c.programa = '.$parametros->programa;
@@ -1023,16 +1075,21 @@ class RedencionesController extends Controller
 				
 				$redencionesP[$key]['guia'] = "";
 				$redencionesP[$key]['operador'] = "";
-				if($value['despacho']){
-				    $despacho = $value['despacho'];
-				    foreach($despacho as $keyD => $valueD){
-				    	$despachoguias = $valueD['despachoguia'];
-				    	foreach($despachoguias as $keyDG => $valueDG){
-					    	$guias = $valueDG['guia'];
-					    	$redencionesP[$key]['guia'] .= $guias['guia']." - ";
-						    $redencionesP[$key]['operador'] .= $guias['operador']." - ";
+				
+				foreach ($value['redencionesProductos'] as $keyRP => $valueRP) {
+					//echo "<pre>"; print_r($valueRP); echo "</pre>"; exit;	
+					if(isset($valueRP['despacho'])){
+					    $despacho = $valueRP['despacho'];
+					    foreach($despacho as $keyD => $valueD){
+					    	$despachoguias = $valueD['despachoguia'];
+					    	foreach($despachoguias as $keyDG => $valueDG){
+						    	$guias = $valueDG['guia'];
+						    	$redencionesP[$key]['guia'] .= $guias['guia']." - ";
+							    $redencionesP[$key]['operador'] .= $guias['operador']." - ";
+							    $redencionesP[$key]['guiaImagen'] = $guias['ruta'];
+						    }
 					    }
-				    }
+					}
 				}
 
 				$otros = $value['otros'];

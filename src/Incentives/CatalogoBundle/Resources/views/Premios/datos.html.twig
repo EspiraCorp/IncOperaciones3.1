@@ -1,134 +1,121 @@
-{% extends app.request.isXmlHttpRequest ? "MDWDemoBundle::layout_ajax.html.twig" : "::base.html.twig" %}
-{% block title %}Datos Producto{% endblock %}
-{% block cuerpo %}
-<div class="row-fluid sortable ui-sortable">
-<div class="box">
-    <div class="box-header well" data-original-title="">
-        Productos
-        <div class="box-icon">
-				<div class="box-icon">
-                    <a href="{{ path('producto') }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
-                </div>
-    	</div>
-    </div>
-</div>
-    <div class="box span6">
-	    <div class="box-content">
-	    	<div class="box-header well">
-				<h2>
-				<a href="{{ path('producto_editar',  {"id": producto.id}) }}">
-					<button class="btn btn-primary">
-						<i class="icon-edit icon-white"></i>
-					</button>
-				</a>
-				</i>Datos Producto</h2>
-			</div>
+{% extends '::baseLte.html.twig' %}
 
-				<table class="table table-bordered table-striped">
-					<tbody>
-						<tr><td>Nombre</td><td>{{ producto.nombre }}</td></tr>
-						<tr><td>Categoria</td><td>{{ producto.categoria.nombre}}</td></tr>
-						<tr><td>Calasificación</td><td>{{ producto.productoclasificacion.nombre}}</td></tr>
-						<tr><td>Referencia</td><td>{{ producto.referencia }}</td></tr>
-						<tr><td>Marca</td><td>{{ producto.marca }}</td></tr>
-						<tr><td>Descripcion</td><td>{{ producto.descripcion }}</td></tr>
-						<tr><td>Codigo EAN</td><td>{{ producto.codEAN }}</td></tr>
-						<tr><td>Codigo Incentives</td><td>{{ producto.codInc }}</td></tr>
-						<tr><td>Dimensiones</td><td>{{ producto.Alto }} x {{ producto.Largo }} x {{ producto.Ancho }} cm.</td></tr>
-						<tr><td>Peso</td><td>{{ producto.peso }} Kg.</td></tr>
-						<tr><td>IVA</td><td>{{ producto.iva*100 }} %</td></tr>
-						<tr><td>Logistica</td><td>{{ producto.logistica*100 }} %</td></tr>
-						<tr><td>Incremento</td><td>{{ producto.incremento*100 }} %</td></tr>
-					</tbody>
-				</table>
-		</div>
-	</div>
+{% block title %}{{ parent() }}::Datos Premio{% endblock %}
+{% block sectiontitle %}<h1>Catálogo<small>Datos Premio</small></h1>{% endblock %}
+{% block breadcum %} <li><a href="{{ path('producto') }}"><i class="fa fa-star"></i>Catalogo</a><a href="{{ path('producto_listadouniversal') }}"><li class="active">Datos Premio</li></a>{% endblock %}
+{% block content %}
 
-	<div class="box span5">
-		<div class="box-content">
-		    <div class="box-header well">
-				<h2>
-					<a href="{{ path('producto_agregarimagen',  {"id": producto.id}) }}">
-						<button class="btn btn-small btn-success">
-							<i class="icon-plus icon-white"></i>
+<div class="row">
+	<div class="col-md-6">
+	    <div class="box box-warning">
+		    <div class="box-header bg-black">
+				<h3 class="box-title">Datos Premio {{ premio.id }}</h3>
+				<div class="box-tools pull-right">
+					<a href="{{ path('premios_combo_editar',  {"premio": premio.id}) }}">
+						<button class="btn btn-primary">
+							<i class="fa fa-edit"></i>
 						</button>
 					</a>
-					Imagenes
-				</h2>
+				</div>
 			</div>
-			<table class="table table-bordered table-striped">
-				<thead>
-					<tr>
-						<th>Imagenes</th>
-						<th>Estado</th>
-					</tr>
-				</thead>
-				<tbody>
-					{% for imagenes in imagen %}		
-							<tr>
-								<td><a href="{{imagenes.path| slice (8)}}" target='_blank'><img src="{{(imagenes.path| slice (8))[:-4]}}_min.jpg"><a></td>
-								<td>{% if (imagenes.estado=='0') %}
-										<a class="btn btn-danger 1" onClick=confirmar('{{ url("producto_estadoimagen", {"id": imagenes.id}) }}') href="#">
-										Inactiva</a>
-									{% else %}
-										<a class="btn btn-success 1" onClick=confirmar('{{ url("producto_estadoimagen", {"id": imagenes.id}) }}') href="#">
-										Activa</a>
-									{% endif %}
-								</td>
-							</tr>			
-					{% endfor %}
-				</tbody>
-			</table>
+			<div class="box-body">
+				<table class="table table-bordered table-striped table-condensed dataTable">
+					<tbody>
+						<tr><td>SKU</td>
+							<td>{{ premio.codigo }}</td>
+						</tr>
+						<tr><td>Nombre</td>
+							<td>{{ premio.nombre }}</td>
+						</tr>
+						
+						<tr><td>Referencia</td>
+							<td>{{ premio.referencia }}</td>
+						</tr>
+						<tr><td>Marca</td>
+							<td>{{ premio.marca }}</td>
+						</tr>
+						<tr><td>Descripcion</td>
+							<td>{{ premio.descripcion }}</td>
+						</tr>
+						<tr><td>Categoria</td>
+							<td>{{ premio.categoria.nombre}}</td>
+						</tr>
+						<tr><td>Puntos</td><td>{{ premio.puntos|number_format(2, '.', ',')  }}</td></tr>
+						<tr><td>Precio</td><td>$ {{ premio.precio|number_format(2, '.', ',')  }}</td></tr>
+						<tr><td>Incremento</td><td>{{ premio.incremento|number_format(2, '.', ',')  }} %</td></tr>
+						<tr><td>Logistica</td><td>$ {{ premio.logistica|number_format(2, '.', ',')  }}</td></tr>
+						<tr><td>Puntos Temporal</td><td>{{ premio.puntos|number_format(2, '.', ',')  }}</td></tr>
+						<tr><td>Precio Temporal</td><td>$ {{ premio.precioTemporal|number_format(2, '.', ',')  }}</td></tr>
+						<tr><td>Incremento Temporal</td><td>{{ premio.incrementoTemporal|number_format(2, '.', ',')  }} %</td></tr>
+						<tr><td>Logistica Temporal</td><td>$ {{ premio.logisticaTemporal|number_format(2, '.', ',')  }} </td></tr>
+						<tr><td>Aprobacion</td><td>{% if(premio.estadoAprobacion) %}{{ premio.estadoAprobacion.nombre }}{% else %}Por Aprobar{% endif %}</td></tr>
+						<tr><td>Estado</td><td>{{ premio.estado.nombre }}</td></tr>
+						<tr><td>Imagen</td>
+							<td>
+								{% if premio.nombre!="" %}
+									<a href="../../../{{premio.imagen | slice (0)}}" target='_blank'><img src="../../../{{(premio.imagen | slice (0))[:-4]}}.jpg"><a>
+								{% else %}
+
+								{% endif %}
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 		</div>
 	</div>
 
-	<div class="box span6">
-		<div class="box-content">
-		    <div class="box-header well">
-				<h2>
-					<a href="{{ path('producto_agregarprecio',  {"id": producto.id}) }}">
-						<button class="btn btn-small btn-success">
-							<i class="icon-plus icon-white"></i>
-						</button>
-					</a>	
-					Precios
-				</h2>
+	<div class="col-md-6">
+	    <div class="box box-warning">
+		    <div class="box-header bg-black">
+				<h3 class="box-title">Datos Productos</h3>
 			</div>
-			<table class="table table-bordered table-striped">
-					<thead>
-						<tr>
-							<th>Proveedor</th>
-							<th>Precio</th>
-							<th>Principal</th>
-							<th>Estado</th>
-						</tr>
-					</thead>
-					<tbody>
-						{% for precio in productoprecio %}
-						<tr>
-							<td>{{precio.proveedor.nombre}}</td>
-							<td><a href="{{ path("producto_editarprecio", {"id": precio.id}) }}">{{precio.precio}}</a></td>
-							<td>{{precio.principal}}</td>
-							<td>{% if (precio.estado=='0') %}
-										<a class="btn btn-danger 1" onClick=confirmar('{{ url("producto_estadoprecio", {"id": precio.id}) }}') href="#">
-										Inactivo</a>
-									{% else %}
-										<a class="btn btn-success 1" onClick=confirmar('{{ url("producto_estadoprecio", {"id": precio.id}) }}') href="#">
-										Activo</a>
-									{% endif %}
-								</td>
-						</tr>
-						{% endfor %}
-					</tbody>
-				</table>
+			<div class="box-body">
+				{% set j=0 %}
+				{% for producto in productos %}
+					{% set j=j+1 %}
+					<table class="table table-bordered table-striped table-condensed dataTable">
+						<tbody>
+							<tr><td colspan="2"><b>Producto {{ j }}</b></td>
+							</tr>
+							<tr><td>SKU</td>
+								<td>{{ producto.producto.codInc }}</td>
+							</tr>
+							<tr><td>Nombre</td>
+								<td>{{ producto.producto.nombre }}</td>
+							</tr>
+							<tr><td>Referencia</td>
+								<td>{{ producto.producto.referencia }}</td>
+							</tr>
+							<tr><td>Marca</td>
+								<td>{{ producto.producto.marca }}</td>
+							</tr>
+							<tr><td>Descripcion</td>
+								<td>{{ producto.producto.descripcion }}</td>
+							</tr>
+							<tr><td>Categoria</td>
+								<td>{{ producto.producto.categoria.nombre}}</td>
+							</tr>
+							<tr><td>Precio</td><td>$ {{ producto.producto.precio|number_format(2, '.', ',')  }}</td></tr>
+							<tr><td>Incremento</td><td>{{ producto.producto.incremento|number_format(2, '.', ',')  }} %</td></tr>
+							<tr><td>Logistica</td><td>$ {{ producto.producto.logistica|number_format(2, '.', ',')  }}</td></tr>
+							<tr><td>Estado</td><td>{{ producto.producto.estado.nombre }}</td></tr>
+							<tr><td>Imagen</td><td><a href="../../../{{premio.imagen | slice (7)}}" target='_blank'><img src="../../../{{(premio.imagen | slice (7))[:-4]}}.jpg"><a></td></tr>
+						</tbody>
+					</table>
+					<br>
+				{% endfor %}
+			</div>
 		</div>
 	</div>
-	
+</div>
 
 {% endblock %}
 
-{% block javascripts %}
+{% block javascript %}
+	
 	{{ parent() }}
+	
 	<script>
 
 	function confirmar(ruta)
@@ -141,52 +128,17 @@
 	  
 	}
 
-        var x;
-		x=$(document);
-		x.ready(inicializarEventos);
+	$("#agregar_imagen").colorbox({href:"{{ path('producto_agregarimagen',  {"id": premio.id}) }}"});
 
-		function inicializarEventos()
-		{
-		 var x;
-		 x=$("div.estado a");
-		 x.each(resaltarParrafos);
-		}
-
-		// function resaltarParrafos()
-		// {
-		//  var x=$(this);
-		//  var parrafo=(x.attr('id'));
-		//  parrafo=parseInt(parrafo);
-		//  alert(parrafo);
-		//  $("#"+parrafo).click(function(evento){
-		//                evento.preventDefault();
-		//                $("#destino").load("{{ url('proveedores_estado', {'id':"+parrafo+"}) }}"),	
-		// 					function() {
-		// 						alert( "Actualizacion realizada." );
-		// 					} );
-		//        });
-		// }
-
-        // x=$("div.estado a");
-        // x.each(mostrar);
-
-        // function mostrar()
-        // {
-        // 	var x=$(this);
-        // 	alert (x.attr('id'));
-        // }
-
-  //       function resaltarParrafos(){
-  //       	var x=$(this);
-		// 	var parrafo=(x.attr('id'));
-		// 	alert(parrafo);
-		// 	$('div.estado').click(function(evento){
-		// 		evento.preventDefault();
-		// 		$("#destino").load("{{ url('proveedores_estado', {'id':"+parrafo+"}) }}",	
-		// 			function() {
-		// 				alert( "Actualizacion realizada." );
-		// 			} );
-		// 	});
-		// })
 	</script>
+{% endblock %}
+
+{% block stylesheet %}
+  {{ parent() }}
+  <style>
+    body {
+        width: 110%;
+    }
+  </style>
+
 {% endblock %}

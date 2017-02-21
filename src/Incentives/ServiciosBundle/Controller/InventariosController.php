@@ -14,6 +14,7 @@ use Incentives\RedencionesBundle\Entity\GuiaEnvio;
 use Incentives\InventarioBundle\Entity\InventarioGuia;
 use Incentives\ServiciosBundle\Entity\Servicios;
 use Incentives\ServiciosBundle\Entity\ServiciosLog;
+use Incentives\InventarioBundle\Entity\Despachos;
 
 use Symfony\Component\HttpFoundation\Response;
 
@@ -30,13 +31,13 @@ class InventariosController extends Controller
     	
 
         $cliente = $_SERVER['REMOTE_ADDR'];
-        $ruta = $_SERVER['PATH_INFO'];
+        //$ruta = $_SERVER['PATH_INFO'];
         $datos = $_SERVER['REQUEST_URI'];
 
         // obtiene el valor de un parámetro $_GET
         $parametros = $request->getContent();
+        //$parametros = "results=%5B%7B%22orden%22%3A+%22000000098250%22%2C+%22codigos%22%3A+%5B%2210101738%22%5D%2C+%22cantidad%22%3A+1.0%2C+%22ean%22%3A+%22075020030924%22%7D%5D";
         $parametrosAlm = $parametros;
-        //$parametros = "results=%5B%7B%22orden%22%3A+%2200000005090%22%2C+%22codigos%22%3A+%5B%22101066%22%2C+%22101067%22%2C+%22101068%22%2C+%22101069%22%5D%2C+%22cantidad%22%3A+1.0%2C+%22ean%22%3A+%22123%22%7D%5D";
         $parametros = explode("=",urldecode($parametros));
 		$parametros = json_decode($parametros[1]);
 		$parametros = $parametros[0];
@@ -48,7 +49,7 @@ class InventariosController extends Controller
 		$ServiciosLog ->setServicio($servicio);
 		$ServiciosLog ->setFecha(date_create("now"));
 		$ServiciosLog ->setCliente($cliente);
-		$ServiciosLog ->setUrl($ruta);
+		//$ServiciosLog ->setUrl($ruta);
 		$ServiciosLog ->setDatos($parametrosAlm);
 		$em->persist($ServiciosLog);
 		$em->flush();
@@ -115,75 +116,101 @@ class InventariosController extends Controller
 	
 		                    //Buscar la redencion mas antigua o prioritaria en estado de compra
 		                    $qb = $em->createQueryBuilder();            
-		                    $qb->select('r','o','op','pt','pg','p','re','c');
-		                    $qb->from('IncentivesRedencionesBundle:Redenciones','r');
-		                    $qb->leftJoin('r.ordenesProducto', 'op');
-		                    $qb->leftJoin('r.participante', 'pt');
-		                    $qb->leftJoin('pt.programa', 'pg');
-						    $qb->leftJoin('pg.cliente', 'c');
-		                    $qb->leftJoin('op.producto', 'p');
-		                    $qb->leftJoin('r.redencionesenvios', 're');
-		                    $qb->leftJoin('op.ordenesCompra', 'o');
+		                    $qb->select('rp');
+		                    $qb->from('IncentivesRedencionesBundle:RedencionesProductos','rp');
+		                    $qb->leftJoin('rp.ordenesProducto', 'op');
 		                    $str_filtro = 'op.id = '.$id_prod;
-		                    //$str_filtro .= ' AND r.redencionestado = 3';
+		                    $str_filtro .= ' AND rp.estado = 3';
 		                    $qb->where($str_filtro);
-		                    $qb->orderBy('r.fecha', 'asc');
+		                    $qb->orderBy('rp.fecha', 'asc');
 		                    $qb->setMaxResults(1);
-		                    $redencion = $qb->getQuery()->getOneOrNullResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
-	//echo "<pre>"; print_r($redencion); echo "</pre>";exit;
-	
-		                    if(isset($redencion)){
-	
-		                        $redencionA = $em->getRepository('IncentivesRedencionesBundle:Redenciones')->find($redencion['id']);
-		                        $estado = $em->getRepository('IncentivesRedencionesBundle:Redencionesestado')->find('4');
-		                        $redencionA->setRedencionestado($estado);
-		                        $em->persist($redencionA);
-		                        $em->flush();
-	
-		                        //Almacenar Historico
-		                        $redencionH = $this->get('incentives_redenciones');
-		                        $redencionH->insertar($redencionA);
-		
-		                        $codInventario = $valueC;
-		                        $inventarioP->setRedencion($redencionA);
-		                        $inventarioP->setCodigo($codInventario);
-	
-		                        $label[$iC]['codigo'] = "$codInventario";
-		                        $label[$iC]['cliente'] = $redencion['participante']['programa']['cliente']['nombre'];
-		                        $label[$iC]['programa'] = $redencion['participante']['programa']['nombre'];
-		                        $label[$iC]['orden_compra']= $redencion['ordenesProducto']['ordenesCompra']['consecutivo'];
-		                        $label[$iC]['redencion'] = $redencion['codigoredencion'];
-		                        $label[$iC]['nombre_receptor'] = $redencion['participante']['nombre'];
+		                    $RedencionesProductos = $qb->getQuery()->getOneOrNullResult();
+							
+							if(isset($RedencionesProductos)){
+
+	                            $redencionProducto = $em->getRepository('IncentivesRedencionesBundle:RedencionesProductos')->find($RedencionesProductos->getId());
+	                            $estado = $em->getRepository('IncentivesRedencionesBundle:Redencionesestado')->find('4');
+	                            $redencionProducto->setEstado($estado);
+	                            $em->persist($redencionProducto);
+
+	                            $redencion = $em->getRepository('IncentivesRedencionesBundle:Redenciones')->find($redencionProducto->getRedencion()->getId());
+	                            $redencion->setRedencionestado($estado);
+	                            $em->persist($redencionProducto);
+	                            
+	                            //traer los datos de envio para el despacho
+	                            $despacho = new Despachos();
+	                            
+	                            //Traer los ultimos datos de envio
+	                            $qb = $em->createQueryBuilder();            
+	                            $qb->select('e');
+	                            $qb->from('IncentivesRedencionesBundle:RedencionesEnvios','e');
+	                            $str_filtro = 'e.redencion ='.$redencion->getId();
+	                            $qb->where($str_filtro);
+	                            $qb->orderBy('e.id', 'DESC');
+	                            $qb->setMaxResults(1);
+	                            $datosEnvio = $qb->getQuery()->getOneOrNullResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
+	                    
+	                            $despacho->setDocumento($datosEnvio['documento']);
+	                            $despacho->setNombre($datosEnvio['nombre']);
+	                            $despacho->setObservaciones($datosEnvio['observaciones']);
+	                            $despacho->setCiudadNombre($datosEnvio['ciudadNombre']);
+	                            $despacho->setDireccion($datosEnvio['direccion']);
+	                            $despacho->setBarrio($datosEnvio['barrio']);
+	                            $despacho->setTelefono($datosEnvio['telefono']);
+	                            $despacho->setCelular($datosEnvio['celular']);
+	                            $despacho->setDepartamentoNombre($datosEnvio['departamentoNombre']);
+	                            $despacho->setNombreContacto($datosEnvio['nombreContacto']);
+	                            $despacho->setDocumentoContacto($datosEnvio['documentoContacto']);
+	                            $despacho->setCiudadContacto($datosEnvio['ciudadContacto']);
+	                            $despacho->setDireccionContacto($datosEnvio['direccionContacto']);
+	                            $despacho->setBarrioContacto($datosEnvio['barrioContacto']);
+	                            $despacho->setTelefonoContacto($datosEnvio['telefonoContacto']);
+	                            $despacho->setCelularContacto($datosEnvio['celularContacto']);
+	                            $despacho->setDepartamentoContacto($datosEnvio['departamentoContacto']);
+	                            $despacho->setRedencionesProductos($redencionProducto);
+	                            $despacho->setProducto($ordenesProducto->getProducto());
+	                            $despacho->setOrdenProducto($ordenesProducto);
+	                            $despacho->setCantidad(1);
+	                            $em->persist($despacho);
+
+	                            $codInventario = time().$redencion->getId();
+	                            $inventarioP->setRedencionProducto($redencionProducto);
+	                            $inventarioP->setDespacho($despacho);
+	                            $inventarioP->setCodigo($codInventario);
+	                            
+	                            $em->flush();
+
+	                            $label[$iC]['codigo'] = $codInventario;
+		                        $label[$iC]['cliente'] = $RedencionesProductos->getRedencion()->getParticipante()->getPrograma()->getCliente()->getNombre();
+		                        $label[$iC]['programa'] = $RedencionesProductos->getRedencion()->getParticipante()->getPrograma()->getNombre();
+		                        $label[$iC]['orden_compra']= $orden->getConsecutivo();
+		                        $label[$iC]['redencion'] = $RedencionesProductos->getRedencion()->getCodigoredencion();
+		                        $label[$iC]['nombre_receptor'] = $datosEnvio['nombre'];
 								//echo "<pre>"; print_r($redencion['redencionesenvios']); echo "</pre>"; exit;
 								//ultimos datos envio
-								$indice = count($redencion['redencionesenvios']) - 1;
-								$redencionesenvios = $redencion['redencionesenvios'][$indice];
-		                        $label[$iC]['identificacion']  = $redencionesenvios['documento'];
-		                        $label[$iC]['departamento_id'] = $redencionesenvios['departamentoNombre'];
-								$label[$iC]['ciudad_id'] = $redencionesenvios['ciudadNombre'];
-		                        $label[$iC]['barrio'] = $redencionesenvios['barrio'];
-		                        $label[$iC]['direccion'] = $redencionesenvios['direccion'];
-		                        $label[$iC]['telefono'] = $redencionesenvios['telefono'];
-		                        $label[$iC]['celular'] = $redencionesenvios['celular'];
-		                        $label[$iC]['producto'] = $redencion['ordenesProducto']['producto']['nombre'];
-		                        $label[$iC]['marca'] = $redencion['ordenesProducto']['producto']['marca'];
-		                        $label[$iC]['referencia'] = $redencion['ordenesProducto']['producto']['referencia'];
-	
+
+		                        $label[$iC]['identificacion']  = $datosEnvio['documento'];
+		                        $label[$iC]['departamento_id'] = $datosEnvio['departamentoNombre'];
+								$label[$iC]['ciudad_id'] = $datosEnvio['ciudadNombre'];
+		                        $label[$iC]['barrio'] = $datosEnvio['barrio'];
+		                        $label[$iC]['direccion'] = $datosEnvio['direccion'];
+		                        $label[$iC]['telefono'] = $datosEnvio['telefono'];
+		                        $label[$iC]['celular'] = $datosEnvio['celular'];
+		                        $label[$iC]['producto'] = $ordenesProducto->getProducto()->getNombre();
+		                        $label[$iC]['marca'] = $ordenesProducto->getProducto()->getMarca();
+		                        $label[$iC]['referencia'] = $ordenesProducto->getProducto()->getReferencia();
 		                    }
-	
-		                    $em->persist( $inventarioP );
-		                    
-		                    $inventarioH = $this->get('incentives_inventario');
-                            $inventarioH->insertar($inventarioP);
-                            
+
+		                    $em->persist($inventarioP);                    
 		                    $em->flush();
-		            	}
-			            $ordenesProducto->setCantidadrecibida($cantidadTotal);
-			            $em->persist($ordenesProducto);
-			            $em->flush();
+
+		                }
+
+		                $ordenesProducto->setCantidadrecibida($cantidadTotal);
+		                $em->persist($ordenesProducto);
+		                $em->flush();
 		                
 			            $this->cerrarOrdenAction($orden->getId());
-				          
 
 						$respuesta['estado'] = 1;
 						$respuesta['mensaje'] = $label;
@@ -219,14 +246,14 @@ class InventariosController extends Controller
         // obtener el objeto de la petición
         
 
-        $cliente = $_SERVER['REMOTE_ADDR'];
-        $ruta = $_SERVER['PATH_INFO'];
-        $datos = $_SERVER['REQUEST_URI'];
+        //$cliente = $_SERVER['REMOTE_ADDR'];
+        //$ruta = $_SERVER['PATH_INFO'];
+        //$datos = $_SERVER['REQUEST_URI'];
         $parametros = $request->getContent();
 
         //Almacenar Log de Servicios
         $em = $this->getDoctrine()->getManager();   
-        $servicio = $em->getRepository('IncentivesServiciosBundle:Servicios')->find(5);
+        /*$servicio = $em->getRepository('IncentivesServiciosBundle:Servicios')->find(5);
 		$ServiciosLog = new ServiciosLog();
 		$ServiciosLog ->setServicio($servicio);
 		$ServiciosLog ->setFecha(date_create("now"));
@@ -234,7 +261,7 @@ class InventariosController extends Controller
 		$ServiciosLog ->setUrl($ruta);
 		$ServiciosLog ->setDatos($parametros);
 		$em->persist($ServiciosLog);
-		$em->flush();
+		$em->flush();*/
 
 	//$parametros = "results=%5B%7B%22codigo%22%3A+%2210101%22%2C+%22valor_guia%22%3A+%2212345%22%2C+%22guia%22%3A+%22123%22%7D%5D";
         $parametros = explode("=",urldecode($parametros));
@@ -343,14 +370,14 @@ class InventariosController extends Controller
         // obtener el objeto de la petición
         
 
-        $cliente = $_SERVER['REMOTE_ADDR'];
-        $ruta = $_SERVER['PATH_INFO'];
-        $datos = $_SERVER['REQUEST_URI'];
+        //$cliente = $_SERVER['REMOTE_ADDR'];
+        //$ruta = $_SERVER['PATH_INFO'];
+        //$datos = $_SERVER['REQUEST_URI'];
         $parametros = $request->getContent();
 
         //Almacenar Log de Servicios
         $em = $this->getDoctrine()->getManager();   
-        $servicio = $em->getRepository('IncentivesServiciosBundle:Servicios')->find(5);
+        /*$servicio = $em->getRepository('IncentivesServiciosBundle:Servicios')->find(5);
 		$ServiciosLog = new ServiciosLog();
 		$ServiciosLog ->setServicio($servicio);
 		$ServiciosLog ->setFecha(date_create("now"));
@@ -358,7 +385,7 @@ class InventariosController extends Controller
 		$ServiciosLog ->setUrl($ruta);
 		$ServiciosLog ->setDatos($parametros);
 		$em->persist($ServiciosLog);
-		$em->flush();
+		$em->flush();*/
 
 	//$parametros = "results=%5B%7B%22devolucion%22%3A+%22roto%22%2C+%22codigo%22%3A+%2210106%22%7D%5D";
         $parametros = explode("=",urldecode($parametros));
@@ -429,9 +456,9 @@ class InventariosController extends Controller
                 // obtener el objeto de la petición
     	
 
-        $cliente = $_SERVER['REMOTE_ADDR'];
-        $ruta = $_SERVER['PATH_INFO'];
-        $datos = $_SERVER['REQUEST_URI'];
+        //$cliente = $_SERVER['REMOTE_ADDR'];
+        //$ruta = $_SERVER['PATH_INFO'];
+        //$datos = $_SERVER['REQUEST_URI'];
 
         // obtiene el valor de un parámetro $_GET
         $parametros = $request->getContent();
@@ -444,15 +471,15 @@ class InventariosController extends Controller
 
         //Almacenar Log de Servicios
         $em = $this->getDoctrine()->getManager();   
-        $servicio = $em->getRepository('IncentivesServiciosBundle:Servicios')->find(5);
-		$ServiciosLog = new ServiciosLog();
+        /*$servicio = $em->getRepository('IncentivesServiciosBundle:Servicios')->find(5);
+		$ServiciosLog = new ServiciosLog();	
 		$ServiciosLog ->setServicio($servicio);
 		$ServiciosLog ->setFecha(date_create("now"));
 		$ServiciosLog ->setCliente($cliente);
 		$ServiciosLog ->setUrl($ruta);
 		$ServiciosLog ->setDatos($parametrosAlm);
 		$em->persist($ServiciosLog);
-		$em->flush();
+		$em->flush();*/
         $respuesta = array();
 
         if(!(isset($parametros->orden) || $parametros->orden!="")){

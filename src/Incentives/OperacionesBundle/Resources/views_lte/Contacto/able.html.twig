@@ -1,0 +1,9 @@
+{% extends '::base.html.twig' %}
+{% block cuerpo %}
+{% if (estado==0) %}
+Deshabilitado
+{% else %}
+Habilitado
+{% endif %}
+contacto {{ id }} {{ contacto.nombres }}
+{% endblock %}

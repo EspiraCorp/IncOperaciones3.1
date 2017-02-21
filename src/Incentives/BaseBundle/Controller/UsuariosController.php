@@ -27,11 +27,12 @@ class UsuariosController extends Controller
             $em = $this->getDoctrine()->getManager();
             
             $session = $this->get('session');
-            
+
             $page = $request->get('page');
             if(!$page) $page= 1;
             
-            if($pro = $request->request->get('usuario')){
+            if($request->request->all()){
+                $pro = $request->request->all()['user'];
                 $page = 1;
                 $session->set('filtros_usuarios', $pro);
             }
@@ -204,10 +205,10 @@ class UsuariosController extends Controller
 
 
       // Create the Transport
-    $transport = \Swift_SmtpTransport::newInstance('smtp.office365.com', 25, 'tls')
+    $transport = \Swift_SmtpTransport::newInstance('email-smtp.us-east-1.amazonaws.com', 587, 'tls')
           ->setAuthMode('login')
-          ->setUsername('operaciones@inc-group.co')
-          ->setPassword('IncGroup2016!')
+          ->setUsername('AKIAJAETNFKDQJKWT64Q')
+          ->setPassword('Aq29dWq2pKC+XhNaMGa1kG+vwjmNKBxbz7JJ4R1cRqjt')
           ;
 
     // Create the Mailer using your created Transport

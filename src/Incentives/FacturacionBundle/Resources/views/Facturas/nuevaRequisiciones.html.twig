@@ -18,7 +18,7 @@
 						<tr><td>Cliente</td><td>{{ programa.cliente.nombre }}</td></tr>
 					</tbody>
 				</table>
-<form action="{{ path('factura_requisicionesgenerar') }}" method="POST"  class="form-horizontal" novalidate>
+<form action="{{ path('factura_requisicionesgenerar') }}" method="POST"  class="form-horizontal">
     <fieldset>
         <input type='hidden' name='programa' value={{ programa.id }}>
         <div class="control-group">

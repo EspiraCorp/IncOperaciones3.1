@@ -53,14 +53,14 @@
         {% set i=0 %}
           <div class="box span10">
             <div class="box-header well" data-original-title="">
-              <h2>{{ producto.premiosproductos[0].producto.codInc }}</h2>
+              <h2>{{ producto.codigo }}</h2>
             </div>
             <div class="box-content">
                   <div style="float: left; width: 200px;"><ul class="thumbnails gallery">
-                    {% if(producto.premiosproductos[0].producto.imagenproducto) %}
-                    <li id="imagen-{{producto.premiosproductos[0].producto.imagenproducto[0].id}}" class="thumbnail" style="widht: 100px">
-                      <a class="cboxElement" href="../../../{{ producto.premiosproductos[0].producto.imagenproducto[0].path | slice (7)}}" style="background:url(../../../{{(producto.premiosproductos[0].producto.imagenproducto[0].path| slice (7))[:-4]}}_min.jpg)">
-                        <img alt="{{ producto.premiosproductos[0].producto.codInc }}" src="../../../{{(producto.premiosproductos[0].producto.imagenproducto[0].path| slice (7))[:-4]}}_min.jpg" style="display: block;">
+                    {% if(producto.premiosproductos) %}
+                    <li id="imagen-{{producto.id}}" class="thumbnail" style="widht: 100px">
+                       <a class="cboxElement" href="../../../../{{ producto.imagen | slice (7)}}" style="background:url(../../../../{{(producto.imagen | slice (7))[:-4]}}_min.jpg)">
+                        <img alt="{{ producto.codigo}}" src="../../../{{(producto.imagen | slice (7))[:-4]}}_min.jpg" style="display: block;">
                       </a>
                     </li>
                     {% endif %}
@@ -71,16 +71,16 @@
               <table class="table" style="width: 600px !important;">
                 <tbody>
                   <tr>
-                    <td>Nombre </td><td> {{ producto.premiosproductos[0].producto.nombre }}</td>
+                    <td>Nombre </td><td>{{ producto.nombre }}</td>
                   </tr>
                   <tr>
-                    <td>Referencia </td><td> {{ producto.premiosproductos[0].producto.referencia }}</td>
+                    <td>Referencia </td><td>{{ producto.referencia }}</td>
                   </tr>
                   <tr>
-                    <td width="200px">Descripción </td><td> {{ producto.premiosproductos[0].producto.descripcion }}</td>
+                    <td width="200px">Descripción </td><td>{{ producto.descripcion }}</td>
                   </tr>
                    <tr>
-                    <td>Marca </td><td> {{ producto.premiosproductos[0].producto.marca }}</td>
+                    <td>Marca </td><td>{{ producto.marca }}</td>
                   </tr>
                   <tr>
                     <td>Categoria </td><td> {% if producto.categoria is null %}{% else %}{{ producto.categoria.nombre }}{% endif %}</td>

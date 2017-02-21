@@ -59,6 +59,6 @@ class ProgramaclienteType extends AbstractType
      */
     public function getName()
     {
-        return 'incentives_catalogobundle_programa';
+        return 'programa';
     }
 }

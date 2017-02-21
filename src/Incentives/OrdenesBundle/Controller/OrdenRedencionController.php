@@ -21,6 +21,7 @@ use Incentives\OrdenesBundle\Form\Type\OrdenesProductoCantidadType;
 use Incentives\OrdenesBundle\Form\Type\OrdenesProductoType;
 use Incentives\OrdenesBundle\Form\Type\OrdenesTrackingType;
 use Incentives\OrdenesBundle\Form\Type\OrdenesGenerarType;
+use Hackzilla\BarcodeBundle\Utility\Barcode;
 
 use PHPExcel;
 use PHPExcel_IOFactory;
@@ -750,7 +751,7 @@ class OrdenRedencionController extends Controller
             $em->persist($orden);
             $em->flush();
             $this->pdfAction($orden->getId()); 
-            //$this->pdfCodesAction($orden->getId()); 
+            $this->pdfCodesAction($orden->getId()); 
             $this->totalordenAction($orden->getId());
         }
 
@@ -1032,6 +1033,7 @@ class OrdenRedencionController extends Controller
       $estado = $em->getRepository('IncentivesOrdenesBundle:OrdenesEstado')->find('5'); 
 
       $orden->setOrdenesEstado($estado);
+      $orden->setFechaCierre(date_create("now"));
 
       //Revisar cantidades de la orden
       $ordenesProducto = $em->getRepository('IncentivesOrdenesBundle:OrdenesProducto')->findByordenesCompra($orden->getId());
@@ -1109,10 +1111,10 @@ class OrdenRedencionController extends Controller
 	     $correos=  explode(',',$destino->getCorreo());
 
         // Create the Transport
-        $transport = \Swift_SmtpTransport::newInstance('smtp.office365.com', 25, 'tls')
+        $transport = \Swift_SmtpTransport::newInstance('email-smtp.us-east-1.amazonaws.com', 587, 'tls')
           ->setAuthMode('login')
-          ->setUsername('operaciones@inc-group.co')
-          ->setPassword('IncGroup2016!')
+          ->setUsername('AKIAJAETNFKDQJKWT64Q')
+          ->setPassword('Aq29dWq2pKC+XhNaMGa1kG+vwjmNKBxbz7JJ4R1cRqjt')
           ;
 
         if($accion=="cancelar"){
@@ -1131,7 +1133,7 @@ class OrdenRedencionController extends Controller
             ->setSubject($subjet)
             ->setFrom(array('operaciones@inc-group.co' => 'Grupo Inc'))
             //->setTo($destino->getCorreo())
-            ->setTo(array_merge(array('alievano@inc-group.co','controloperaciones@inc-group.co','compras1@inc-group.co','compras2@inc-group.co','compras3@inc-group.co','compras4@inc-group.co'),$correos))
+            ->setTo(array_merge(array('asanchez@inc-group.co','controloperaciones@inc-group.co','compras1@inc-group.co','compras2@inc-group.co','compras3@inc-group.co','compras4@inc-group.co'),$correos))
             ->attach(\Swift_Attachment::fromPath($this->container->getParameter('kernel.root_dir').'/..'.$orden->getRutapdf()))
             
             ->setBody(
@@ -1159,10 +1161,10 @@ class OrdenRedencionController extends Controller
         $orden = $em->getRepository('IncentivesOrdenesBundle:OrdenesCompra')->find($id);
         
         // Create the Transport
-        $transport = \Swift_SmtpTransport::newInstance('smtp.office365.com', 25, 'tls')
+        $transport = \Swift_SmtpTransport::newInstance('email-smtp.us-east-1.amazonaws.com', 587, 'tls')
           ->setAuthMode('login')
-          ->setUsername('operaciones@inc-group.co')
-          ->setPassword('IncGroup2016!')
+          ->setUsername('AKIAJAETNFKDQJKWT64Q')
+          ->setPassword('Aq29dWq2pKC+XhNaMGa1kG+vwjmNKBxbz7JJ4R1cRqjt')
           ;
 
           $template = 'IncentivesOrdenesBundle:Ordenes:emaillogistico.txt.twig';
@@ -1199,25 +1201,25 @@ class OrdenRedencionController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $orden = $em->getRepository('IncentivesOrdenesBundle:OrdenesCompra')->find($id);
-        $productos = $em->getRepository('IncentivesOrdenesBundle:OrdenesProducto')->findBy(array('ordenesCompra' => $orden->getId(), 'estado' => 1));
+        $productos = $em->getRepository('IncentivesOrdenesBundle:OrdenesProducto')->findByOrdenesCompra($orden->getId());
         $destino = $em->getRepository('IncentivesOperacionesBundle:Proveedores')->find($orden->getProveedor()->getId());
         $contacto = $em->getRepository('IncentivesOperacionesBundle:Contacto')->findOneByProveedor($orden->getProveedor());
 
         //Cantidades por CC
         $ordenesOP = $em->getRepository('IncentivesOrdenesBundle:OrdenesCompra')->find($id);
-        $OrdenesProducto = $this->getDoctrine()->getRepository('IncentivesOrdenesBundle:OrdenesProducto')->findByOrdenesCompra($ordenesOP->getId());
+        $OrdenesProducto = $this->getDoctrine()->getRepository('IncentivesOrdenesBundle:OrdenesProducto')->findBy(array('ordenesCompra' => $ordenesOP->getId(), 'estado' => 1));
         $cantCC = array();
 
         foreach($OrdenesProducto as $keyOP => $valueOP){
             //Determinar los CC
 
             $qb = $em->createQueryBuilder(); 
-            $qb->select('r');
-            $qb->from('IncentivesRedencionesBundle:Redenciones','r');
-            $qb->leftJoin('r.ordenesProducto', 'op');
+            $qb->select('rp');
+            $qb->from('IncentivesRedencionesBundle:RedencionesProductos','rp');
+            $qb->leftJoin('rp.ordenesProducto', 'op');
+            $qb->leftJoin('rp.redencion', 'r');
             $qb->leftJoin('r.participante', 'p');
             $str_filtro = "op.id=".$valueOP->getId();
-            $str_filtro .= " AND op.estado=1";
             $qb->where($str_filtro);
             $qb->groupBy('p.programa');
             $ordenesProd = $qb->getQuery()->getResult();
@@ -1230,35 +1232,34 @@ class OrdenRedencionController extends Controller
                 $cantidadOP = 0;
 
                 $qb = $em->createQueryBuilder(); 
-                $qb->select('count(r)');
-                $qb->from('IncentivesRedencionesBundle:Redenciones','r');
-                $qb->leftJoin('r.ordenesProducto', 'op');
+                $qb->select('count(rp)');
+                $qb->from('IncentivesRedencionesBundle:RedencionesProductos','rp');
+                $qb->leftJoin('rp.ordenesProducto', 'op');
+                $qb->leftJoin('rp.redencion', 'r');
                 $qb->leftJoin('r.participante', 'p');
-                $str_filtro = "op.id=".$valueOP->getId()." AND p.programa=".$valueOP2->getParticipante()->getPrograma()->getId();
+                $str_filtro = "op.id=".$valueOP->getId()." AND p.programa=".$valueOP2->getRedencion()->getParticipante()->getPrograma()->getId();
                 $qb->where($str_filtro);
                 $cantidadOP = $qb->getQuery()->getSingleScalarResult();
 
                 $totalCant += $cantidadOP;
-
-                $datoCC .= $valueOP2->getParticipante()->getPrograma()->getCentroCostos()->getCentrocostos()."(".$cantidadOP.") ";
+                
+                $datoCC .= $valueOP2->getRedencion()->getParticipante()->getPrograma()->getCentroCostos()->getCentrocostos()."(".$cantidadOP.") ";
             }
 
+            //las cantidades sobrantes van para inventario
             $cantidadOP = $valueOP->getCantidad() - $totalCant;
-             if($cantidadOP!=0) $datoCC .= "1002(".$cantidadOP.") ";
-	     if($ordenesOP->getOrdenestipo()->getId()==1) $datoCC = $valueOP->getCentroCostos()->getCentrocostos();
+            if($cantidadOP!=0) $datoCC .= "1002(".$cantidadOP.") ";
+            if($ordenesOP->getOrdenestipo()->getId()==1) $datoCC = $valueOP->getCentrocostos();
 
             //Determinar las cantidad
             $cantCC[$valueOP->getId()] = $datoCC;
 
-            //las cantidades sobrantes van para inventario
-
         }
 
         $html = $this->renderView('IncentivesOrdenesBundle:Ordenes:pdf.html.twig', array(
-            'orden' => $orden, 'id'=>$id, 'productos' => $productos, 'destino'=>$destino, 'contacto'=>$contacto,
+            'orden' => $orden, 'id'=>$id, 'productos' => $OrdenesProducto, 'destino'=>$destino, 'contacto'=>$contacto,
             'cc' => $cantCC
         ));
-
 
         $rootDir = dirname($this->container->getParameter('kernel.root_dir'));
         $Dir = '/web/Ordenes/';
@@ -1275,7 +1276,7 @@ class OrdenRedencionController extends Controller
         return $uploadDir.$orden->getConsecutivo().".pdf";
 
     }
-
+    
     public function pdfCodesAction($id)
     {
         
@@ -1290,7 +1291,8 @@ class OrdenRedencionController extends Controller
         $OrdenesProducto = $this->getDoctrine()->getRepository('IncentivesOrdenesBundle:OrdenesProducto')->findByOrdenesCompra($ordenesOP->getId());
         $cantCC = array();
     
-        //$codes = $this->barcodes($id);
+        $codes = $this->barcodes($id);
+
         //echo 'prueba'; exit;
         foreach($OrdenesProducto as $keyOP => $valueOP){
             //Determinar los CC
@@ -1324,7 +1326,7 @@ class OrdenRedencionController extends Controller
 
                 $totalCant += $cantidadOP;
 
-                $datoCC .= $valueOP2->getParticipante()->getPrograma()->getCentrocostos()."(".$cantidadOP.") ";
+                //$datoCC .= $valueOP2->getParticipante()->getPrograma()->getCentrocostos()."(".$cantidadOP.") ";
             }
 
             $cantidadOP = $valueOP->getCantidad() - $totalCant;
@@ -1485,9 +1487,9 @@ class OrdenRedencionController extends Controller
                 $form = $this->createForm(OrdenesCompraCantidadType::class, $orden);
             }
             
-            $this->pdfAction($id);
-			//$this->pdfCodesAction($id); 
-			$this->totalordenAction($id);
+           $this->pdfAction($id);
+			     $this->pdfCodesAction($id); 
+			     $this->totalordenAction($id);
         }  
 	    
 	    $repository = $this->getDoctrine()
@@ -1591,7 +1593,7 @@ class OrdenRedencionController extends Controller
                 }
                 
                 $this->pdfAction($productos->getOrdenesCompra()->getId());
-          			//$this->pdfCodesAction($productos->getOrdenesCompra()->getId()); 
+          			$this->pdfCodesAction($productos->getOrdenesCompra()->getId()); 
                 $this->totalordenAction($productos->getOrdenesCompra()->getId());
                                 
                 return $this->redirect($this->generateUrl('ordenredencion_editarvalores').'/'.$productos->getOrdenesCompra()->getId());
@@ -1619,11 +1621,11 @@ class OrdenRedencionController extends Controller
                     
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
-            $valores = $request->get('ordenestracking');
+            $valores = $request->request->all()['ordenes_tracking'];
 
             if ($form->isValid()) {
                 $id = $request->request->all()['id'];
-                $ordenes = $request->request->all()['ordenes_producto'];
+                //$ordenes = $request->request->all()['ordenes_producto'];
                 $productos = $em->getRepository('IncentivesOrdenesBundle:OrdenesProducto')->find($id);
 
                 //actualiza valores
@@ -1843,48 +1845,51 @@ if(isset($value['tracking']['ordenproducto']['redencion'])) {
 
           $code = str_pad($valueP->getId(), 12, "0", STR_PAD_LEFT);
 
-          $myBarcode = new barCode();
-          $myBarcode->savePath = 'Ordenes/barcodes/';
-          $bcPathAbs = $myBarcode->getBarcodeHTML($code, 'ean13', 3, 90);
+          $barcodeGenerator = new Barcode();
+          $barcodeGenerator->setMode(Barcode::MODE_PNG);
+          $barcodeGenerator->outputImage($code, '../web/Ordenes/barcodes/'.$code.'.png');
 
-          $codes[$valueP->getId()] = $bcPathAbs;
+          $codes[$valueP->getId()] = '../web/Ordenes/barcodes/'.$code.'.png';
 
         }
-        
+
         return $codes;
 
     }
 
     public function totalordenAction($id) {
 
-    $em = $this->getDoctrine()->getManager();
+      $em = $this->getDoctrine()->getManager();
 
-    $query = $em->createQueryBuilder()
+      $query = $em->createQueryBuilder()
                 ->select('op orden','p producto')
                 ->from('IncentivesOrdenesBundle:OrdenesProducto', 'op')
                 ->leftJoin('op.producto','p');
-        $str_filtro = "op.ordenesCompra = ".$id;
-        $query->where($str_filtro);
+      $str_filtro = "op.ordenesCompra = ".$id;
+      $query->where($str_filtro);
 
-        $orden = $em->getRepository('IncentivesOrdenesBundle:OrdenesCompra')->find($id);       
+      $orden = $em->getRepository('IncentivesOrdenesBundle:OrdenesCompra')->find($id);       
       $productos = $query->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
 
-    $totaliva = 0;
-    $subtotal = 0;
-    foreach($productos as $keyP => $producto){
-      
-      $valor = $producto['orden']['valortotal'] - $producto['orden']['descuento'];
-      
-      $subtotal = $subtotal + $valor;
-      if($producto['orden']['producto']['estadoIva'] == 1) $totaliva = $totaliva + ($valor*($producto['orden']['producto']['iva']/100));
-    }
+      $totaliva = 0;
+      $subtotal = 0;
 
-    $total = $subtotal + $totaliva;
+      foreach($productos as $keyP => $producto){
+        
+        $valor = $producto['orden']['valortotal'] - $producto['orden']['descuento'];
+        
+        $subtotal = $subtotal + $valor;
+        if($producto['orden']['producto']['estadoIva'] == 1) $totaliva = $totaliva + ($valor*($producto['orden']['producto']['iva']/100));
+      }
 
-        $orden->setTotal($total);
+      $total = $subtotal + $totaliva;
 
-        $em->persist($orden);
-        $em->flush();
+      $orden->setTotal($total);
+      $orden->setIva($totaliva);
+      $orden->setSubtotal($subtotal);
+
+      $em->persist($orden);
+      $em->flush();
 
   }
 
@@ -2015,8 +2020,8 @@ if(isset($value['tracking']['ordenproducto']['redencion'])) {
         $idOrden = $producto[0]['ordenesCompra']['id'];
 
         $this->pdfAction($idOrden);
-        //$this->pdfCodesAction($idOrden); 
-        //$this->totalordenAction($idOrden);
+        $this->pdfCodesAction($idOrden); 
+        $this->totalordenAction($idOrden);
 
         return $this->redirect($this->generateUrl('ordenredencion_editarvalores').'/'.$idOrden);
 
@@ -2073,7 +2078,7 @@ if(isset($value['tracking']['ordenproducto']['redencion'])) {
 
         $this->totalordenAction($idOrden);
         $this->pdfAction($idOrden);
-        //$this->pdfCodesAction($idOrden); 
+        $this->pdfCodesAction($idOrden); 
       }
       
       return $this->redirect($this->generateUrl('ordenredencion_editarvalores').'/'.$idOrden);
@@ -2131,13 +2136,13 @@ if(isset($value['tracking']['ordenproducto']['redencion'])) {
                      
                      $RedencionP = $qb->getQuery()->getOneOrNullResult();
                      
-                     if(isset($RedencionD)){
+                     if(isset($RedencionP)){
                        
                         $estado = $em->getRepository('IncentivesRedencionesBundle:Redencionesestado')->find('4'); 
                         $inventario = $em->getRepository('IncentivesInventarioBundle:Inventario')->find($valueD->getId());
-                        $redencionProducto = $em->getRepository('IncentivesRedencionesBundle:RedencionesProductos')->find($RedencionD->getId());
+                        $redencionProducto = $em->getRepository('IncentivesRedencionesBundle:RedencionesProductos')->find($RedencionP->getId());
 
-                        $redencion = $em->getRepository('IncentivesRedencionesBundle:Redenciones')->find($RedencionD->getRedencion()->getId());
+                        $redencion = $em->getRepository('IncentivesRedencionesBundle:Redenciones')->find($RedencionP->getRedencion()->getId());
                         
                         $redencionProducto->setEstado($estado);
                         $redencionProducto->setPreciocompra($inventario->getValorcompra());
@@ -2175,6 +2180,7 @@ if(isset($value['tracking']['ordenproducto']['redencion'])) {
                             $despacho->setCelularContacto($datosEnvio['celularContacto']);
                             $despacho->setDepartamentoContacto($datosEnvio['departamentoContacto']);
                             $despacho->setRedencion($redencion);
+                            $despacho->setRedencionesproductos($redencionProducto);
                             $despacho->setProducto($valueD->getProducto());
                             $despacho->setCantidad(1);
                             $em->persist($despacho);
@@ -2427,7 +2433,7 @@ if(isset($value['tracking']['ordenproducto']['redencion'])) {
                       $em->persist($orden);
                       $em->flush();
                       $this->pdfAction($orden->getId()); 
-                      //$this->pdfCodesAction($orden->getId()); 
+                      $this->pdfCodesAction($orden->getId()); 
                       $this->totalordenAction($orden->getId());
                       $ordenesNuevas .= $orden->getConsecutivo().",";
                   }

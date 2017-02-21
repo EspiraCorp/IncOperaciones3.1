@@ -270,6 +270,13 @@ class LogisticaController extends Controller
                         }
                         
                         $em->flush();
+
+                        //Si la guia es AEXpress traer la imagen
+                        $OperadorGuia = $guia->getOperador();
+                        $OperadorGuia = trim(strtolower($OperadorGuia));
+                        if(($OperadorGuia == "aexpress" || $OperadorGuia == "axpress") && $guia->getRuta()==""){
+                            $this->imagenAexpressAction($guia->getId());
+                        }
                         
                         //Asociar el despacho
                         $despacho = $em->getRepository('IncentivesInventarioBundle:Despachos')->find($row['AC']);
@@ -370,4 +377,76 @@ class LogisticaController extends Controller
             'form' => $form->createView(),));
 
     }
+
+
+    public function imagenAexpressAction($guia){
+
+        $em = $this->getDoctrine()->getManager();
+        $guiaEnvio = $em->getRepository('IncentivesRedencionesBundle:GuiaEnvio')->find($guia);
+
+        $client = new \nusoap_client('http://consulta.aexpress.com.co/ws_sispostal/service.asmx?wsdl','wsdl');
+
+        $err = $client->getError();
+        if ($err) { echo 'Error en Constructor' . $err ; }
+
+        $param = array('Pusuario' => 'Kr456ph2','Pclave' => 'Kr456ph2', 'Pguia' => $guiaEnvio->getGuia());
+        $result = $client->call('wssispguia', $param);
+
+        if ($client->fault) {
+            echo 'Fallo';
+            print_r($result);
+        } else {    // Chequea errores
+            $err = $client->getError();
+            if ($err) {     // Muestra el error
+                echo 'Error' . $err ;
+            } else {        // Muestra el resultado
+
+                if(isset($result['wssispguiaResult']['diffgram']['NewDataSet']['Detalle']['imagen'])){
+
+                    $imagenGuia = $result['wssispguiaResult']['diffgram']['NewDataSet']['Detalle']['imagen'];      
+                    $imagenGuia = str_replace("/Consulta/", "/", $imagenGuia);
+                    $imagenGuia = str_replace("\\", "/", $imagenGuia);
+                    
+                    $rootDir = dirname($this->container->getParameter('kernel.root_dir'));
+                    $Dir = '/web/Guias/';
+                    $uploadDir = $rootDir.$Dir;
+                    $nombreImagen = $guiaEnvio->getGuia().'.png';
+
+                    $image = file_get_contents($imagenGuia);
+                    file_put_contents($uploadDir.$nombreImagen, $image);
+
+                    $guiaEnvio->setRuta($Dir.$nombreImagen);
+                    $em->persist($guiaEnvio);
+                    $em->flush();
+
+                    $this->get('session')->getFlashBag()->add('notice', 'Se actualizo la imagen de la guia '.$guiaEnvio->getGuia().' correctamente.');
+                }else{
+
+                    $this->get('session')->getFlashBag()->add('warning', 'La guia '.$guiaEnvio->getGuia().' no cuenta con imagen asociada.');
+                }
+
+            }
+        }
+
+    }
+
+    public function procesarAexpressAction(){
+
+        $em = $this->getDoctrine()->getManager();
+
+        $qb = $em->createQueryBuilder();            
+        $qb->select('g');
+        $qb->from('IncentivesRedencionesBundle:GuiaEnvio','g');
+        $str_filtro = "(g.operador LIKE '%Aexpress%' OR g.operador LIKE '%AEXPRESS%') AND (g.ruta IS NULL OR g.ruta='')";
+        $qb->where($str_filtro);
+        $qb->setMaxResults(100);
+        $qb->orderBy('g.id', 'DESC');
+        $guias = $qb->getQuery()->getResult();
+
+        foreach ($guias as $keyG => $valueG) {
+            $this->imagenAexpressAction($valueG->getId());
+        }
+
+    }
+
 }

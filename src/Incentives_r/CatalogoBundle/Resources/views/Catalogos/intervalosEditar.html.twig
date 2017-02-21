@@ -1,15 +1,12 @@
-{% extends '::basePop.html.twig' %}
+{% extends '::basePopLte.html.twig' %}
 
 {% block title %}Agregar Intervalo{% endblock %}
 
-{% block cuerpo %}
+{% block contant %}
 <div class="row-fluid sortable ui-sortable">
 <div class="box span12">
 <div class="box-header well" data-original-title>
                         <h2><i class="icon-edit"></i>Editar Intervalo</h2>
-                        <div class="box-icon">
-                            <a href="{{ path('catalogo_datos') }}/{{ catalogo }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
-                        </div>
                     </div>
 <div class="box-content">
 <form action="{{ path('catalogo_intervaloseditar') }}/{{ id }}" method="POST" {{ form_enctype(form) }} class="form-horizontal">

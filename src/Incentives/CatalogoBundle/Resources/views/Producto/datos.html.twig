@@ -44,6 +44,39 @@
 				</table>
 			</div>
 		</div>
+
+	    <div class="box box-warning">
+		    <div class="box-header bg-black">
+				<h3 class="box-title">Atributos</h3>
+				<div class="box-tools pull-right">
+					<a id="agregar_atributo" href="{{ path('producto_agregaratributo',  {"id": producto.id}) }}">
+						<button class="btn btn-small btn-success">
+							<i class="fa fa-plus"></i>
+						</button>
+					</a>
+				</div>
+			</div>
+			<div class="box-body">
+				<table class="table table-bordered table-striped table-condensed dataTable">
+					<thead>
+						<tr>
+							<th>Atributo</th>
+							<th>Valor</th>
+							<th>Imagen</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for atributo in atributos %}		
+								<tr>
+									<td>{{ atributo.tipo.nombre }}</td>
+									<td>{{ atributo.valor }}</td>
+									<td><a href="../../../{{ atributo.imagen | slice (7)}}" target='_blank'><img src="../../../{{( atributo.imagen | slice (7))[:-4]}}_min.jpg"><a></td>
+								</tr>			
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
 	</div>
 
 	<div class="col-md-6">
@@ -164,6 +197,7 @@
 							<th>Incremento Temporal (%)</th>
 							<th>Logistica Temporal</th>
 							<th>Agotado</th>
+							<th>Puntos Promoción</th>
 							<th>Estado</th>
 						</tr>
 					</thead>
@@ -182,14 +216,34 @@
 							<td>{{ premio.premio.incrementoTemporal }}</td>
 							<td>{{ premio.premio.logisticaTemporal }}</td>
 							<td>{{ premio.premio.agotado }}</td>
-							<td>{% if (premio.premio.estado.id==1) %}
+							<td>{% if is_granted('ROLE_ADMIN') or  is_granted('ROLE_DIR') or is_granted('ROLE_ASISCOMP') or is_granted('ROLE_CAT') %}
+									{% if (premio.premio.promocion) %}
+										{{ premio.premio.promocion[0].puntos }}
+										<a href="{{ path('promociones_datos', {"promocion": premio.premio.promocion[0].id }) }}" target="_blank">
+											<button class="btn btn-sm btn-info">
+												<i class="fa fa-plus"></i> Ver
+											</button>
+										</a>
+									{% else %}
+										<a class="promociones_nuevo" href="{{ path('promociones_nuevo', {"premio": premio.premio.id}) }}">
+											<button class="btn btn-sm btn-success">
+												<i class="fa fa-plus"></i> Agregar
+											</button>
+										</a>
+									{% endif %}
+								{% endif %}
+							</td>
+
+							<td>{% if (premio.premio.estado) %}
+								{% if (premio.premio.estado.id==1) %}
 										<a class="btn btn-success 1" {% if is_granted('ROLE_ADMIN') or  is_granted('ROLE_DIR') %} onClick=confirmar('{{ url("premios_estado_producto", {"premio": premio.premio.id, "producto": producto.id}) }}') {% endif %} href="#">
 										Activo</a>
 									{% else %}
 										<a class="btn btn-danger 1" onClick=confirmar('{{ url("premios_estado_producto", {"premio": premio.premio.id, "producto": producto.id}) }}') href="#">
 										Inactivo</a>										
 									{% endif %}
-								</td>
+								{% endif %}
+							</td>
 												
 						</tr>
 						{% endfor %}
@@ -219,10 +273,22 @@
 	}
 
 	$("#agregar_imagen").colorbox({href:"{{ path('producto_agregarimagen',  {"id": producto.id}) }}"});
+	$("#agregar_atributo").colorbox({href:"{{ path('producto_agregaratributo',  {"id": producto.id}) }}"});
 	$("#agregar_precio").colorbox({href:"{{ path('producto_agregarprecio',  {"id": producto.id}) }}"});
 	$("#agregar_premio").colorbox({href:"{{ path('premios_nuevo_producto',  {"producto": producto.id}) }}"});
 	$(".precio_editar").colorbox({href: this.href });
 	$(".premio_editar").colorbox({href: this.href});
+	$(".promociones_nuevo").colorbox({href: this.href});
 
 	</script>
+{% endblock %}
+
+{% block stylesheet %}
+  {{ parent() }}
+  <style>
+    body {
+        width: 110%;
+    }
+  </style>
+
 {% endblock %}

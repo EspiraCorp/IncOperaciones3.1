@@ -18,7 +18,9 @@ use Incentives\InventarioBundle\Form\Type\AgregarType;
 use Incentives\InventarioBundle\Form\Type\CierreType;
 use Incentives\InventarioBundle\Form\Type\CostosLogisticaType;
 use Incentives\InventarioBundle\Form\Type\PlanillasGenerarType;
+use Incentives\CatalogoBundle\Form\Type\ProductoType;
 use Incentives\GarantiasBundle\Entity\Novedades;
+use Incentives\InventarioBundle\Entity\Despachos;
 
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -33,7 +35,8 @@ use PHPExcel_Style_Fill;
 
 use Dompdf\Dompdf;
 
-ini_set('max_execution_time', 500);
+ini_set('max_execution_time', 300); 
+ini_set('memory_limit','512M');
 
 class InventarioController extends Controller
 {
@@ -41,35 +44,88 @@ class InventarioController extends Controller
      * @Route("/inventario")
      * @Template()
      */
-    public function listadoAction()
+    public function listadoAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
+        $form = $this->createForm(ProductoType::class); 
+        $session = $this->get('session');
+            
+        $page = $request->get('page');
+        if(!$page) $page= 1;
+            
+        $pro = $request->request->all();
 
+        if(isset($pro['producto'])){
+            $page = 1;
+            $session->set('filtros_inventario', $pro['producto']);
+        }
+
+        if(isset($pro['limpiar']) && $pro['limpiar']==1){
+            //limmpiar filtros
+            $session->set('filtros_inventario', array()  );
+        }
+
+        $sqlFiltro = " 1=1 ";
+
+        if($filtros = $session->get('filtros_inventario')){
+
+            foreach($filtros as $Filtro => $valueF){
+                   
+                if($valueF!=""){
+                    if($Filtro=="ingresada" || $Filtro=="salida" || $Filtro=="asignada" || $Filtro=="disponible"){
+                        $sqlFiltro .= " AND ".$Filtro."=".$valueF."";
+                    }elseif($Filtro=="categoria"){
+                        $sqlFiltro .= " AND ct.id=".$valueF."";
+                    }elseif($Filtro=="estado"){
+                        $sqlFiltro .= " AND e.id=".$valueF."";
+                    }else{
+                        $sqlFiltro .= " AND p.".$Filtro." LIKE '%".$valueF."%'";
+                    }       
+                }
+            } 
+        }
+        //echo "<pre>"; print_r($sqlFiltro); echo "</pre>"; exit;
         //unidades totales
         //unidades disponibles
         //ingresos por OC
         //ingresos manuales
         
         $query = $em->createQueryBuilder()
-                    ->select('i inventario', 'pr producto','SUM(i.ingreso) ingresada','SUM(i.salio) salida')
-                     ->addSelect('(SELECT COUNT(inv.id)
+                    ->select('i inventario', 'p producto','ct','e','SUM(i.ingreso) ingresada','SUM(i.salio) salida')
+                    ->addSelect('(SELECT COUNT(inv.id)
                             FROM IncentivesInventarioBundle:Inventario inv
-                        LEFT JOIN inv.orden oc
+                            LEFT JOIN inv.orden oc
                             WHERE inv.producto = i.producto AND ((inv.despacho IS NOT NULL OR inv.solicitud IS NOT NULL) AND (inv.salio IS NULL OR inv.salio=0)) GROUP BY inv.producto) AS asignada'
                         )
-                ->addSelect('(SELECT COUNT(inven.id)
+                    ->addSelect('(SELECT COUNT(inven.id)
                             FROM IncentivesInventarioBundle:Inventario inven
-                	    LEFT JOIN inven.orden oci
+                	        LEFT JOIN inven.orden oci
                             WHERE inven.producto = i.producto AND (inven.despacho IS NULL AND inven.solicitud IS NULL AND (inven.salio=0 OR inven.salio IS NULL)) GROUP BY inven.producto) AS disponible'
                         )
                     ->from('IncentivesInventarioBundle:Inventario', 'i')
-                    ->Join('i.producto','pr')
+                    ->Join('i.producto','p')
+                    ->leftJoin('p.categoria','ct')
+                    ->leftJoin('p.estado','e')
                     ->groupBy('i.producto')
-                    ->orderBy('i.producto', 'ASC');
-        $productos = $query->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
+                    ->where($sqlFiltro)
+                    ->orderBy('disponible', 'DESC');
+        
+        if($request->get('sort')){
+            $query->orderBy($request->get('sort'), $request->get('direction'));    
+        }
+
+        $resultado = $query->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
         //echo "<pre>"; print_r($productos); exit;
+
+        $paginator  = $this->get('knp_paginator');
+        $productos = $paginator->paginate(
+            $resultado,
+            $page/*page number*/,
+            50 /*limit per page*/
+        );
+
         return $this->render('IncentivesInventarioBundle:Inventario:listado.html.twig', 
-            array('productos' => $productos));
+            array('productos' => $productos, 'form' => $form->createView(), 'filtros' => $filtros));
     }
 
     
@@ -1026,9 +1082,10 @@ class InventarioController extends Controller
         $form = $this->createForm(IngresoType::class);
         
         if ($request->isMethod('POST')) {
+
             $form->handleRequest($request);
-            $pro = $request->request->all()['inventario'];
-            
+            $pro = $request->request->all()['ingreso'];
+
             for($ic=1; $ic<=$pro['cantidad']; $ic++){
         
                 $inventario = new Inventario();
@@ -1041,14 +1098,12 @@ class InventarioController extends Controller
                 $inventario->setObservacion($pro['observacion']);
                 $em->persist($inventario);
                 
-                $inventarioH = $this->get('incentives_inventario');
-                $inventarioH->insertar($inventario);
-                
                 $em->flush();
                 
             }
             
             $this->get('session')->getFlashBag()->add('notice', 'El producto ingreso corretamente.');
+            return $this->redirect($this->generateUrl('inventario_listado'));
             
         }
 
@@ -1072,9 +1127,6 @@ class InventarioController extends Controller
                     $inventario->setFechaSalida(new \DateTime());
                     $inventario->setSalio(1);
                     $em->persist($inventario);
-                    
-                    $inventarioH = $this->get('incentives_inventario');
-                    $inventarioH->insertar($inventario);
             
                     $em->flush();
                 }
@@ -1272,8 +1324,12 @@ class InventarioController extends Controller
 
 
             				if(isset($value['ordenproducto'])){
+
+                                $valorDeclarado = $value['ordenproducto']['valorunidad']; 
+                                if($value['producto']['estadoIva'] == 1) $valorDeclarado = $valorDeclarado * (1 + ($value['producto']['iva']/100));
+
                 				$objPHPExcel->getActiveSheet()
-                				            ->setCellValue('H'.$fil, $value['ordenproducto']['valorunidad'])
+                				            ->setCellValue('H'.$fil, $valorDeclarado)
                 				            ->setCellValue('V'.$fil, $value['ordenproducto']['ordenesCompra']['consecutivo']);
             				}
 
@@ -1346,7 +1402,7 @@ class InventarioController extends Controller
                 }
                 
                 $qb->where($str_filtro);
-                $qb->groupBy('c.pais', 'pr.categoria');
+                $qb->groupBy('c.pais', 'p.categoria');
 
       $despachos =  $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
 
@@ -1419,10 +1475,13 @@ class InventarioController extends Controller
                         $qb->orderBy('i.id','DESC');
                         $inventario[$i] = $qb->getQuery()->getOneOrNullResult();
                     
-    					if($redencion[$i]->getRedencion() != Null){
-    						$redencionI = $em->getRepository('IncentivesRedencionesBundle:Redenciones')->find($redencion[$i]->getRedencion()->getId());
+    					if($redencion[$i]->getRedencionesproductos() != Null){
+    						$redencionProductoI = $em->getRepository('IncentivesRedencionesBundle:RedencionesProductos')->find($redencion[$i]->getRedencionesproductos()->getId());
+                            $redencionProductoI->setfechaDespacho(new \DateTime($fecha));
+                            $redencionI = $em->getRepository('IncentivesRedencionesBundle:Redenciones')->find($redencionProductoI->getRedencion()->getId());
     						$redencionI->setfechaDespacho(new \DateTime($fecha));
-    						$em->persist($redencionI);
+    						$em->persist($redencionProductoI);
+                            $em->persist($redencionI);
     					}
     					
     					$redencion[$i]->setPlanilla($planilla);
@@ -2133,7 +2192,7 @@ public function planillaSolicitudAction(Request $request, $id){
         $solicitante = $solicitud->getSolicitante();
        
         // Create the Transport
-        $transport = \Swift_SmtpTransport::newInstance('smtp.office365.com', 25, 'tls')
+        $transport = \Swift_SmtpTransport::newInstance('smtp.office365.com', 587, 'tls')
           ->setAuthMode('login')
           ->setUsername('operaciones@inc-group.co')
           ->setPassword('IncGroup2016!')
@@ -2312,6 +2371,101 @@ public function planillaSolicitudAction(Request $request, $id){
             $em->flush();
         } 
     }
+
+    public function redencionesDipsoniblesAction(Request $request){
+
+        $em = $this->getDoctrine()->getManager();
+
+        $qb = $em->createQueryBuilder()
+                     ->select('i')
+                     ->from('IncentivesInventarioBundle:Inventario','i')
+                     ->where('i.redencionProducto IS NULL AND i.solicitud IS NULL AND i.salio IS NULL AND i.ingreso=1 AND i.planilla IS NULL');
+        $InventarioD = $qb->getQuery()->getResult();
+        
+        $ij = 0;       
+                //Si hay productos en inventario asignarlos y dejarlos listos para despachar
+                foreach($InventarioD as $keyD => $valueD){
+                  
+                  $qb = $em->createQueryBuilder()
+                     ->select('rp')
+                     ->from('IncentivesRedencionesBundle:RedencionesProductos','rp')
+                     ->Join('rp.producto', 'p')
+                     ->where('rp.estado = 2 AND p.id='.$valueD->getProducto()->getId())
+                     ->setMaxResults(1);
+                     
+                     $RedencionP = $qb->getQuery()->getOneOrNullResult();
+                     
+                     if(isset($RedencionP)){
+                       
+                        $ij++;
+
+                        $estado = $em->getRepository('IncentivesRedencionesBundle:Redencionesestado')->find('4'); 
+                        $inventario = $em->getRepository('IncentivesInventarioBundle:Inventario')->find($valueD->getId());
+                        $redencionProducto = $em->getRepository('IncentivesRedencionesBundle:RedencionesProductos')->find($RedencionP->getId());
+
+                        $redencion = $em->getRepository('IncentivesRedencionesBundle:Redenciones')->find($RedencionP->getRedencion()->getId());
+                        
+                        $redencionProducto->setEstado($estado);
+                        $redencionProducto->setPreciocompra($inventario->getValorcompra());
+                        $redencion->setRedencionestado($estado);
+                        $inventario->setRedencionProducto($redencionProducto);
+                        
+                        //traer los datos de envio para el despacho
+                            $despacho = new Despachos();
+                            
+                            //Traer los ultimos datos de envio
+                            $qb = $em->createQueryBuilder();            
+                            $qb->select('e');
+                            $qb->from('IncentivesRedencionesBundle:RedencionesEnvios','e');
+                            $str_filtro = 'e.redencion ='.$redencion->getId();
+                            $qb->where($str_filtro);
+                            $qb->orderBy('e.id', 'DESC');
+                            $qb->setMaxResults(1);
+                            $datosEnvio = $qb->getQuery()->getOneOrNullResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
+                    
+                            $despacho->setDocumento($datosEnvio['documento']);
+                            $despacho->setNombre($datosEnvio['nombre']);
+                            $despacho->setObservaciones($datosEnvio['observaciones']);
+                            $despacho->setCiudadNombre($datosEnvio['ciudadNombre']);
+                            $despacho->setDireccion($datosEnvio['direccion']);
+                            $despacho->setBarrio($datosEnvio['barrio']);
+                            $despacho->setTelefono($datosEnvio['telefono']);
+                            $despacho->setCelular($datosEnvio['celular']);
+                            $despacho->setDepartamentoNombre($datosEnvio['departamentoNombre']);
+                            $despacho->setNombreContacto($datosEnvio['nombreContacto']);
+                            $despacho->setDocumentoContacto($datosEnvio['documentoContacto']);
+                            $despacho->setCiudadContacto($datosEnvio['ciudadContacto']);
+                            $despacho->setDireccionContacto($datosEnvio['direccionContacto']);
+                            $despacho->setBarrioContacto($datosEnvio['barrioContacto']);
+                            $despacho->setTelefonoContacto($datosEnvio['telefonoContacto']);
+                            $despacho->setCelularContacto($datosEnvio['celularContacto']);
+                            $despacho->setDepartamentoContacto($datosEnvio['departamentoContacto']);
+                            $despacho->setRedencion($redencion);
+                            $despacho->setRedencionesproductos($redencionProducto);
+                            $despacho->setProducto($valueD->getProducto());
+                            $despacho->setCantidad(1);
+                            $em->persist($despacho);
+                        
+                        $inventario->setDespacho($despacho);
+                        $em->persist($inventario);
+                        $em->persist($redencionProducto);
+                        $em->persist($redencion);
+                        
+                        $em->flush();
+                        
+                     }
+                }//cierra foreach inventario
+
+                if($ij>0){
+                   $this->get('session')->getFlashBag()->add('notice', 'Se encontraron '.$ij.' redenciones listas para despachar'); 
+               }else{
+                    $this->get('session')->getFlashBag()->add('notice', 'No se encontro inventario asociado a redenciones para despachar');
+               }
+
+    return $this->redirect($this->generateUrl('inventario_listado'));            
+
+  }
+
 
 
 

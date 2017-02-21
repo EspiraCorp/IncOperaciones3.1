@@ -11,6 +11,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class RequisicionProductoAgregarType extends AbstractType
 {
@@ -27,6 +28,7 @@ class RequisicionProductoAgregarType extends AbstractType
         ->add('valorunidad', NumberType::class, array('label' => 'Valor Unidad'))
         ->add('logistica', NumberType::class, array('label' => 'Logistica Unidad'))
         ->add('incremento', NumberType::class, array('label' => 'Incremento'))
+        ->add('descripcion', TextareaType::class, array('label' => 'Descripción', 'required' => false))
         ;
 
         $builder->add('producto', EntityType::class, array(
@@ -38,7 +40,8 @@ class RequisicionProductoAgregarType extends AbstractType
             },
             'choice_label' => 'nombreId',
             'placeholder' => 'Seleccionar',
-            'label' => 'Producto'
+            'label' => 'Producto',
+            'required' => false
         ));
 
         $builder->add('Enviar', SubmitType::class);

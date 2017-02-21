@@ -62,3 +62,7 @@ servicios_entregado:
     path:  /servicios/entregado
     defaults: { _controller: IncentivesServiciosBundle:Redenciones:entregado }
 
+servicios_test:
+    path:  /servicios/test
+    defaults: { _controller: IncentivesServiciosBundle:Catalogo:test }
+

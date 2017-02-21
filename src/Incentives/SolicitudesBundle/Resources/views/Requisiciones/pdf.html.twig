@@ -61,28 +61,20 @@ th{
 </style>
 <body>
 <pre class="marco">
-<b>COTIZACIÓN</b>						
-CÓDIGO: OPE-FOR-003						
-DOCUMENTO VIGENTE A PARTIR DEL 01/02/2011						
-VERSIÓN 2						
+<b>REQUISICIÓN</b>					
 </pre>
 <div class="marco">
-	 <div class="derecha">Consecutivo No.: {{ cotizacion.consecutivo }}</div>
+	 <div class="derecha">Consecutivo No.: {{ requisicion.consecutivo }}</div>
 	 	<table class="tabla1">
 	 		<tr><td></td><td>
 	 		<tr>
-	 			<td>Fecha de cotización:</td>
-	 			<td>{{ cotizacion.fechaCreacion | date("d-M-Y") }}</td>
-	 		</tr>
-	 		<tr>
-	 			<td>Cotización vigente hasta el:</td>
-	 			<td>{{ cotizacion.fechaVencimiento | date("d-M-Y") }}</td>
+	 			<td>Fecha de Requisición:</td>
+	 			<td>{{ requisicion.fechaCreacion | date("d-M-Y") }}</td>
 	 		</tr>
 	 		<tr>
 	 			<td>A continuación presento propuesta según especificaciones requeridas, así:</td>
 	 			<td></td>
 	 		</tr>
-	 		Cotización vigente hasta el:
 	 		
 	 	</table>
 	 	<table class="tabla2">
@@ -101,16 +93,23 @@ VERSIÓN 2
 	 		{% set totalPago = 0 %}
 	 		{% for producto in productos %}
 	 		<tr>
-	 			<td>{{ producto.producto.nombre }}</td>
-	 			<td>{{ producto.producto.descripcion }}</td>
+	 			{% if producto.producto %}
+		 			<td>{{ producto.producto.nombre }}</td>
+		 			<td>{{ producto.producto.descripcion }}</td>
+	 			{% else %}
+					<td>{{ producto.descripcion }}</td>
+					<td></td>
+	 			{% endif %}
 	 			<td>{{ producto.cantidad }}</td>
 	 			<td>$ {{ (producto.valorunidad/(1 - (producto.incremento/100)))|number_format(2, ',', '.') }}</td>
 	 			<td>$ {{ producto.logistica|number_format(2, ',', '.') }}</td>
 	 			<td>$ {{ (producto.valortotal+(producto.logistica*producto.cantidad))|number_format(2, ',', '.') }}</td>
 	 			{% set totalunidades = totalunidades + producto.cantidad %}
 	 			{% set subtotal = subtotal + producto.valortotal+(producto.logistica*producto.cantidad) %}
-	 			{% if(producto.producto.estadoIva==1) %}
-	 				{% set totaliva = totaliva + (producto.producto.iva/100)*producto.valortotal %}
+	 			{% if producto.producto %}
+		 			{% if(producto.producto.estadoIva==1) %}
+		 				{% set totaliva = totaliva + (producto.producto.iva/100)*producto.valortotal %}
+		 			{% endif %}
 	 			{% endif %}
 	 		</tr>
 	 			{% set linea = linea + 1 %}
@@ -128,7 +127,7 @@ VERSIÓN 2
 	 		</tr>
 	 		{% endfor %}
 	 		{% set totaliva = totaliva %}
-	 		{% set totalPago = totaliva + subtotal + cotizacion.logistica %}
+	 		{% set totalPago = totaliva + subtotal %}
 	 		<tr class="total">
 	 			<td colspan="2">TOTAL UNIDADES</td>
 	 			<td>{{ totalunidades }}</td>
@@ -137,11 +136,6 @@ VERSIÓN 2
 	 			<td>$ {{ subtotal|number_format(2, ',', '.') }}</td>
 	 		</tr>
 	 		
-	 		<tr class="total">
-	 			<td class="invisible" colspan="4" ></td>
-	 			<td>LOGISTICA CONSOLIDADA</td>
-	 			<td>$ {{ cotizacion.logistica|number_format(2, ',', '.') }}</td>
-	 		</tr>
 	 		<tr class="total">
 	 			<td colspan="4" class="invisible"></td>
 	 			<td>IVA</td>
@@ -154,14 +148,7 @@ VERSIÓN 2
 	 		</tr>
 	 	</table>
 	 	<br>
-	 	<div class="marco">
-	 		<b>OBSERVACIONES:</b>
- 			{{ cotizacion.observaciones }}
- 		</div>
- 		<div class="marco">
- 			<b>CONDICIONES COMERCIALES:</b>
- 			{{ cotizacion.condiciones }}
- 		</div>
+
 	 	<br>
  </div>
 </body>

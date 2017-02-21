@@ -8,20 +8,20 @@
     <div class="box-header well" data-original-title>
         <h2><i class="icon-edit"></i>Nueva Factura</h2>
             <div class="box-icon">
-                <a href="{{ path('facturas_listado', {"programa": programa.id }) }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
+                <a href="{{ path('facturas_listado', {"centrocostos": centroCostos.id }) }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
             </div>
     </div>
 <div class="box-content">
     <table class="table table-bordered table-striped">
 					<tbody>
-						<tr><td>Programa</td><td>{{ programa.nombre }}</td></tr>
-						<tr><td>Cliente</td><td>{{ programa.cliente.nombre }}</td></tr>
+						<tr><td>Centro de Costos</td><td>{{ centroCostos.nombre }}</td></tr>
+						<tr><td>Cliente</td><td>{{ centroCostos.cliente.nombre }}</td></tr>
 					</tbody>
 				</table>
-<form action="{{ path('factura_nueva') }}/{{ programa.id }}" method="POST"  class="form-horizontal" novalidate>
+<form action="{{ path('factura_nueva') }}/{{ centroCostos.id }}" method="POST"  class="form-horizontal" novalidate>
     {{ form_errors(form) }}
     <fieldset>
-        <input type='hidden' name='programa' value={{ programa.id }}>
+        <input type='hidden' name='centroCostos' value={{ centroCostos.id }}>
         <div class="control-group">
             {{ form_label(form.pais, label|default(null), { 'label_attr': { 'class': 'control-label' } }) }}
             <div class="controls">

@@ -1,4 +1,4 @@
-<select class="input-xlarge focused" name="proveedores[ciudad]" id="proveedores_ciudad">
+<select class="form-control" name="proveedores[ciudad]" id="proveedores_ciudad" required>
 	<option value="">Seleccione una opcion</option>
 	{% for ciudad in listado %}
 		<option value="{{ ciudad.id }}">{{ ciudad.nombre }}</option>

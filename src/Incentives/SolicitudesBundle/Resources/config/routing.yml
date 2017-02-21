@@ -143,6 +143,10 @@ requisiciones_datos:
     path:     /requisiciones/datos/{id}
     defaults: { _controller: IncentivesSolicitudesBundle:Requisiciones:datos, id: null }
 
+requisiciones_pdf:
+    path:     /requisiciones/pdf/{id}
+    defaults: { _controller: IncentivesSolicitudesBundle:Requisiciones:pdf, id: null  }
+
 requisiciones_exportar:
     path:  /requisiciones/exportar
     defaults: { _controller: IncentivesSolicitudesBundle:Requisiciones:exportar }
@@ -154,5 +158,9 @@ requisiciones_exportar_productos:
 requisiciones_agregarproducto:
     path:  /requisiciones/agregarproducto/{id}
     defaults: { _controller: IncentivesSolicitudesBundle:Requisiciones:agregarproducto , id: null}
+
+requisiciones_editarproducto:
+    path:  /requisiciones/editarproducto/{id}
+    defaults: { _controller: IncentivesSolicitudesBundle:Requisiciones:editarProducto , id: null}
     
     

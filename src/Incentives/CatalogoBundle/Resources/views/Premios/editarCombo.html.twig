@@ -1,0 +1,87 @@
+{% extends "::baseLte.html.twig" %}
+
+{% block title %}Editar Premio{% endblock %}
+
+{% block content %}
+
+     <div class="">
+          <div class="modal-dialog box box-warning">
+            <div class="modal-content">
+              <div class="modal-header bg-black">
+                <h4 class="modal-title">Editar Premio</h4>
+              </div>
+              <form action="{{ path('premios_combo_editar', {'premio': premio}) }}" method="POST" enctype="multipart/form-data" class="form-horizontal">
+              <div class="modal-body">
+
+                <div class="form-group">
+                  <label class="col-sm-4 control-label">{{ form_label(form.nombre, label|default(), { 'label_attr': { 'class': 'control-label' } }) }}</label>
+                  <div class="col-sm-8">
+                    {{ form_widget(form.nombre, { 'attr': {'class': 'form-control'} }) }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-4 control-label">{{ form_label(form.marca, label|default(), { 'label_attr': { 'class': 'control-label' } }) }}</label>
+                  <div class="col-sm-8">
+                    {{ form_widget(form.marca, { 'attr': {'class': 'form-control'} }) }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-4 control-label">{{ form_label(form.referencia, label|default(), { 'label_attr': { 'class': 'control-label' } }) }}</label>
+                  <div class="col-sm-8">
+                    {{ form_widget(form.referencia, { 'attr': {'class': 'form-control'} }) }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-4 control-label">{{ form_label(form.descripcion, label|default(), { 'label_attr': { 'class': 'control-label' } }) }}</label>
+                  <div class="col-sm-8">
+                    {{ form_widget(form.descripcion, { 'attr': {'class': 'form-control'} }) }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-4 control-label">{{ form_label(form.categoria, label|default(), { 'label_attr': { 'class': 'control-label' } }) }}</label>
+                  <div class="col-sm-8">
+                    {{ form_widget(form.categoria, { 'attr': {'class': 'form-control'} }) }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-4 control-label">{{ form_label(form.puntosTemporal, label|default(), { 'label_attr': { 'class': 'control-label' } }) }}</label>
+                  <div class="col-sm-8">
+                    {{ form_widget(form.puntosTemporal, { 'attr': {'class': 'form-control'} }) }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-4 control-label">{{ form_label(form.precioTemporal, label|default(), { 'label_attr': { 'class': 'control-label' } }) }}</label>
+                  <div class="col-sm-8">
+                    {{ form_widget(form.precioTemporal, { 'attr': {'class': 'form-control'} }) }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-4 control-label">{{ form_label(form.incrementoTemporal, label|default(), { 'label_attr': { 'class': 'control-label' } }) }}</label>
+                  <div class="col-sm-8">
+                    {{ form_widget(form.incrementoTemporal, { 'attr': {'class': 'form-control'} }) }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-4 control-label">{{ form_label(form.logisticaTemporal, label|default(), { 'label_attr': { 'class': 'control-label' } }) }}</label>
+                  <div class="col-sm-8">
+                    {{ form_widget(form.logisticaTemporal, { 'attr': {'class': 'form-control'} }) }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-4 control-label">{{ form_label(form.imagen, label|default(), { 'label_attr': { 'class': 'control-label' } }) }}</label>
+                  <div class="col-sm-8">
+                    {{ form_widget(form.imagen) }}
+                  </div>
+                </div>
+                {{ form_widget(form._token) }}
+              </div>
+              <div class="modal-footer bg-black">
+                <button class="btn btn-warning bg-black" type="submit">Enviar</button>
+              </div>
+              </form>
+            </div>
+            <!-- /.modal-content -->
+          </div>
+          <!-- /.modal-dialog -->
+    </div>
+{% endblock %}

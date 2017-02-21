@@ -19,23 +19,6 @@
               <i class="icon-download"></i>
             </button>
           </a>
-      {# <a href="{{ path('proveedores_importar') }}" title="Carga Masiva">
-            <button class="btn btn-small">
-              <i class="icon-upload"></i>
-            </button>
-          </a>
-      <a href="{{ path('proveedores_exportar') }}" title="Descargar">
-            <button class="btn btn-small">
-              <i class="icon-download"></i>
-            </button>
-          </a>
-			<div class="box-icon">  
-        <a href="{{ path('participante_nuevo') }}" title="Agregar">
-            <button class="btn btn-small btn-success">
-              <i class="icon-plus icon-white"></i>
-            </button>
-          </a>
-			</div> #}
 		</div>
 		<div class="box-content">
       {% if redencion!=null %}
@@ -58,10 +41,10 @@
                           <tr>
 			                      <td><a href="{{ path("garantiasredenciones_datos", {"redencion": redenciones.id }) }}">{{ redenciones.participante.nombre }}</a></td>
                             <td>{{ redenciones.participante.documento }}</td>
-                            <td>{{ redenciones.productocatalogo.producto.nombre }}</td>
+                            <td>{{ redenciones.premio.premiosproductos[0].producto.nombre }}</td>
                             <td>{{ redenciones.codigoredencion }}</td>
                             <td>{{ redenciones.redencionestado.nombre }}</td>
-                            <td>{% if redenciones.inventario|length >0 %}{% if redenciones.inventario[0].guia|length >0 %}{{ redenciones.inventario[0].guia[0].guia }}{% endif %}{% endif %}</td>
+                            <td></td>
                             <td>{{ redenciones.fecha | date("d-M-Y") }}</td>
                           </tr>
                           {% endfor %}

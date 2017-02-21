@@ -23,11 +23,11 @@
         {% set rentabilidad = 0 %}
         {% set valorventa = 0 %}
         {% set valorcompra = redencion.ordenesProducto.valorunidad %}
-        {% if (redencion.ordenesProducto.valorunidad!=0 and redencion.redencion.incremento!=0) %}
+        {% if (redencion.ordenesProducto.valorunidad!=0 and redencion.redencion.valorCompra!=0) %}
             {% if (redencion.ordenesProducto.ordenesCompra.trm!=0) %}
                 {% set valorcompra = (redencion.ordenesProducto.valorunidad/redencion.ordenesProducto.ordenesCompra.trm) %}
             {% endif %}
-            {% set valorventa = valorcompra/(1-(redencion.redencion.incremento/100)) %}
+            {% set valorventa = redencion.redencion.valorCompra/(1-(redencion.redencion.incremento/100)) %}
             {% set rentabilidad = (1-((redencion.ordenesProducto.valorunidad - (redencion.ordenesProducto.descuento/redencion.ordenesProducto.cantidad))/valorventa ))*100 %}
             {% if (redencion.ordenesProducto.ordenesCompra.trm!=0) %}
                  {% set rentabilidad = (1-(((redencion.ordenesProducto.valorunidad - (redencion.ordenesProducto.descuento/redencion.ordenesProducto.cantidad))/redencion.ordenesProducto.ordenesCompra.trm)/valorventa ))*100 %}

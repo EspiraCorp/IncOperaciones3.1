@@ -59,6 +59,13 @@ class  RequisicionProducto
     private $logistica;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="descripcion", type="string", length=500, nullable=true)
+     */
+    private $descripcion;
+
+    /**
      * 
      * @ORM\ManyToOne(targetEntity="Incentives\CatalogoBundle\Entity\Producto", inversedBy="cotizacionproducto", cascade={"persist"})
      * @ORM\JoinColumn(name="producto_id", referencedColumnName="id", nullable=true)
@@ -366,5 +373,29 @@ class  RequisicionProducto
     public function getEstado()
     {
         return $this->estado;
+    }
+
+    /**
+     * Set descripcion
+     *
+     * @param string $descripcion
+     *
+     * @return RequisicionProducto
+     */
+    public function setDescripcion($descripcion)
+    {
+        $this->descripcion = $descripcion;
+
+        return $this;
+    }
+
+    /**
+     * Get descripcion
+     *
+     * @return string
+     */
+    public function getDescripcion()
+    {
+        return $this->descripcion;
     }
 }

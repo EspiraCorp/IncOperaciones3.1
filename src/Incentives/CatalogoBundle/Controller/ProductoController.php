@@ -13,6 +13,8 @@ use Incentives\CatalogoBundle\Entity\Imagenproducto;
 use Incentives\CatalogoBundle\Form\Type\ImagenproductoType;
 use Incentives\CatalogoBundle\Entity\Productoprecio;
 use Incentives\CatalogoBundle\Form\Type\ProductoprecioType;
+use Incentives\CatalogoBundle\Entity\Atributosproducto;
+use Incentives\CatalogoBundle\Form\Type\AtributosproductoType;
 use Incentives\CatalogoBundle\Entity\Preciohistorico;
 use Incentives\OperacionesBundle\Entity\Proveedores;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -20,8 +22,9 @@ use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
-use Incentives\CatalogoBundle\Entity\Excel;
 use Incentives\CatalogoBundle\Entity\Excelmas;
+
+use Incentives\OperacionesBundle\Entity\Excel;
 
 use PHPExcel;
 use PHPExcel_IOFactory;
@@ -32,7 +35,6 @@ use PHPExcel_Worksheet_Drawing;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
-define ("MAX_SIZE","1500");
 ini_set('max_execution_time', 300); 
 ini_set('memory_limit','512M');
 
@@ -49,9 +51,12 @@ class ProductoController extends Controller
         $form = $this->createForm(ProductoType::class, $producto);
                     
         if ($request->isMethod('POST')) {
+
+            $pro = $request->request->all()['producto'];
+
             $form->handleRequest($request);
 
-            if ($form->isValid()) {
+            //if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
                 $cod=$producto->getCategoria()->getAbreviatura();        
                 $consecutivo = 0;
@@ -71,6 +76,28 @@ class ProductoController extends Controller
                 $producto->setCodInc($cod.$num);
                 $estado = $em->getRepository('IncentivesCatalogoBundle:Estados')->find(1);
                 $producto->setEstado($estado);
+
+                $producto->setNombre($pro["nombre"]);
+                $producto->setDescripcion($pro["descripcion"]);
+                $producto->setReferencia($pro["referencia"]);
+                $producto->setMarca($pro["marca"]);
+                $producto->setCodEAN($pro["codEAN"]);
+                $producto->setAlto($pro["alto"]);
+                $producto->setLargo($pro["largo"]);
+                $producto->setAncho($pro["ancho"]);
+                $producto->setPeso($pro["peso"]);
+                $producto->setPrecio(($pro["precio"])? $pro["precio"]: 0);
+                $producto->setIva($pro["iva"]);
+                $producto->setestadoIva($pro["estadoIva"]);
+                $producto->setLogistica($pro["logistica"]);
+                $producto->setIncremento($pro["incremento"]);
+                $producto->setfechaactualizacion(new \DateTime("now"));
+                $categoria = $em->getRepository('IncentivesOperacionesBundle:Categoria')->find($pro["categoria"]);
+                $producto->setCategoria($categoria);
+                $tipo = $em->getRepository('IncentivesCatalogoBundle:ProductoTipo')->find($pro["tipo"]);
+                $producto->setTipo($tipo);
+                $clasificacion = $em->getRepository('IncentivesCatalogoBundle:Productoclasificacion')->find($pro["productoclasificacion"]);
+                $producto->setProductoclasificacion($clasificacion);
                    
                 $em->persist($producto);
 
@@ -85,7 +112,7 @@ class ProductoController extends Controller
                     echo($e); exit;
                 }
 
-            }
+            //}
         }            
 
         return $this->render('IncentivesCatalogoBundle:Producto:nuevo.html.twig', array(
@@ -118,6 +145,7 @@ class ProductoController extends Controller
                 
                 $pro = $request->request->all()['producto'];
                 $id = $request->request->all()['id'];
+
                 $producto = $em->getRepository('IncentivesCatalogoBundle:Producto')->find($id);
                 $producto->setNombre($pro["nombre"]);
                 $producto->setDescripcion($pro["descripcion"]);
@@ -128,7 +156,7 @@ class ProductoController extends Controller
                 $producto->setLargo($pro["largo"]);
                 $producto->setAncho($pro["ancho"]);
                 $producto->setPeso($pro["peso"]);
-                //$producto->setPrecio($pro["precio"]);
+                $producto->setPrecio(($pro["precio"])? $pro["precio"]: 0);
                 $producto->setIva($pro["iva"]);
                 $producto->setestadoIva($pro["estadoIva"]);
                 $producto->setLogistica($pro["logistica"]);
@@ -326,15 +354,22 @@ class ProductoController extends Controller
 
         $repositoryp = $this->getDoctrine()
             ->getRepository('IncentivesCatalogoBundle:Producto');
+        $producto = $repositoryp->find($id);
 
         $repositoryi = $this->getDoctrine()
             ->getRepository('IncentivesCatalogoBundle:Imagenproducto');
+         $imagen = $repositoryi->findByProducto($id);
+
+        $repositorap = $this->getDoctrine()
+            ->getRepository('IncentivesCatalogoBundle:Atributosproducto');
+        $atributos = $repositorap->findByProducto($id);
 
         $repositorypp = $this->getDoctrine()
             ->getRepository('IncentivesCatalogoBundle:Productoprecio');
+        $productoprecio = $repositorypp->findByProducto($id);
         
         $qb = $em->createQueryBuilder()
-                ->select('pr premio','pp premiosproductos','e estado','c catalogo', 'ct categoria','pg','p','cl') 
+                ->select('pr premio','pp premiosproductos','e estado','c catalogo', 'promo','ct categoria','pg','p','cl') 
                 ->from('IncentivesCatalogoBundle:Premios', 'pr')
                 ->leftJoin('pr.premiosproductos','pp')
                 ->leftJoin('pp.producto','p')
@@ -343,15 +378,12 @@ class ProductoController extends Controller
                 ->leftJoin('pr.catalogos','c')
                 ->leftJoin('c.programa','pg')
                 ->leftJoin('pg.cliente','cl')
+                ->leftJoin('pr.promocion','promo','WITH','promo.estado=1')
                 ->where('p.id='.$id);
         $premios = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
         
-        $producto= $repositoryp->find($id);
-        $imagen= $repositoryi->findByProducto($id);
-        $productoprecio= $repositorypp->findByProducto($id);      
-
         return $this->render('IncentivesCatalogoBundle:Producto:datos.html.twig', 
-            array('producto' => $producto, 'id'=>$id, 'imagen' => $imagen, 'productoprecio'=>$productoprecio, 'premios'=>$premios));
+            array('producto' => $producto, 'id'=>$id, 'imagen' => $imagen, 'atributos' => $atributos, 'productoprecio'=>$productoprecio, 'premios'=>$premios));
     }
 
     /**
@@ -451,11 +483,22 @@ class ProductoController extends Controller
                
                   $size=filesize($file);
      
-                  if ($size > MAX_SIZE*1024)
+                  if ($size > 1500*1024)
                   {
                     echo "Supero limite de tamaño de archivo.";
                     $errors=1;
                   } else {
+
+                    $uploadDir = '../web/bundles/CatalogoBundle/Archivos/'.$producto->getCodInc().'/';
+
+                    if (!file_exists($uploadDir)) {
+                        mkdir($uploadDir, 0777);
+                    }
+
+                    $imagenes=$em->getRepository('IncentivesCatalogoBundle:Imagenproducto')->findByProducto($producto->getId());
+                    $num=str_pad(count($imagenes)+$conteo, 4, '0', STR_PAD_LEFT);
+                    $conteo++;
+
                     if($extension=="jpg" || $extension=="jpeg" )
                     {
                       $original_img = imagecreatefromjpeg($file);
@@ -469,36 +512,28 @@ class ProductoController extends Controller
                       $original_img = imagecreatefromgif($file);
                     }
 
-                    $newwidth=300;
-                    $newheight=($original_h/$original_w)*$newwidth;                           
-                    $tmp=imagecreatetruecolor($newwidth,$newheight);
-
+                    $nombreArchivo = $producto->getCodInc().'_'.$num.'.jpg';
+                    $file1 = $uploadDir.$nombreArchivo;
+                    $newwidth = 300;
+                    $newheight = ($original_h/$original_w)*$newwidth;
+                    $tmp = imagecreatetruecolor($newwidth,$newheight);
                     imagecopyresampled($tmp,$original_img,0,0,0,0,$newwidth,$newheight,$width,$height);
-                    imagejpeg($tmp,$file->getPath()."/".$file->getClientOriginalName(),100);
+                    imagejpeg($tmp,$file1,100);
 
-                    $uploadDir='../web/bundles/CatalogoBundle/Archivos/'.$producto->getCodInc().'/';
-                    $imagenes=$em->getRepository('IncentivesCatalogoBundle:Imagenproducto')->findByProducto($producto->getId());
-                    $num=str_pad(count($imagenes)+$conteo, 4, '0', STR_PAD_LEFT);
-                    $conteo++;
-                    $nombreArchivo = $producto->getCodInc().'_'.$num.'.jpg';            //.'.$extension
-                    $nombreArchivo2 = $producto->getCodInc().'_'.$num.'_min.jpg';            //.$extension;
-                    //$nombreArchivo = $producto->getCodInc().'_'.$num.'.'.$extension;
+                    
+                    $nombreArchivo2 = $producto->getCodInc().'_'.$num.'_min.jpg';
+                    $file2 = $uploadDir.$nombreArchivo2;
+                    list($width2,$height2)=getimagesize($file);
 
-                    $file->move($uploadDir,$nombreArchivo);
-                    copy($uploadDir.$nombreArchivo,$uploadDir.$nombreArchivo2);
-                    $file2=$uploadDir.$nombreArchivo2;
-                    list($width2,$height2)=getimagesize($file2);
-                    $ext = explode(".", $file2);
-                    $extension2 = $ext[1];
-                    $original_info2 = getimagesize($file2);
+                    $original_info2 = getimagesize($file);
                     $original_w2 = $original_info2[0];
                     $original_h2 = $original_info2[1];
-                    //$original_img2 = imagecreatefromjpeg($file2);
-                    $newwidth2=200;
-                    $newheight2=($original_h/$original_w)*$newwidth2;
-                    $tmp2=imagecreatetruecolor($newwidth2,$newheight2);
+
+                    $newwidth2 = 300;
+                    $newheight2 = ($original_h2/$original_w2)*$newwidth2;
+                    $tmp2 = imagecreatetruecolor($newwidth2,$newheight2);
                     imagecopyresampled($tmp2,$original_img,0,0,0,0,$newwidth2,$newheight2,$original_w2,$original_h2);               
-                    //imagejpeg($tmp2,$file2,100);
+                    imagejpeg($tmp2,$file2,100);
 
                     $imagen->setNombre($nombreArchivo);
                     $imagen->setPath($uploadDir.$nombreArchivo);
@@ -614,7 +649,7 @@ class ProductoController extends Controller
         $form = $this->createFormBuilder($excelForm)
             ->setAction($this->generateUrl('producto_importar'))
             ->setMethod('POST')
-            ->add('excel', 'file')
+            ->add('excel', FileType::class)
             ->add('cargar', SubmitType::class)
             ->getForm();
 
@@ -653,8 +688,8 @@ class ProductoController extends Controller
                 if($fila > 1 && $fila <= $ultimaFila && $row['A']!=""){
                     $cat=explode(" ", $row['A']);
                     $cat=explode("-", $cat[0]);
-                    $estado=explode(" ", $row['M']);
-                    $clas=explode(" ", $row['T']);
+                    $estado=explode(" ", $row['B']);
+                    $clas=explode(" ", $row['C']);
 
                     if(isset($clas[0]) && $clas[0]!="" && $clas[0]!=0){
                         $clasificacion= $clas[0];
@@ -686,7 +721,7 @@ class ProductoController extends Controller
                     $num=str_pad($consecutivo+1, 4, '0', STR_PAD_LEFT);
 
                     if (count($repetidos_codEAN) == 0) {
-                        $excelcar = $conn->insert('Producto', array('categoria_id' => $cat[0], 'nombre' => eregi_replace("[\n|\r|\n\r]", ' ', $row['B']), 'referencia' => eregi_replace("[\n|\r|\n\r]", ' ', $row['C']), 'marca' => eregi_replace("[\n|\r|\n\r]", ' ', $row['D']), 'descripcion' => eregi_replace("[\n|\r|\n\r]", ' ', $row['E']), 'codEAN' => $row['F'], 'eanTemp' => $row['G'], 'codinc' => $cod.$num, 'alto' => $row['I'], 'largo' => $row['J'], 'ancho' => $row['K'], 'peso' => $row['L'], 'estado_id' => $estado[0], 'iva' => $row['N'], 'fechacreacion' => date_format($date, 'Y-m-d'), 'fechaactualizacion' => date_format($date, 'Y-m-d'), 'estadoIva'=>$row['Q'], 'logistica'=>$row['R'], 'incremento'=>$row['S'], 'clasificacion_id' => $clasificacion, 'codImg' => $row['U'], 'tipo_id'=> 2));
+                        $excelcar = $conn->insert('Producto', array('categoria_id' => $cat[0], 'nombre' => eregi_replace("[\n|\r|\n\r]", ' ', $row['D']), 'referencia' => eregi_replace("[\n|\r|\n\r]", ' ', $row['E']), 'marca' => eregi_replace("[\n|\r|\n\r]", ' ', $row['F']), 'descripcion' => eregi_replace("[\n|\r|\n\r]", ' ', $row['G']), 'codEAN' => $row['H'], 'eanTemp' => $row['I'], 'codinc' => $cod.$num, 'alto' => $row['K'], 'largo' => $row['L'], 'ancho' => $row['M'], 'peso' => $row['N'], 'estado_id' => $estado[0], 'iva' => $row['P'], 'fechacreacion' => date_format($date, 'Y-m-d'), 'fechaactualizacion' => date_format($date, 'Y-m-d'), 'estadoIva'=>$row['Q'], 'logistica'=>$row['R'], 'incremento'=>$row['S'], 'clasificacion_id' => $clasificacion, 'codImg' => $row['U'], 'tipo_id'=> 2));
                     
                         $idProduct = $conn->lastInsertId('id');
                         
@@ -699,8 +734,8 @@ class ProductoController extends Controller
                             //Quitar bandera de proveedor principal
                             $conn->update('Productoprecio', array('principal' => 0), array('producto_id' => $idProduct));
                             
-                            $prov1=explode(" ", $row['V']);
-                            $provedor1 = $conn->insert('Productoprecio',array('producto_id'=>$idProduct, 'proveedor_id'=>$prov1[0], 'precio'=>$row['W'], 'precioDolares'=>$row['X'], 'principal'=>1, 'estado_id'=>1));
+                            $prov1=explode(" ", $row['W']);
+                            $provedor1 = $conn->insert('Productoprecio',array('producto_id'=>$idProduct, 'proveedor_id'=>$prov1[0], 'precio'=>$row['X'], 'precioDolares'=>$row['Y'], 'principal'=>1, 'estado_id'=>1));
                         }
 
                         //Proveedor 2
@@ -1481,7 +1516,7 @@ public function formatoeditarmasAction() {
         $conteo =0;
         foreach ($producto as $key => $value) {
 
-            $ruta = "../web/bundles/CatalogoBundle/Archivos/Temp/";
+            $ruta = "../web/tmp/";
             $file = $ruta.$value->getCodImg().".jpg";
 
             if($original_img = @imagecreatefromjpeg($file)){
@@ -1742,6 +1777,113 @@ public function formatoeditarmasAction() {
             array('productos' => $pagination, 'form' => $form->createView(), 'filtros' => $filtros));
     }
     
+
+     public function agregarAtributoAction(Request $request, $id)
+    {
+        // crea una task y le asigna algunos datos ficticios para este ejemplo
+
+        $em = $this->getDoctrine()->getManager();
+        $producto = $em->getRepository('IncentivesCatalogoBundle:Producto')->find($id);
+        $atributo = new Atributosproducto();
+
+        $form = $this->createForm(AtributosProductoType::class, $atributo);
+               
+        if ($request->isMethod('POST')) {
+            $form->handleRequest($request);
+
+            if ($form->isValid()) {
+                
+                $pro = $request->request->all()['atributosproducto'];
+                $tipo = $em->getRepository('IncentivesCatalogoBundle:Atributostipo')->find($pro['tipo']);
+                $estado = $em->getRepository('IncentivesCatalogoBundle:Estados')->find(1);
+                // realiza alguna acción, tal como guardar la tarea en la base de datos
+                $atributo->setProducto($producto);
+                $atributo->setValor($pro['valor']);
+                $atributo->setEstado($estado);
+
+                ////////////////////
+                $file = $atributo->getImagen();
+                
+                //Tamaño de imagen
+                $original_info = getimagesize($file);
+                $original_w = $original_info[0];
+                $original_h = $original_info[1];
+                list($width,$height)=getimagesize($file);
+                $extension = $file->guessExtension();
+                //echo $file->getPath(); exit;
+                if (($extension != "jpg") && ($extension != "jpeg") && ($extension != "png") && ($extension != "gif")) {
+                  echo 'Extensión invalida.';
+                } else {
+               
+                  $size=filesize($file);
+     
+                  if ($size > 1500*1024)
+                  {
+                    echo "Supero limite de tamaño de archivo.";
+                    $errors=1;
+                  } else {
+
+                    $uploadDir = '../web/bundles/CatalogoBundle/Archivos/'.$producto->getCodInc().'/';
+
+                    if (!file_exists($uploadDir)) {
+                        mkdir($uploadDir, 0777);
+                    }
+
+                    if($extension=="jpg" || $extension=="jpeg" )
+                    {
+                      $original_img = imagecreatefromjpeg($file);
+                    }
+                    else if($extension=="png")
+                    {
+                      $original_img = imagecreatefrompng($file);
+                    }
+                    else
+                    {
+                      $original_img = imagecreatefromgif($file);
+                    }
+
+                    $nombreArchivo = $producto->getCodInc().'_'.$atributo->getId().'.jpg';
+                    $file1 = $uploadDir.$nombreArchivo;
+                    $newwidth = 300;
+                    $newheight = ($original_h/$original_w)*$newwidth;
+                    $tmp = imagecreatetruecolor($newwidth,$newheight);
+                    imagecopyresampled($tmp,$original_img,0,0,0,0,$newwidth,$newheight,$width,$height);
+                    imagejpeg($tmp,$file1,100);
+
+                    
+                    $nombreArchivo2 = $producto->getCodInc().'_'.$atributo->getId().'_min.jpg';
+                    $file2 = $uploadDir.$nombreArchivo2;
+                    list($width2,$height2)=getimagesize($file);
+
+                    $original_info2 = getimagesize($file);
+                    $original_w2 = $original_info2[0];
+                    $original_h2 = $original_info2[1];
+
+                    $newwidth2 = 300;
+                    $newheight2 = ($original_h2/$original_w2)*$newwidth2;
+                    $tmp2 = imagecreatetruecolor($newwidth2,$newheight2);
+                    imagecopyresampled($tmp2,$original_img,0,0,0,0,$newwidth2,$newheight2,$original_w2,$original_h2);               
+                    imagejpeg($tmp2,$file2,100);
+
+                    $atributo->setImagen($uploadDir.$nombreArchivo);
+                    }
+                }
+                /////////////////
+
+                $em->persist($atributo);          
+                $em->flush();
+                    
+                return $this->redirect($this->generateUrl('producto_datos', array('id' => $producto->getId())));
+            }else{
+                die($form->getErrorsAsString());
+                
+            }   
+        }         
+
+        return $this->render('IncentivesCatalogoBundle:Producto:agregarAtributo.html.twig', array(
+            'form' => $form->createView(), 'id'=>$id,
+        ));
+    }
 
 
 }

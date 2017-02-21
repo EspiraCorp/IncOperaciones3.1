@@ -1,134 +1,62 @@
-{% extends app.request.isXmlHttpRequest ? "MDWDemoBundle::layout_ajax.html.twig" : "::base.html.twig" %}
-{% block title %}Datos Cliente{% endblock %}
-{% block cuerpo %}
-<div class="row-fluid sortable ui-sortable">
-<div class="box">
-    <div class="box-header well" data-original-title="">
-        Cliente
-        <div class="box-icon">
-				<div class="box-icon">
-                    <a href="{{ path('cliente') }}" class="btn btn-round"><i class="icon-arrow-left"></i></a>
-                </div>
-    	</div>
-    </div>
-</div>
-    <div class="box span6">
-	    <div class="box-content">
-	    	<div class="box-header well">
-				<h2>
-				<a href="{{ path('cliente_editar',  {"id": cliente.id}) }}">
-					<button class="btn btn-primary">
-						<i class="icon-edit icon-white"></i>
-					</button>
-				</a>
-				</i>Datos Cliente</h2>
-			</div>
+{% extends '::baseLte.html.twig' %}
 
-				<table class="table table-bordered table-striped">
-					<tbody>
-						<tr><td>Nombre</td><td>{{ cliente.nombre }}</td></tr>
-						<tr><td>Documento</td><td>{{ cliente.tipodocumento.nombre}} {{ cliente.numerodocumento }}</td></tr>
-						<tr><td>Direccion</td><td>{{ cliente.direccion }}</td></tr>
-						<tr><td>Telefono</td><td>{{ cliente.telefono }}</td></tr>
-						<tr><td>Correo</td><td>{{ cliente.correo }}</td></tr>
-					</tbody>
-				</table>
-		</div>
-	</div>
+{% block title %}{{ parent() }}::Datos Promoción{% endblock %}
+{% block sectiontitle %}<h1>Catálogos<small>Datos Promoción</small></h1>{% endblock %}
+{% block breadcum %} <li><a href="{{ path('promociones') }}"><i class="fa fa-star"></i>Promociones</a>
+	</li>
+	<li class="active">Datos Promoción</li>{% endblock %}
 
-	<div class="box span5">
-		<div class="box-content">
-		    <div class="box-header well">
-				<h2>
-					<a href="{{ path('programa_nuevo',  {"id": cliente.id}) }}">
-						<button class="btn btn-small btn-success">
-							<i class="icon-plus icon-white"></i>
+{% block content %}
+
+<div class="row">
+	<div class="col-md-6">
+	    <div class="box box-warning">
+		    <div class="box-header bg-black">
+				<h3 class="box-title">Datos Promoción</h3>
+				<div class="box-tools pull-right">
+					{% if is_granted('ROLE_ADMIN') or  is_granted('ROLE_DIR') or is_granted('ROLE_ASISCOMP') or is_granted('ROLE_CAT') %}
+					<a id="editar" href="{{ path('promociones_editar',  {"promocion": promocion.id}) }}" title="Editar">
+						<button class="btn btn-primary">
+							<i class="fa fa-edit"></i>
 						</button>
 					</a>
-					Programas
-				</h2>
+					{% endif %}
+				</div>
 			</div>
-			{% if programa | length!=0 %}
-			<table class="table table-bordered table-striped">
-				<thead>
-					<tr>
-						<th>Nombre</th>
-						<th>Fecha de inicio</th>
-						<th>Fecha finalizacion</th>
-						<th>Estado</th>
-					</tr>
-				</thead>
-				<tbody>
-					{% for programas in programa %}		
-							<tr>
-								<td>{{ programas.nombre }}</td>
-								<td>{{ programas.fechainicio | date("d-m-Y") }}</td>
-								<td>{{ programas.fechafin | date("d-m-Y") }}</td>
-								<td>{% if (programas.estado=='0') %}
-										<a class="btn btn-danger 1" onClick=confirmar('{{ url("programa_estado", {"id": programas.id}) }}') href="#">
-										Inactiva</a>
-									{% else %}
-										<a class="btn btn-success 1" onClick=confirmar('{{ url("programa_estado", {"id": programas.id}) }}') href="#">
-										Activa</a>
-									{% endif %}
-								</td>
-							</tr>			
-					{% endfor %}
-				</tbody>
-			</table>
-			{% endif %}
-		</div>
-	</div>
-
-	<div class="box span6">
-		<div class="box-content">
-		    <div class="box-header well">
-				<h2>
-					<a href="{{ path('catalogo') }}">
-						<button class="btn btn-small btn-success">
-							<i class="icon-th-list icon-white"></i>
-						</button>
-					</a>	
-					Catalogos
-				</h2>
-			</div>
-			{% if catalogos | length!=0 %}
-			<table class="table table-bordered table-striped">
-					<thead>
-						<tr>
-							<th>Nombre</th>
-							<th>Programa</th>
-							<th>Descripcion</th>
-							<th>Estado</th>
-						</tr>
-					</thead>
+			<div class="box-body">
+				<table class="table table-bordered table-striped table-condensed dataTable">
 					<tbody>
-						{% for catalogo in catalogos %}
-						<tr>
-							<td>{{catalogo.nombre}}</td>
-							<td>{{catalogo.programa.nombre}}</td>
-							<td>{{catalogo.descripcion}}</td>							
-							<td>{% if (catalogo.estado=='0') %}
-										<a class="btn btn-danger 1" onClick=confirmar('{{ url("catalogo_estado", {"id": catalogo.id}) }}') href="#">
-										Inactivo</a>
+						<tr><td>Nombre</td><td>{{ promocion.nombre }}</td></tr>
+						<tr><td>Descripción</td><td>{{ promocion.descripcion }}</td></tr>
+						<tr><td>Catálogo</td><td>{{ promocion.premio.catalogos.nombre }}</td></tr>
+						<tr><td>Premio</td><td>{{ promocion.premio.premiosproductos[0].producto.nombre }}</td></tr>
+						<tr><td>Fecha inicio</td><td>{{ promocion.fechaInicio | date("Y-m-d") }}</td></tr>
+						<tr><td>Fecha fin</td><td>{{ promocion.fechaFin | date("Y-m-d") }}</td></tr>
+						<tr><td>Puntos Promoción</td><td>{{ promocion.puntos }}</td></tr>
+						<tr><td>Puntos Sin Promoción</td><td>{{ promocion.premio.puntos }}</td></tr>
+						<tr><td>Cantidad Total</td><td>{{ promocion.cantidad }}</td></tr>
+						<tr><td>Cantidad Redimida</td><td>{{ promocion.redimidos }}</td></tr>
+						<tr><td>Cantidad Disponible</td><td>{{ promocion.disponibles }}</td></tr>
+						<tr><td>Estado</td><td>
+									{% if is_granted('ROLE_ADMIN') or  is_granted('ROLE_DIR') or is_granted('ROLE_ASISCOMP') or is_granted('ROLE_CAT') %}
+										<a class="btn {% if (promocion.estado.id==1) %}btn-success{% else %}btn-danger{% endif %} 1" onClick=confirmar('{{ url("promociones_estado", {"promocion": promocion.id}) }}') href="#">
+										{{ promocion.estado.nombre }}</a>
 									{% else %}
-										<a class="btn btn-success 1" onClick=confirmar('{{ url("catalogo_estado", {"id": catalogo.id}) }}') href="#">
-										Activo</a>
-									{% endif %}
-								</td>
-						</tr>
-						{% endfor %}
+										{{ promocion.estado.nombre }}
+									{% endif %}</td></tr>
 					</tbody>
 				</table>
-				{% endif %}
+			</div>
 		</div>
 	</div>
+</div>
 	
-
 {% endblock %}
 
-{% block javascripts %}
+{% block javascript %}
+	
 	{{ parent() }}
+	
 	<script>
 
 	function confirmar(ruta)
@@ -141,16 +69,7 @@
 	  
 	}
 
-        var x;
-		x=$(document);
-		x.ready(inicializarEventos);
-
-		function inicializarEventos()
-		{
-		 var x;
-		 x=$("div.estado a");
-		 x.each(resaltarParrafos);
-		}
+	$("#editar").colorbox({href: this.href });
 
 	</script>
 {% endblock %}

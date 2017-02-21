@@ -29,12 +29,6 @@ class Novedadestipo
     private $nombre;
 
     /**
-     * @ORM\OneToMany(targetEntity="Novedades", mappedBy="tipo", cascade={"persist"})
-     * 
-     */
-    protected $novedad;
-
-    /**
      * @var \DateTime
      *
      * @ORM\Column(name="fechaModificacion", type="datetime", nullable=true)
@@ -90,39 +84,6 @@ class Novedadestipo
         $this->novedad = new \Doctrine\Common\Collections\ArrayCollection();
     }
     
-    /**
-     * Add novedad
-     *
-     * @param \Incentives\CatalogoBundle\Entity\Productocatalogo $novedad
-     * @return Novedadestipo
-     */
-    public function addNovedad(\Incentives\CatalogoBundle\Entity\Productocatalogo $novedad)
-    {
-        $this->novedad[] = $novedad;
-    
-        return $this;
-    }
-
-    /**
-     * Remove novedad
-     *
-     * @param \Incentives\CatalogoBundle\Entity\Productocatalogo $novedad
-     */
-    public function removeNovedad(\Incentives\CatalogoBundle\Entity\Productocatalogo $novedad)
-    {
-        $this->novedad->removeElement($novedad);
-    }
-
-    /**
-     * Get novedad
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getNovedad()
-    {
-        return $this->novedad;
-    }
-
     /**
      * Set fechaModificacion
      *

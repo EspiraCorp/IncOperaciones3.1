@@ -258,6 +258,14 @@ class Redenciones
      * @ORM\JoinColumn(name="justificacion_id", referencedColumnName="id", nullable=true)
      */
     protected $justificacion;
+
+    /**
+     * 
+     * @ORM\ManyToOne(targetEntity="Incentives\FacturacionBundle\Entity\FacturaProductos", inversedBy="redenciones", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="facturaProducto_id", referencedColumnName="id", nullable=true)
+     * 
+     */
+    protected $facturaProducto;
     
     /**
      * @var text
@@ -1196,5 +1204,29 @@ class Redenciones
     public function getRedencionesProductos()
     {
         return $this->redencionesProductos;
+    }
+
+    /**
+     * Set facturaProducto
+     *
+     * @param \Incentives\FacturacionBundle\Entity\FacturaProductos $facturaProducto
+     *
+     * @return Redenciones
+     */
+    public function setFacturaProducto(\Incentives\FacturacionBundle\Entity\FacturaProductos $facturaProducto = null)
+    {
+        $this->facturaProducto = $facturaProducto;
+
+        return $this;
+    }
+
+    /**
+     * Get facturaProducto
+     *
+     * @return \Incentives\FacturacionBundle\Entity\FacturaProductos
+     */
+    public function getFacturaProducto()
+    {
+        return $this->facturaProducto;
     }
 }

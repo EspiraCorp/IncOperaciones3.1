@@ -137,7 +137,7 @@
                                                     </tr>
                                                     <tr>
                                                         <td>Categoria</td>
-                                                        <td colspan="2">{{ premio.premio.categoria.nombre }}</td>
+                                                        <td colspan="2">{% if premio.premio.categoria %}{{ premio.premio.categoria.nombre }}{% endif %}</td>
                                                     </tr>
                                                     <tr>
                                                       <td>
